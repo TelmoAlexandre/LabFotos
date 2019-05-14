@@ -1,9 +1,13 @@
 ﻿@model LabFoto.Models.ViewModels.ServicosCreateViewModel
 
-@foreach (var tipo in Model.TiposList)
-{
-    <div class="custom-control custom-checkbox custom-control-inline">
-        <input type="checkbox" name="Tipos" value="@tipo.Value" checked="@tipo.Selected" class="custom-control-input" id="tipos_@tipo.Value" />
-        <label class="custom-control-label" for="tipos_@tipo.Value">@tipo.Text</label>
+<div class="ui multiple search selection dropdown">
+    <input type="hidden" name="Tipos">
+    <i class="dropdown icon"></i>
+    <div class="default text">Selecione o(s) tipo(s)</div>
+    <div class="menu">
+        @foreach (var tipo in Model.TiposList)
+        {
+            <div class="item" data-value="@tipo.Value">@tipo.Text</div>
+        }
     </div>
-}
+</div>

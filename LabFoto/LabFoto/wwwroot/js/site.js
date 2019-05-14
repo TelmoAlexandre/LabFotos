@@ -56,7 +56,9 @@ function initModalEvents()
 
     handleControllerResponse = (resp, divId, modalId, href) => {
         if (resp.success) {
-            $(`#${divId}`).load(`${href}`);
+            $(`#${divId}`).load(`${href}`, function () {
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
             $(`#${modalId}`).modal('toggle');
             // Notificação 'Noty'
             new Noty({
@@ -69,12 +71,6 @@ function initModalEvents()
             }).show();
         }
     };
-
-    $('.ui .item').on('click', function () {
-        $('.ui .item').removeClass('active');
-        $(this).addClass('active');
-    }); 
-
 
     // Modal do novo requerente com fetch do formulário em Ajax
     $("#btnModalNovoRequerente").click(function (e) {
@@ -168,7 +164,31 @@ deleteElement = (id) => {
     $(`#${id}`).remove();
 };
 
-// Modal de confirmação
+// Modais de confirmação
+
+confirmServicoCreate = () => {
+    $("#confirmarSubmit").modal({
+        closable: false,
+        onDeny: function () {
+            $("#confirmarSubmit").modal('hide');
+        },
+        onApprove: function () {
+            $("#servicosCreateForm").submit();
+        },
+        transition: 'scale'
+    }).modal('show');
+};
+
+modalCancel = (id) => {
+    $(`#${id}`).modal({
+        closable: false,
+        onDeny: function () {
+            $(`#${id}`).modal('hide');
+        },
+        transition: 'scale'
+    }).modal('show');
+};
+
 showConfirmationDialog = (flag, param, message) => {
     switch (flag) {
         case 'submitForm':
@@ -229,8 +249,10 @@ servicoRequerenteDetails = (divModalDetails, divDetailsId, requerenteId) => {
 // Detalhes do serviço com o id que recebe por parametro
 // e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
 requerenteServicoDetails = (divId, servicoId) => {
+    if ($(`#${divId}`).is(`:empty`)) {
         $(`#${divId}`).html(getLoadingBarHtml);
         $(`#${divId}`).load(`/Servicos/DetailsAjax/${servicoId}`);
+    }
 };
 
 createTipoOnServicosEdit = (idServico) => {

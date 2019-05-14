@@ -9,125 +9,105 @@
 <hr />
 <form asp-action="Create" id="servicosCreateForm">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-12">
-                        <label asp-for="Servico.Nome" class="control-label font-weight-bold"></label>
-                        <input asp-for="Servico.Nome" class="form-control" />
-                        <span asp-validation-for="Servico.Nome" class="text-danger"></span>
+    <div class="ui form">
+        <div class="fields">
+            <div class="eight wide field">
+                <label asp-for="Servico.Nome"></label>
+                <input asp-for="Servico.Nome" />
+                <span asp-validation-for="Servico.Nome" class="text-danger"></span>
+            </div>
+            <div id="requerentesDropbox" class="eight wide field">
+                <label asp-for="Servico.RequerenteFK"></label>
+                <partial name="_RequerentesDropbox" model="@Model.RequerentesList" />
+                <div class="ui animated inverted primary mini button mt-1" id="btnModalNovoRequerente">
+                    <div class="visible content"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Requerente</span></div>
+                    <div class="hidden content">
+                        Adicionar?
+                    </div>
+                </div>
+                <span asp-validation-for="Servico.RequerenteFK" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="fluid wide field">
+            <label asp-for="Servico.IdentificacaoObra"></label>
+            <textarea asp-for="Servico.IdentificacaoObra" rows="3"></textarea>
+            <span asp-validation-for="Servico.IdentificacaoObra" class="text-danger"></span>
+        </div>
+        <div class="fields">
+            <div class="eight wide field">
+                <label>Tipo de serviço:</label>
+                <div class="fluid field mb-1" id="tiposCheckboxes">
+                    <partial name="PartialViews/_TiposCheckboxesPartialView" model="@Model" />
+                </div>
+                <div class="ui animated inverted primary mini button" id="btnModalNovoTipo">
+                    <div class="visible content"><i class="fas fa-plus"></i> Novo Tipo</div>
+                    <div class="hidden content">
+                        Adicionar?
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-12">
-                        <label asp-for="Servico.RequerenteFK" class="control-label font-weight-bold"></label>
-                    </div>
-                    <div class="col-md-6" id="requerentesDropbox">
-                        <partial name="_RequerentesDropbox" model="@Model.RequerentesList" />
-                        <span asp-validation-for="Servico.RequerenteFK" class="text-danger"></span>
-                        @if (!ViewData.ModelState.IsValid)
-                        {
-                            <p class="text-danger">É necessário escolher um requerente.</p>
-                        }
-                    </div>
-                    <div class="col-md-6">
-                        <button type="button" class="btn btn-outline-primary" id="btnModalNovoRequerente">
-                            <i class="fas fa-user-plus"></i>
-                        </button>
+            <div class="eight wide field">
+                <label>Serviços Solicitados:</label>
+                <div class="fluid field mb-1" id="servSolicCheckboxes">
+                    <partial name="PartialViews/_ServSolicitadosCbPartialView" model="@Model" />
+                </div>
+                <div class="ui animated inverted primary mini button" id="btnModalNovoServSolic">
+                    <div class="visible content"><i class="fas fa-plus"></i> Novo Serviço Solicitado</div>
+                    <div class="hidden content">
+                        Adicionar?
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-12">
-                        <label asp-for="Servico.IdentificacaoObra" class="control-label font-weight-bold"></label>
-                        <textarea asp-for="Servico.IdentificacaoObra" class="form-control"></textarea>
-                        <span asp-validation-for="Servico.IdentificacaoObra" class="text-danger"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Servico.Observacoes" class="control-label font-weight-bold"></label>
+            <textarea asp-for="Servico.Observacoes" class="form-control" rows="6"></textarea>
+            <span asp-validation-for="Servico.Observacoes" class="text-danger"></span>
+        </div>
+        <div class="fields">
+            <div class="four wide field">
+                <label class="control-label font-weight-bold">Datas de Execução</label>
+                <div id="dataDeExecDiv"></div>
+                <div class="ui animated inverted primary mini button" id="newDataDeExecucaoInput">
+                    <div class="visible content"><i class="fas fa-plus"></i> Nova Data</div>
+                    <div class="hidden content">
+                        Adicionar?
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="row">
-                    <label class="font-weight-bold col-md-12 mt-2">Tipo de serviço:</label>
-                    <div class="col-md-12 mt-2" id="tiposCheckboxes">
-                        <partial name="PartialViews/_TiposCheckboxesPartialView" model="@Model" />
-                    </div>
-                    <div class="col-md-12 mt-2">
-                        <button type="button" class="btn btn-outline-primary btn-sm" id="btnModalNovoTipo">
-                            <i class="fas fa-plus"></i> Adicionar
-                        </button>
-                    </div>
+            <div class="four wide field">
+                <label asp-for="Servico.DataEntrega"></label>
+                <input asp-for="Servico.DataEntrega"/>
+                <span asp-validation-for="Servico.DataEntrega" class="text-danger"></span>
+            </div>
+            <div class="three wide field">
+                <label asp-for="Servico.HorasEstudio"></label>
+                <input asp-for="Servico.HorasEstudio"/>
+                <span asp-validation-for="Servico.HorasEstudio" class="text-danger"></span>
+            </div>
+            <div class="three wide field">
+                <label asp-for="Servico.HorasPosProducao"></label>
+                <input asp-for="Servico.HorasPosProducao"/>
+                <span asp-validation-for="Servico.HorasPosProducao" class="text-danger"></span>
+            </div>
+            <div class="three wide field">
+                <label asp-for="Servico.Total"></label>
+                <input asp-for="Servico.Total"/>
+                <span asp-validation-for="Servico.Total" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="ui buttons">
+            <div class="ui animated green small button" onclick="confirmServicoCreate()">
+                <div class="visible content">Criar</div>
+                <div class="hidden content">
+                    <i class="checkmark icon"></i>
                 </div>
-                <div class="form-group">
-                    <div class="row">
-                        <label class="font-weight-bold col-md-8 mt-2">Serviços Solicitados:</label>
-                        <div class="col-md-12 mt-2" id="servSolicCheckboxes">
-                            <partial name="PartialViews/_ServSolicitadosCbPartialView" model="@Model" />
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="btnModalNovoServSolic">
-                                <i class="fas fa-plus"></i> Adicionar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label asp-for="Servico.Observacoes" class="control-label font-weight-bold"></label>
-                            <textarea asp-for="Servico.Observacoes" class="form-control"></textarea>
-                            <span asp-validation-for="Servico.Observacoes" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="control-label font-weight-bold">Datas de Execução</label>
-                            <div id="dataDeExecDiv"></div>
-                            <span id="newDataDeExecucaoInput" class="btn btn-sm btn-outline-primary pointer">
-                                <i class="fas fa-plus"></i>  Adicionar
-                            </span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="Servico.DataEntrega" class="control-label font-weight-bold"></label>
-                            <input asp-for="Servico.DataEntrega" class="form-control" />
-                            <span asp-validation-for="Servico.DataEntrega" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Servico.HorasEstudio" class="control-label font-weight-bold"></label>
-                                <input asp-for="Servico.HorasEstudio" class="form-control" />
-                                <span asp-validation-for="Servico.HorasEstudio" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Servico.HorasPosProducao" class="control-label font-weight-bold"></label>
-                                <input asp-for="Servico.HorasPosProducao" class="form-control" />
-                                <span asp-validation-for="Servico.HorasPosProducao" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Servico.Total" class="control-label font-weight-bold"></label>
-                                <input asp-for="Servico.Total" class="form-control" />
-                                <span asp-validation-for="Servico.Total" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <span class="btn btn-primary pointer"
-                          onclick="showConfirmationDialog('submitForm','servicosCreateForm','Tem a certeza que pretende criar este serviço?')">Criar</span>
-                    <span class="btn btn-secondary pointer" onclick="showConfirmationDialog('unsavedChanges','/Servicos')">Cancelar</span>
+            </div>
+            <div class="or" data-text="ou"></div>
+            <div class="ui animated grey small button" onclick="modalCancel('modalCancel')">
+                <div class="visible content">Cancelar</div>
+                <div class="hidden content">
+                    Voltar?
                 </div>
             </div>
         </div>
@@ -146,6 +126,38 @@
 
 <div class="ui modal basic mini" id="modalNovoServSolic">
     <div class="content" id="divFormNovoServSolic">
+    </div>
+</div>
+
+<div class="ui basic mini modal" id="confirmarSubmit">
+    <div class="content">
+        <p>Tem a certeza que pretende criar o serviço?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
+<div class="ui basic mini modal" id="modalCancel">
+    <div class="content">
+        <p>Tem a certeza que pretende cancelar?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <a class="ui green ok inverted button" href="/Servicos">
+            <i class="checkmark icon"></i>
+            Sim
+        </a>
     </div>
 </div>
 

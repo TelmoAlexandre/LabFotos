@@ -297,15 +297,12 @@ namespace LabFoto.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             [Bind("ID,Nome,DataDeCriacao,IdentificacaoObra,Observacoes,HorasEstudio,HorasPosProducao,DataEntrega,Total,RequerenteFK")] Servico servico,
-            IFormCollection form, string[] Tipos, string[] ServSolicitados)
+            IFormCollection form, string Tipos, string ServSolicitados)
         {
             // Certificar que é selecionado pelo menos 1 tipo no formulario
             string datasExec = form["DataExecucao"];
-            string requerenteSelected = form[servico.RequerenteFK +""];
-            if (servico.RequerenteFK == 0) {
-
-                ModelState.AddModelError("Model", "Ocorreu um erro no requrentes");
-
+            if (servico.RequerenteFK == null) {
+                ModelState.AddModelError("Servico.RequerenteFK", "É necessário escolher um requerente.");
             }
 
             try
@@ -317,31 +314,43 @@ namespace LabFoto.Controllers
 
                     #region Tratamento-Muitos-Para-Muitos
 
-                    // Tratamento dos tipos
-                    List<Servico_Tipo> tiposList = new List<Servico_Tipo>();
-                    foreach (string tipoId in Tipos)
-                    {
-                        Servico_Tipo st = new Servico_Tipo
-                        {
-                            ServicoFK = servico.ID,
-                            TipoFK = Int32.Parse(tipoId)
-                        };
-                        tiposList.Add(st);
-                    }
-                    servico.Servicos_Tipos = tiposList;
+                    string[] array;
 
-                    // Tratamento dos Serviços solicitados
-                    List<Servico_ServicoSolicitado> servSolicList = new List<Servico_ServicoSolicitado>();
-                    foreach (string servSolicId in ServSolicitados)
+                    if (!String.IsNullOrEmpty(Tipos)) // Caso existam tipos a serem adicionados
                     {
-                        Servico_ServicoSolicitado sss = new Servico_ServicoSolicitado
+                        array = Tipos.Split(","); // Partir os tipos num array
+                        List<Servico_Tipo> tiposList = new List<Servico_Tipo>();
+
+                        foreach (string tipoId in array) // Correr esse array
                         {
-                            ServicoFK = servico.ID,
-                            ServicoSolicitadoFK = Int32.Parse(servSolicId)
-                        };
-                        servSolicList.Add(sss);
+                            // Associar o tipo
+                            Servico_Tipo st = new Servico_Tipo
+                            {
+                                ServicoFK = servico.ID,
+                                TipoFK = Int32.Parse(tipoId)
+                            };
+                            tiposList.Add(st);
+                        }
+                        servico.Servicos_Tipos = tiposList;
                     }
-                    servico.Servicos_ServicosSolicitados = servSolicList;
+
+                    if (!String.IsNullOrEmpty(ServSolicitados)) // Caso existam servicos solicitados a serem adicionados
+                    {
+                        array = ServSolicitados.Split(","); // Partir os servicos solicitados num array
+                        List<Servico_ServicoSolicitado> servSolicList = new List<Servico_ServicoSolicitado>();
+
+                        foreach (string servSolicId in array) // Correr esse array
+                        {
+                            // Associar o servico solicitados
+                            Servico_ServicoSolicitado sss = new Servico_ServicoSolicitado
+                            {
+                                ServicoFK = servico.ID,
+                                ServicoSolicitadoFK = Int32.Parse(servSolicId)
+                            };
+                            servSolicList.Add(sss);
+                        }
+                        servico.Servicos_ServicosSolicitados = servSolicList;
+                    }
 
                     #endregion Tratamento-Muitos-Para-Muitos
 

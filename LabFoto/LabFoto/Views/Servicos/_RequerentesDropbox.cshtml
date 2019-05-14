@@ -1,10 +1,10 @@
 ﻿@model SelectList
 
-<select data-val="true" 
-        data-val-required="É necessário escolher um requerente." 
-        id="Servico_RequerentesFK" 
-        name="Servico.RequerenteFK" 
-        class="form-control" 
+<select data-val="true"
+        data-val-required="É necessário escolher um requerente."
+        id="Servico_RequerentesFK"
+        name="Servico.RequerenteFK"
+        class="ui search dropdown"
         asp-items="@Model">
-    <option value="0" selected disabled>---</option>
+    <option value="">Escolha um requerente</option>
 </select>
