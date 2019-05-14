@@ -1,0 +1,10 @@
+﻿@model LabFoto.Models.ViewModels.ServicosCreateViewModel
+
+
+@foreach (var serv in Model.ServSolicitados)
+{
+    <div class="custom-control custom-checkbox custom-control-inline">
+        <input type="checkbox" name="ServSolicitados" value="@serv.Value" checked="@serv.Selected" class="custom-control-input" id="servSolic_@serv.Value" />
+        <label class="custom-control-label" for="servSolic_@serv.Value">@serv.Text</label>
+    </div>
+}

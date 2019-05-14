@@ -1,0 +1,154 @@
+﻿@model LabFoto.Models.ViewModels.ServicosCreateViewModel
+
+@{
+    ViewData["Title"] = "Ficha de Pedido de Serviço";
+}
+
+<h1>Criar novo Serviço</h1>
+
+<hr />
+<form asp-action="Create" id="servicosCreateForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label asp-for="Servico.Nome" class="control-label font-weight-bold"></label>
+                        <input asp-for="Servico.Nome" class="form-control" />
+                        <span asp-validation-for="Servico.Nome" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label asp-for="Servico.RequerenteFK" class="control-label font-weight-bold"></label>
+                    </div>
+                    <div class="col-md-6" id="requerentesDropbox">
+                        <partial name="_RequerentesDropbox" model="@Model.RequerentesList" />
+                        <span asp-validation-for="Servico.RequerenteFK" class="text-danger"></span>
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <p class="text-danger">É necessário escolher um requerente.</p>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-outline-primary" id="btnModalNovoRequerente">
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label asp-for="Servico.IdentificacaoObra" class="control-label font-weight-bold"></label>
+                        <textarea asp-for="Servico.IdentificacaoObra" class="form-control"></textarea>
+                        <span asp-validation-for="Servico.IdentificacaoObra" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <label class="font-weight-bold col-md-12 mt-2">Tipo de serviço:</label>
+                    <div class="col-md-12 mt-2" id="tiposCheckboxes">
+                        <partial name="PartialViews/_TiposCheckboxesPartialView" model="@Model" />
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="btnModalNovoTipo">
+                            <i class="fas fa-plus"></i> Adicionar
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="font-weight-bold col-md-8 mt-2">Serviços Solicitados:</label>
+                        <div class="col-md-12 mt-2" id="servSolicCheckboxes">
+                            <partial name="PartialViews/_ServSolicitadosCbPartialView" model="@Model" />
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="btnModalNovoServSolic">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label asp-for="Servico.Observacoes" class="control-label font-weight-bold"></label>
+                            <textarea asp-for="Servico.Observacoes" class="form-control"></textarea>
+                            <span asp-validation-for="Servico.Observacoes" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="control-label font-weight-bold">Datas de Execução</label>
+                            <div id="dataDeExecDiv"></div>
+                            <span id="newDataDeExecucaoInput" class="btn btn-sm btn-outline-primary pointer">
+                                <i class="fas fa-plus"></i>  Adicionar
+                            </span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Servico.DataEntrega" class="control-label font-weight-bold"></label>
+                            <input asp-for="Servico.DataEntrega" class="form-control" />
+                            <span asp-validation-for="Servico.DataEntrega" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Servico.HorasEstudio" class="control-label font-weight-bold"></label>
+                                <input asp-for="Servico.HorasEstudio" class="form-control" />
+                                <span asp-validation-for="Servico.HorasEstudio" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Servico.HorasPosProducao" class="control-label font-weight-bold"></label>
+                                <input asp-for="Servico.HorasPosProducao" class="form-control" />
+                                <span asp-validation-for="Servico.HorasPosProducao" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Servico.Total" class="control-label font-weight-bold"></label>
+                                <input asp-for="Servico.Total" class="form-control" />
+                                <span asp-validation-for="Servico.Total" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="btn btn-primary pointer"
+                          onclick="showConfirmationDialog('submitForm','servicosCreateForm','Tem a certeza que pretende criar este serviço?')">Criar</span>
+                    <span class="btn btn-secondary pointer" onclick="showConfirmationDialog('unsavedChanges','/Servicos')">Cancelar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="ui modal basic small" id="modalNovoRequerente" >
+    <div class="content" id="newRequerenteForm">
+    </div>
+</div>
+
+<div class="ui modal basic mini" id="modalNovoTipo">
+    <div class="content" id="divFormNovoTipo">
+    </div>
+</div>
+
+<div class="ui modal basic mini" id="modalNovoServSolic">
+    <div class="content" id="divFormNovoServSolic">
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

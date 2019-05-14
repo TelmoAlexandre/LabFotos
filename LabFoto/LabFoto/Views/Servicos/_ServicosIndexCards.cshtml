@@ -1,0 +1,151 @@
+﻿@model LabFoto.Models.ViewModels.ServicosIndexViewModel
+
+    <div id="accordion">
+        @if (Model.Servicos.Count() == 0)
+        {
+            <div class="my-lg-5 d-flex justify-content-center">
+                <p class="font-weight-bolder">Não foram encontrados serviços.</p>
+            </div>
+        }
+        else
+        {
+            foreach (var servico in Model.Servicos)
+            {
+                <div class="card">
+                    <div class="card-header " id="heading_@servico.ID">
+                        <h5 class="mb-0">
+                            <span class="btn font-weight-bold collapsed pointer" data-toggle="collapse" data-target="#collapse_@servico.ID" aria-expanded="true" aria-controls="collapse_@servico.ID">
+                                @Html.DisplayFor(modelItem => servico.Nome)
+                            </span>
+                            <a asp-controller="Servicos" asp-action="Details" asp-route-id="@servico.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+                            <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@servico.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                            <a class="btn btn-light float-right" href="#" data-toggle="tooltip" title="Ver Galerias"><i class="far fa-images"></i></a>
+                        </h5>
+                    </div>
+
+                    <div id="collapse_@servico.ID" class="collapse accordionBody" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="dataCriacao">
+                                            <span>Criado</span> <span class="float-right font-weight-bold">@Html.DisplayFor(modelItem => servico.DataDeCriacao)</span>
+                                        </div>
+                                        <div class="dataEntrega">
+                                            <span>Entregue</span>
+                                            @if (servico.DataEntrega != null)
+                                            {
+                                                <span class="float-right font-weight-bold">@Html.DisplayFor(modelItem => servico.DataEntrega)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="float-right font-weight-bold">--/--/----</span>
+                                            }
+                                        </div>
+                                        <div class="requerente">
+                                            <span>Requerente</span> <span class="float-right font-weight-bold pointer btn-link" style="text-decoration:none;" onclick="servicoRequerenteDetails(`modalDetailsRequerente`, `detailsRequerente`, @servico.RequerenteFK)">@servico.Requerente.Nome</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="horasEstudio">
+                                            <span>@Html.DisplayNameFor(modelItem => servico.HorasEstudio)</span>
+                                            <span class="float-right font-weight-bold">@Html.DisplayFor(modelItem => servico.HorasEstudio)</span>
+                                        </div>
+                                        <div class="horasPosProducao">
+                                            <span>@Html.DisplayNameFor(modelItem => servico.HorasPosProducao)</span>
+                                            <span class="float-right font-weight-bold">@Html.DisplayFor(modelItem => servico.HorasPosProducao)</span>
+                                        </div>
+                                        <div class="total">
+                                            <span>@Html.DisplayNameFor(modelItem => servico.Total)</span>
+                                            <span class="float-right font-weight-bold">@Html.DisplayFor(modelItem => servico.Total)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-text mt-3">
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="tipoServico">
+                                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Servicos_Tipos)</span>
+                                            <p>
+                                                @foreach (var tipo in servico.Servicos_Tipos)
+                                                {
+                                                    <span class="mr-4">@tipo.Tipo.Nome</span>
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="servicoSolicitado">
+                                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Servicos_ServicosSolicitados)</span>
+                                            <p>
+                                                @foreach (var ss in servico.Servicos_ServicosSolicitados)
+                                                {
+                                                    <span class="mr-4">@ss.ServicoSolicitado.Nome</span>
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.IdentificacaoObra): </span>
+                                        <p>@Html.DisplayFor(modelItem => servico.IdentificacaoObra)</p>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Servicos_DataExecucao): </span>
+                                        <p>
+                                            @foreach (var data in servico.Servicos_DataExecucao)
+                                            {
+                                                <span class="mr-4">@Html.DisplayFor(modelItem => data.DataExecucao.Data)</span>
+                                            }
+                                        </p>
+                                    </div>
+                                    <div class="col-md-12 mt-3">
+                                        <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Observacoes): </span>
+                                        <p>@Html.DisplayFor(modelItem => servico.Observacoes)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            // Paginação -----------------------------------------------------------------------------------------
+
+            string previousPage = (Model.FirstPage) ? "-" : Model.PageNum - 1 + "";
+            string nextPage = (Model.LastPage) ? "-" : Model.PageNum + 1 + "";
+            // Esconder as opções caso seja a primeira ou ultima página. Feito com CSS.
+            string disablePreviousPage = Model.FirstPage ? "disabled" : "";
+            string disableNextPage = Model.LastPage ? "disabled" : "";
+
+            <div class=" mt-4 unselectable">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @disablePreviousPage">
+                            <span class="page-link pointer" onclick="submitSearchForm(@previousPage)">Anterior</span>
+                        </li>
+                        <li class="page-item @disablePreviousPage"><span class="page-link pointer" onclick="submitSearchForm(@previousPage)">@previousPage</span></li>
+                        <li class="page-item active" unselectable="on"><span class="page-link pointer">@Model.PageNum</span></li>
+                        <li class="page-item @disableNextPage"><span class="page-link pointer" onclick="submitSearchForm(@nextPage)">@nextPage</span></li>
+                        <li class="page-item @disableNextPage">
+                            <span class="page-link pointer" onclick="submitSearchForm(@nextPage)">Próxima</span>
+                        </li>
+                    </ul>
+                </nav>
+                <input type="number" name="page" id="pageNum" hidden />
+            </div>
+        }
+    </div>
+
+<div class="modal fade  bd-example-modal-lg" id="modalDetailsRequerente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="detailsRequerente">
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    }, false);
+</script>

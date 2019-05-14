@@ -1,0 +1,36 @@
+﻿@model LabFoto.Models.Tables.Requerente
+
+
+    <form asp-controller="Requerentes" asp-action="Create"
+          data-ajax="true" data-ajax-method="POST"
+          data-ajax-success="novoRequerente"
+          data-ajax-mode="replace" data-ajax-update="#newRequerenteForm">
+        <div class="form-group">
+            <div class="form-group">
+                <label asp-for="Nome" class="control-label font-weight-bold"></label>
+                <input asp-for="Nome" placeholder="Nome do Requerente" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Email" class="control-label font-weight-bold"></label>
+                    <input asp-for="Email" placeholder="exemplo@exemplo.com" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Telemovel" class="control-label font-weight-bold"></label>
+                    <input asp-for="Telemovel" placeholder="Telemóvel" type="text" class="form-control" />
+                    <span asp-validation-for="Telemovel" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Responsavel" class="control-label font-weight-bold"></label>
+                <input asp-for="Responsavel" placeholder="Responsável" class="form-control" />
+                <span asp-validation-for="Responsavel" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6"><button type="submit" class="btn btn-block btn-primary">Adicionar</button></div>
+            <div class="col-md-6"><span class="btn btn-block btn-secondary pointer" onclick="hideModal()">Cancelar</span></div>
+        </div>
+    </form>

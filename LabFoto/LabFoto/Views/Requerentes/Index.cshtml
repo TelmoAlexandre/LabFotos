@@ -1,0 +1,38 @@
+﻿@model LabFoto.Models.ViewModels.RequerentesViewModels
+
+@{
+    ViewData["Title"] = "Index";
+}
+<form asp-controller="Requerentes" asp-action="IndexFilter" class="mb-2"
+      data-ajax="true" data-ajax-method="POST"
+      data-ajax-mode="replace" data-ajax-update="#cardsRequerentes"
+      data-ajax-success="resetAccordionCollapse"
+      id="requerentesIndexSearchForm">
+    <div class="container">
+        <h1>Requerentes</h1>
+        <div class="row mt-3 mb-1">
+            <div class="col-md-12"><small class="text-muted">Pesquisa</small></div>
+                <div class="form-group col-md-4 mb-4">
+                    <input type="search" name="nomeSearch" class="form-control" placeholder="Nome" onkeyup="this.onchange()" onchange="requerentesSubmitSearchForm()" onsearch="this.onchange()" />
+                </div>
+                <div class="col-md-2">
+                    <div class="content unselectable">
+                        <div class="ui inline dropdown">
+                            <input type="hidden" name="requerentesPerPage" onchange="requerentesSubmitSearchForm()" />
+                            <span>Ver </span>
+                            <span class="text" onchange="requerentesPerPageRefresh">2</span>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <div class="active item" data-text="2" data-value="2">2</div>
+                                <div class="item" data-text="5" data-value="5">5</div>
+                            </div>
+                        </div>
+                        <span> por página</span>
+                    </div>
+                </div>
+        </div>
+        <div id="cardsRequerentes">
+            <partial name="_IndexCardsPartialView" model="@Model" />
+        </div>
+    </div>
+</form>

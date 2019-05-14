@@ -1,0 +1,156 @@
+﻿@model LabFoto.Models.ViewModels.ServicosIndexViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Serviços</h1>
+
+<div class="row" style="padding-left:15px">
+</div>
+
+<form asp-controller="Servicos" asp-action="IndexFilter" class="mb-2"
+      data-ajax="true" data-ajax-method="POST"
+      data-ajax-mode="replace" data-ajax-update="#cardsServicos"
+      data-ajax-success="resetAccordionCollapse"
+      id="servicosIndexSearchForm">
+    <div class="container" id="searchParams">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6 mr-0 pt-2">
+                    <input type="search" id="nomeSearch" placeholder="Nome" name="nomeSearch" class="form-control"
+                           onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                </div>
+                <div class="col-md-2 ml-0">
+                    <button class="btn btn-outline-danger btn-block mt-2" onclick="clearServicosSearch()">Limpar</button>
+                </div>
+                <div class="col-md-12 row mt-2" id="searchOptions" style="display:none">
+                    <div class="col-md-6">
+                        <small class="form-text text-muted ml-2">
+                            Requerente do Serviço
+                        </small>
+                        <input type="search" class="form-control" id="requerenteSearch" placeholder="Requerente" name="requerenteSearch"
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                    <div class="col-md-6">
+                        <small class="form-text text-muted ml-2">
+                            Identificação/Obra
+                        </small>
+                        <input type="search" class="form-control" id="obraSearch" placeholder="Indentificação/Obra" name="obraSearch"
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                    <div class="col-md-3">
+                        <small class="form-text text-muted ml-2">
+                            Desde
+                        </small>
+                        <input type="date" class="form-control searchServicoDate" name="dataSearchMin"
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                    <div class="col-md-3">
+                        <small class="form-text text-muted  ml-2">
+                            Até
+                        </small>
+                        <input type="date" id="dataSearchMax" class="form-control" name="dataSearchMax"
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6 mt-2">
+                        <small class="form-text text-muted">
+                            Tipo
+                        </small>
+                        <div id="searchTiposCB"
+                             onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <small class="form-text text-muted">
+                            Serviço Solicitado
+                        </small>
+                        <div id="searchServSolicCB"
+                             onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="mt-2 pointer col-md-4" id="expandSearchOptions">
+                    <div id="expandSearchSymbol">
+                        <i class="far fa-plus-square"></i>
+                        <span>Expandir opções de pesquisa</span>
+                    </div>
+                    <div id="collapseSearchSymbol" style="display:none">
+                        <i class="far fa-minus-square"></i>
+                        <span>Ocultar opções de pesquisa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2 mb-2">
+        <div class="col-md-6">
+            <a class="btn btn-sm btn-outline-primary float-left" href="/Servicos/Create">
+                <i class="fas fa-plus mr-1"></i> Criar novo serviço
+            </a>
+        </div>
+        <div class="col-md-3">
+            <div class="content unselectable">
+                <span>Ordenar por </span>
+                <div class="ui inline dropdown">
+                    <input type="hidden" name="ordem" onchange="submitSearchForm()" />
+                    <span class="text">data de criação</span>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div class="active item" data-text="data de criação" data-value="data">Data de criação</div>
+                        <div class="item" data-text="nome" data-value="nome">Nome</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="content unselectable">
+                <div class="ui inline dropdown">
+                    <input type="hidden" name="servicosPerPage" onchange="submitSearchForm()" />
+                    <span>Ver </span>
+                    <span class="text" onchange="servicosPerPageRefresh">1</span>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div class="active item" data-text="1" data-value="1">1</div>
+                        <div class="item" data-text="2" data-value="2">2</div>
+                        <div class="item" data-text="5" data-value="5">5</div>
+                    </div>
+                </div>
+                <span> por página</span>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-sm btn-dark float-right ml-2 accordionOptions" id="accordionExpand" data-toggle="tooltip" title="Expandir detalhes">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <button class="btn btn-sm btn-dark float-right ml-2 accordionOptions" id="accordionCollapse" style="display:none;" data-toggle="tooltip" title="Ocultar detalhes">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="cardsServicos">
+        <partial name="_ServicosIndexCards" model="@Model" />
+    </div>
+</form>
+
+@{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+@if (ViewData["Feedback"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){ 
+            // Notificação 'Noty'
+            new Noty({
+                type: 'success',
+                layout: 'bottomRight',
+                theme: 'bootstrap-v4',
+                text: '@ViewData["Feedback"]',
+                timeout: 4000,
+                progressBar: true
+            }).show();
+        }, false);
+    </script>
+}
