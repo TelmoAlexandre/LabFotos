@@ -126,12 +126,12 @@
     </div>
 </form>
 
-<div class="ui modal basic small modalForm" id="modalNovoRequerente">
+<div class="ui modal basic small modalForm fluidCorners" id="modalNovoRequerente">
     <div class="content" id="newRequerenteForm">
     </div>
 </div>
 
-<div class="ui modal basic mini modalForm" id="modalNovoTipo">
+<div class="ui modal basic mini modalForm fluidCorners" id="modalNovoTipo">
     <div class="content" id="divFormNovoTipo">
         <form asp-controller="Tipos" asp-action="Create" onsubmit="createTipoOnServicosEdit(event,@Model.Servico.ID)">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -148,7 +148,7 @@
     </div>
 </div>
 
-<div class="ui modal basic mini modalForm" id="modalNovoServSolic">
+<div class="ui modal basic mini modalForm fluidCorners" id="modalNovoServSolic">
     <div class="content" id="divFormNovoServSolic">
         <form asp-controller="ServicosSolicitados" asp-action="Create" onsubmit="createServSolicOnServicosEdit(event,@Model.Servico.ID)">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
