@@ -85,3 +85,8 @@ body {
     text-decoration: none;
     color: black;
 }
+
+.modalForm {
+    border: 1px solid #24457a !important;
+    background-color: rgba(20,20,20,0.93) !important;
+}
