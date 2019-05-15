@@ -43,7 +43,7 @@
                                             }
                                         </div>
                                         <div class="requerente">
-                                            <span>Requerente</span> <span class="float-right font-weight-bold pointer btn-link" style="text-decoration:none;" onclick="servicoRequerenteDetails(`modalDetailsRequerente`, `detailsRequerente`, @servico.RequerenteFK)">@servico.Requerente.Nome</span>
+                                            <span>Requerente</span> <span class="float-right font-weight-bold pointer btn-link" style="text-decoration:none;" onclick="servicoRequerenteDetails(`modalDetailsRequerente`, @servico.RequerenteFK)">@servico.Requerente.Nome</span>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -137,11 +137,7 @@
         }
     </div>
 
-<div class="modal fade  bd-example-modal-lg" id="modalDetailsRequerente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" id="detailsRequerente">
-        </div>
-    </div>
+<div class="ui modal mini" id="modalDetailsRequerente">
 </div>
 
 <script>

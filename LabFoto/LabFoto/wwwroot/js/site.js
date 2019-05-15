@@ -46,6 +46,7 @@ jQuery(document).ready(function ($) {
     $('[data-toggle="tooltip"]').tooltip();
     // Incializar componente do semantic
     $('.ui.dropdown').dropdown();
+    $('.ui.accordion').accordion();
 });
 
 function init() {
@@ -208,10 +209,12 @@ modalCancel = (id) => {
     }).modal('show');
 };
 
-servicoRequerenteDetails = (divModalDetails, divDetailsId, requerenteId) => {
-    $(`#${divModalDetails}`).modal('toggle');
-    $(`#${divDetailsId}`).html(getLoadingBarHtml);
-    $(`#${divDetailsId}`).load(`/Requerentes/DetailsAjax/${requerenteId}`);
+servicoRequerenteDetails = (divModalDetails, requerenteId) => {
+    $(`#${divModalDetails}`).modal('show');
+    $(`#${divModalDetails}`).html(getLoadingBarHtml);
+    $(`#${divModalDetails}`).load(`/Requerentes/DetailsAjax/${requerenteId}`, function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 };
 
 // Detalhes do serviço com o id que recebe por parametro

@@ -1,31 +1,23 @@
 ﻿@model LabFoto.Models.Tables.Requerente
 
-<div class="card">
-    <div class="card-header h3">
-        @Html.DisplayFor(model => model.Nome)
-        <span class="float-right"><a class="btn float-right bg-light" href="/Requerentes/Details/@Model.ID" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a></span>
-    </div>
-    <div class="row mt-2">
-        <div class="col-md-6">
-            <h5 class="card-title">@Html.DisplayNameFor(model => model.Email)</h5>
-            <p>
-                <i class="far fa-envelope"></i>
-                <span class="card-text"><a href="mailto:@Model.Email" style="text-decoration:none;">@Html.DisplayFor(model => model.Email)</a></span>
-            </p>
-        </div>
-        <div class="col-md-6">
-            <h5 class="card-title">@Html.DisplayNameFor(model => model.Telemovel)</h5>
-            <p>
-                <i class="fas fa-phone"></i>
-                <span class="card-text">@Html.DisplayFor(model => model.Telemovel)</span>
-            </p>
-        </div>
-    </div>
-    <div class="col-md-12 ml-1 mt-3">
-        <h5 class="card-title">@Html.DisplayNameFor(model => model.Responsavel)</h5>
-        <p>
-            <i class="fas fa-user-tie"></i>
-            <span class="card-text">@Html.DisplayFor(model => model.Responsavel)</span>
-        </p>
-    </div>
+<div class="card-body">
+    <h5 class="card-title font-weight-bold">
+        <a href="/Requerentes/Details/@Model.ID" class="plainTextLink">@Model.Nome</a>
+
+        <a class="btn float-right bg-white pt-0 plainTextLink" href="/Requerentes/Details/@Model.ID" data-toggle="tooltip" data-placement="bottom" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+        <a class="btn float-right bg-white pt-0 plainTextLink" href="/Requerentes/Edit/@Model.ID" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="far fa-edit"></i></a>
+    </h5>
+    <hr />
+    <p>
+        <i class="far fa-envelope"></i>
+        <span class="card-subtitle ml-2 mt-3 mb-2"><a href="mailto:@Model.Email" style="text-decoration:none;">@Model.Email</a></span>
+    </p>
+    <p>
+        <i class="fas fa-phone"></i>
+        <span class="card-subtitle ml-2 mb-3 mt-1">@Model.Telemovel</span>
+    </p>
+    <p>
+        <i class="fas fa-user-tie"></i>
+        <span class="card-subtitle ml-2 mb-3 mt-1">@Model.Responsavel</span>
+    </p>
 </div>
