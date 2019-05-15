@@ -14,64 +14,81 @@
       data-ajax-mode="replace" data-ajax-update="#cardsServicos"
       data-ajax-success="resetAccordionCollapse"
       id="servicosIndexSearchForm">
-    <div class="container" id="searchParams">
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-6 mr-0 pt-2">
-                    <input type="search" id="nomeSearch" placeholder="Nome" name="nomeSearch" class="form-control"
-                           onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+
+    <div class="ui segment padded">
+        <div class="ui form" id="searchParams">
+            <div class="fields">
+                <div class=" eight wide field">
+                    <div class="ui transparent left icon input large">
+                        <input type="search" id="nomeSearch" placeholder="Nome do serviço..." name="nomeSearch"
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        <i class="search icon"></i>
+                    </div>
                 </div>
-                <div class="col-md-2 ml-0">
-                    <button class="btn btn-outline-danger btn-block mt-2" onclick="clearServicosSearch()">Limpar</button>
+                <div class="eight wide field">
+                    <div class="ui button inverted red mini" onclick="clearServicosSearch()">Limpar pesquisa</div>
                 </div>
-                <div class="col-md-12 row mt-2" id="searchOptions" style="display:none">
-                    <div class="col-md-6">
-                        <small class="form-text text-muted ml-2">
-                            Requerente do Serviço
-                        </small>
-                        <input type="search" class="form-control" id="requerenteSearch" placeholder="Requerente" name="requerenteSearch"
-                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+            </div>
+
+            <div id="searchOptions" style="display:none">
+
+                <div class="fields">
+                    <div class="eight wide field">
+                        <div class="ui transparent left icon input">
+                            <input type="search" id="requerenteSearch" placeholder="Requerente..." name="requerenteSearch"
+                                   onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                            <i class="user outline icon"></i>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <small class="form-text text-muted ml-2">
-                            Identificação/Obra
-                        </small>
-                        <input type="search" class="form-control" id="obraSearch" placeholder="Indentificação/Obra" name="obraSearch"
-                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    <div class="eight wide field">
+                        <div class="ui transparent left icon input">
+                            <input type="search" id="obraSearch" placeholder="Indentificação/Obra..." name="obraSearch"
+                                   onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                            <i class="pencil alternate icon"></i>
+                        </div>
                     </div>
-                    <div class="col-md-3">
-                        <small class="form-text text-muted ml-2">
-                            Desde
-                        </small>
-                        <input type="date" class="form-control searchServicoDate" name="dataSearchMin"
-                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
-                    </div>
-                    <div class="col-md-3">
-                        <small class="form-text text-muted  ml-2">
-                            Até
-                        </small>
-                        <input type="date" id="dataSearchMax" class="form-control" name="dataSearchMax"
-                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
-                    </div>
-                    <div class="col-md-6"></div>
-                    <div class="col-md-6 mt-2">
+                </div>
+
+                <div class="fields mb-0">
+                    <div class="eight wide field">
                         <small class="form-text text-muted">
                             Tipo
                         </small>
-                        <div id="searchTiposCB"
-                             onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
-                        </div>
                     </div>
-                    <div class="col-md-6 mt-2">
+                    <div class="eight wide field">
                         <small class="form-text text-muted">
                             Serviço Solicitado
                         </small>
-                        <div id="searchServSolicCB"
-                             onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
-                        </div>
                     </div>
                 </div>
-                <div class="col-md-12"></div>
+                <div class="fields">
+                    <div class="eight wide field" id="searchTiposCB"
+                         onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                    <div class="eight wide field" id="searchServSolicCB"
+                         onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                </div>
+
+                <div class="fields">
+                    <div class="four wide field">
+                        <small class="form-text text-muted  ">
+                            Desde
+                        </small>
+                        <input type="date" class="searchServicoDate" name="dataSearchMin"
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                    <div class="four wide field">
+                        <small class="form-text text-muted">
+                            Até
+                        </small>
+                        <input type="date" id="dataSearchMax" name="dataSearchMax"
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
                 <div class="mt-2 pointer col-md-4" id="expandSearchOptions">
                     <div id="expandSearchSymbol">
                         <i class="far fa-plus-square"></i>
@@ -136,6 +153,9 @@
         <partial name="_ServicosIndexCards" model="@Model" />
     </div>
 </form>
+
+<div id="tiposBackup" hidden></div>
+<div id="servSolicBackup" hidden></div>
 
 @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
 @if (ViewData["Feedback"] != null)

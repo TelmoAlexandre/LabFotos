@@ -30,8 +30,17 @@ jQuery(document).ready(function ($) {
         );
     });
 
-    $("#searchTiposCB").load("/Servicos/TiposAjax");
-    $("#searchServSolicCB").load("/Servicos/ServSolicAjax");
+    // As dropdowns dos tipos e dos serviços solicitados são carregadas para um div de backup
+    // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
+    // recuperar o html dos divs de backup
+    $("#tiposBackup").load("/Servicos/TiposAjax", function () {
+        $("#searchTiposCB").html($("#tiposBackup").html());
+        $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+    });
+    $("#servSolicBackup").load("/Servicos/ServSolicAjax", function () {
+        $("#searchServSolicCB").html($("#servSolicBackup").html());
+        $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+    });
 
     // Ativar o Popper.j
     $('[data-toggle="tooltip"]').tooltip();
@@ -134,7 +143,13 @@ requerentesSubmitSearchForm = (pageReq) => {
 clearServicosSearch = () => {
     $(`#searchParams input[type="search"]`).val("");
     $(`#searchParams input[type="date"]`).val("");
-    $(`#searchParams input[type="checkbox"]`).prop("checked", false);
+    // Recarregar as dropdows dos tipos e dos serviços solicitados
+    // Estes encontram-se num div de backup, pois tem o layout do semantic-ui
+    // Assim evita-se alterar o codigo do semantic-ui, pois isso pode levantar problemas
+    $("#searchTiposCB").html($("#tiposBackup").html());
+    $("#searchServSolicCB").html($("#servSolicBackup").html());
+    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+    submitSearchForm();
 };
 
 hideModal = () => {
