@@ -10,22 +10,25 @@
 <form asp-action="Create" id="servicosCreateForm">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="ui form">
-        <div class="fields">
+        <div class="fields mb-0">
             <div class="eight wide field">
                 <label asp-for="Servico.Nome"></label>
                 <input asp-for="Servico.Nome" />
                 <span asp-validation-for="Servico.Nome" class="text-danger"></span>
             </div>
             <div id="requerentesDropbox" class="eight wide field">
-                <label asp-for="Servico.RequerenteFK"></label>
-                <partial name="_RequerentesDropbox" model="@Model.RequerentesList" />
+                <partial name="_RequerentesDropbox" model="@Model" />
+            </div>
+        </div>
+        <div class="fields">
+            <div class="eight wide field"></div>
+            <div class="eight wide field">
                 <div class="ui animated inverted primary mini button mt-1" id="btnModalNovoRequerente">
                     <div class="visible content"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Requerente</span></div>
                     <div class="hidden content">
                         Adicionar?
                     </div>
                 </div>
-                <span asp-validation-for="Servico.RequerenteFK" class="text-danger"></span>
             </div>
         </div>
         <div class="fluid wide field">
@@ -97,7 +100,7 @@
             </div>
         </div>
         <div class="ui buttons">
-            <div class="ui animated green small button" onclick="confirmServicoCreate()">
+            <div class="ui animated green small button" onclick="confirmForm('servicosCreateForm')">
                 <div class="visible content">Criar</div>
                 <div class="hidden content">
                     <i class="checkmark icon"></i>

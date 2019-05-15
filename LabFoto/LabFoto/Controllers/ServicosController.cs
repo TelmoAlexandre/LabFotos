@@ -472,7 +472,7 @@ namespace LabFoto.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,DataDeCriacao,IdentificacaoObra,Observacoes,HorasEstudio,HorasPosProducao,DataEntrega,Total,RequerenteFK")] Servico servico,
-            IFormCollection form, string[] Tipos, string[] ServSolicitados)
+            IFormCollection form, string Tipos, string ServSolicitados)
         {
             string datasExecucao = form["DataExecucao"];
 
@@ -485,13 +485,17 @@ namespace LabFoto.Controllers
             {
                 try
                 {
+                    string[] array;
+
                     // Todos os tipos associados a este serviço
                     List<Servico_Tipo> allServTipos = _context.Servicos_Tipos.Where(st => st.ServicoFK == servico.ID).ToList();
+
                     // Tratamento Tipos
-                    if(Tipos.Length != 0)
+                    if (!String.IsNullOrEmpty(Tipos)) // Caso existam tipos a serem adicionados
                     {
-                        // Remover is tipos que não foram selecionados nas checkboxes
-                        foreach(Servico_Tipo servTipo in allServTipos)
+                        
+                        array = Tipos.Split(","); // Partir os tipos num array
+                        foreach (Servico_Tipo servTipo in allServTipos) // Remover os tipos que não foram selecionados nas checkboxes
                         {
                             if (!Tipos.Contains(servTipo.TipoFK.ToString()))
                             {
@@ -499,7 +503,7 @@ namespace LabFoto.Controllers
                             }
                         }
                         // Relacionar novos que foram selecionados nas checkboxes
-                        foreach(string tipoId in Tipos)
+                        foreach(string tipoId in array)
                         {
                             int intId = Int32.Parse(tipoId);
 
@@ -527,8 +531,8 @@ namespace LabFoto.Controllers
                     // Tratamento Tipos
                     if (ServSolicitados.Length != 0)
                     {
-                        // Remover is tipos que não foram selecionados nas checkboxes
-                        foreach (Servico_ServicoSolicitado servSSolicit in allServSSolic)
+                        array = ServSolicitados.Split(","); // Partir os servicos solicitados num array
+                        foreach (Servico_ServicoSolicitado servSSolicit in allServSSolic) // Remover os Serviços solicitados que não foram selecionados nas checkboxes
                         {
                             if (!ServSolicitados.Contains(servSSolicit.ServicoSolicitadoFK.ToString()))
                             {
@@ -536,7 +540,7 @@ namespace LabFoto.Controllers
                             }
                         }
                         // Relacionar novos que foram selecionados nas checkboxes
-                        foreach (string servSolicId in ServSolicitados)
+                        foreach (string servSolicId in array)
                         {
                             int intId = Int32.Parse(servSolicId);
 

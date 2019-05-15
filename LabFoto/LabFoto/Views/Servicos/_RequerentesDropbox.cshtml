@@ -1,10 +1,12 @@
-﻿@model SelectList
+﻿@model LabFoto.Models.ViewModels.ServicosCreateViewModel
 
+<label asp-for="Servico.RequerenteFK"></label>
 <select data-val="true"
         data-val-required="É necessário escolher um requerente."
-        id="Servico_RequerentesFK"
+        id="Servico_RequerenteFK"
         name="Servico.RequerenteFK"
-        class="ui search dropdown"
-        asp-items="@Model">
+        class="ui search dropdown mb-1"
+        asp-items="@Model.RequerentesList">
     <option value="">Escolha um requerente</option>
 </select>
+<span asp-validation-for="Servico.RequerenteFK" class="text-danger"></span>

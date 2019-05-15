@@ -1,8 +1,38 @@
 ﻿@model LabFoto.Models.ViewModels.ServicosCreateViewModel
 
+@{
+    string values = "";
+    bool first = true;
+    // Definir os valores para serem introduzidos no input escondido.
+    // O semantic-ui funciona com um input escondido que tem valores numa string (ex: value="1,2,3")
+    foreach (var serv in Model.ServSolicitados)
+    {
+        if (serv.Selected)
+        {
+            if (first)
+            {
+                values += serv.Value;
+                first = false;
+            }
+            else
+            {
+                values += "," + serv.Value;
+            }
+
+        }
+    }
+}
+
 <div class="ui multiple search selection dropdown">
-    <input type="hidden" name="ServSolicitados">
+    <input type="hidden" name="ServSolicitados" value="@values">
     <i class="dropdown icon"></i>
+    @foreach (var serv in Model.ServSolicitados)
+    {
+        if (serv.Selected)
+        {
+            <a class="ui label transition visible" data-value="@serv.Value" style="display: inline-block !important;">@serv.Text<i class="delete icon"></i></a>
+        }
+    }
     <div class="default text">Selecione o(s) tipo(s)</div>
     <div class="menu">
         @foreach (var serv in Model.ServSolicitados)

@@ -59,7 +59,7 @@ function initModalEvents()
             $(`#${divId}`).load(`${href}`, function () {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
-            $(`#${modalId}`).modal('toggle');
+            $(`#${modalId}`).modal('hide');
             // Notificação 'Noty'
             new Noty({
                 type: 'success',
@@ -141,6 +141,10 @@ hideModal = () => {
     $(".ui.modal").modal("hide");
 };
 
+showModal = (modalId) => {
+    $(`#${modalId}`).modal("show");
+};
+
 // Expandir e collapsar os accordions do Index dos serviços
 $("#accordionExpand").click(function (e) {
     e.preventDefault();
@@ -166,14 +170,14 @@ deleteElement = (id) => {
 
 // Modais de confirmação
 
-confirmServicoCreate = () => {
+confirmForm = (formId) => {
     $("#confirmarSubmit").modal({
         closable: false,
         onDeny: function () {
             $("#confirmarSubmit").modal('hide');
         },
         onApprove: function () {
-            $("#servicosCreateForm").submit();
+            $(`#${formId}`).submit();
         },
         transition: 'scale'
     }).modal('show');
@@ -187,57 +191,6 @@ modalCancel = (id) => {
         },
         transition: 'scale'
     }).modal('show');
-};
-
-showConfirmationDialog = (flag, param, message) => {
-    switch (flag) {
-        case 'submitForm':
-            bootbox.confirm({
-                animate: true,
-                message: message,
-                buttons: {
-                    confirm: { label: '<i class="fa fa-check"></i> Sim', className: 'btn-primary' },
-                    cancel: { label: '<i class="fa fa-times"></i> Não', className: 'btn-secondary' }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $(`#${param}`).submit();
-                    }
-                }
-            });
-            break;
-        case 'unsavedChanges':
-            bootbox.confirm({
-                animate: true,
-                message: "Existem alterações que não foram guardadas. Tem a certeza que prentede sair?",
-                buttons: {
-                    confirm: { label: '<i class="fa fa-check"></i> Sim', className: 'btn-primary' },
-                    cancel: { label: '<i class="fa fa-times"></i> Não', className: 'btn-secondary' }
-                },
-                callback: function (result) {
-                    if (result) {
-                        window.location.href = param;
-                    }
-                }
-            });
-            break;
-        case 'ServicosDetailsDelete':
-            bootbox.confirm({
-                animate: true,
-                message: "Tem a certeza que prentende apagar este serviço?",
-                buttons: {
-                    confirm: { label: '<i class="fa fa-check"></i> Sim', className: 'btn-danger'},
-                    cancel: { label: '<i class="fa fa-times"></i> Não', className: 'btn-primary'}
-                },
-                callback: function (result) {
-                    if (result) {
-                        $("#servicosDetailsDeleteForm").submit();
-                    }
-                }
-            });
-            break;
-        default: break;
-    }
 };
 
 servicoRequerenteDetails = (divModalDetails, divDetailsId, requerenteId) => {
@@ -255,19 +208,24 @@ requerenteServicoDetails = (divId, servicoId) => {
     }
 };
 
-createTipoOnServicosEdit = (idServico) => {
+createTipoOnServicosEdit = (e, idServico) => {
+    e.preventDefault(); // Não deixar o form submeter
+
     $.ajax({
         type: "POST",
         url: "/Tipos/Create",
         data: {
-            "Tipos.Nome": $("#Tipos_Nome").val(),
+            "Tipo.Nome": $("#Tipo_Nome").val(),
             "__RequestVerificationToken": $("#modalNovoTipo input[name='__RequestVerificationToken']").val(),
             "X-Requested-With": "XMLHttpRequest"
         },
         success: function (resp) {
             if (resp.success) {
-                $(`#tiposCheckboxes`).load(`/Servicos/TiposAjax/${idServico}`);
-                $(`#modalNovoTipo`).modal('toggle');
+                $(`#tiposCheckboxes`).load(`/Servicos/TiposAjax/${idServico}`, function () {
+                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+                });
+                $(`#modalNovoTipo`).modal('hide');
+                $("#Tipo_Nome").val(null); // Limpa o campo do formulário
                 // Notificação 'Noty'
                 new Noty({
                     type: 'success',
@@ -282,19 +240,24 @@ createTipoOnServicosEdit = (idServico) => {
     });
 };
 
-createServSolicOnServicosEdit = (idServico) => {
+createServSolicOnServicosEdit = (e, idServico) => {
+    e.preventDefault(); // Não deixar o form submeter
+
     $.ajax({
         type: "POST",
         url: "/ServicosSolicitados/Create",
         data: {
-            "ServicosSolicitados.Nome": $("#ServicosSolicitados_Nome").val(),
-            "__RequestVerificationToken": $("#divFormServicosSolicitados input[name='__RequestVerificationToken']").val(),
+            "ServicoSolicitado.Nome": $("#ServicoSolicitado_Nome").val(),
+            "__RequestVerificationToken": $("#divFormNovoServSolic input[name='__RequestVerificationToken']").val(),
             "X-Requested-With": "XMLHttpRequest"
         },
         success: function (resp) {
             if (resp.success) {
-                $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/${idServico}`);
-                $(`#modalNovoServSolicitado`).modal('toggle');
+                $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/${idServico}`, function () {
+                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+                });
+                $(`#modalNovoServSolic`).modal('hide'); // Esconder o modal
+                $("#ServicoSolicitado_Nome").val(null); // Limpa o campo do formulário
                 // Notificação 'Noty'
                 new Noty({
                     type: 'success',
