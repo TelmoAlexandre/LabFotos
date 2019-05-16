@@ -128,6 +128,10 @@ function initModalEvents()
         handleControllerResponse(resp, 'servSolicCheckboxes', 'modalNovoServSolic', '/Servicos/ServSolicAjax');
 }
 
+$('.ui .item').on('click', function () {
+    $('.ui .item').removeClass('active');
+    $(this).addClass('active');
+});
 // Submit do form das pesquisas dos servicos
 submitSearchForm = (page) => {
     $("#pageNum").val(page);
@@ -220,10 +224,8 @@ servicoRequerenteDetails = (divModalDetails, requerenteId) => {
 // Detalhes do serviço com o id que recebe por parametro
 // e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
 requerenteServicoDetails = (divId, servicoId) => {
-    if ($(`#${divId}`).is(`:empty`)) {
         $(`#${divId}`).html(getLoadingBarHtml);
         $(`#${divId}`).load(`/Servicos/DetailsAjax/${servicoId}`);
-    }
 };
 
 createTipoOnServicosEdit = (e, idServico) => {
