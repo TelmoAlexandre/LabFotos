@@ -126,42 +126,52 @@
     </div>
 </form>
 
-<div class="ui modal basic small modalForm fluidCorners" id="modalNovoRequerente">
+<div class="ui modal basic small fluidCorners" id="modalNovoRequerente">
     <div class="content" id="newRequerenteForm">
     </div>
 </div>
 
-<div class="ui modal basic mini modalForm fluidCorners" id="modalNovoTipo">
+<div class="ui modal basic mini fluidCorners" id="modalNovoTipo">
     <div class="content" id="divFormNovoTipo">
-        <form asp-controller="Tipos" asp-action="Create" onsubmit="createTipoOnServicosEdit(event,@Model.Servico.ID)">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Tipo.Nome" class="control-label font-weight-bold"></label>
-                <input asp-for="Tipo.Nome" class="form-control" placeholder="Tipo" />
-                <span asp-validation-for="Tipo.Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <span class="btn btn-secondary" onclick="hideModal()">Cancelar</span>
-                <button class="btn btn-primary" type="submit">Adicionar</button>
-            </div>
-        </form>
+        <div class="ui raised segment fluidCorners">
+            <a class="ui blue ribbon label mb-3">Novo Tipo</a>
+            <form asp-controller="Tipos" asp-action="Create" onsubmit="createTipoOnServicosEdit(event,@Model.Servico.ID)">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="ui form">
+                    <div class="field">
+                        <label asp-for="Tipo.Nome"></label>
+                        <input asp-for="Tipo.Nome" placeholder="Tipo" />
+                        <span asp-validation-for="Tipo.Nome" class="text-danger"></span>
+                    </div>
+                    <div class="fields">
+                        <div class="eight wide field"><button class="ui button primary fluid" type="submit">Adicionar</button></div>
+                        <div class="eight wide field"><span class="ui button fluid" onclick="hideModal()">Cancelar</span></div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div class="ui modal basic mini modalForm fluidCorners" id="modalNovoServSolic">
+<div class="ui modal basic mini fluidCorners" id="modalNovoServSolic">
     <div class="content" id="divFormNovoServSolic">
-        <form asp-controller="ServicosSolicitados" asp-action="Create" onsubmit="createServSolicOnServicosEdit(event,@Model.Servico.ID)">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ServicoSolicitado.Nome" class="control-label font-weight-bold"></label>
-                <input asp-for="ServicoSolicitado.Nome" class="form-control" placeholder="Serviço Solicitado" />
-                <span asp-validation-for="ServicoSolicitado.Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <span class="btn btn-secondary" onclick="hideModal()">Cancelar</span>
-                <button class="btn btn-primary" type="submit">Adicionar</button>
-            </div>
-        </form>
+        <div class="ui raised segment fluidCorners">
+            <a class="ui blue ribbon label mb-3">Novo Tipo</a>
+            <form asp-controller="ServicosSolicitados" asp-action="Create" onsubmit="createServSolicOnServicosEdit(event,@Model.Servico.ID)">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="ui form">
+                    <div class="field">
+                        <label asp-for="ServicoSolicitado.Nome"></label>
+                        <input asp-for="ServicoSolicitado.Nome" placeholder="Serviço Solicitado" />
+                        <span asp-validation-for="ServicoSolicitado.Nome" class="text-danger"></span>
+                    </div>
+                    <div class="fields">
+                        <div class="eight wide field"><button class="ui button fluid primary" type="submit">Adicionar</button></div>
+                        <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
