@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
     init();
 
     getLoadingBarHtml = () => `
-        <div class="ui active centered inline massive loader"></div>
+        <div class="ui active centered inline large loader"></div>
     `;
 
     // Expandir Search Servicos
