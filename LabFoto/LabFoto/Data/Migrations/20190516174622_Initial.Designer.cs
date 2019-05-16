@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190514181348_Initial")]
+    [Migration("20190516174622_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,7 +181,7 @@ namespace LabFoto.Migrations
                     b.Property<string>("Observacoes")
                         .HasMaxLength(512);
 
-                    b.Property<int>("RequerenteFK");
+                    b.Property<int?>("RequerenteFK");
 
                     b.Property<float?>("Total");
 
@@ -312,8 +312,6 @@ namespace LabFoto.Migrations
                     b.Property<string>("Nome")
                         .IsRequired();
 
-                    b.Property<bool>("Outro");
-
                     b.HasKey("ID");
 
                     b.ToTable("ServicosSolicitados");
@@ -322,38 +320,32 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = 1,
-                            Nome = "Luz Visível",
-                            Outro = false
+                            Nome = "Luz Visível"
                         },
                         new
                         {
                             ID = 2,
-                            Nome = "Luz U.V",
-                            Outro = false
+                            Nome = "Luz U.V"
                         },
                         new
                         {
                             ID = 3,
-                            Nome = "Rasante",
-                            Outro = false
+                            Nome = "Rasante"
                         },
                         new
                         {
                             ID = 4,
-                            Nome = "Infra-red",
-                            Outro = false
+                            Nome = "Infra-red"
                         },
                         new
                         {
                             ID = 5,
-                            Nome = "Luz Trasmitida",
-                            Outro = false
+                            Nome = "Luz Trasmitida"
                         },
                         new
                         {
                             ID = 6,
-                            Nome = "Outro",
-                            Outro = true
+                            Nome = "Outro"
                         });
                 });
 
@@ -458,8 +450,6 @@ namespace LabFoto.Migrations
 
                     b.Property<int>("ServicoFK");
 
-                    b.Property<string>("Descricao");
-
                     b.HasKey("ServicoSolicitadoFK", "ServicoFK");
 
                     b.HasIndex("ServicoFK");
@@ -535,8 +525,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             ServicoSolicitadoFK = 6,
-                            ServicoFK = 6,
-                            Descricao = "Todos os Angulos"
+                            ServicoFK = 6
                         },
                         new
                         {
@@ -571,8 +560,6 @@ namespace LabFoto.Migrations
 
                     b.Property<int>("ServicoFK");
 
-                    b.Property<string>("Descricao");
-
                     b.HasKey("TipoFK", "ServicoFK");
 
                     b.HasIndex("ServicoFK");
@@ -583,56 +570,47 @@ namespace LabFoto.Migrations
                         new
                         {
                             TipoFK = 1,
-                            ServicoFK = 1,
-                            Descricao = ""
+                            ServicoFK = 1
                         },
                         new
                         {
                             TipoFK = 2,
-                            ServicoFK = 2,
-                            Descricao = ""
+                            ServicoFK = 2
                         },
                         new
                         {
                             TipoFK = 1,
-                            ServicoFK = 3,
-                            Descricao = ""
+                            ServicoFK = 3
                         },
                         new
                         {
                             TipoFK = 3,
-                            ServicoFK = 4,
-                            Descricao = ""
+                            ServicoFK = 4
                         },
                         new
                         {
                             TipoFK = 2,
-                            ServicoFK = 5,
-                            Descricao = ""
+                            ServicoFK = 5
                         },
                         new
                         {
                             TipoFK = 1,
-                            ServicoFK = 6,
-                            Descricao = ""
+                            ServicoFK = 6
                         },
                         new
                         {
                             TipoFK = 3,
-                            ServicoFK = 6,
-                            Descricao = ""
+                            ServicoFK = 6
                         },
                         new
                         {
                             TipoFK = 4,
-                            ServicoFK = 7,
-                            Descricao = ""
+                            ServicoFK = 7
                         },
                         new
                         {
                             TipoFK = 4,
-                            ServicoFK = 8,
-                            Descricao = ""
+                            ServicoFK = 8
                         });
                 });
 
@@ -645,8 +623,6 @@ namespace LabFoto.Migrations
                     b.Property<string>("Nome")
                         .IsRequired();
 
-                    b.Property<bool>("Outro");
-
                     b.HasKey("ID");
 
                     b.ToTable("Tipos");
@@ -655,26 +631,22 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = 1,
-                            Nome = "Académico",
-                            Outro = false
+                            Nome = "Académico"
                         },
                         new
                         {
                             ID = 2,
-                            Nome = "Investigação",
-                            Outro = false
+                            Nome = "Investigação"
                         },
                         new
                         {
                             ID = 3,
-                            Nome = "Serviço Exterior",
-                            Outro = false
+                            Nome = "Serviço Exterior"
                         },
                         new
                         {
                             ID = 4,
-                            Nome = "Pessoal",
-                            Outro = false
+                            Nome = "Pessoal"
                         });
                 });
 
@@ -705,7 +677,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                            ConcurrencyStamp = "227dd745-a84a-49a9-b901-b8a34d4d0a18",
+                            ConcurrencyStamp = "c490f5f2-eda9-459a-826a-4e9caa91deb7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -882,13 +854,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "90b7cda0-25e6-49d7-a872-460e6c34861f",
+                            ConcurrencyStamp = "5f2c1ce3-8cb8-4e94-a0f5-9dfee139c18c",
                             Email = "admin1@admin1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@ADMIN1.COM",
                             NormalizedUserName = "ADMIN1@ADMIN1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIm2bn1oFlyu9zdwvMGFhnqYVrtceqWYhNMYL3FpUzNG0/tNmpvCrAhIsllOvG7O4g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEK+RACBNZDvziOURrG5+cvkrjZqGhf7lqA1Ai0sP1iufrEJYbfL7ITIvFsgO+ufv6g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -899,13 +871,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "449d7aec-a88f-45fa-936d-f52ac50df256",
+                            ConcurrencyStamp = "7416a830-bc1f-449a-a153-5850dbc7eb80",
                             Email = "user1@user1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@USER1.COM",
                             NormalizedUserName = "USER1@USER1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEO7hQiD41aen8llQfK0MrKa0OF8s0M5lG/Uacu+MBG9cux/5RCYihRja33LF2RRYGg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEA54iFL9uZyC6SruAhCanlTjNuH11k+zEukvnwvBq2WtciTEzMQRhhsa/KgVpSlXpQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -918,8 +890,7 @@ namespace LabFoto.Migrations
                 {
                     b.HasOne("LabFoto.Models.Tables.Requerente", "Requerente")
                         .WithMany("Servicos")
-                        .HasForeignKey("RequerenteFK")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RequerenteFK");
                 });
 
             modelBuilder.Entity("LabFoto.Models.Tables.Servico_DataExecucao", b =>

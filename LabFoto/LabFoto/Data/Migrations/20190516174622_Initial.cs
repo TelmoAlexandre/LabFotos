@@ -84,8 +84,7 @@ namespace LabFoto.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: false),
-                    Outro = table.Column<bool>(nullable: false)
+                    Nome = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,8 +97,7 @@ namespace LabFoto.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: false),
-                    Outro = table.Column<bool>(nullable: false)
+                    Nome = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -227,7 +225,7 @@ namespace LabFoto.Migrations
                     DataEntrega = table.Column<DateTime>(nullable: true),
                     Total = table.Column<float>(nullable: true),
                     Hide = table.Column<bool>(nullable: false),
-                    RequerenteFK = table.Column<int>(nullable: false)
+                    RequerenteFK = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -237,7 +235,7 @@ namespace LabFoto.Migrations
                         column: x => x.RequerenteFK,
                         principalTable: "Requerentes",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -269,8 +267,7 @@ namespace LabFoto.Migrations
                 columns: table => new
                 {
                     ServicoSolicitadoFK = table.Column<int>(nullable: false),
-                    ServicoFK = table.Column<int>(nullable: false),
-                    Descricao = table.Column<string>(nullable: true)
+                    ServicoFK = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -294,8 +291,7 @@ namespace LabFoto.Migrations
                 columns: table => new
                 {
                     TipoFK = table.Column<int>(nullable: false),
-                    ServicoFK = table.Column<int>(nullable: false),
-                    Descricao = table.Column<string>(nullable: true)
+                    ServicoFK = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -317,15 +313,15 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "227dd745-a84a-49a9-b901-b8a34d4d0a18", "Admin", "ADMIN" });
+                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "c490f5f2-eda9-459a-826a-4e9caa91deb7", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Nome" },
                 values: new object[,]
                 {
-                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "90b7cda0-25e6-49d7-a872-460e6c34861f", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEIm2bn1oFlyu9zdwvMGFhnqYVrtceqWYhNMYL3FpUzNG0/tNmpvCrAhIsllOvG7O4g==", null, false, "", false, "admin1@admin1.com", "Admin1" },
-                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "449d7aec-a88f-45fa-936d-f52ac50df256", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEO7hQiD41aen8llQfK0MrKa0OF8s0M5lG/Uacu+MBG9cux/5RCYihRja33LF2RRYGg==", null, false, "", false, "user1@user1.com", "User1" }
+                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "5f2c1ce3-8cb8-4e94-a0f5-9dfee139c18c", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEK+RACBNZDvziOURrG5+cvkrjZqGhf7lqA1Ai0sP1iufrEJYbfL7ITIvFsgO+ufv6g==", null, false, "", false, "admin1@admin1.com", "Admin1" },
+                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "7416a830-bc1f-449a-a153-5850dbc7eb80", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEA54iFL9uZyC6SruAhCanlTjNuH11k+zEukvnwvBq2WtciTEzMQRhhsa/KgVpSlXpQ==", null, false, "", false, "user1@user1.com", "User1" }
                 });
 
             migrationBuilder.InsertData(
@@ -360,26 +356,26 @@ namespace LabFoto.Migrations
 
             migrationBuilder.InsertData(
                 table: "ServicosSolicitados",
-                columns: new[] { "ID", "Nome", "Outro" },
+                columns: new[] { "ID", "Nome" },
                 values: new object[,]
                 {
-                    { 1, "Luz Visível", false },
-                    { 2, "Luz U.V", false },
-                    { 4, "Infra-red", false },
-                    { 5, "Luz Trasmitida", false },
-                    { 6, "Outro", true },
-                    { 3, "Rasante", false }
+                    { 1, "Luz Visível" },
+                    { 2, "Luz U.V" },
+                    { 4, "Infra-red" },
+                    { 5, "Luz Trasmitida" },
+                    { 6, "Outro" },
+                    { 3, "Rasante" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Tipos",
-                columns: new[] { "ID", "Nome", "Outro" },
+                columns: new[] { "ID", "Nome" },
                 values: new object[,]
                 {
-                    { 1, "Académico", false },
-                    { 2, "Investigação", false },
-                    { 3, "Serviço Exterior", false },
-                    { 4, "Pessoal", false }
+                    { 1, "Académico" },
+                    { 2, "Investigação" },
+                    { 3, "Serviço Exterior" },
+                    { 4, "Pessoal" }
                 });
 
             migrationBuilder.InsertData(
@@ -431,44 +427,44 @@ namespace LabFoto.Migrations
 
             migrationBuilder.InsertData(
                 table: "Servicos_ServicosSolicitados",
-                columns: new[] { "ServicoSolicitadoFK", "ServicoFK", "Descricao" },
+                columns: new[] { "ServicoSolicitadoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 1, 8, null },
-                    { 3, 1, null },
-                    { 2, 1, null },
-                    { 6, 6, "Todos os Angulos" },
-                    { 4, 6, null },
-                    { 2, 6, null },
-                    { 5, 5, null },
-                    { 2, 5, null },
-                    { 3, 7, null },
-                    { 1, 4, null },
-                    { 5, 7, null },
-                    { 3, 8, null },
-                    { 5, 3, null },
-                    { 2, 4, null },
-                    { 3, 4, null },
-                    { 1, 2, null },
-                    { 4, 2, null },
-                    { 2, 7, null },
-                    { 4, 4, null }
+                    { 1, 8 },
+                    { 3, 1 },
+                    { 2, 1 },
+                    { 6, 6 },
+                    { 4, 6 },
+                    { 2, 6 },
+                    { 5, 5 },
+                    { 2, 5 },
+                    { 3, 7 },
+                    { 1, 4 },
+                    { 5, 7 },
+                    { 3, 8 },
+                    { 5, 3 },
+                    { 2, 4 },
+                    { 3, 4 },
+                    { 1, 2 },
+                    { 4, 2 },
+                    { 2, 7 },
+                    { 4, 4 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Servicos_Tipos",
-                columns: new[] { "TipoFK", "ServicoFK", "Descricao" },
+                columns: new[] { "TipoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 4, 7, "" },
-                    { 1, 1, "" },
-                    { 1, 3, "" },
-                    { 1, 6, "" },
-                    { 3, 4, "" },
-                    { 2, 5, "" },
-                    { 2, 2, "" },
-                    { 3, 6, "" },
-                    { 4, 8, "" }
+                    { 4, 7 },
+                    { 1, 1 },
+                    { 1, 3 },
+                    { 1, 6 },
+                    { 3, 4 },
+                    { 2, 5 },
+                    { 2, 2 },
+                    { 3, 6 },
+                    { 4, 8 }
                 });
 
             migrationBuilder.CreateIndex(

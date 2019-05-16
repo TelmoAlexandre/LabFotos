@@ -21,7 +21,5 @@ namespace LabFoto.Models.Tables
         [Display(Name = "Serviço")]
         public int ServicoFK { get; set; }
         public virtual Servico Servico { get; set; }
-
-        public string Descricao { get; set; }
     }
 }

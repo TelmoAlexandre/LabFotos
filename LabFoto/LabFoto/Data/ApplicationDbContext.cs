@@ -273,26 +273,22 @@ namespace LabFoto.Data
                 new Tipo
                 {
                     ID = 1,
-                    Nome = "Académico",
-                    Outro = false
+                    Nome = "Académico"
                 },
                 new Tipo
                 {
                     ID = 2,
-                    Nome = "Investigação",
-                    Outro = false
+                    Nome = "Investigação"
                 },
                 new Tipo
                 {
                     ID = 3,
-                    Nome = "Serviço Exterior",
-                    Outro = false
+                    Nome = "Serviço Exterior"
                 },
                 new Tipo
                 {
                     ID = 4,
-                    Nome = "Pessoal",
-                    Outro = false
+                    Nome = "Pessoal"
                 }
             );
 
@@ -300,56 +296,47 @@ namespace LabFoto.Data
                 new Servico_Tipo
                 {
                     ServicoFK = 1,
-                    TipoFK = 1,
-                    Descricao = ""
+                    TipoFK = 1
                 },
                 new Servico_Tipo
                 {
                     ServicoFK = 2,
-                    TipoFK = 2,
-                    Descricao = ""
+                    TipoFK = 2
                 },
                 new Servico_Tipo
                 {
                     ServicoFK = 3,
-                    TipoFK = 1,
-                    Descricao = ""
+                    TipoFK = 1
                 },
                 new Servico_Tipo
                 {
                     ServicoFK = 4,
-                    TipoFK = 3,
-                    Descricao = ""
+                    TipoFK = 3
                 },
                 new Servico_Tipo
                 {
                     ServicoFK = 5,
-                    TipoFK = 2,
-                    Descricao = ""
+                    TipoFK = 2
                 },
                 new Servico_Tipo
                 {
                     ServicoFK = 6,
-                    TipoFK = 1,
-                    Descricao = ""
+                    TipoFK = 1
                 },
                 new Servico_Tipo
                 {
                     ServicoFK = 6,
-                    TipoFK = 3,
-                    Descricao = ""
+                    TipoFK = 3
                 },
                 new Servico_Tipo
                 {
                     ServicoFK = 7,
-                    TipoFK = 4,
-                    Descricao = ""
+                    TipoFK = 4
                 },
                 new Servico_Tipo
                 {
                     ServicoFK = 8,
-                    TipoFK = 4,
-                    Descricao = ""
+                    TipoFK = 4
                 }
             );
 
@@ -357,38 +344,32 @@ namespace LabFoto.Data
                 new ServicoSolicitado
                 {
                     ID = 1,
-                    Nome = "Luz Visível",
-                    Outro = false
+                    Nome = "Luz Visível"
                 },
                 new ServicoSolicitado
                 {
                     ID = 2,
-                    Nome = "Luz U.V",
-                    Outro = false
+                    Nome = "Luz U.V"
                 },
                 new ServicoSolicitado
                 {
                     ID = 3,
-                    Nome = "Rasante",
-                    Outro = false
+                    Nome = "Rasante"
                 },
                 new ServicoSolicitado
                 {
                     ID = 4,
-                    Nome = "Infra-red",
-                    Outro = false
+                    Nome = "Infra-red"
                 },
                 new ServicoSolicitado
                 {
                     ID = 5,
-                    Nome = "Luz Trasmitida",
-                    Outro = false
+                    Nome = "Luz Trasmitida"
                 },
                 new ServicoSolicitado
                 {
                     ID = 6,
-                    Nome = "Outro",
-                    Outro = true
+                    Nome = "Outro"
                 }
             );
 
@@ -461,8 +442,7 @@ namespace LabFoto.Data
                 new Servico_ServicoSolicitado
                 {
                     ServicoFK = 6,
-                    ServicoSolicitadoFK = 6,
-                    Descricao = "Todos os Angulos"
+                    ServicoSolicitadoFK = 6
                 },
                 new Servico_ServicoSolicitado
                 {
