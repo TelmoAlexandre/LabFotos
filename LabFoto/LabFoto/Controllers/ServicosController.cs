@@ -526,9 +526,10 @@ namespace LabFoto.Controllers
                         }
                     }
 
-                    // Todos os tipos associados a este serviço
+                    // Todos os Servicos Solicitados associados a este serviço
                     List<Servico_ServicoSolicitado> allServSSolic = _context.Servicos_ServicosSolicitados.Where(st => st.ServicoFK == servico.ID).ToList();
-                    // Tratamento Tipos
+
+                    // Tratamento Servicos Solicitados
                     if (ServSolicitados.Length != 0)
                     {
                         array = ServSolicitados.Split(","); // Partir os servicos solicitados num array

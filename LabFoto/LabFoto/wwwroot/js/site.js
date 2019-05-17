@@ -53,14 +53,21 @@ function init() {
     initModalEvents();
 }
 
-function initModalEvents()
-{
+function initModalEvents() {
     servicoFormsLoadAjax = (divFormId, modalId, href) => {
         // Adicionar um loading
         $(`#${divFormId}`).html(getLoadingBarHtml);
         $(`#${modalId}`).modal({
             transition: 'fade up'
         }).modal("show");
+        $(`#${divFormId}`).load(`${href}`); // Carregar html para o elemento        
+    };
+
+    requerenteFormsLoadAjax = (divFormId, href) => {
+
+        // Adicionar um loading
+        $(`#${divFormId}`).html(getLoadingBarHtml);
+
         $(`#${divFormId}`).load(`${href}`); // Carregar html para o elemento        
     };
 
@@ -82,6 +89,7 @@ function initModalEvents()
         }
     };
 
+
     // Modal do novo requerente com fetch do formulário em Ajax
     $("#btnModalNovoRequerente").click(function (e) {
         e.preventDefault();
@@ -93,6 +101,11 @@ function initModalEvents()
             '/Requerentes/CreateFormAjax'
         );
     });
+
+    editarRequerenteIndex = (divEdicao, divRequerente, idRequerente) => {
+        $(`#${divRequerente}`).shape('flip back');
+        requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/Edit/${idRequerente}`);
+    };
 
     // Modal do novo tipo com fetch do formulário em Ajax
     $("#btnModalNovoTipo").click(function (e) {
@@ -122,7 +135,7 @@ function initModalEvents()
     // Resposta do POST do formulário do novo tipo
     novoTipo = (resp) =>
         handleControllerResponse(resp, 'tiposCheckboxes', 'modalNovoTipo', '/Servicos/TiposAjax');
-       
+
     // Resposta do POST do formulário do novo tipo
     novoServSolic = (resp) =>
         handleControllerResponse(resp, 'servSolicCheckboxes', 'modalNovoServSolic', '/Servicos/ServSolicAjax');
@@ -224,8 +237,8 @@ servicoRequerenteDetails = (divModalDetails, requerenteId) => {
 // Detalhes do serviço com o id que recebe por parametro
 // e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
 requerenteServicoDetails = (divId, servicoId) => {
-        $(`#${divId}`).html(getLoadingBarHtml);
-        $(`#${divId}`).load(`/Servicos/DetailsAjax/${servicoId}`);
+    $(`#${divId}`).html(getLoadingBarHtml);
+    $(`#${divId}`).load(`/Servicos/DetailsAjax/${servicoId}`);
 };
 
 createTipoOnServicosEdit = (e, idServico) => {
@@ -259,6 +272,41 @@ createTipoOnServicosEdit = (e, idServico) => {
         }
     });
 };
+
+requerenteEditFormSubmit = (e, divRequerente, divDetailsId, formEditId, requerenteId) => {
+    e.preventDefault(); // Não deixar o form submeter
+
+    $.ajax({
+        type: "POST",
+        url: `/Requerentes/Edit/${requerenteId}`,
+        data: {
+            "Nome": $(`#${formEditId} #Nome`).val(),
+            "Email": $(`#${formEditId} #Email`).val(),
+            "Telemovel": $(`#${formEditId} #Telemovel`).val(),
+            "Responsavel": $(`#${formEditId} #Responsavel`).val(),
+            "__RequestVerificationToken": $(`#${formEditId} input[name='__RequestVerificationToken']`).val(),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        success: function (resp) {
+            if (resp.success) {
+                $(`#${divDetailsId}`).html(getLoadingBarHtml); 
+                $(`#${divRequerente}`).shape('flip back');
+                $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjax/${requerenteId}`); 
+                // Notificação 'Noty'
+                new Noty({
+                    type: 'success',
+                    layout: 'bottomRight',
+                    theme: 'bootstrap-v4',
+                    text: 'Guardado com sucesso.',
+                    timeout: 4000,
+                    progressBar: true
+                }).show();
+            }
+        }
+    });
+};
+
+
 
 createServSolicOnServicosEdit = (e, idServico) => {
     e.preventDefault(); // Não deixar o form submeter

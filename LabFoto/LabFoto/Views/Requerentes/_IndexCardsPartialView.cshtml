@@ -4,69 +4,58 @@
 <div class="container">
     @if (Model.Requerentes.Count() == 0)
     {
-        <div class="my-lg-5 d-flex justify-content-center">
-            <p class="font-weight-bolder">Não foram encontrados requerentes.</p>
-        </div>
+    <div class="my-lg-5 d-flex justify-content-center">
+        <p class="font-weight-bolder">Não foram encontrados requerentes.</p>
+    </div>
     }
     else
     {
-        <div class=" row">
-            @foreach (var requerente in Model.Requerentes)
-            {
-                <div class="card col-md-3 mb-4 ml-4">
-                    <div class="card-body">
-                        <h5 class="card-title font-weight-bold"><a href="/Requerentes/Details/@requerente.ID" class="plainTextLink">@requerente.Nome</a></h5>
-                        <hr />
-                        <p>
-                            <i class="far fa-envelope"></i>
-                            <span class="card-subtitle ml-2 mt-3 mb-2"><a href="mailto:@requerente.Email" style="text-decoration:none;">@requerente.Email</a></span>
-                        </p>
-                        <p>
-                            <i class="fas fa-phone"></i>
-                            <span class="card-subtitle ml-2 mb-3 mt-1">@requerente.Telemovel</span>
-                        </p>
-                        <p>
-                            <i class="fas fa-user-tie"></i>
-                            <span class="card-subtitle ml-2 mb-3 mt-1">@requerente.Responsavel</span>
-                        </p>
-
-                        <a class="btn float-right bg-white" href="/Requerentes/Details/@requerente.ID" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
-                        <a class="btn float-right bg-white" href="/Requerentes/Edit/@requerente.ID" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-
-                    </div>
+    <div class=" row">
+        @foreach (var requerente in Model.Requerentes)
+        {
+        <div class="ui people shape mr-2 mb-2" id="div_@requerente.ID">
+            <div class="sides">
+                <div class="side active" id="divDetails_@requerente.ID">
+                    <partial name="_RequerenteDetailsIndexPartial" model="requerente">
                 </div>
-            }
-        </div>
+                <div class="side" id="divEditar_@requerente.ID">
 
-
-        // Paginação -----------------------------------------------------------------------------------------
-
-        string previousPage = (Model.FirstPage) ? "-" : Model.PageNum - 1 + "";
-        string nextPage = (Model.LastPage) ? "-" : Model.PageNum + 1 + "";
-        // Esconder as opções caso seja a primeira ou ultima página. Feito com CSS.
-        string disablePreviousPage = Model.FirstPage ? "disabled" : "";
-        string disableNextPage = Model.LastPage ? "disabled" : "";
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-4">
-                <div class=" mt-4 unselectable">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item @disablePreviousPage">
-                                <span class="page-link pointer" onclick="requerentesSubmitSearchForm(@previousPage)">Anterior</span>
-                            </li>
-                            <li class="page-item @disablePreviousPage"><span class="page-link pointer" onclick="requerentesSubmitSearchForm(@previousPage)">@previousPage</span></li>
-                            <li class="page-item active" unselectable="on"><span class="page-link pointer">@Model.PageNum</span></li>
-                            <li class="page-item @disableNextPage"><span class="page-link pointer" onclick="requerentesSubmitSearchForm(@nextPage)">@nextPage</span></li>
-                            <li class="page-item @disableNextPage">
-                                <span class="page-link pointer" onclick="requerentesSubmitSearchForm(@nextPage)">Próxima</span>
-                            </li>
-                        </ul>
-                    </nav>
-                    <input type="number" name="pageReq" id="pageReqNum" hidden />
                 </div>
             </div>
-        </div>      }
+        </div>
+
+        }
+    </div>
+
+    // Paginação -----------------------------------------------------------------------------------------
+
+    string previousPage = (Model.FirstPage) ? "-" : Model.PageNum - 1 + "";
+    string nextPage = (Model.LastPage) ? "-" : Model.PageNum + 1 + "";
+    // Esconder as opções caso seja a primeira ou ultima página. Feito com CSS.
+    string disablePreviousPage = Model.FirstPage ? "disabled" : "";
+    string disableNextPage = Model.LastPage ? "disabled" : "";
+
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-4">
+            <div class=" mt-4 unselectable">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @disablePreviousPage">
+                            <span class="page-link pointer" onclick="requerentesSubmitSearchForm(@previousPage)">Anterior</span>
+                        </li>
+                        <li class="page-item @disablePreviousPage"><span class="page-link pointer" onclick="requerentesSubmitSearchForm(@previousPage)">@previousPage</span></li>
+                        <li class="page-item active" unselectable="on"><span class="page-link pointer">@Model.PageNum</span></li>
+                        <li class="page-item @disableNextPage"><span class="page-link pointer" onclick="requerentesSubmitSearchForm(@nextPage)">@nextPage</span></li>
+                        <li class="page-item @disableNextPage">
+                            <span class="page-link pointer" onclick="requerentesSubmitSearchForm(@nextPage)">Próxima</span>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    }
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
