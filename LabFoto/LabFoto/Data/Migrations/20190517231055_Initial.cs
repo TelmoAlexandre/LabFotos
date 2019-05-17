@@ -313,15 +313,15 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "c490f5f2-eda9-459a-826a-4e9caa91deb7", "Admin", "ADMIN" });
+                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "e35b2298-1a5a-4bf8-91a4-541e3f4a9768", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Nome" },
                 values: new object[,]
                 {
-                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "5f2c1ce3-8cb8-4e94-a0f5-9dfee139c18c", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEK+RACBNZDvziOURrG5+cvkrjZqGhf7lqA1Ai0sP1iufrEJYbfL7ITIvFsgO+ufv6g==", null, false, "", false, "admin1@admin1.com", "Admin1" },
-                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "7416a830-bc1f-449a-a153-5850dbc7eb80", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEA54iFL9uZyC6SruAhCanlTjNuH11k+zEukvnwvBq2WtciTEzMQRhhsa/KgVpSlXpQ==", null, false, "", false, "user1@user1.com", "User1" }
+                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "a343d01b-f46f-4a22-ad98-d1ee729c74a6", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEMUP3obr9QmvVbfF1WUpM0DktbiZAl0hMDbPHHt+e6olS28cOKSOOY7zS6dcGnArjw==", null, false, "", false, "admin1@admin1.com", "Admin1" },
+                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "c34d8123-2575-455f-82ed-0d50abb58930", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEALpJ34k8SqWXh23AjWd9T1xcAiNte6nMivwp0S3aVXzR2T+IoFUGQG6rtcmhsXa5Q==", null, false, "", false, "user1@user1.com", "User1" }
                 });
 
             migrationBuilder.InsertData(
@@ -348,10 +348,10 @@ namespace LabFoto.Migrations
                 values: new object[,]
                 {
                     { 5, "manuel@ipt.pt", "Manuel", "Manuel", "987321546" },
-                    { 4, "jose@ipt.pt", "José", "José", "123789456" },
+                    { 3, "joao@ipt.pt", "João", "Maria", "987654321" },
                     { 2, "maria@ipt.pt", "Maria", "Maria", "987654321" },
                     { 1, "fernando@ipt.pt", "Fernando", "Fernando", "123456789" },
-                    { 3, "joao@ipt.pt", "João", "Maria", "987654321" }
+                    { 4, "jose@ipt.pt", "José", "José", "123789456" }
                 });
 
             migrationBuilder.InsertData(
@@ -360,11 +360,10 @@ namespace LabFoto.Migrations
                 values: new object[,]
                 {
                     { 1, "Luz Visível" },
-                    { 2, "Luz U.V" },
+                    { 3, "Rasante" },
                     { 4, "Infra-red" },
                     { 5, "Luz Trasmitida" },
-                    { 6, "Outro" },
-                    { 3, "Rasante" }
+                    { 2, "Luz U.V" }
                 });
 
             migrationBuilder.InsertData(
@@ -418,11 +417,11 @@ namespace LabFoto.Migrations
                     { 7, 7 },
                     { 2, 2 },
                     { 5, 7 },
-                    { 10, 3 },
                     { 3, 3 },
                     { 9, 3 },
-                    { 11, 3 },
-                    { 4, 4 }
+                    { 10, 3 },
+                    { 4, 4 },
+                    { 11, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -430,25 +429,24 @@ namespace LabFoto.Migrations
                 columns: new[] { "ServicoSolicitadoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 1, 8 },
-                    { 3, 1 },
-                    { 2, 1 },
-                    { 6, 6 },
-                    { 4, 6 },
+                    { 1, 4 },
                     { 2, 6 },
                     { 5, 5 },
                     { 2, 5 },
                     { 3, 7 },
-                    { 1, 4 },
+                    { 2, 7 },
+                    { 4, 6 },
                     { 5, 7 },
-                    { 3, 8 },
                     { 5, 3 },
-                    { 2, 4 },
-                    { 3, 4 },
+                    { 2, 1 },
                     { 1, 2 },
                     { 4, 2 },
-                    { 2, 7 },
-                    { 4, 4 }
+                    { 3, 1 },
+                    { 1, 8 },
+                    { 4, 4 },
+                    { 3, 4 },
+                    { 2, 4 },
+                    { 3, 8 }
                 });
 
             migrationBuilder.InsertData(
@@ -456,14 +454,14 @@ namespace LabFoto.Migrations
                 columns: new[] { "TipoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 4, 7 },
                     { 1, 1 },
-                    { 1, 3 },
-                    { 1, 6 },
-                    { 3, 4 },
+                    { 3, 6 },
+                    { 4, 7 },
                     { 2, 5 },
                     { 2, 2 },
-                    { 3, 6 },
+                    { 1, 3 },
+                    { 3, 4 },
+                    { 1, 6 },
                     { 4, 8 }
                 });
 

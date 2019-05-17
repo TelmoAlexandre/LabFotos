@@ -365,11 +365,6 @@ namespace LabFoto.Data
                 {
                     ID = 5,
                     Nome = "Luz Trasmitida"
-                },
-                new ServicoSolicitado
-                {
-                    ID = 6,
-                    Nome = "Outro"
                 }
             );
 
@@ -438,11 +433,6 @@ namespace LabFoto.Data
                 {
                     ServicoFK = 6,
                     ServicoSolicitadoFK = 4,
-                },
-                new Servico_ServicoSolicitado
-                {
-                    ServicoFK = 6,
-                    ServicoSolicitadoFK = 6
                 },
                 new Servico_ServicoSolicitado
                 {

@@ -1,0 +1,44 @@
+﻿@model LabFoto.Models.Tables.Requerente
+<form asp-controller="Requerentes" asp-action="Edit"
+      onsubmit="requerenteEditFormSubmit(event, `div_@Model.ID` , `divDetails_@Model.ID`, `requerenteEditForm_@Model.ID`, `@Model.ID`)"
+      id="requerenteEditForm_@Model.ID">
+    <div class="ui card">
+        <div class="card">
+            <div class="card-body">
+                <div class="ui transparent input big font-weight-bold">
+                    <input asp-for="@Model.Nome" placeholder="Nome..">
+                </div>
+                
+                <hr />
+                <div class="ui large list">
+                    <div class="item">
+                        <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Email)</p>
+                        <i class="mail icon"></i>
+                        <div class="content">
+                            <div class="ui transparent input">
+                                <input type="text" asp-for="@Model.Email" placeholder="Email.." >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Telemovel)</p>
+                        <i class="phone icon"></i>
+                        <div class="content ">
+                            <div class="ui transparent input">
+                                <input type="text"asp-for="@Model.Telemovel" placeholder="Telemóvel...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Responsavel)</p>
+                        <i class="fas fa-user-tie"></i>
+                        <div class="ui transparent input ml-2" id="responsavel">
+                            <input type="text" asp-for="@Model.Responsavel" placeholder="Responsável...">
+                        </div>
+                    </div>
+                    <button class="btn float-right" type="submit" data-toggle="tooltip" title="Guardar"><i class="save outline icon"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

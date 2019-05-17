@@ -22,7 +22,6 @@ namespace LabFoto.Controllers
             _context = context;
         }
 
-
         // GET: Requerentes
         public async Task<IActionResult> Index(int? page = 1)
         {
@@ -87,8 +86,8 @@ namespace LabFoto.Controllers
             }
 
             return View(requerentes);
-        } 
-        
+        }
+
         // GET: Requerentes/Details/5
         public async Task<IActionResult> DetailsAjax(int? id)
         {
@@ -105,6 +104,24 @@ namespace LabFoto.Controllers
             }
 
             return PartialView("_DetailsPartial", requerente);
+        }       
+        
+        // GET: Requerentes/Details/5
+        public async Task<IActionResult> DetailsIndexAjax(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var requerente = await _context.Requerentes.Include(r => r.Servicos)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (requerente == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_RequerenteDetailsIndexPartial", requerente);
         }
 
         // GET: Requerentes/Create
@@ -148,7 +165,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            return View(requerentes);
+            return PartialView("_EditCardPartialView", requerentes);
         }
 
         // POST: Requerentes/Edit/5
@@ -169,6 +186,7 @@ namespace LabFoto.Controllers
                 {
                     _context.Update(requerentes);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -181,7 +199,6 @@ namespace LabFoto.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(requerentes);
         }

@@ -339,11 +339,6 @@ namespace LabFoto.Migrations
                         {
                             ID = 5,
                             Nome = "Luz Trasmitida"
-                        },
-                        new
-                        {
-                            ID = 6,
-                            Nome = "Outro"
                         });
                 });
 
@@ -522,11 +517,6 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ServicoSolicitadoFK = 6,
-                            ServicoFK = 6
-                        },
-                        new
-                        {
                             ServicoSolicitadoFK = 5,
                             ServicoFK = 7
                         },
@@ -675,7 +665,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                            ConcurrencyStamp = "c490f5f2-eda9-459a-826a-4e9caa91deb7",
+                            ConcurrencyStamp = "e35b2298-1a5a-4bf8-91a4-541e3f4a9768",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -852,13 +842,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5f2c1ce3-8cb8-4e94-a0f5-9dfee139c18c",
+                            ConcurrencyStamp = "a343d01b-f46f-4a22-ad98-d1ee729c74a6",
                             Email = "admin1@admin1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@ADMIN1.COM",
                             NormalizedUserName = "ADMIN1@ADMIN1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEK+RACBNZDvziOURrG5+cvkrjZqGhf7lqA1Ai0sP1iufrEJYbfL7ITIvFsgO+ufv6g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMUP3obr9QmvVbfF1WUpM0DktbiZAl0hMDbPHHt+e6olS28cOKSOOY7zS6dcGnArjw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -869,13 +859,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7416a830-bc1f-449a-a153-5850dbc7eb80",
+                            ConcurrencyStamp = "c34d8123-2575-455f-82ed-0d50abb58930",
                             Email = "user1@user1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@USER1.COM",
                             NormalizedUserName = "USER1@USER1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEA54iFL9uZyC6SruAhCanlTjNuH11k+zEukvnwvBq2WtciTEzMQRhhsa/KgVpSlXpQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEALpJ34k8SqWXh23AjWd9T1xcAiNte6nMivwp0S3aVXzR2T+IoFUGQG6rtcmhsXa5Q==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
