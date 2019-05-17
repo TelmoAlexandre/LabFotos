@@ -40,7 +40,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return View(tipos);
+            return PartialView("_DetailsPartialView", tipos);
         }
 
         // GET: Tipos/Create
@@ -54,7 +54,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Nome,Outro")] Tipo tipo)
+        public async Task<IActionResult> Create([Bind("ID,Nome")] Tipo tipo)
         {
             if (ModelState.IsValid)
             {
@@ -73,12 +73,13 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            var tipos = await _context.Tipos.FindAsync(id);
-            if (tipos == null)
+            var tipo = await _context.Tipos.FindAsync(id);
+            if (tipo == null)
             {
                 return NotFound();
             }
-            return View(tipos);
+
+            return PartialView("_EditPartialView", tipo);
         }
 
         // POST: Tipos/Edit/5
@@ -86,7 +87,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,Outro")] Tipo tipo)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome")] Tipo tipo)
         {
             if (id != tipo.ID)
             {
@@ -111,38 +112,10 @@ namespace LabFoto.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tipo);
-        }
-
-        // GET: Tipos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
+                return Json(new { success = true });
             }
 
-            var tipo = await _context.Tipos
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (tipo == null)
-            {
-                return NotFound();
-            }
-
-            return View(tipo);
-        }
-
-        // POST: Tipos/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var tipo = await _context.Tipos.FindAsync(id);
-            _context.Tipos.Remove(tipo);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return PartialView("_EditPartialView", tipo);
         }
 
         private bool TipoExists(int id)

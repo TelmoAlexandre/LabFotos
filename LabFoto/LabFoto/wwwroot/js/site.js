@@ -128,10 +128,6 @@ function initModalEvents()
         handleControllerResponse(resp, 'servSolicCheckboxes', 'modalNovoServSolic', '/Servicos/ServSolicAjax');
 }
 
-$('.ui .item').on('click', function () {
-    $('.ui .item').removeClass('active');
-    $(this).addClass('active');
-});
 // Submit do form das pesquisas dos servicos
 submitSearchForm = (page) => {
     $("#pageNum").val(page);
@@ -178,7 +174,7 @@ $("#accordionCollapse").click(function (e) {
     $(".accordionOptions").toggle();
     expandedAccordion = false;
 });
-resetAccordionCollapse = () => {
+resetAccordionCollapse = (resp) => {
     if (expandedAccordion) {
         $(".accordionBody").addClass("show");
     }
@@ -224,8 +220,10 @@ servicoRequerenteDetails = (divModalDetails, requerenteId) => {
 // Detalhes do serviço com o id que recebe por parametro
 // e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
 requerenteServicoDetails = (divId, servicoId) => {
+    if ($(`#${divId}`).is(`:empty`)) {
         $(`#${divId}`).html(getLoadingBarHtml);
         $(`#${divId}`).load(`/Servicos/DetailsAjax/${servicoId}`);
+    }
 };
 
 createTipoOnServicosEdit = (e, idServico) => {
@@ -288,6 +286,92 @@ createServSolicOnServicosEdit = (e, idServico) => {
                     progressBar: true
                 }).show();
             }
+        }
+    });
+};
+
+// ---------------------------------------------------------------- Index dos Tipos -------------------------------------------------------------------------
+
+showEditTiposIndex = (tipoId) => {
+
+    $(`#indexDetails_${tipoId} .ui.button`).addClass('loading'); // Mostra loading no butão editar
+
+    // Pede o form. Em caso de sucesso, corre a função
+    $(`#indexEdit_${tipoId}`).load(`/Tipos/Edit/${tipoId}`, function () {
+        $(`#indexDetails_${tipoId}`).slideToggle(); // Esconde o details
+        $(`#indexDetails_${tipoId} .ui.button`).removeClass('loading'); // Remove loading no botão editar
+        $(`#indexEdit_${tipoId}`).slideToggle(); // Mostra o form editar
+
+        // Focar o input no ultimo caracter
+        var val = $(`#indexEdit_${tipoId} input[type="text"]`).val();
+        $(`#indexEdit_${tipoId} input[type="text"]`).focus().val('').val(val);
+
+    });
+};
+
+cancelEditIndex = (tipoId) => {
+    // Esconder o edit e mostrar o details
+    $(`#indexEdit_${tipoId}`).slideToggle();
+    $(`#indexDetails_${tipoId}`).slideToggle();
+};
+
+submitEditIndex = (e, tipoId) => {
+    e.preventDefault(); // Não deixar o form submeter, pois o request vai ser feito por Ajax
+
+    $(`#editFormTiposIndex_${tipoId} .ui.button`).addClass('loading'); // Loading no botão guardar
+
+    $.ajax({
+        type: "POST",
+        url: `/Tipos/Edit/${tipoId}`,
+        data: {
+            "Tipo.ID": $(`#editFormTiposIndex_${tipoId} #ID`).val(),
+            "Tipo.Nome": $(`#editFormTiposIndex_${tipoId} #Nome`).val(),
+            "__RequestVerificationToken": $(`#editFormTiposIndex_${tipoId} input[name='__RequestVerificationToken']`).val(),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        success: function (resp) {
+            $(`#editFormTiposIndex_${tipoId} .ui.button`).removeClass('loading'); // Remove o loading no botão guardar
+
+            if (resp.success) { // Caso seja editado com sucesso
+
+                // Carregar o details pois este foi alterado.
+                $(`#indexDetails_${tipoId}`).load(`/Tipos/Details/${tipoId}`, function () {
+
+                    // Esconder o edit e mostrar o details
+                    $(`#indexEdit_${tipoId}`).slideToggle();
+                    $(`#indexDetails_${tipoId}`).slideToggle();
+                });
+
+                // Notificação 'Noty'
+                new Noty({
+                    type: 'success',
+                    layout: 'bottomRight',
+                    theme: 'bootstrap-v4',
+                    text: 'Editado com sucesso.',
+                    timeout: 4000,
+                    progressBar: true
+                }).show();
+
+            } else { // Caso o modelState falhe
+
+                $(`#indexEdit_${tipoId}`).html(resp);
+            }
+        },
+        error: function () {
+
+            // Esconder o edit e mostrar o details
+            $(`#indexEdit_${tipoId}`).hide();
+            $(`#indexDetails_${tipoId}`).fadeIn();
+
+            // Notificação 'Noty'
+            new Noty({
+                type: 'error',
+                layout: 'bottomRight',
+                theme: 'bootstrap-v4',
+                text: 'Ocorreu um erro na edição.',
+                timeout: 4000,
+                progressBar: true
+            }).show();
         }
     });
 };
