@@ -3,28 +3,29 @@
 @{
     ViewData["Title"] = "Index";
 }
+<div class="ui text container">
+    <h1 class="mt-5 mb-5">Serviços Solicitados</h1>
+</div>
 
-<h1>Index</h1>
+<div class="ui text container">
+    <div class="ui vertically divided grid">
+        @foreach (var servSolic in Model)
+        {
+            <div class="row">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                <div class="sixteen wide column mb-0 mt-0" id="indexDetails_@servSolic.ID">
+                    <div class="ui basic segment pb-0 pt-0">
+                        <i class="paperclip icon pt-2"></i>
+                        <span class="font-weight-bolder">@servSolic.Nome</span>
+                        <div class="ui button float-right" onclick="showEditIndex(@servSolic.ID, 'ServicosSolicitados')">
+                            Editar <i class="right chevron icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sixteen wide column mb-0 mt-0" id="indexEdit_@servSolic.ID" style="display:none;"></div>
+
+            </div>
+        }
+    </div>
+</div>

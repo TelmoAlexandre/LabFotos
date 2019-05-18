@@ -40,7 +40,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return View(servicoSolicitado);
+            return PartialView("_DetailsPartialView", servicoSolicitado);
         }
 
         // GET: ServicosSolicitados/Create
@@ -73,12 +73,12 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            var servicosSolicitados = await _context.ServicosSolicitados.FindAsync(id);
-            if (servicosSolicitados == null)
+            var servicosSolicitado = await _context.ServicosSolicitados.FindAsync(id);
+            if (servicosSolicitado == null)
             {
                 return NotFound();
             }
-            return View(servicosSolicitados);
+            return PartialView("_EditPartialView", servicosSolicitado);
         }
 
         // POST: ServicosSolicitados/Edit/5
@@ -99,6 +99,7 @@ namespace LabFoto.Controllers
                 {
                     _context.Update(servicoSolicitado);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -111,38 +112,8 @@ namespace LabFoto.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(servicoSolicitado);
-        }
-
-        // GET: ServicosSolicitados/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var servicosSolicitados = await _context.ServicosSolicitados
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (servicosSolicitados == null)
-            {
-                return NotFound();
-            }
-
-            return View(servicosSolicitados);
-        }
-
-        // POST: ServicosSolicitados/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var servicoSolicitado = await _context.ServicosSolicitados.FindAsync(id);
-            _context.ServicosSolicitados.Remove(servicoSolicitado);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return PartialView("_EditPartialView", servicoSolicitado);
         }
 
         private bool ServicosSolicitadosExists(int id)

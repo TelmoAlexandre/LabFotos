@@ -1,14 +1,14 @@
-﻿@model LabFoto.Models.Tables.Tipo
+﻿@model LabFoto.Models.Tables.ServicoSolicitado
 
 <div class="ui basic segment pb-0 pt-0 mb-0 ">
     <form asp-action="Edit" asp-controller="Tipos"
-          onsubmit="submitEditIndex(event, @Model.ID, 'Tipos', 'Tipo')"
+          onsubmit="submitEditIndex(event, @Model.ID, 'ServicosSolicitados', 'ServicoSolicitado')"
           id="editFormIndex_@Model.ID">
         <div class="ui transparent left icon fluid input">
             @Html.HiddenFor(model => model.ID)
             <input asp-for="Nome" class="font-weight-bolder" />
             <i class="edit outline icon"></i>
-            <span class="ui button float-right saveButton" onclick="confirmForm('editFormTiposIndex_@Model.ID')">
+            <span class="ui button float-right saveButton" onclick="confirmForm('editFormIndex_@Model.ID')">
                 <i class="save outline icon"></i> Guardar
             </span>
             <span class="ui button float-right" onclick="cancelEditIndex(@Model.ID)">
@@ -27,7 +27,7 @@
 @* Modal de confirmação da edição do Tipo *@
 <div class="ui basic mini modal" id="confirmarSubmit">
     <div class="content">
-        <p>Tem a certeza que pretende editar o tipo?</p>
+        <p>Tem a certeza que pretende editar o Serviço Solicitado?</p>
     </div>
     <div class="actions">
         <div class="ui red basic cancel inverted button">

@@ -100,6 +100,7 @@ namespace LabFoto.Controllers
                 {
                     _context.Update(tipo);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -112,7 +113,6 @@ namespace LabFoto.Controllers
                         throw;
                     }
                 }
-                return Json(new { success = true });
             }
 
             return PartialView("_EditPartialView", tipo);

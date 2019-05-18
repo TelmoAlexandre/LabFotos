@@ -336,14 +336,14 @@ createServSolicOnServicosEdit = (e, idServico) => {
     });
 };
 
-// ---------------------------------------------------------------- Index dos Tipos -------------------------------------------------------------------------
+// ---------------------------------------------------------------- Index dos Tipos e dos Serviços Solicitados -------------------------------------------------------------------------
 
-showEditTiposIndex = (tipoId) => {
+showEditIndex = (tipoId, controllerName) => {
 
     $(`#indexDetails_${tipoId} .ui.button`).addClass('loading'); // Mostra loading no butão editar
 
     // Pede o form. Em caso de sucesso, corre a função
-    $(`#indexEdit_${tipoId}`).load(`/Tipos/Edit/${tipoId}`, function () {
+    $(`#indexEdit_${tipoId}`).load(`/${controllerName}/Edit/${tipoId}`, function () {
         $(`#indexDetails_${tipoId}`).slideToggle(); // Esconde o details
         $(`#indexDetails_${tipoId} .ui.button`).removeClass('loading'); // Remove loading no botão editar
         $(`#indexEdit_${tipoId}`).slideToggle(); // Mostra o form editar
@@ -361,31 +361,34 @@ cancelEditIndex = (tipoId) => {
     $(`#indexDetails_${tipoId}`).slideToggle();
 };
 
-submitEditIndex = (e, tipoId) => {
+submitEditIndex = (e, id, controllerName, fieldName) => {
     e.preventDefault(); // Não deixar o form submeter, pois o request vai ser feito por Ajax
 
-    $(`#editFormTiposIndex_${tipoId} .ui.button`).addClass('loading'); // Loading no botão guardar
+    $(`#editFormIndex_${id} .saveButton`).addClass('loading'); // Loading no botão guardar
+
+    // Preencher a data dinamicamente
+    var data = {
+        "__RequestVerificationToken": $(`#editFormIndex_${id} input[name='__RequestVerificationToken']`).val(),
+        "X-Requested-With": "XMLHttpRequest"
+    };
+    data[`${fieldName}.ID`] = $(`#editFormIndex_${id} #ID`).val(); // Caso o fieldName seja Tipo, fica "Tipo.ID": ...
+    data[`${fieldName}.Nome`] = $(`#editFormIndex_${id} #Nome`).val();
 
     $.ajax({
         type: "POST",
-        url: `/Tipos/Edit/${tipoId}`,
-        data: {
-            "Tipo.ID": $(`#editFormTiposIndex_${tipoId} #ID`).val(),
-            "Tipo.Nome": $(`#editFormTiposIndex_${tipoId} #Nome`).val(),
-            "__RequestVerificationToken": $(`#editFormTiposIndex_${tipoId} input[name='__RequestVerificationToken']`).val(),
-            "X-Requested-With": "XMLHttpRequest"
-        },
+        url: `/${controllerName}/Edit/${id}`,
+        data: data,
         success: function (resp) {
-            $(`#editFormTiposIndex_${tipoId} .ui.button`).removeClass('loading'); // Remove o loading no botão guardar
+            $(`#editFormTiposIndex_${id} .saveButton`).removeClass('loading'); // Remove o loading no botão guardar
 
             if (resp.success) { // Caso seja editado com sucesso
 
                 // Carregar o details pois este foi alterado.
-                $(`#indexDetails_${tipoId}`).load(`/Tipos/Details/${tipoId}`, function () {
+                $(`#indexDetails_${id}`).load(`/${controllerName}/Details/${id}`, function () {
 
                     // Esconder o edit e mostrar o details
-                    $(`#indexEdit_${tipoId}`).slideToggle();
-                    $(`#indexDetails_${tipoId}`).slideToggle();
+                    $(`#indexEdit_${id}`).slideToggle();
+                    $(`#indexDetails_${id}`).slideToggle();
                 });
 
                 // Notificação 'Noty'
@@ -400,14 +403,14 @@ submitEditIndex = (e, tipoId) => {
 
             } else { // Caso o modelState falhe
 
-                $(`#indexEdit_${tipoId}`).html(resp);
+                $(`#indexEdit_${id}`).html(resp);
             }
         },
         error: function () {
 
             // Esconder o edit e mostrar o details
-            $(`#indexEdit_${tipoId}`).hide();
-            $(`#indexDetails_${tipoId}`).fadeIn();
+            $(`#indexEdit_${id}`).hide();
+            $(`#indexDetails_${id}`).fadeIn();
 
             // Notificação 'Noty'
             new Noty({
