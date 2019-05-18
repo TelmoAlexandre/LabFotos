@@ -89,6 +89,11 @@ function initModalEvents() {
         }
     };
 
+    //Trocar serviços na página de detalhes do requerente
+    $('.ui .item').on('click', function () {
+        $('.ui .item').removeClass('active');
+        $(this).addClass('active');
+    });
 
     // Modal do novo requerente com fetch do formulário em Ajax
     $("#btnModalNovoRequerente").click(function (e) {
