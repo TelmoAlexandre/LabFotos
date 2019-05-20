@@ -152,6 +152,10 @@ submitSearchForm = (page) => {
     $("#servicosIndexSearchForm").submit();
 };
 
+flipCard = (shapeId, transition) => {
+    $(`#${shapeId}`).shape(`${transition}`);
+};
+
 // Submit do form das pesquisas dos requerentes
 requerentesSubmitSearchForm = (pageReq) => {
     $("#pageReqNum").val(pageReq);
@@ -291,7 +295,7 @@ requerenteEditFormSubmit = (e, divRequerente, divDetailsId, formEditId, requeren
         success: function (resp) {
             if (resp.success) {
                 $(`#${divDetailsId}`).html(getLoadingBarHtml); 
-                $(`#${divRequerente}`).shape('flip back');
+                $(`#${divRequerente}`).shape('flip over');
                 $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjax/${requerenteId}`); 
                 // Notificação 'Noty'
                 new Noty({
@@ -306,8 +310,6 @@ requerenteEditFormSubmit = (e, divRequerente, divDetailsId, formEditId, requeren
         }
     });
 };
-
-
 
 createServSolicOnServicosEdit = (e, idServico) => {
     e.preventDefault(); // Não deixar o form submeter
