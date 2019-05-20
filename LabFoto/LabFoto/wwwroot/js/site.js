@@ -64,11 +64,11 @@ function initModalEvents() {
     };
 
     requerenteFormsLoadAjax = (divFormId, href) => {
-
         // Adicionar um loading
         $(`#${divFormId}`).html(getLoadingBarHtml);
-
-        $(`#${divFormId}`).load(`${href}`); // Carregar html para o elemento        
+        $(`#${divFormId}`).load(`${href}`, function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        }); // Carregar html para o elemento        
     };
 
     handleControllerResponse = (resp, divId, modalId, href) => {
@@ -296,7 +296,9 @@ requerenteEditFormSubmit = (e, divRequerente, divDetailsId, formEditId, requeren
             if (resp.success) {
                 $(`#${divDetailsId}`).html(getLoadingBarHtml); 
                 $(`#${divRequerente}`).shape('flip over');
-                $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjax/${requerenteId}`); 
+                $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjax/${requerenteId}`, function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                }); 
                 // Notificação 'Noty'
                 new Noty({
                     type: 'success',
