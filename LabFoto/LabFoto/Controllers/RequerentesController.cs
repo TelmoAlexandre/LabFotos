@@ -104,11 +104,12 @@ namespace LabFoto.Controllers
             }
 
             return PartialView("_DetailsPartial", requerente);
-        }       
-        
+        }
+
         // GET: Requerentes/Details/5
         public async Task<IActionResult> DetailsIndexAjax(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -122,6 +123,25 @@ namespace LabFoto.Controllers
             }
 
             return PartialView("_RequerenteDetailsIndexPartial", requerente);
+        } 
+        
+        // GET: Requerentes/Details/5
+        public async Task<IActionResult> DetailsIndexAjaxDetails(int? id)
+        {
+            
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var requerente = await _context.Requerentes.Include(r => r.Servicos)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (requerente == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_RequerenteDetailsPartial", requerente);
         }
 
         // GET: Requerentes/Create
@@ -141,31 +161,31 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerentes)
+        public async Task<IActionResult> Create([Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(requerentes);
+                _context.Add(requerente);
                 await _context.SaveChangesAsync();
                 return Json(new { success = true });
             }
-            return PartialView("_RequerentesCreateForm", requerentes);
+            return PartialView("_RequerentesCreateForm", requerente);
         }
 
         // GET: Requerentes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> EditIndex(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var requerentes = await _context.Requerentes.FindAsync(id);
-            if (requerentes == null)
+            var requerente = await _context.Requerentes.FindAsync(id);
+            if (requerente == null)
             {
                 return NotFound();
             }
-            return PartialView("_EditCardPartialView", requerentes);
+            return PartialView("_EditCardPartialViewIndex", requerente);
         }
 
         // POST: Requerentes/Edit/5
@@ -173,9 +193,9 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerentes)
+        public async Task<IActionResult> EditIndex(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
         {
-            if (id != requerentes.ID)
+            if (id != requerente.ID)
             {
                 return NotFound();
             }
@@ -184,13 +204,13 @@ namespace LabFoto.Controllers
             {
                 try
                 {
-                    _context.Update(requerentes);
+                    _context.Update(requerente);
                     await _context.SaveChangesAsync();
                     return Json(new { success = true });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RequerentesExists(requerentes.ID))
+                    if (!RequerentesExists(requerente.ID))
                     {
                         return NotFound();
                     }
@@ -200,7 +220,58 @@ namespace LabFoto.Controllers
                     }
                 }
             }
-            return View(requerentes);
+            return PartialView("_EditCardPartialViewIndex", requerente);
+        }
+
+        // GET: Requerentes/Edit/5
+        public async Task<IActionResult> EditDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var requerente = await _context.Requerentes.FindAsync(id);
+            if (requerente == null)
+            {
+                return NotFound();
+            }
+            return PartialView("_EditCardPartialViewDetails", requerente);
+        }
+
+        // POST: Requerentes/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditDetails(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
+        {
+            if (id != requerente.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(requerente);
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true });
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RequerentesExists(requerente.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            return PartialView("_EditCardPartialViewDetails", requerente);
         }
 
         // GET: Requerentes/Delete/5

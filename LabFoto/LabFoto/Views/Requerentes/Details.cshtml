@@ -3,20 +3,19 @@
 @{
     ViewData["Title"] = "Detalhes";
 }
+<div class="row">
+    <div class="col-md-5"></div>
+    <div class="ui people shape" id="div_@Model.ID">
+        <div class="sides">
+            <div class="side active" id="divDetails_@Model.ID">
+                <partial name="_RequerenteDetailsPartial" model="Model" />
+            </div>
+            <div class="side" id="divEditar_@Model.ID">
 
-    <div class="row">
-        <div class="col-md-5"></div>
-        <div class="ui people shape" id="div_@Model.ID">
-            <div class="sides">
-                <div class="side active" id="divDetails_@Model.ID">
-                    <partial name="_RequerenteDetailsIndexPartial" model="Model"/>
-                </div>
-                <div class="side" id="divEditar_@Model.ID">
-
-                </div>
             </div>
         </div>
     </div>
+</div>
 
 <div class="h5 ml-2">Serviços</div>
 <div class="ui grid">

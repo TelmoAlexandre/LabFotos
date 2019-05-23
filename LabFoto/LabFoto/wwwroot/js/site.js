@@ -109,7 +109,12 @@ function initModalEvents() {
 
     editarRequerenteIndex = (divEdicao, divRequerente, idRequerente) => {
         $(`#${divRequerente}`).shape('flip back');
-        requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/Edit/${idRequerente}`);
+        requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditIndex/${idRequerente}`);
+    };
+
+    editarRequerenteDetails = (divEdicao, divRequerente, idRequerente) => {
+        $(`#${divRequerente}`).shape('flip back');
+        requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditDetails/${idRequerente}`);
     };
 
     // Modal do novo tipo com fetch do formulário em Ajax
@@ -208,7 +213,7 @@ deleteElement = (id) => {
 
 // Modais de confirmação
 
-confirmForm = (formId) => {
+confirmForm = (formId, divCardId) => {
     $("#confirmarSubmit").modal({
         closable: false,
         onDeny: function () {
@@ -278,12 +283,12 @@ createTipoOnServicosEdit = (e, idServico) => {
     });
 };
 
-requerenteEditFormSubmit = (e, divRequerente, divDetailsId, formEditId, requerenteId) => {
+requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, requerenteId) => {
     e.preventDefault(); // Não deixar o form submeter
 
     $.ajax({
         type: "POST",
-        url: `/Requerentes/Edit/${requerenteId}`,
+        url: `/Requerentes/EditIndex/${requerenteId}`,
         data: {
             "Nome": $(`#${formEditId} #Nome`).val(),
             "Email": $(`#${formEditId} #Email`).val(),
@@ -294,11 +299,46 @@ requerenteEditFormSubmit = (e, divRequerente, divDetailsId, formEditId, requeren
         },
         success: function (resp) {
             if (resp.success) {
-                $(`#${divDetailsId}`).html(getLoadingBarHtml); 
+                $(`#${divDetailsId}`).html(getLoadingBarHtml);
                 $(`#${divRequerente}`).shape('flip over');
                 $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjax/${requerenteId}`, function () {
                     $('[data-toggle="tooltip"]').tooltip();
-                }); 
+                });
+                // Notificação 'Noty'
+                new Noty({
+                    type: 'success',
+                    layout: 'bottomRight',
+                    theme: 'bootstrap-v4',
+                    text: 'Guardado com sucesso.',
+                    timeout: 4000,
+                    progressBar: true
+                }).show();
+            }
+        }
+    });
+};
+
+requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, requerenteId) => {
+    e.preventDefault(); // Não deixar o form submeter
+
+    $.ajax({
+        type: "POST",
+        url: `/Requerentes/EditDetails/${requerenteId}`,
+        data: {
+            "Nome": $(`#${formEditId} #Nome`).val(),
+            "Email": $(`#${formEditId} #Email`).val(),
+            "Telemovel": $(`#${formEditId} #Telemovel`).val(),
+            "Responsavel": $(`#${formEditId} #Responsavel`).val(),
+            "__RequestVerificationToken": $(`#${formEditId} input[name='__RequestVerificationToken']`).val(),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        success: function (resp) {
+            if (resp.success) {
+                $(`#${divDetailsId}`).html(getLoadingBarHtml);
+                $(`#${divRequerente}`).shape('flip over');
+                $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjaxDetails/${requerenteId}`, function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
                 // Notificação 'Noty'
                 new Noty({
                     type: 'success',
