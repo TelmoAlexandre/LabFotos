@@ -42,6 +42,9 @@ namespace LabFoto
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            // Adicionar o IHttpClientFactory para poderem ser feito pedidos HTTP
+            services.AddHttpClient();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
