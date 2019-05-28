@@ -1,0 +1,84 @@
+﻿@model IEnumerable<LabFoto.Models.Tables.ContaOnedrive>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="AskPermitions">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DriveId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccessToken)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RefreshToken)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quota_Total)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quota_Remaining)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quota_Used)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DriveId)
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.AccessToken)*@
+                    Grande demais
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.RefreshToken)*@
+                    Grande demais
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quota_Total)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quota_Remaining)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quota_Used)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+@if (ViewData["Feedback"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            // Notificação 'Noty'
+            new Noty({
+                type: 'success',
+                layout: 'bottomRight',
+                theme: 'bootstrap-v4',
+                text: '@ViewData["Feedback"]',
+                timeout: 4000,
+                progressBar: true
+            }).show();
+        }, false);
+    </script>
+}
