@@ -101,6 +101,8 @@ namespace LabFoto.Controllers
         // GET: Servicos
         public async Task<IActionResult> Index(int? page = 1)
         {
+            // Fornecer feedback ao cliente caso este exista.
+            // Este feedback é fornecido na view a partir de uma notificação 'Noty'
             if (TempData["Feedback"] !=null)
             {
                 ViewData["Feedback"] = TempData["Feedback"];
