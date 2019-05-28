@@ -93,3 +93,10 @@ body {
 .superMini {
     width: 280px !important;
 }
+
+#loadingServico {
+    width: 100% !important;
+}
+#observacoesPlaceholder {
+    max-width: 100% !important;
+}
