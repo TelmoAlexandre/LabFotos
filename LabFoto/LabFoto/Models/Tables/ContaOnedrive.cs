@@ -13,8 +13,8 @@ namespace LabFoto.Models.Tables
         public string DriveId { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public int Quota_Total { get; set; }
-        public int Quota_Remaining { get; set; }
-        public int Quota_Used { get; set; }
+        public string Quota_Total { get; set; }
+        public string Quota_Remaining { get; set; }
+        public string Quota_Used { get; set; }
     }
 }

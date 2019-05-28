@@ -58,9 +58,9 @@ namespace LabFoto.Migrations
                     DriveId = table.Column<string>(nullable: true),
                     AccessToken = table.Column<string>(nullable: true),
                     RefreshToken = table.Column<string>(nullable: true),
-                    Quota_Total = table.Column<int>(nullable: false),
-                    Quota_Remaining = table.Column<int>(nullable: false),
-                    Quota_Used = table.Column<int>(nullable: false)
+                    Quota_Total = table.Column<string>(nullable: true),
+                    Quota_Remaining = table.Column<string>(nullable: true),
+                    Quota_Used = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -429,15 +429,15 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "35331636-d853-4ffd-a018-c8c09f4a5888", "Admin", "ADMIN" });
+                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "6a09aa85-bbf6-435f-bc13-c17607951fb2", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Nome" },
                 values: new object[,]
                 {
-                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "623fcdbd-5d02-4743-9bdc-f442e0d539fe", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEOe+Tvc+2z3rvKTuxbW3CIcTnIvNyRovVM2t4Y6gh7oCnVQz6OUGWzyVK+PspLXTmQ==", null, false, "", false, "admin1@admin1.com", "Admin1" },
-                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "b94b12ce-1ac9-4a3c-8789-1c55b09d8b24", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEHl6H4bk9peUHcFAGB7NPlZu9zFl5HvmkfKeURR/jDcRoA4tIJcFsEeJMwT68S6xKw==", null, false, "", false, "user1@user1.com", "User1" }
+                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "f37c4640-0200-434a-a30c-f1512bf348ed", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEJZ4fc+3TZyZn5arEG0xs0mzmB+jU3VJRN5UfsPqDQdZklBVvNYQaU4Ie/Lq5lRLKw==", null, false, "", false, "admin1@admin1.com", "Admin1" },
+                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "5f0e9733-886f-4fe2-94af-2cb5a751e77e", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEJFGTrIBTpWwFGAPPTB5tI4LS7NpUrgB+8abiG+XnhtgSTHOG4HBUReAcXqklKbQMQ==", null, false, "", false, "user1@user1.com", "User1" }
                 });
 
             migrationBuilder.InsertData(
