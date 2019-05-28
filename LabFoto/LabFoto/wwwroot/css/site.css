@@ -100,3 +100,8 @@ body {
 #observacoesPlaceholder {
     max-width: 100% !important;
 }
+
+.requerenteSide {
+    width: 290px !important;
+    height: 291.1px !important;
+}

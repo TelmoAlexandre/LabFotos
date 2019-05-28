@@ -109,11 +109,15 @@ function initModalEvents() {
 
     editarRequerenteIndex = (divEdicao, divRequerente, idRequerente) => {
         $(`#${divRequerente}`).shape('flip back');
+        $(`#${divEdicao}`).width('290px');
+        $(`#${divEdicao}`).height('291.1px');
         requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditIndex/${idRequerente}`);
     };
 
     editarRequerenteDetails = (divEdicao, divRequerente, idRequerente) => {
         $(`#${divRequerente}`).shape('flip back');
+        $(`#${divEdicao}`).width('290px');
+        $(`#${divEdicao}`).height('291.1px');
         requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditDetails/${idRequerente}`);
     };
 
