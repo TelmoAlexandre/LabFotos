@@ -50,6 +50,24 @@ namespace LabFoto.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ContasOnedrive",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DriveId = table.Column<string>(nullable: true),
+                    AccessToken = table.Column<string>(nullable: true),
+                    RefreshToken = table.Column<string>(nullable: true),
+                    Quota_Total = table.Column<int>(nullable: false),
+                    Quota_Remaining = table.Column<int>(nullable: false),
+                    Quota_Used = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContasOnedrive", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DataExecucao",
                 columns: table => new
                 {
@@ -60,6 +78,19 @@ namespace LabFoto.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DataExecucao", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Metadados",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Metadados", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -239,6 +270,27 @@ namespace LabFoto.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Galerias",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(nullable: true),
+                    DataDeCriacao = table.Column<DateTime>(nullable: false),
+                    ServicoFK = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Galerias", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Galerias_Servicos_ServicoFK",
+                        column: x => x.ServicoFK,
+                        principalTable: "Servicos",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Servicos_DatasExecucao",
                 columns: table => new
                 {
@@ -310,18 +362,82 @@ namespace LabFoto.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Fotografias",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(nullable: true),
+                    Formato = table.Column<string>(nullable: true),
+                    DownloadUrl = table.Column<string>(nullable: true),
+                    Thumbnail_Small = table.Column<string>(nullable: true),
+                    Thumbnail_Medium = table.Column<string>(nullable: true),
+                    Thumbnail_Large = table.Column<string>(nullable: true),
+                    FotografiaOrigemFK = table.Column<int>(nullable: false),
+                    FotografiaOrigemID = table.Column<int>(nullable: true),
+                    ContaOnedriveFK = table.Column<int>(nullable: false),
+                    GaleriaFK = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fotografias", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Fotografias_ContasOnedrive_ContaOnedriveFK",
+                        column: x => x.ContaOnedriveFK,
+                        principalTable: "ContasOnedrive",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Fotografias_Fotografias_FotografiaOrigemID",
+                        column: x => x.FotografiaOrigemID,
+                        principalTable: "Fotografias",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Fotografias_Galerias_GaleriaFK",
+                        column: x => x.GaleriaFK,
+                        principalTable: "Galerias",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Galerias_Metadados",
+                columns: table => new
+                {
+                    MetadadoFK = table.Column<int>(nullable: false),
+                    GaleriaFK = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Galerias_Metadados", x => new { x.MetadadoFK, x.GaleriaFK });
+                    table.ForeignKey(
+                        name: "FK_Galerias_Metadados_Galerias_GaleriaFK",
+                        column: x => x.GaleriaFK,
+                        principalTable: "Galerias",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Galerias_Metadados_Metadados_MetadadoFK",
+                        column: x => x.MetadadoFK,
+                        principalTable: "Metadados",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "e35b2298-1a5a-4bf8-91a4-541e3f4a9768", "Admin", "ADMIN" });
+                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "35331636-d853-4ffd-a018-c8c09f4a5888", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Nome" },
                 values: new object[,]
                 {
-                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "a343d01b-f46f-4a22-ad98-d1ee729c74a6", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEMUP3obr9QmvVbfF1WUpM0DktbiZAl0hMDbPHHt+e6olS28cOKSOOY7zS6dcGnArjw==", null, false, "", false, "admin1@admin1.com", "Admin1" },
-                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "c34d8123-2575-455f-82ed-0d50abb58930", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEALpJ34k8SqWXh23AjWd9T1xcAiNte6nMivwp0S3aVXzR2T+IoFUGQG6rtcmhsXa5Q==", null, false, "", false, "user1@user1.com", "User1" }
+                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "623fcdbd-5d02-4743-9bdc-f442e0d539fe", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEOe+Tvc+2z3rvKTuxbW3CIcTnIvNyRovVM2t4Y6gh7oCnVQz6OUGWzyVK+PspLXTmQ==", null, false, "", false, "admin1@admin1.com", "Admin1" },
+                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "b94b12ce-1ac9-4a3c-8789-1c55b09d8b24", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEHl6H4bk9peUHcFAGB7NPlZu9zFl5HvmkfKeURR/jDcRoA4tIJcFsEeJMwT68S6xKw==", null, false, "", false, "user1@user1.com", "User1" }
                 });
 
             migrationBuilder.InsertData(
@@ -337,9 +453,20 @@ namespace LabFoto.Migrations
                     { 6, new DateTime(2018, 2, 27, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 5, new DateTime(2019, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 4, new DateTime(2019, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new DateTime(2018, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, new DateTime(2019, 2, 24, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 7, new DateTime(2018, 1, 11, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, new DateTime(2018, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 7, new DateTime(2018, 1, 11, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Metadados",
+                columns: new[] { "ID", "Nome" },
+                values: new object[,]
+                {
+                    { 1, "Metadado1" },
+                    { 2, "Metadado2" },
+                    { 3, "Metadado3" },
+                    { 4, "Metadado4" }
                 });
 
             migrationBuilder.InsertData(
@@ -350,8 +477,8 @@ namespace LabFoto.Migrations
                     { 5, "manuel@ipt.pt", "Manuel", "Manuel", "987321546" },
                     { 3, "joao@ipt.pt", "João", "Maria", "987654321" },
                     { 2, "maria@ipt.pt", "Maria", "Maria", "987654321" },
-                    { 1, "fernando@ipt.pt", "Fernando", "Fernando", "123456789" },
-                    { 4, "jose@ipt.pt", "José", "José", "123789456" }
+                    { 4, "jose@ipt.pt", "José", "José", "123789456" },
+                    { 1, "fernando@ipt.pt", "Fernando", "Fernando", "123456789" }
                 });
 
             migrationBuilder.InsertData(
@@ -360,10 +487,10 @@ namespace LabFoto.Migrations
                 values: new object[,]
                 {
                     { 1, "Luz Visível" },
+                    { 2, "Luz U.V" },
                     { 3, "Rasante" },
                     { 4, "Infra-red" },
-                    { 5, "Luz Trasmitida" },
-                    { 2, "Luz U.V" }
+                    { 5, "Luz Trasmitida" }
                 });
 
             migrationBuilder.InsertData(
@@ -402,26 +529,37 @@ namespace LabFoto.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Galerias",
+                columns: new[] { "ID", "DataDeCriacao", "Nome", "ServicoFK" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria1", 1 },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria2", 1 },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria3", 1 },
+                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria4", 1 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Servicos_DatasExecucao",
                 columns: new[] { "DataExecucaoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 1, 1 },
-                    { 10, 8 },
-                    { 11, 8 },
-                    { 8, 8 },
                     { 6, 6 },
                     { 8, 5 },
                     { 5, 5 },
+                    { 8, 8 },
                     { 2, 7 },
+                    { 5, 7 },
                     { 7, 7 },
                     { 2, 2 },
-                    { 5, 7 },
-                    { 3, 3 },
-                    { 9, 3 },
-                    { 10, 3 },
                     { 4, 4 },
-                    { 11, 3 }
+                    { 11, 8 },
+                    { 3, 3 },
+                    { 1, 1 },
+                    { 11, 3 },
+                    { 10, 3 },
+                    { 9, 3 },
+                    { 10, 8 }
                 });
 
             migrationBuilder.InsertData(
@@ -429,24 +567,24 @@ namespace LabFoto.Migrations
                 columns: new[] { "ServicoSolicitadoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 1, 4 },
-                    { 2, 6 },
                     { 5, 5 },
                     { 2, 5 },
+                    { 3, 1 },
+                    { 2, 1 },
+                    { 1, 8 },
                     { 3, 7 },
                     { 2, 7 },
-                    { 4, 6 },
-                    { 5, 7 },
                     { 5, 3 },
-                    { 2, 1 },
+                    { 3, 8 },
                     { 1, 2 },
                     { 4, 2 },
-                    { 3, 1 },
-                    { 1, 8 },
+                    { 2, 6 },
                     { 4, 4 },
                     { 3, 4 },
                     { 2, 4 },
-                    { 3, 8 }
+                    { 1, 4 },
+                    { 5, 7 },
+                    { 4, 6 }
                 });
 
             migrationBuilder.InsertData(
@@ -454,15 +592,26 @@ namespace LabFoto.Migrations
                 columns: new[] { "TipoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 1, 1 },
                     { 3, 6 },
-                    { 4, 7 },
-                    { 2, 5 },
                     { 2, 2 },
-                    { 1, 3 },
+                    { 2, 5 },
+                    { 4, 7 },
                     { 3, 4 },
+                    { 1, 3 },
+                    { 1, 1 },
                     { 1, 6 },
                     { 4, 8 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Galerias_Metadados",
+                columns: new[] { "MetadadoFK", "GaleriaFK" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 2 },
+                    { 3, 3 },
+                    { 4, 4 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -505,6 +654,31 @@ namespace LabFoto.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Fotografias_ContaOnedriveFK",
+                table: "Fotografias",
+                column: "ContaOnedriveFK");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Fotografias_FotografiaOrigemID",
+                table: "Fotografias",
+                column: "FotografiaOrigemID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Fotografias_GaleriaFK",
+                table: "Fotografias",
+                column: "GaleriaFK");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Galerias_ServicoFK",
+                table: "Galerias",
+                column: "ServicoFK");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Galerias_Metadados_GaleriaFK",
+                table: "Galerias_Metadados",
+                column: "GaleriaFK");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Servicos_RequerenteFK",
                 table: "Servicos",
                 column: "RequerenteFK");
@@ -543,6 +717,12 @@ namespace LabFoto.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Fotografias");
+
+            migrationBuilder.DropTable(
+                name: "Galerias_Metadados");
+
+            migrationBuilder.DropTable(
                 name: "Servicos_DatasExecucao");
 
             migrationBuilder.DropTable(
@@ -558,16 +738,25 @@ namespace LabFoto.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "ContasOnedrive");
+
+            migrationBuilder.DropTable(
+                name: "Galerias");
+
+            migrationBuilder.DropTable(
+                name: "Metadados");
+
+            migrationBuilder.DropTable(
                 name: "DataExecucao");
 
             migrationBuilder.DropTable(
                 name: "ServicosSolicitados");
 
             migrationBuilder.DropTable(
-                name: "Servicos");
+                name: "Tipos");
 
             migrationBuilder.DropTable(
-                name: "Tipos");
+                name: "Servicos");
 
             migrationBuilder.DropTable(
                 name: "Requerentes");

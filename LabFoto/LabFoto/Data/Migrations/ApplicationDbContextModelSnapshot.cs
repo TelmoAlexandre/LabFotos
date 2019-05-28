@@ -19,6 +19,29 @@ namespace LabFoto.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("LabFoto.Models.Tables.ContaOnedrive", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AccessToken");
+
+                    b.Property<string>("DriveId");
+
+                    b.Property<int>("Quota_Remaining");
+
+                    b.Property<int>("Quota_Total");
+
+                    b.Property<int>("Quota_Used");
+
+                    b.Property<string>("RefreshToken");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("ContasOnedrive");
+                });
+
             modelBuilder.Entity("LabFoto.Models.Tables.DataExecucao", b =>
                 {
                     b.Property<int>("ID")
@@ -86,6 +109,162 @@ namespace LabFoto.Migrations
                         {
                             ID = 11,
                             Data = new DateTime(2019, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Fotografia", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ContaOnedriveFK");
+
+                    b.Property<string>("DownloadUrl");
+
+                    b.Property<string>("Formato");
+
+                    b.Property<int>("FotografiaOrigemFK");
+
+                    b.Property<int?>("FotografiaOrigemID");
+
+                    b.Property<int>("GaleriaFK");
+
+                    b.Property<string>("Nome");
+
+                    b.Property<string>("Thumbnail_Large");
+
+                    b.Property<string>("Thumbnail_Medium");
+
+                    b.Property<string>("Thumbnail_Small");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ContaOnedriveFK");
+
+                    b.HasIndex("FotografiaOrigemID");
+
+                    b.HasIndex("GaleriaFK");
+
+                    b.ToTable("Fotografias");
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Galeria", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DataDeCriacao");
+
+                    b.Property<string>("Nome");
+
+                    b.Property<int>("ServicoFK");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ServicoFK");
+
+                    b.ToTable("Galerias");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            DataDeCriacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Nome = "Galeria1",
+                            ServicoFK = 1
+                        },
+                        new
+                        {
+                            ID = 2,
+                            DataDeCriacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Nome = "Galeria2",
+                            ServicoFK = 1
+                        },
+                        new
+                        {
+                            ID = 3,
+                            DataDeCriacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Nome = "Galeria3",
+                            ServicoFK = 1
+                        },
+                        new
+                        {
+                            ID = 4,
+                            DataDeCriacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Nome = "Galeria4",
+                            ServicoFK = 1
+                        });
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Galeria_Metadado", b =>
+                {
+                    b.Property<int>("MetadadoFK");
+
+                    b.Property<int>("GaleriaFK");
+
+                    b.HasKey("MetadadoFK", "GaleriaFK");
+
+                    b.HasIndex("GaleriaFK");
+
+                    b.ToTable("Galerias_Metadados");
+
+                    b.HasData(
+                        new
+                        {
+                            MetadadoFK = 1,
+                            GaleriaFK = 1
+                        },
+                        new
+                        {
+                            MetadadoFK = 2,
+                            GaleriaFK = 2
+                        },
+                        new
+                        {
+                            MetadadoFK = 3,
+                            GaleriaFK = 3
+                        },
+                        new
+                        {
+                            MetadadoFK = 4,
+                            GaleriaFK = 4
+                        });
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Metadado", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Nome");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Metadados");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Nome = "Metadado1"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Nome = "Metadado2"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Nome = "Metadado3"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Nome = "Metadado4"
                         });
                 });
 
@@ -665,7 +844,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                            ConcurrencyStamp = "e35b2298-1a5a-4bf8-91a4-541e3f4a9768",
+                            ConcurrencyStamp = "35331636-d853-4ffd-a018-c8c09f4a5888",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -842,13 +1021,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a343d01b-f46f-4a22-ad98-d1ee729c74a6",
+                            ConcurrencyStamp = "623fcdbd-5d02-4743-9bdc-f442e0d539fe",
                             Email = "admin1@admin1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@ADMIN1.COM",
                             NormalizedUserName = "ADMIN1@ADMIN1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMUP3obr9QmvVbfF1WUpM0DktbiZAl0hMDbPHHt+e6olS28cOKSOOY7zS6dcGnArjw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOe+Tvc+2z3rvKTuxbW3CIcTnIvNyRovVM2t4Y6gh7oCnVQz6OUGWzyVK+PspLXTmQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -859,19 +1038,57 @@ namespace LabFoto.Migrations
                         {
                             Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c34d8123-2575-455f-82ed-0d50abb58930",
+                            ConcurrencyStamp = "b94b12ce-1ac9-4a3c-8789-1c55b09d8b24",
                             Email = "user1@user1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@USER1.COM",
                             NormalizedUserName = "USER1@USER1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEALpJ34k8SqWXh23AjWd9T1xcAiNte6nMivwp0S3aVXzR2T+IoFUGQG6rtcmhsXa5Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHl6H4bk9peUHcFAGB7NPlZu9zFl5HvmkfKeURR/jDcRoA4tIJcFsEeJMwT68S6xKw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
                             UserName = "user1@user1.com",
                             Nome = "User1"
                         });
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Fotografia", b =>
+                {
+                    b.HasOne("LabFoto.Models.Tables.ContaOnedrive", "ContaOnedrive")
+                        .WithMany()
+                        .HasForeignKey("ContaOnedriveFK")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LabFoto.Models.Tables.Fotografia", "FotografiaOrigem")
+                        .WithMany()
+                        .HasForeignKey("FotografiaOrigemID");
+
+                    b.HasOne("LabFoto.Models.Tables.Galeria", "Galeria")
+                        .WithMany("Fotografias")
+                        .HasForeignKey("GaleriaFK")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Galeria", b =>
+                {
+                    b.HasOne("LabFoto.Models.Tables.Servico", "Servico")
+                        .WithMany()
+                        .HasForeignKey("ServicoFK")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Galeria_Metadado", b =>
+                {
+                    b.HasOne("LabFoto.Models.Tables.Galeria", "Galeria")
+                        .WithMany("Galerias_Metadados")
+                        .HasForeignKey("GaleriaFK")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LabFoto.Models.Tables.Metadado", "Metadado")
+                        .WithMany("Galerias_Metadados")
+                        .HasForeignKey("MetadadoFK")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("LabFoto.Models.Tables.Servico", b =>

@@ -55,6 +55,18 @@ namespace LabFoto.Data
                 .WithMany(s => s.Tipos_Servicos)
                 .HasForeignKey(st => st.TipoFK);
 
+            // n-m ---> Servicos_Tipos
+            modelBuilder.Entity<Galeria_Metadado>()
+                .HasKey(sc => new { sc.MetadadoFK, sc.GaleriaFK });
+            modelBuilder.Entity<Galeria_Metadado>()
+                .HasOne(st => st.Galeria)
+                .WithMany(s => s.Galerias_Metadados)
+                .HasForeignKey(st => st.GaleriaFK);
+            modelBuilder.Entity<Galeria_Metadado>()
+                .HasOne(st => st.Metadado)
+                .WithMany(s => s.Galerias_Metadados)
+                .HasForeignKey(st => st.MetadadoFK);
+
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
@@ -600,6 +612,78 @@ namespace LabFoto.Data
                     DataExecucaoFK = 8
                 }
             );
+
+            modelBuilder.Entity<Metadado>().HasData(
+                new Metadado {
+                    ID = 1,
+                    Nome = "Metadado1"
+                },
+                new Metadado
+                {
+                    ID = 2,
+                    Nome = "Metadado2"
+                },
+                new Metadado
+                {
+                    ID = 3,
+                    Nome = "Metadado3"
+                },
+                new Metadado
+                {
+                    ID = 4,
+                    Nome = "Metadado4"
+                }
+            );
+
+            modelBuilder.Entity<Galeria>().HasData(
+                new Galeria
+                {
+                    ID = 1,
+                    Nome = "Galeria1",
+                    ServicoFK = 1
+                },
+                new Galeria
+                {
+                    ID = 2,
+                    Nome = "Galeria2",
+                    ServicoFK = 1
+                },
+                new Galeria
+                {
+                    ID = 3,
+                    Nome = "Galeria3",
+                    ServicoFK = 1
+                },
+                new Galeria
+                {
+                    ID = 4,
+                    Nome = "Galeria4",
+                    ServicoFK = 1
+                }
+            );
+
+            modelBuilder.Entity<Galeria_Metadado>().HasData(
+                new Galeria_Metadado {
+                    GaleriaFK = 1,
+                    MetadadoFK = 1
+                },
+                new Galeria_Metadado
+                {
+                    GaleriaFK = 2,
+                    MetadadoFK = 2
+                },
+                new Galeria_Metadado
+                {
+                    GaleriaFK = 3,
+                    MetadadoFK = 3
+                },
+                new Galeria_Metadado
+                {
+                    GaleriaFK = 4,
+                    MetadadoFK = 4
+                }
+            );
+
         }
 
         public DbSet<Utilizador> Utilizador { get; set; }
@@ -619,5 +703,15 @@ namespace LabFoto.Data
         public DbSet<Tipo> Tipos { get; set; }
 
         public DbSet<Servico_Tipo> Servicos_Tipos { get; set; }
+
+        public DbSet<Galeria> Galerias { get; set; }
+
+        public DbSet<Fotografia> Fotografias { get; set; }
+
+        public DbSet<Metadado> Metadados { get; set; }
+
+        public DbSet<ContaOnedrive> ContasOnedrive { get; set; }
+
+        public DbSet<Galeria_Metadado> Galerias_Metadados { get; set; }
     }
 }
