@@ -111,7 +111,7 @@ namespace LabFoto.Controllers
 
                     JObject quota = (JObject)values[0]["quota"];
                     string quota_Total = (string)quota["total"];
-                    string quota_Used = (string)quota["total"];
+                    string quota_Used = (string)quota["used"];
                     string quota_Remaining = (string)quota["remaining"];
 
                     // Criar o objeto 'conta' com informação sobre os tokens
