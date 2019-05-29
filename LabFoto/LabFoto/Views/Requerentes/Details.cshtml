@@ -7,10 +7,10 @@
     <div class="col-md-5"></div>
     <div class="ui people shape" id="div_@Model.ID">
         <div class="sides">
-            <div class="side active" id="divDetails_@Model.ID">
+            <div class="side active requerenteSide" id="divDetails_@Model.ID">
                 <partial name="_RequerenteDetailsPartial" model="Model" />
             </div>
-            <div class="side" id="divEditar_@Model.ID">
+            <div class="side requerenteSide" id="divEditar_@Model.ID">
 
             </div>
         </div>
@@ -35,3 +35,55 @@
 </div>
 
 
+<div class="ui card" id="loadingServico" hidden>
+    <div class="card-header pt-5 pb-3">
+        <div class="ui placeholder">
+            <div class="header">
+                <div class="full line"></div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="ui grid">
+            <div class="eight wide column">
+                <div class="ui placeholder">
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                </div>
+            </div>
+            <div class="eight wide column">
+                <div class="ui placeholder">
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ui grid">
+            <div class="eight wide column">
+                <div class="ui placeholder">
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                </div>
+            </div>
+            <div class="eight wide column">
+                <div class="ui placeholder">
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                    <div class="full line"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ui grid">
+            <div class="sixteen wide column">
+                <div class="ui placeholder" id="observacoesPlaceholder">
+                    <div class="full line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
