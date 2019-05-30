@@ -17,6 +17,7 @@ namespace LabFoto.Models.Tables
         public string Thumbnail_Small { get; set; }
         public string Thumbnail_Medium { get; set; }
         public string Thumbnail_Large { get; set; }
+        public string ItemId { get; set; }
 
         //Chave Forasteira para Fotografia de origem
         [ForeignKey("Fotografia")]
