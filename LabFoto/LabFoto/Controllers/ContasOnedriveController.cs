@@ -10,7 +10,7 @@ using LabFoto.Models.Tables;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
-using System.Text;
+using LabFoto.Onedrive;
 
 namespace LabFoto.Controllers
 {
@@ -18,16 +18,12 @@ namespace LabFoto.Controllers
     public class ContasOnedriveController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IHttpClientFactory _clientFactory;
-        private readonly HttpClient client;
+        private readonly OnedriveAPI _onedrive;
 
         public ContasOnedriveController(ApplicationDbContext context, IHttpClientFactory clientFactory)
         {
             _context = context;
-            _clientFactory = clientFactory;
-
-            // Este cliente vai ser utilizado para envio e recepção pedidos Http
-            client = _clientFactory.CreateClient();
+            _onedrive = new OnedriveAPI(context, clientFactory);
         }
 
         // GET: ContaOnedrives
@@ -63,15 +59,7 @@ namespace LabFoto.Controllers
 
         public IActionResult AskPermitions()
         {
-            string permissionsUrl =
-                "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/authorize?" +
-                "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
-                "&response_type=code" +
-                "&redirect_uri=https://localhost:44354/ContasOnedrive/Create&response_mode=query" +
-                "&scope=offline_access%20files.read%20files.read.all%20files.readwrite%20files.readwrite.all" +
-                "&state=12345";
-
-            return Redirect(permissionsUrl);
+            return Redirect(_onedrive.GetPermissionsUrl());
         }
 
         // GET: ContaOnedrives/Create
@@ -80,7 +68,7 @@ namespace LabFoto.Controllers
             try
             {
                 // Faz o pedido HTTP.GET para pedir o token utilizando o codigo das permissões
-                JObject tokenResponse = await GetInitialToken(code);
+                JObject tokenResponse = await _onedrive.GetInitialToken(code);
                 if (tokenResponse == null)
                 {
                     // Feeback ao utilizador - Vai ser redirecionado para o Index
@@ -94,7 +82,7 @@ namespace LabFoto.Controllers
 
                 // Faz o pedido HTTP.GET para pedir as informações da Onedrive
                 // Para que estas possam ser associadas ao objeto 'conta'
-                JObject driveInfo = await GetDriveInfo(access_token);
+                JObject driveInfo = await _onedrive.GetDriveInfo(access_token);
                 if(driveInfo == null)
                 {
                     // Feeback ao utilizador - Vai ser redirecionado para o Index
@@ -145,67 +133,6 @@ namespace LabFoto.Controllers
             // Feeback ao utilizador - Vai ser redirecionado para o Index
             TempData["Feedback"] = "Conta Onedrive adiconada com sucesso.";
             return RedirectToAction(nameof(Index));
-        }
-
-        public async Task<JObject> GetInitialToken(string code)
-        {
-            try
-            {
-                // Inicializar o pedido com o codigo recebido quando foram pedidas as permissões ao utilizador
-                string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                request.Content = new StringContent(
-                    "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
-                    "&scope=offline_access+files.read+files.read.all" +
-                    "&code=" + code +
-                    "&redirect_uri=" + "https://localhost:44354/ContasOnedrive/Create" +
-                    "&grant_type=authorization_code" +
-                    "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
-                    Encoding.UTF8, "application/x-www-form-urlencoded"
-                );
-
-                // Fazer o pedido e obter resposta
-                var response = await client.SendAsync(request);
-
-                // Caso retorne OK 200
-                if (response.IsSuccessStatusCode)
-                {
-                    // Converter a resposta para um objeto json
-                    return JObject.Parse(await response.Content.ReadAsStringAsync());
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return null;
-        }
-
-        public async Task<JObject> GetDriveInfo(string token)
-        {
-            try
-            {
-                // Inicializar o pedido com o token de autenticação
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/drives/");
-                request.Headers.Add("Authorization", "Bearer " + token);
-
-                // Fazer o pedido e obter resposta
-                var response = await client.SendAsync(request);
-
-                // Caso retorne OK 2xx
-                if (response.IsSuccessStatusCode)
-                {
-                    // Converter a resposta para um objeto json
-                    return JObject.Parse(await response.Content.ReadAsStringAsync());
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return null;
         }
 
         private bool ContaOnedriveExists(int id)
