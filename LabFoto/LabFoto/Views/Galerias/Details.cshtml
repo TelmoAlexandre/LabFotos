@@ -37,10 +37,8 @@
         {
             @foreach (var foto in Model.Fotografias)
             {
-                <div class="col-md-3">
-                    <div class="ui small image">
-                        <img src="@foto.Thumbnail_Medium" />
-                    </div>
+                <div class="mx-1 my-1">
+                    <img class="ui small image medium-thumbnails" src="@foto.Thumbnail_Medium" />
                 </div>
             }
         }
