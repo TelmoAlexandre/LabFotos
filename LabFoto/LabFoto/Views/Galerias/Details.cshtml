@@ -31,14 +31,16 @@
     </dl>
 </div>
 
-<div id="photos">
+<div id="photos" class="row">
     @{
         if (Model.Fotografias != null)
         {
             @foreach (var foto in Model.Fotografias)
             {
-                <div class="ui small image">
-                    <img src="@foto.Thumbnail_Medium" />
+                <div class="col-md-3">
+                    <div class="ui small image">
+                        <img src="@foto.Thumbnail_Medium" />
+                    </div>
                 </div>
             }
         }

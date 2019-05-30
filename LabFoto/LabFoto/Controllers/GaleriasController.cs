@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LabFoto.Data;
 using LabFoto.Models.Tables;
+using System.Net.Http;
+using LabFoto.Onedrive;
 
 namespace LabFoto.Controllers
 {
     public class GaleriasController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly OnedriveAPI _onedrive;
 
-        public GaleriasController(ApplicationDbContext context)
+        public GaleriasController(ApplicationDbContext context, IHttpClientFactory clientFactory)
         {
             _context = context;
+            _onedrive = new OnedriveAPI(context, clientFactory);
         }
 
         // GET: Galerias
@@ -37,6 +41,11 @@ namespace LabFoto.Controllers
             var galeria = await _context.Galerias
                 .Include(g => g.Servico).Include(g => g.Fotografias)
                 .FirstOrDefaultAsync(m => m.ID == id);
+
+            var photos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).ToListAsync();
+
+            await _onedrive.GetThumbnailsAsync(photos);
+
             if (galeria == null)
             {
                 return NotFound();
