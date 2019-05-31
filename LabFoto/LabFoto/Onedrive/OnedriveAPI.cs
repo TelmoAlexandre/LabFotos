@@ -32,7 +32,7 @@ namespace LabFoto.Onedrive
                 foreach (var photo in photos)
                 {
                     // Verificar se o token está válido
-                    await RefreshToken(photo.ContaOnedrive);
+                    await RefreshTokenAsync(photo.ContaOnedrive);
                     
                     string driveId = photo.ContaOnedrive.DriveId;
                     string url = "https://graph.microsoft.com/v1.0/me" +
@@ -72,10 +72,10 @@ namespace LabFoto.Onedrive
         // Verifica se o token de uma conta já expirou
         private bool IsTokenValid(ContaOnedrive conta)
         {
-            return ((DateTime.Now - conta.TokenDate).TotalSeconds < 3000);
+            return ((DateTime.Now - conta.TokenDate).TotalSeconds < 3400);
         }
 
-        private async Task<bool> RefreshToken(ContaOnedrive conta)
+        private async Task<bool> RefreshTokenAsync(ContaOnedrive conta)
         {
             if (!IsTokenValid(conta))
             {
@@ -124,9 +124,7 @@ namespace LabFoto.Onedrive
             return true;
         }
 
-
-
-        public async Task<JObject> GetInitialToken(string code)
+        public async Task<JObject> GetInitialTokenAsync(string code)
         {
             try
             {
@@ -161,7 +159,7 @@ namespace LabFoto.Onedrive
             return null;
         }
 
-        public async Task<JObject> GetDriveInfo(string token)
+        public async Task<JObject> GetDriveInfoAsync(string token)
         {
             try
             {

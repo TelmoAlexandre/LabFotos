@@ -31,17 +31,17 @@
     </dl>
 </div>
 
-<div class="ui small images">
+<div class="ui seven cards" id="thumbnails">
     @{
         if (Model.Fotografias != null)
         {
             @foreach (var foto in Model.Fotografias)
             {
-                <img class="medium-thumbnails" src="@foto.Thumbnail_Medium" />
-            }
-            @foreach (var foto in Model.Fotografias)
-            {
-                <img class="medium-thumbnails" src="@foto.Thumbnail_Medium" />
+                <div class="ui card">
+                    <div class="ui placeholder" style="width:150px; height:150px;">
+                        <div class="image"></div>
+                    </div>
+                </div>
             }
         }
     }
@@ -51,3 +51,13 @@
     <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+</script>
+@section scripts
+{
+    <script>
+    $(document).ready(function () {
+        $("#thumbnails").load("/Galerias/Thumbnails/" + @Model.ID);
+    });
+    </script>
+}

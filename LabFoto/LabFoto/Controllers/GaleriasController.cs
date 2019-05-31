@@ -42,9 +42,7 @@ namespace LabFoto.Controllers
                 .Include(g => g.Servico).Include(g => g.Fotografias)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            var photos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).ToListAsync();
-
-            //await _onedrive.GetThumbnailsAsync(photos);
+            var photos = await _context.Fotografias.Where(f => f.GaleriaFK == id).ToListAsync();
 
             if (galeria == null)
             {
@@ -52,6 +50,20 @@ namespace LabFoto.Controllers
             }
 
             return View(galeria);
+        }
+
+        public async Task<IActionResult> Thumbnails(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var photos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).ToListAsync();
+
+            await _onedrive.GetThumbnailsAsync(photos);
+
+            return PartialView("PartialViews/ThumbnailsPartialView", photos);
         }
 
         // GET: Galerias/Create

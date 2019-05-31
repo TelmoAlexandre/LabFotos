@@ -1,0 +1,8 @@
+﻿@model IEnumerable<LabFoto.Models.Tables.Fotografia>
+
+@foreach (var foto in Model)
+{
+    <div class="ui card">
+        <img class="medium-thumbnails" src="@foto.Thumbnail_Medium" />
+    </div>
+}

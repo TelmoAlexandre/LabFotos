@@ -68,7 +68,7 @@ namespace LabFoto.Controllers
             try
             {
                 // Faz o pedido HTTP.GET para pedir o token utilizando o codigo das permissões
-                JObject tokenResponse = await _onedrive.GetInitialToken(code);
+                JObject tokenResponse = await _onedrive.GetInitialTokenAsync(code);
                 if (tokenResponse == null)
                 {
                     // Feeback ao utilizador - Vai ser redirecionado para o Index
@@ -82,7 +82,7 @@ namespace LabFoto.Controllers
 
                 // Faz o pedido HTTP.GET para pedir as informações da Onedrive
                 // Para que estas possam ser associadas ao objeto 'conta'
-                JObject driveInfo = await _onedrive.GetDriveInfo(access_token);
+                JObject driveInfo = await _onedrive.GetDriveInfoAsync(access_token);
                 if(driveInfo == null)
                 {
                     // Feeback ao utilizador - Vai ser redirecionado para o Index
