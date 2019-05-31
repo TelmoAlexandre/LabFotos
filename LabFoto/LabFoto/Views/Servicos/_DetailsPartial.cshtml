@@ -46,7 +46,7 @@
                                 }
                             </div>
                             <div class="requerente">
-                                <span>Requerente</span> <span class="float-right font-weight-bold">@Html.ActionLink(Model.Requerente.Nome, "Details", "Requerentes", new { id = Model.RequerenteFK }, new { style = "text-decoration: none;" })</span>
+                                <span>Requerente</span> <span class="float-right font-weight-bold pointer btn-link" style="text-decoration:none;" onclick="servicoRequerenteDetails(`modalDetailsRequerente`, @Model.RequerenteFK)">@Model.Requerente.Nome</span>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -111,6 +111,9 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="ui modal superMini fluidCorners" id="modalDetailsRequerente">
 </div>
 
 <script>
