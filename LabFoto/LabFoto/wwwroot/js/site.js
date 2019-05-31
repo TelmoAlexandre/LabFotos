@@ -107,18 +107,9 @@ function initModalEvents() {
         );
     });
 
-    editarRequerenteIndex = (divEdicao, divRequerente, idRequerente) => {
+    editarRequerente = (divEdicao, divRequerente, idRequerente, details) => {
         $(`#${divRequerente}`).shape('flip back');
-        $(`#${divEdicao}`).width('290px');
-        $(`#${divEdicao}`).height('291.1px');
-        requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditIndex/${idRequerente}`);
-    };
-
-    editarRequerenteDetails = (divEdicao, divRequerente, idRequerente) => {
-        $(`#${divRequerente}`).shape('flip back');
-        $(`#${divEdicao}`).width('290px');
-        $(`#${divEdicao}`).height('291.1px');
-        requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditDetails/${idRequerente}`);
+        requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/Edit/${idRequerente}?details=${details}`);
     };
 
     // Modal do novo tipo com fetch do formulário em Ajax
@@ -288,17 +279,17 @@ createTipoOnServicosEdit = (e, idServico) => {
     });
 };
 
-requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, requerenteId) => {
+requerenteEditFormSubmit = (e, divRequerente, divDetailsId, formEditId, requerenteId, details) => {
     e.preventDefault(); // Não deixar o form submeter
-
     $.ajax({
         type: "POST",
-        url: `/Requerentes/EditIndex/${requerenteId}`,
+        url: `/Requerentes/Edit/${requerenteId}`,
         data: {
             "Nome": $(`#${formEditId} #Nome`).val(),
             "Email": $(`#${formEditId} #Email`).val(),
             "Telemovel": $(`#${formEditId} #Telemovel`).val(),
             "Responsavel": $(`#${formEditId} #Responsavel`).val(),
+            "details": details,
             "__RequestVerificationToken": $(`#${formEditId} input[name='__RequestVerificationToken']`).val(),
             "X-Requested-With": "XMLHttpRequest"
         },
@@ -306,42 +297,7 @@ requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, req
             if (resp.success) {
                 $(`#${divDetailsId}`).html(getLoadingBarHtml);
                 $(`#${divRequerente}`).shape('flip over');
-                $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjax/${requerenteId}`, function () {
-                    $('[data-toggle="tooltip"]').tooltip();
-                });
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'success',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: 'Guardado com sucesso.',
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
-            }
-        }
-    });
-};
-
-requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, requerenteId) => {
-    e.preventDefault(); // Não deixar o form submeter
-
-    $.ajax({
-        type: "POST",
-        url: `/Requerentes/EditDetails/${requerenteId}`,
-        data: {
-            "Nome": $(`#${formEditId} #Nome`).val(),
-            "Email": $(`#${formEditId} #Email`).val(),
-            "Telemovel": $(`#${formEditId} #Telemovel`).val(),
-            "Responsavel": $(`#${formEditId} #Responsavel`).val(),
-            "__RequestVerificationToken": $(`#${formEditId} input[name='__RequestVerificationToken']`).val(),
-            "X-Requested-With": "XMLHttpRequest"
-        },
-        success: function (resp) {
-            if (resp.success) {
-                $(`#${divDetailsId}`).html(getLoadingBarHtml);
-                $(`#${divRequerente}`).shape('flip over');
-                $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjaxDetails/${requerenteId}`, function () {
+                $(`#${divDetailsId}`).load(`/Requerentes/DetailsCardAjax/${requerenteId}?details=${details}`, function () {
                     $('[data-toggle="tooltip"]').tooltip();
                 });
                 // Notificação 'Noty'

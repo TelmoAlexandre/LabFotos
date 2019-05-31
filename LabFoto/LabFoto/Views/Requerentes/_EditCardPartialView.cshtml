@@ -1,9 +1,10 @@
 ﻿@model LabFoto.Models.Tables.Requerente
-
+@{
+    bool details = (bool)ViewData["details"];
+}
 <form asp-controller="Requerentes" asp-action="Edit"
-      onsubmit="requerenteEditFormSubmitIndex(event, `div_@Model.ID` , `divDetails_@Model.ID`, `requerenteEditForm_@Model.ID`, `@Model.ID`)"
-      id="requerenteEditForm_@Model.ID">
-    <div class="ui card">
+      onsubmit="requerenteEditFormSubmit(event, 'div_@Model.ID' , 'divDetails_@Model.ID', 'requerenteEditForm_@Model.ID', @Model.ID, `@details`)" id="requerenteEditForm_@Model.ID">
+    <div class="ui card mb-0">
         <div class="card pb-2">
             <div class="card-body">
                 <div class="ui transparent left icon fluid input">

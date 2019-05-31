@@ -42,7 +42,8 @@ namespace LabFoto.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> IndexFilter(string nomeSearch, int? requerentesPerPage, int? pageReq) {
+        public async Task<IActionResult> IndexFilter(string nomeSearch, int? requerentesPerPage, int? pageReq)
+        {
 
             if (pageReq == null) pageReq = 1;
             if (requerentesPerPage == null) requerentesPerPage = 2;
@@ -107,9 +108,8 @@ namespace LabFoto.Controllers
         }
 
         // GET: Requerentes/Details/5
-        public async Task<IActionResult> DetailsIndexAjax(int? id)
+        public async Task<IActionResult> DetailsCardAjax(int? id, bool details)
         {
-
             if (id == null)
             {
                 return NotFound();
@@ -121,26 +121,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-
-            return PartialView("_RequerenteDetailsIndexPartial", requerente);
-        } 
-        
-        // GET: Requerentes/Details/5
-        public async Task<IActionResult> DetailsIndexAjaxDetails(int? id)
-        {
-            
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var requerente = await _context.Requerentes.Include(r => r.Servicos)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (requerente == null)
-            {
-                return NotFound();
-            }
-
+            ViewData["details"] = details;
             return PartialView("_RequerenteDetailsPartial", requerente);
         }
 
@@ -173,7 +154,7 @@ namespace LabFoto.Controllers
         }
 
         // GET: Requerentes/Edit/5
-        public async Task<IActionResult> EditIndex(int? id)
+        public async Task<IActionResult> Edit(int? id, bool details)
         {
             if (id == null)
             {
@@ -185,7 +166,8 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            return PartialView("_EditCardPartialViewIndex", requerente);
+            ViewData["details"] = details;
+            return PartialView("_EditCardPartialView", requerente);
         }
 
         // POST: Requerentes/Edit/5
@@ -193,7 +175,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditIndex(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente, bool details)
         {
             if (id != requerente.ID)
             {
@@ -220,58 +202,7 @@ namespace LabFoto.Controllers
                     }
                 }
             }
-            return PartialView("_EditCardPartialViewIndex", requerente);
-        }
-
-        // GET: Requerentes/Edit/5
-        public async Task<IActionResult> EditDetails(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var requerente = await _context.Requerentes.FindAsync(id);
-            if (requerente == null)
-            {
-                return NotFound();
-            }
-            return PartialView("_EditCardPartialViewDetails", requerente);
-        }
-
-        // POST: Requerentes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditDetails(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
-        {
-            if (id != requerente.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(requerente);
-                    await _context.SaveChangesAsync();
-                    return Json(new { success = true });
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RequerentesExists(requerente.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-            return PartialView("_EditCardPartialViewDetails", requerente);
+            return PartialView("_EditCardPartialView", requerente);
         }
 
         // GET: Requerentes/Delete/5

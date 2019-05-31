@@ -1,9 +1,27 @@
 ﻿@model LabFoto.Models.Tables.Requerente
+@{
+    bool details;
+    if (ViewData["details"] != null)
+    {
+        details = (bool)ViewData["details"];
+    }
+    else
+    {
+        details = false;
+    }
 
+}
 <div class="ui card">
     <div class="card">
         <div class="card-body">
-            <h3 class="card-title font-weight-bold">@Model.Nome</h3>
+            @if (details)
+            {
+                <h3 class="card-title font-weight-bold">@Model.Nome</h3>
+            }
+            else
+            {
+                <h3 class="card-title font-weight-bold"><a href="/Requerentes/Details/@Model.ID" class="plainTextLink">@Model.Nome</a></h3>
+            }
             <hr />
             <div class="ui large list">
                 <div class="item">
@@ -30,7 +48,15 @@
                     </p>
                 </div>
             </div>
-            <a class="btn float-right" onclick="editarRequerenteDetails(`divEditar_@Model.ID`, `div_@Model.ID`, @Model.ID)" data-toggle="tooltip" title="Editar"><i class="edit outline icon"></i></a>
+            @if (details)
+            {
+                <a class="btn float-right" onclick="editarRequerente(`divEditar_@Model.ID`, `div_@Model.ID`, @Model.ID, true)" data-toggle="tooltip" title="Editar"><i class="edit outline icon"></i></a>
+            }
+            else
+            {
+                <a class="btn float-right" href="/Requerentes/Details/@Model.ID" data-toggle="tooltip" title="Ver Detalhes">@*<i class="address card outline icon"></i>*@<i class="far fa-address-card"></i></a>
+                <a class="btn float-right" onclick="editarRequerente(`divEditar_@Model.ID`, `div_@Model.ID`, @Model.ID, false)" data-toggle="tooltip" title="Editar"><i class="edit outline icon"></i></a>
+            }
         </div>
     </div>
 </div>
