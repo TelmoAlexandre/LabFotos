@@ -8,6 +8,9 @@ using LabFoto.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace LabFoto.Controllers
 {
@@ -69,6 +72,27 @@ namespace LabFoto.Controllers
         {
             return View();
         }
+        [HttpPost]
+        [RequestFormLimits(MultipartBodyLengthLimit = 4_294_967_296)] // 4 GB
+        public IActionResult Upload (List<IFormFile> files, [FromServices] IHostingEnvironment env)
+        {
+            double totalLength = 0;
+            foreach (var file in files)
+            {
+                totalLength += file.Length;
+                string fileName = $"{env.WebRootPath}\\{file.FileName}";
+                using (FileStream fs = System.IO.File.Create(fileName))
+                {
+                    file.CopyTo(fs);
+                    fs.Flush();
+                }
+            }
+
+            ViewData["message"] = $"{totalLength} bytes uploaded successfully!";
+
+            return View("Privacy");
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
