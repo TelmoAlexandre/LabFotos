@@ -1,4 +1,5 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+﻿
+// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
 var expandedAccordion = false;
@@ -439,18 +440,16 @@ clickThisButton = (id) => {
     $(`#${id}`).click();
 };
 
-
-// Multiple images preview in browser
-imagesPreview = (input, placeToInsertImagePreview) => {
+imagesPreview = (input) => {
     if (input.files) {
         var filesAmount = input.files.length;
-        $('#noImages').attr("hidden", true);
-        for (i = 0; i < filesAmount; i++) {
-            var reader = new FileReader();
-            reader.onload = function (event) {
-                $($.parseHTML('<img class="medium-thumbnails pr-2 pb-2">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
-            };
-            reader.readAsDataURL(input.files[i]);
+        if (filesAmount === 0) {
+            $('#inforCount').text(`Ainda não foram selecionadas imagens.`);
+            $('#submitImages').attr('disabled', true);
+        }
+        else {
+            $('#submitImages').attr('disabled', false);
+            $('#inforCount').text(`Foram selecionadas ${filesAmount} imagens!`);
         }
     }
 };
@@ -458,4 +457,3 @@ imagesPreview = (input, placeToInsertImagePreview) => {
 $('#gallery-photo-add').on('change', function () {
     imagesPreview(this, 'div.gallery');
 });
-
