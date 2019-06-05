@@ -73,23 +73,29 @@ namespace LabFoto.Controllers
             return View();
         }
         [HttpPost]
-        [RequestFormLimits(MultipartBodyLengthLimit = 4_294_967_296)] // 4 GB
-        public IActionResult Upload (List<IFormFile> files, [FromServices] IHostingEnvironment env)
+        [RequestFormLimits(MultipartBodyLengthLimit = 4_294_967_295)] // 4 GB - 1
+        public IActionResult Upload(List<IFormFile> files, [FromServices] IHostingEnvironment env)
         {
             double totalLength = 0;
             foreach (var file in files)
             {
                 totalLength += file.Length;
-                string fileName = $"{env.WebRootPath}\\{file.FileName}";
+                string fileName = $"ImagensUpload\\{file.FileName}";
                 using (FileStream fs = System.IO.File.Create(fileName))
                 {
                     file.CopyTo(fs);
                     fs.Flush();
                 }
             }
-
-            ViewData["message"] = $"{totalLength} bytes uploaded successfully!";
-
+            double totalRounded = ((totalLength / 1024) / 1024);
+            if (totalRounded >= 1024)
+            {
+                ViewData["message"] = $"{Math.Round(totalRounded/1024, 2)} Gigabytes carregados com sucesso!";
+            }
+            else
+            {
+                ViewData["message"] = $"{Math.Round(totalRounded, 0)} Megabytes carregados com sucesso!";
+            }
             return View("Privacy");
         }
 

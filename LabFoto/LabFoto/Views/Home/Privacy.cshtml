@@ -1,20 +1,23 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
-
-<p>Use this page to detail your site's privacy policy.</p>
-
-<h1>Upload Large File</h1>
-<br />
+<h1>Carregar ficheiros grandes</h1>
 <h2>@ViewData["message"]</h2>
 
 <form asp-controller="Home"
       asp-action="Upload"
       method="post"
       enctype="multipart/form-data">
+    <input type="file" multiple name="files" id="imageUpload" hidden />
+    <div class="ui placeholder segment">
+        <div class="ui icon header">
+            <i class="images outline icon"></i>
+            Ainda não foram carregadas imagens.
+        </div>
 
-    <input type="file" multiple name="files" />
-    <br /> <br />
-    <button type="submit">Upload File</button>
+        <div class="inline">
+            <div onclick="clickThisButton('imageUpload')" class="ui primary button"> Adicionar Imagens</div>
+            <button type="submit" class="ui green button">Carregar</button>
+        </div>
+    </div>
 </form>

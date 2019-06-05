@@ -434,3 +434,7 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
         }
     });
 };
+
+clickThisButton = (id) => {
+    $(`#${id}`).click();
+};

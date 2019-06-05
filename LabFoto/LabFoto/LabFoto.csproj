@@ -33,4 +33,9 @@
     </Content>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="ImagensUpload\" />
+  </ItemGroup>
+
 </Project>
