@@ -8,15 +8,15 @@
       asp-action="Upload"
       method="post"
       enctype="multipart/form-data">
-    <input type="file" multiple name="files" id="imageUpload" hidden />
+    <input type="file" multiple name="files" id="gallery-photo-add" hidden />
     <div class="ui placeholder segment">
-        <div class="ui icon header">
+        <div class="ui icon header" id="noImages">
             <i class="images outline icon"></i>
             Ainda não foram carregadas imagens.
         </div>
-
+        <div class="gallery"></div>
         <div class="inline">
-            <div onclick="clickThisButton('imageUpload')" class="ui primary button"> Adicionar Imagens</div>
+            <div onclick="clickThisButton('gallery-photo-add')" class="ui primary button"> Adicionar Imagens</div>
             <button type="submit" class="ui green button">Carregar</button>
         </div>
     </div>

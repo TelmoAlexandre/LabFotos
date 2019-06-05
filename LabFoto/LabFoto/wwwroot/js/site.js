@@ -438,3 +438,24 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
 clickThisButton = (id) => {
     $(`#${id}`).click();
 };
+
+
+// Multiple images preview in browser
+imagesPreview = (input, placeToInsertImagePreview) => {
+    if (input.files) {
+        var filesAmount = input.files.length;
+        $('#noImages').attr("hidden", true);
+        for (i = 0; i < filesAmount; i++) {
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                $($.parseHTML('<img class="medium-thumbnails pr-2 pb-2">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+            };
+            reader.readAsDataURL(input.files[i]);
+        }
+    }
+};
+
+$('#gallery-photo-add').on('change', function () {
+    imagesPreview(this, 'div.gallery');
+});
+
