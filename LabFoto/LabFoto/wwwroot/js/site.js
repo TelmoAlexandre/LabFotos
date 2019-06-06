@@ -443,13 +443,18 @@ clickThisButton = (id) => {
 imagesPreview = (input) => {
     if (input.files) {
         var filesAmount = input.files.length;
-        if (filesAmount === 0) {
-            $('#inforCount').text(`Ainda não foram selecionadas imagens.`);
+        if (filesAmount <= 50) {
+            if (filesAmount === 0) {
+                $('#inforCount').text(`Ainda não foram selecionadas imagens.`);
+                $('#submitImages').attr('disabled', true);
+            }
+            else {
+                $('#submitImages').attr('disabled', false);
+                $('#inforCount').text(`Foram selecionadas ${filesAmount} imagens.`);
+            }
+        } else {
+            $('#inforCount').text(`Só pode selecionar até 50 imagens.`);
             $('#submitImages').attr('disabled', true);
-        }
-        else {
-            $('#submitImages').attr('disabled', false);
-            $('#inforCount').text(`Foram selecionadas ${filesAmount} imagens!`);
         }
     }
 };
