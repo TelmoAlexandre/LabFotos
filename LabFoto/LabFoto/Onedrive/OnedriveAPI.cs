@@ -25,7 +25,7 @@ namespace LabFoto.Onedrive
             client = _clientFactory.CreateClient();
         }
 
-        public async Task<bool> GetThumbnailsAsync(List<Fotografia> photos)
+        public async Task<bool> RefreshPhotoUrlsAsync(List<Fotografia> photos)
         {
             try
             {
@@ -33,12 +33,12 @@ namespace LabFoto.Onedrive
                 {
                     // Verificar se o token está válido
                     await RefreshTokenAsync(photo.ContaOnedrive);
-                    
+
                     string driveId = photo.ContaOnedrive.DriveId;
                     string url = "https://graph.microsoft.com/v1.0/me" +
                         "/drives/" + driveId +
                         "/items/" + photo.ItemId +
-                        "/thumbnails";
+                        "?$expand=thumbnails";
                     var request = new HttpRequestMessage(HttpMethod.Get, url);
                     request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
 
@@ -51,10 +51,12 @@ namespace LabFoto.Onedrive
                         // Converter a resposta para um objeto json
                         JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                        JObject value = (JObject)content["value"][0];
-                        photo.Thumbnail_Large = (string)value["large"]["url"];
-                        photo.Thumbnail_Medium = (string)value["medium"]["url"];
-                        photo.Thumbnail_Small = (string)value["small"]["url"];
+                        photo.DownloadUrl = (string)content["@microsoft.graph.downloadUrl"];
+
+                        JObject thumbnails = (JObject)content["thumbnails"][0];
+                        photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
+                        photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
+                        photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
 
                         _context.Update(photo);
                     }

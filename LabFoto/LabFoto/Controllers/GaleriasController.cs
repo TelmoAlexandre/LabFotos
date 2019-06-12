@@ -61,7 +61,7 @@ namespace LabFoto.Controllers
 
             var photos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).ToListAsync();
 
-            await _onedrive.GetThumbnailsAsync(photos);
+            await _onedrive.RefreshPhotoUrlsAsync(photos);
 
             return PartialView("PartialViews/ThumbnailsPartialView", photos);
         }
