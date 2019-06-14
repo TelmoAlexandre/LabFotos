@@ -16,7 +16,7 @@ namespace LabFoto.Models.Tables
         }
 
         [Key]
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         [Required(ErrorMessage = "É necessário preencher o nome do Serviço"), StringLength(255), Display(Prompt = "Nome do Serviço")]
         public string Nome { get; set; }

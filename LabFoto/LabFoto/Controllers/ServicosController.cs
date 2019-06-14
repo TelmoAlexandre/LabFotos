@@ -34,18 +34,18 @@ namespace LabFoto.Controllers
         }
 
         // GET: Servicos/TiposAjax
-        public IActionResult TiposAjax(int? id)
+        public IActionResult TiposAjax(string id)
         {
             ServicosCreateViewModel response = new ServicosCreateViewModel();
 
             // Caso exista id, preenher as checkboxes de acordo com o serviço em questão
-            if (id != null)
+            if (!String.IsNullOrEmpty(id))
             {
                 response.TiposList = _context.Tipos.Select(t => new SelectListItem()
                 {
                     // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor da lista servicos_tipos
                     // Caso exista, retorna verdade
-                    Selected = (_context.Servicos_Tipos.Where(st => st.ServicoFK == id).Where(st => st.TipoFK == t.ID).Count() != 0),
+                    Selected = (_context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(id)).Where(st => st.TipoFK == t.ID).Count() != 0),
                     Text = t.Nome,
                     Value = t.ID + ""
                 });
@@ -64,19 +64,19 @@ namespace LabFoto.Controllers
         }
 
         // GET: Servicos/ServSolicAjax
-        public IActionResult ServSolicAjax(int? id)
+        public IActionResult ServSolicAjax(string id)
         {
             ServicosCreateViewModel response = new ServicosCreateViewModel();
 
             // Caso exista id, preenher as checkboxes de acordo com o serviço em questão
-            if (id != null)
+            if (!String.IsNullOrEmpty(id))
             {
                 response.ServSolicitados = _context.ServicosSolicitados.Select(ss => new SelectListItem()
                 {
                     // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
                     // da lista servicos_servicosSolicitados
                     // Caso exista, retorna verdade
-                    Selected = (_context.Servicos_ServicosSolicitados.Where(sss => sss.ServicoFK == id).Where(sss => sss.ServicoSolicitadoFK == ss.ID).Count() != 0),
+                    Selected = (_context.Servicos_ServicosSolicitados.Where(sss => sss.ServicoFK.Equals(id)).Where(sss => sss.ServicoSolicitadoFK == ss.ID).Count() != 0),
                     Text = ss.Nome,
                     Value = ss.ID + ""
                 });
@@ -221,9 +221,9 @@ namespace LabFoto.Controllers
         #region Details
 
         // GET: Servicos/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -233,7 +233,7 @@ namespace LabFoto.Controllers
                 .Include(s => s.Servicos_Tipos).ThenInclude(st => st.Tipo)
                 .Include(s => s.Servicos_ServicosSolicitados).ThenInclude(sss => sss.ServicoSolicitado)
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID.Equals(id));
 
             if (servicos == null || servicos.Hide)
             {
@@ -244,9 +244,9 @@ namespace LabFoto.Controllers
         }
 
         // GET: Servicos/Details/5
-        public async Task<IActionResult> DetailsAjax(int? id)
+        public async Task<IActionResult> DetailsAjax(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -256,7 +256,7 @@ namespace LabFoto.Controllers
                 .Include(s => s.Servicos_Tipos).ThenInclude(st => st.Tipo)
                 .Include(s => s.Servicos_ServicosSolicitados).ThenInclude(sss => sss.ServicoSolicitado)
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID.Equals(id));
 
             if (servicos == null || servicos.Hide)
             {
@@ -425,24 +425,24 @@ namespace LabFoto.Controllers
         #region Edit
 
         // GET: Servicos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var servico = await _context.Servicos.Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao).Where(s => s.ID == id).FirstOrDefaultAsync();
+            var servico = await _context.Servicos.Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync();
             if (servico == null || servico.Hide)
             {
                 return NotFound();
             }
 
             // Lista da tabela intermediaria dos servico com os seus tipos
-            var sevicos_tipos = await _context.Servicos_Tipos.Where(st => st.ServicoFK == id).ToListAsync();
+            var sevicos_tipos = await _context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(id)).ToListAsync();
 
             // Lista da tabela intermediaria dos servico com os seus serviços solicitados
-            var sevicosSolicitados = await _context.Servicos_ServicosSolicitados.Where(st => st.ServicoFK == id).ToListAsync();
+            var sevicosSolicitados = await _context.Servicos_ServicosSolicitados.Where(st => st.ServicoFK.Equals(id)).ToListAsync();
 
             ServicosCreateViewModel response = new ServicosCreateViewModel
             {
@@ -473,12 +473,12 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,DataDeCriacao,IdentificacaoObra,Observacoes,HorasEstudio,HorasPosProducao,DataEntrega,Total,RequerenteFK")] Servico servico,
+        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,DataDeCriacao,IdentificacaoObra,Observacoes,HorasEstudio,HorasPosProducao,DataEntrega,Total,RequerenteFK")] Servico servico,
             IFormCollection form, string Tipos, string ServSolicitados)
         {
             string datasExecucao = form["DataExecucao"];
 
-            if (id != servico.ID || servico.Hide)
+            if (String.IsNullOrEmpty(id) || servico.Hide)
             {
                 return NotFound();
             }
@@ -722,9 +722,9 @@ namespace LabFoto.Controllers
 
         #region auxMethods
 
-        private bool ServicosExists(int id)
+        private bool ServicosExists(string id)
         {
-            return _context.Servicos.Where(s => s.Hide == false).Any(e => e.ID == id);
+            return _context.Servicos.Where(s => s.Hide == false).Any(e => e.ID.Equals(id));
         }
 
         private bool ExistsInStringArray(string[] array, string str)

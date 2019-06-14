@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190530172453_Initial")]
+    [Migration("20190614045803_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -278,7 +278,7 @@ namespace LabFoto.Migrations
 
                     b.Property<string>("Nome");
 
-                    b.Property<int>("ServicoFK");
+                    b.Property<string>("ServicoFK");
 
                     b.HasKey("ID");
 
@@ -292,28 +292,28 @@ namespace LabFoto.Migrations
                             ID = 1,
                             DataDeCriacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nome = "Galeria1",
-                            ServicoFK = 6
+                            ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
                         },
                         new
                         {
                             ID = 2,
                             DataDeCriacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nome = "Galeria2",
-                            ServicoFK = 1
+                            ServicoFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
                         },
                         new
                         {
                             ID = 3,
                             DataDeCriacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nome = "Galeria3",
-                            ServicoFK = 1
+                            ServicoFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
                         },
                         new
                         {
                             ID = 4,
                             DataDeCriacao = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nome = "Galeria4",
-                            ServicoFK = 1
+                            ServicoFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
                         });
                 });
 
@@ -453,9 +453,8 @@ namespace LabFoto.Migrations
 
             modelBuilder.Entity("LabFoto.Models.Tables.Servico", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("ID")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DataDeCriacao");
 
@@ -490,7 +489,7 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            ID = 1,
+                            ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             DataDeCriacao = new DateTime(2018, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2018, 6, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Hide = false,
@@ -504,7 +503,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 2,
+                            ID = "56d513fa-cedd-40d9-bd58-12a7ee3f129c",
                             DataDeCriacao = new DateTime(2019, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2019, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Hide = false,
@@ -518,7 +517,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 3,
+                            ID = "86dafe89-cc9c-4308-ace8-b3ed1f54a346",
                             DataDeCriacao = new DateTime(2019, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2019, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Hide = false,
@@ -532,7 +531,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 4,
+                            ID = "d6e3fca1-c766-4333-8211-f63431b30181",
                             DataDeCriacao = new DateTime(2017, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2017, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Hide = false,
@@ -546,7 +545,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 5,
+                            ID = "916d75a4-c12e-40c4-bf29-7ec1e31696ac",
                             DataDeCriacao = new DateTime(2018, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Hide = false,
                             HorasEstudio = 3f,
@@ -559,7 +558,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 6,
+                            ID = "aca4875a-721e-4cfc-827d-d48c7050b543",
                             DataDeCriacao = new DateTime(2019, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Hide = false,
                             HorasEstudio = 0f,
@@ -572,7 +571,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 7,
+                            ID = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298",
                             DataDeCriacao = new DateTime(2018, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2018, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Hide = false,
@@ -586,7 +585,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 8,
+                            ID = "b399e9c7-957e-4e85-9474-bad2cf8032c4",
                             DataDeCriacao = new DateTime(2019, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Hide = false,
                             HorasEstudio = 4f,
@@ -644,7 +643,7 @@ namespace LabFoto.Migrations
                 {
                     b.Property<int>("DataExecucaoFK");
 
-                    b.Property<int>("ServicoFK");
+                    b.Property<string>("ServicoFK");
 
                     b.HasKey("DataExecucaoFK", "ServicoFK");
 
@@ -656,82 +655,82 @@ namespace LabFoto.Migrations
                         new
                         {
                             DataExecucaoFK = 1,
-                            ServicoFK = 1
+                            ServicoFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
                         },
                         new
                         {
                             DataExecucaoFK = 2,
-                            ServicoFK = 2
+                            ServicoFK = "56d513fa-cedd-40d9-bd58-12a7ee3f129c"
                         },
                         new
                         {
                             DataExecucaoFK = 3,
-                            ServicoFK = 3
+                            ServicoFK = "86dafe89-cc9c-4308-ace8-b3ed1f54a346"
                         },
                         new
                         {
                             DataExecucaoFK = 4,
-                            ServicoFK = 4
+                            ServicoFK = "d6e3fca1-c766-4333-8211-f63431b30181"
                         },
                         new
                         {
                             DataExecucaoFK = 5,
-                            ServicoFK = 5
+                            ServicoFK = "916d75a4-c12e-40c4-bf29-7ec1e31696ac"
                         },
                         new
                         {
                             DataExecucaoFK = 6,
-                            ServicoFK = 6
+                            ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
                         },
                         new
                         {
                             DataExecucaoFK = 7,
-                            ServicoFK = 7
+                            ServicoFK = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298"
                         },
                         new
                         {
                             DataExecucaoFK = 8,
-                            ServicoFK = 8
+                            ServicoFK = "b399e9c7-957e-4e85-9474-bad2cf8032c4"
                         },
                         new
                         {
                             DataExecucaoFK = 9,
-                            ServicoFK = 3
+                            ServicoFK = "86dafe89-cc9c-4308-ace8-b3ed1f54a346"
                         },
                         new
                         {
                             DataExecucaoFK = 10,
-                            ServicoFK = 3
+                            ServicoFK = "86dafe89-cc9c-4308-ace8-b3ed1f54a346"
                         },
                         new
                         {
                             DataExecucaoFK = 11,
-                            ServicoFK = 3
+                            ServicoFK = "86dafe89-cc9c-4308-ace8-b3ed1f54a346"
                         },
                         new
                         {
                             DataExecucaoFK = 11,
-                            ServicoFK = 8
+                            ServicoFK = "b399e9c7-957e-4e85-9474-bad2cf8032c4"
                         },
                         new
                         {
                             DataExecucaoFK = 10,
-                            ServicoFK = 8
+                            ServicoFK = "b399e9c7-957e-4e85-9474-bad2cf8032c4"
                         },
                         new
                         {
                             DataExecucaoFK = 5,
-                            ServicoFK = 7
+                            ServicoFK = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298"
                         },
                         new
                         {
                             DataExecucaoFK = 2,
-                            ServicoFK = 7
+                            ServicoFK = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298"
                         },
                         new
                         {
                             DataExecucaoFK = 8,
-                            ServicoFK = 5
+                            ServicoFK = "916d75a4-c12e-40c4-bf29-7ec1e31696ac"
                         });
                 });
 
@@ -739,7 +738,7 @@ namespace LabFoto.Migrations
                 {
                     b.Property<int>("ServicoSolicitadoFK");
 
-                    b.Property<int>("ServicoFK");
+                    b.Property<string>("ServicoFK");
 
                     b.HasKey("ServicoSolicitadoFK", "ServicoFK");
 
@@ -751,92 +750,92 @@ namespace LabFoto.Migrations
                         new
                         {
                             ServicoSolicitadoFK = 3,
-                            ServicoFK = 1
+                            ServicoFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 2,
-                            ServicoFK = 1
+                            ServicoFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 4,
-                            ServicoFK = 2
+                            ServicoFK = "56d513fa-cedd-40d9-bd58-12a7ee3f129c"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 1,
-                            ServicoFK = 2
+                            ServicoFK = "56d513fa-cedd-40d9-bd58-12a7ee3f129c"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 5,
-                            ServicoFK = 3
+                            ServicoFK = "86dafe89-cc9c-4308-ace8-b3ed1f54a346"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 1,
-                            ServicoFK = 4
+                            ServicoFK = "d6e3fca1-c766-4333-8211-f63431b30181"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 2,
-                            ServicoFK = 4
+                            ServicoFK = "d6e3fca1-c766-4333-8211-f63431b30181"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 3,
-                            ServicoFK = 4
+                            ServicoFK = "d6e3fca1-c766-4333-8211-f63431b30181"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 4,
-                            ServicoFK = 4
+                            ServicoFK = "d6e3fca1-c766-4333-8211-f63431b30181"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 2,
-                            ServicoFK = 5
+                            ServicoFK = "916d75a4-c12e-40c4-bf29-7ec1e31696ac"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 5,
-                            ServicoFK = 5
+                            ServicoFK = "916d75a4-c12e-40c4-bf29-7ec1e31696ac"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 2,
-                            ServicoFK = 6
+                            ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 4,
-                            ServicoFK = 6
+                            ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 5,
-                            ServicoFK = 7
+                            ServicoFK = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 2,
-                            ServicoFK = 7
+                            ServicoFK = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 3,
-                            ServicoFK = 7
+                            ServicoFK = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 1,
-                            ServicoFK = 8
+                            ServicoFK = "b399e9c7-957e-4e85-9474-bad2cf8032c4"
                         },
                         new
                         {
                             ServicoSolicitadoFK = 3,
-                            ServicoFK = 8
+                            ServicoFK = "b399e9c7-957e-4e85-9474-bad2cf8032c4"
                         });
                 });
 
@@ -844,7 +843,7 @@ namespace LabFoto.Migrations
                 {
                     b.Property<int>("TipoFK");
 
-                    b.Property<int>("ServicoFK");
+                    b.Property<string>("ServicoFK");
 
                     b.HasKey("TipoFK", "ServicoFK");
 
@@ -856,47 +855,47 @@ namespace LabFoto.Migrations
                         new
                         {
                             TipoFK = 1,
-                            ServicoFK = 1
+                            ServicoFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
                         },
                         new
                         {
                             TipoFK = 2,
-                            ServicoFK = 2
+                            ServicoFK = "56d513fa-cedd-40d9-bd58-12a7ee3f129c"
                         },
                         new
                         {
                             TipoFK = 1,
-                            ServicoFK = 3
+                            ServicoFK = "86dafe89-cc9c-4308-ace8-b3ed1f54a346"
                         },
                         new
                         {
                             TipoFK = 3,
-                            ServicoFK = 4
+                            ServicoFK = "d6e3fca1-c766-4333-8211-f63431b30181"
                         },
                         new
                         {
                             TipoFK = 2,
-                            ServicoFK = 5
+                            ServicoFK = "916d75a4-c12e-40c4-bf29-7ec1e31696ac"
                         },
                         new
                         {
                             TipoFK = 1,
-                            ServicoFK = 6
+                            ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
                         },
                         new
                         {
                             TipoFK = 3,
-                            ServicoFK = 6
+                            ServicoFK = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298"
                         },
                         new
                         {
                             TipoFK = 4,
-                            ServicoFK = 7
+                            ServicoFK = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298"
                         },
                         new
                         {
                             TipoFK = 4,
-                            ServicoFK = 8
+                            ServicoFK = "b399e9c7-957e-4e85-9474-bad2cf8032c4"
                         });
                 });
 
@@ -963,7 +962,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                            ConcurrencyStamp = "e22578f0-f4b5-44e2-b8dc-dcb71b3b8330",
+                            ConcurrencyStamp = "5b6b8f52-c0e3-4a6f-a3b5-cecc56fc871e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -1140,13 +1139,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "82fe9d9b-3da7-45af-9799-51a214d56048",
+                            ConcurrencyStamp = "78e8c0ce-7158-42fa-8e8e-e885cf7b0f4b",
                             Email = "admin1@admin1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@ADMIN1.COM",
                             NormalizedUserName = "ADMIN1@ADMIN1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKXstkAfx/wfvKHuYiTfEzQh043JjEA+xAr0LTzvFaSbmDDTJ/frnsqJpRQjY1j1Bg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDIpc4nzfEl5N4L4dJn8M6inNmZPfQ6jHWFVjZgoUSMXmi2t+QRdb/WR3uwZ3ajrOw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -1157,13 +1156,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d664462b-76f2-4ab1-8713-f6dc75d411c8",
+                            ConcurrencyStamp = "71ba5fba-d38b-4b56-8b8f-1193d69a30a8",
                             Email = "user1@user1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@USER1.COM",
                             NormalizedUserName = "USER1@USER1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHQvEGKXolm7lD9BJMprB0ebyT8NgaB8Av7s0lrqqg0dHpr4fg7bHp/bihE9FTYedQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEM8ieZX3yAxttiiBe1eg984aEnOHAdKjlhmgLAsCDEH7qBORoQ2o9LdrJNWEoAMyWA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -1193,8 +1192,7 @@ namespace LabFoto.Migrations
                 {
                     b.HasOne("LabFoto.Models.Tables.Servico", "Servico")
                         .WithMany()
-                        .HasForeignKey("ServicoFK")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ServicoFK");
                 });
 
             modelBuilder.Entity("LabFoto.Models.Tables.Galeria_Metadado", b =>

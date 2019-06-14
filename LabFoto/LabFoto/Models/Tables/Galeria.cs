@@ -19,7 +19,7 @@ namespace LabFoto.Models.Tables
         //Chave Forasteira para Servico
         [ForeignKey("Servico")]
         [Display(Name = "Serviço")]
-        public int ServicoFK { get; set; }
+        public string ServicoFK { get; set; }
         public Servico Servico { get; set; }
 
         public virtual ICollection<Fotografia> Fotografias { get; set; }

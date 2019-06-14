@@ -246,8 +246,7 @@ namespace LabFoto.Migrations
                 name: "Servicos",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ID = table.Column<string>(nullable: false),
                     Nome = table.Column<string>(maxLength: 255, nullable: false),
                     DataDeCriacao = table.Column<DateTime>(nullable: false),
                     IdentificacaoObra = table.Column<string>(nullable: false),
@@ -278,7 +277,7 @@ namespace LabFoto.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: true),
                     DataDeCriacao = table.Column<DateTime>(nullable: false),
-                    ServicoFK = table.Column<int>(nullable: false)
+                    ServicoFK = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -288,7 +287,7 @@ namespace LabFoto.Migrations
                         column: x => x.ServicoFK,
                         principalTable: "Servicos",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -296,7 +295,7 @@ namespace LabFoto.Migrations
                 columns: table => new
                 {
                     DataExecucaoFK = table.Column<int>(nullable: false),
-                    ServicoFK = table.Column<int>(nullable: false)
+                    ServicoFK = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -320,7 +319,7 @@ namespace LabFoto.Migrations
                 columns: table => new
                 {
                     ServicoSolicitadoFK = table.Column<int>(nullable: false),
-                    ServicoFK = table.Column<int>(nullable: false)
+                    ServicoFK = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -344,7 +343,7 @@ namespace LabFoto.Migrations
                 columns: table => new
                 {
                     TipoFK = table.Column<int>(nullable: false),
-                    ServicoFK = table.Column<int>(nullable: false)
+                    ServicoFK = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -431,15 +430,15 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "e22578f0-f4b5-44e2-b8dc-dcb71b3b8330", "Admin", "ADMIN" });
+                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "5b6b8f52-c0e3-4a6f-a3b5-cecc56fc871e", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Nome" },
                 values: new object[,]
                 {
-                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "82fe9d9b-3da7-45af-9799-51a214d56048", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEKXstkAfx/wfvKHuYiTfEzQh043JjEA+xAr0LTzvFaSbmDDTJ/frnsqJpRQjY1j1Bg==", null, false, "", false, "admin1@admin1.com", "Admin1" },
-                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "d664462b-76f2-4ab1-8713-f6dc75d411c8", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEHQvEGKXolm7lD9BJMprB0ebyT8NgaB8Av7s0lrqqg0dHpr4fg7bHp/bihE9FTYedQ==", null, false, "", false, "user1@user1.com", "User1" }
+                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "78e8c0ce-7158-42fa-8e8e-e885cf7b0f4b", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEDIpc4nzfEl5N4L4dJn8M6inNmZPfQ6jHWFVjZgoUSMXmi2t+QRdb/WR3uwZ3ajrOw==", null, false, "", false, "admin1@admin1.com", "Admin1" },
+                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "71ba5fba-d38b-4b56-8b8f-1193d69a30a8", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEM8ieZX3yAxttiiBe1eg984aEnOHAdKjlhmgLAsCDEH7qBORoQ2o9LdrJNWEoAMyWA==", null, false, "", false, "user1@user1.com", "User1" }
                 });
 
             migrationBuilder.InsertData(
@@ -525,14 +524,14 @@ namespace LabFoto.Migrations
                 columns: new[] { "ID", "DataDeCriacao", "DataEntrega", "Hide", "HorasEstudio", "HorasPosProducao", "IdentificacaoObra", "Nome", "Observacoes", "RequerenteFK", "Total" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2018, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 6, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 2f, 8f, "Tira larga, de tecido ou de madeira, que se dispõe transversalmente como ornato na parte superior de uma cortina.", "Sanefa", "Sanefa degradada na parte superior", 1, 40f },
-                    { 3, new DateTime(2019, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 4f, 10f, "Vasos/Jarrões a parecem integrados em retábulos,tronos, mesas de altar em várias igrejas em Tomar.", "Vaso talha prata dourada", "", 1, 45f },
-                    { 4, new DateTime(2017, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2017, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 20f, 43f, "Seis cadeiras em madeira de cerejeira com acabamento em verniz", "Conjunto de Cadeiras", "", 1, 125f },
-                    { 2, new DateTime(2019, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 17f, "Plantação de árvores na escola.", "Dia da árvore", "Presença do presidente nas plantações.", 2, 65f },
-                    { 7, new DateTime(2018, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 2f, "Um cavalo queimado no matadouro", "Estátua do Cavalo queimado", "", 2, 0f },
-                    { 5, new DateTime(2018, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 3f, 4f, "Festa tradicional da aldeia de Azinhaga", "Festa do Bodo", "Muito bom", 3, 0f },
-                    { 6, new DateTime(2019, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 0f, 0f, "Fotos da tabanca do Maltez", "Feira do Cavalo, Golegã", "Grande festa, aprovado", 4, 0f },
-                    { 8, new DateTime(2019, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 4f, 2f, "Exposição na galeria de Sintra", "Exposição de Arte contemporânea", "", 5, 0f }
+                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2018, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 6, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 2f, 8f, "Tira larga, de tecido ou de madeira, que se dispõe transversalmente como ornato na parte superior de uma cortina.", "Sanefa", "Sanefa degradada na parte superior", 1, 40f },
+                    { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", new DateTime(2019, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 4f, 10f, "Vasos/Jarrões a parecem integrados em retábulos,tronos, mesas de altar em várias igrejas em Tomar.", "Vaso talha prata dourada", "", 1, 45f },
+                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2017, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2017, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 20f, 43f, "Seis cadeiras em madeira de cerejeira com acabamento em verniz", "Conjunto de Cadeiras", "", 1, 125f },
+                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", new DateTime(2019, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 17f, "Plantação de árvores na escola.", "Dia da árvore", "Presença do presidente nas plantações.", 2, 65f },
+                    { "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298", new DateTime(2018, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 2f, "Um cavalo queimado no matadouro", "Estátua do Cavalo queimado", "", 2, 0f },
+                    { "916d75a4-c12e-40c4-bf29-7ec1e31696ac", new DateTime(2018, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 3f, 4f, "Festa tradicional da aldeia de Azinhaga", "Festa do Bodo", "Muito bom", 3, 0f },
+                    { "aca4875a-721e-4cfc-827d-d48c7050b543", new DateTime(2019, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 0f, 0f, "Fotos da tabanca do Maltez", "Feira do Cavalo, Golegã", "Grande festa, aprovado", 4, 0f },
+                    { "b399e9c7-957e-4e85-9474-bad2cf8032c4", new DateTime(2019, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 4f, 2f, "Exposição na galeria de Sintra", "Exposição de Arte contemporânea", "", 5, 0f }
                 });
 
             migrationBuilder.InsertData(
@@ -540,10 +539,10 @@ namespace LabFoto.Migrations
                 columns: new[] { "ID", "DataDeCriacao", "Nome", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria2", 1 },
-                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria3", 1 },
-                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria4", 1 },
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria1", 6 }
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria2", "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria3", "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria4", "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria1", "aca4875a-721e-4cfc-827d-d48c7050b543" }
                 });
 
             migrationBuilder.InsertData(
@@ -551,22 +550,22 @@ namespace LabFoto.Migrations
                 columns: new[] { "DataExecucaoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 10, 8 },
-                    { 11, 8 },
-                    { 8, 8 },
-                    { 6, 6 },
-                    { 8, 5 },
-                    { 5, 5 },
-                    { 2, 7 },
-                    { 5, 7 },
-                    { 2, 2 },
-                    { 7, 7 },
-                    { 10, 3 },
-                    { 1, 1 },
-                    { 3, 3 },
-                    { 9, 3 },
-                    { 11, 3 },
-                    { 4, 4 }
+                    { 10, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 11, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 8, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 6, "aca4875a-721e-4cfc-827d-d48c7050b543" },
+                    { 8, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 5, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 2, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 5, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 2, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
+                    { 7, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 3, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 9, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 10, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 4, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 11, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" }
                 });
 
             migrationBuilder.InsertData(
@@ -574,24 +573,24 @@ namespace LabFoto.Migrations
                 columns: new[] { "ServicoSolicitadoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 1, 8 },
-                    { 3, 1 },
-                    { 2, 1 },
-                    { 4, 6 },
-                    { 2, 6 },
-                    { 5, 5 },
-                    { 2, 5 },
-                    { 3, 7 },
-                    { 1, 4 },
-                    { 4, 2 },
-                    { 5, 7 },
-                    { 5, 3 },
-                    { 3, 8 },
-                    { 2, 4 },
-                    { 3, 4 },
-                    { 1, 2 },
-                    { 4, 4 },
-                    { 2, 7 }
+                    { 1, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 5, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 2, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 2, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 2, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 5, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 5, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 3, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 3, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 1, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
+                    { 4, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
+                    { 1, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 4, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 3, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 2, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 4, "aca4875a-721e-4cfc-827d-d48c7050b543" },
+                    { 2, "aca4875a-721e-4cfc-827d-d48c7050b543" }
                 });
 
             migrationBuilder.InsertData(
@@ -599,15 +598,15 @@ namespace LabFoto.Migrations
                 columns: new[] { "TipoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 3, 4 },
-                    { 3, 6 },
-                    { 4, 7 },
-                    { 1, 3 },
-                    { 1, 1 },
-                    { 2, 5 },
-                    { 2, 2 },
-                    { 1, 6 },
-                    { 4, 8 }
+                    { 1, "aca4875a-721e-4cfc-827d-d48c7050b543" },
+                    { 4, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 2, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 2, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
+                    { 1, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 3, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 4, "b399e9c7-957e-4e85-9474-bad2cf8032c4" }
                 });
 
             migrationBuilder.InsertData(

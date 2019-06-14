@@ -166,10 +166,21 @@ namespace LabFoto.Data
                 }
             );
 
+            String[] servicosIDs = new String[] {
+                "a0f118c8-8e40-4433-a695-e5ca01788331",
+                "56d513fa-cedd-40d9-bd58-12a7ee3f129c",
+                "86dafe89-cc9c-4308-ace8-b3ed1f54a346",
+                "d6e3fca1-c766-4333-8211-f63431b30181",
+                "916d75a4-c12e-40c4-bf29-7ec1e31696ac",
+                "aca4875a-721e-4cfc-827d-d48c7050b543",
+                "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298",
+                "b399e9c7-957e-4e85-9474-bad2cf8032c4",
+            };
+
             modelBuilder.Entity<Servico>().HasData(
                 new Servico
                 {
-                    ID = 1,
+                    ID = servicosIDs[0],
                     Nome = "Sanefa",
                     DataDeCriacao = new DateTime(2018, 6, 25),
                     IdentificacaoObra = "Tira larga, de tecido ou de madeira, que se dispõe transversalmente como ornato na parte superior de uma cortina.",
@@ -183,7 +194,7 @@ namespace LabFoto.Data
                 },
                 new Servico
                 {
-                    ID = 2,
+                    ID = servicosIDs[1],
                     Nome = "Dia da árvore",
                     DataDeCriacao = new DateTime(2019, 3, 21),
                     IdentificacaoObra = "Plantação de árvores na escola.",
@@ -197,7 +208,7 @@ namespace LabFoto.Data
                 },
                 new Servico
                 {
-                    ID = 3,
+                    ID = servicosIDs[2],
                     Nome = "Vaso talha prata dourada",
                     DataDeCriacao = new DateTime(2019, 4, 10),
                     IdentificacaoObra = "Vasos/Jarrões a parecem integrados em retábulos,tronos, mesas de altar em várias igrejas em Tomar.",
@@ -211,7 +222,7 @@ namespace LabFoto.Data
                 },
                 new Servico
                 {
-                    ID = 4,
+                    ID = servicosIDs[3],
                     Nome = "Conjunto de Cadeiras",
                     DataDeCriacao = new DateTime(2017, 9, 11),
                     IdentificacaoObra = "Seis cadeiras em madeira de cerejeira com acabamento em verniz",
@@ -225,7 +236,7 @@ namespace LabFoto.Data
                 },
                 new Servico
                 {
-                    ID = 5,
+                    ID = servicosIDs[4],
                     Nome = "Festa do Bodo",
                     DataDeCriacao = new DateTime(2018, 7, 13),
                     IdentificacaoObra = "Festa tradicional da aldeia de Azinhaga",
@@ -239,7 +250,7 @@ namespace LabFoto.Data
                 },
                 new Servico
                 {
-                    ID = 6,
+                    ID = servicosIDs[5],
                     Nome = "Feira do Cavalo, Golegã",
                     DataDeCriacao = new DateTime(2019, 11, 24),
                     IdentificacaoObra = "Fotos da tabanca do Maltez",
@@ -253,7 +264,7 @@ namespace LabFoto.Data
                 },
                 new Servico
                 {
-                    ID = 7,
+                    ID = servicosIDs[6],
                     Nome = "Estátua do Cavalo queimado",
                     DataDeCriacao = new DateTime(2018, 1, 6),
                     IdentificacaoObra = "Um cavalo queimado no matadouro",
@@ -267,7 +278,7 @@ namespace LabFoto.Data
                 },
                 new Servico
                 {
-                    ID = 8,
+                    ID = servicosIDs[7],
                     Nome = "Exposição de Arte contemporânea",
                     DataDeCriacao = new DateTime(2019, 3, 12),
                     IdentificacaoObra = "Exposição na galeria de Sintra",
@@ -307,47 +318,47 @@ namespace LabFoto.Data
             modelBuilder.Entity<Servico_Tipo>().HasData(
                 new Servico_Tipo
                 {
-                    ServicoFK = 1,
+                    ServicoFK = servicosIDs[0],
                     TipoFK = 1
                 },
                 new Servico_Tipo
                 {
-                    ServicoFK = 2,
+                    ServicoFK = servicosIDs[1],
                     TipoFK = 2
                 },
                 new Servico_Tipo
                 {
-                    ServicoFK = 3,
+                    ServicoFK = servicosIDs[2],
                     TipoFK = 1
                 },
                 new Servico_Tipo
                 {
-                    ServicoFK = 4,
+                    ServicoFK = servicosIDs[3],
                     TipoFK = 3
                 },
                 new Servico_Tipo
                 {
-                    ServicoFK = 5,
+                    ServicoFK = servicosIDs[4],
                     TipoFK = 2
                 },
                 new Servico_Tipo
                 {
-                    ServicoFK = 6,
+                    ServicoFK = servicosIDs[5],
                     TipoFK = 1
                 },
                 new Servico_Tipo
                 {
-                    ServicoFK = 6,
+                    ServicoFK = servicosIDs[6],
                     TipoFK = 3
                 },
                 new Servico_Tipo
                 {
-                    ServicoFK = 7,
+                    ServicoFK = servicosIDs[6],
                     TipoFK = 4
                 },
                 new Servico_Tipo
                 {
-                    ServicoFK = 8,
+                    ServicoFK = servicosIDs[7],
                     TipoFK = 4
                 }
             );
@@ -383,92 +394,92 @@ namespace LabFoto.Data
             modelBuilder.Entity<Servico_ServicoSolicitado>().HasData(
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 1,
+                    ServicoFK = servicosIDs[0],
                     ServicoSolicitadoFK = 3,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 1,
+                    ServicoFK = servicosIDs[0],
                     ServicoSolicitadoFK = 2,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 2,
+                    ServicoFK = servicosIDs[1],
                     ServicoSolicitadoFK = 4,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 2,
+                    ServicoFK = servicosIDs[1],
                     ServicoSolicitadoFK = 1,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 3,
+                    ServicoFK = servicosIDs[2],
                     ServicoSolicitadoFK = 5,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 4,
+                    ServicoFK = servicosIDs[3],
                     ServicoSolicitadoFK = 1,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 4,
+                    ServicoFK = servicosIDs[3],
                     ServicoSolicitadoFK = 2,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 4,
+                    ServicoFK = servicosIDs[3],
                     ServicoSolicitadoFK = 3,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 4,
+                    ServicoFK = servicosIDs[3],
                     ServicoSolicitadoFK = 4,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 5,
+                    ServicoFK = servicosIDs[4],
                     ServicoSolicitadoFK = 2,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 5,
+                    ServicoFK = servicosIDs[4],
                     ServicoSolicitadoFK = 5,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 6,
+                    ServicoFK = servicosIDs[5],
                     ServicoSolicitadoFK = 2,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 6,
+                    ServicoFK = servicosIDs[5],
                     ServicoSolicitadoFK = 4,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 7,
+                    ServicoFK = servicosIDs[6],
                     ServicoSolicitadoFK = 5,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 7,
+                    ServicoFK = servicosIDs[6],
                     ServicoSolicitadoFK = 2,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 7,
+                    ServicoFK = servicosIDs[6],
                     ServicoSolicitadoFK = 3,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 8,
+                    ServicoFK = servicosIDs[7],
                     ServicoSolicitadoFK = 1,
                 },
                 new Servico_ServicoSolicitado
                 {
-                    ServicoFK = 8,
+                    ServicoFK = servicosIDs[7],
                     ServicoSolicitadoFK = 3,
                 }
             );
@@ -533,82 +544,82 @@ namespace LabFoto.Data
 
             modelBuilder.Entity<Servico_DataExecucao>().HasData(
                 new Servico_DataExecucao {
-                    ServicoFK = 1,
+                    ServicoFK = servicosIDs[0],
                     DataExecucaoFK = 1
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 2,
+                    ServicoFK = servicosIDs[1],
                     DataExecucaoFK = 2
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 3,
+                    ServicoFK = servicosIDs[2],
                     DataExecucaoFK = 3
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 4,
+                    ServicoFK = servicosIDs[3],
                     DataExecucaoFK = 4
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 5,
+                    ServicoFK = servicosIDs[4],
                     DataExecucaoFK = 5
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 6,
+                    ServicoFK = servicosIDs[5],
                     DataExecucaoFK = 6
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 7,
+                    ServicoFK = servicosIDs[6],
                     DataExecucaoFK = 7
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 8,
+                    ServicoFK = servicosIDs[7],
                     DataExecucaoFK = 8
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 3,
+                    ServicoFK = servicosIDs[2],
                     DataExecucaoFK = 9
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 3,
+                    ServicoFK = servicosIDs[2],
                     DataExecucaoFK = 10
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 3,
+                    ServicoFK = servicosIDs[2],
                     DataExecucaoFK = 11
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 8,
+                    ServicoFK = servicosIDs[7],
                     DataExecucaoFK = 11
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 8,
+                    ServicoFK = servicosIDs[7],
                     DataExecucaoFK = 10
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 7,
+                    ServicoFK = servicosIDs[6],
                     DataExecucaoFK = 5
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 7,
+                    ServicoFK = servicosIDs[6],
                     DataExecucaoFK = 2
                 },
                 new Servico_DataExecucao
                 {
-                    ServicoFK = 5,
+                    ServicoFK = servicosIDs[4],
                     DataExecucaoFK = 8
                 }
             );
@@ -640,25 +651,25 @@ namespace LabFoto.Data
                 {
                     ID = 1,
                     Nome = "Galeria1",
-                    ServicoFK = 6
+                    ServicoFK = servicosIDs[5]
                 },
                 new Galeria
                 {
                     ID = 2,
                     Nome = "Galeria2",
-                    ServicoFK = 1
+                    ServicoFK = servicosIDs[0]
                 },
                 new Galeria
                 {
                     ID = 3,
                     Nome = "Galeria3",
-                    ServicoFK = 1
+                    ServicoFK = servicosIDs[0]
                 },
                 new Galeria
                 {
                     ID = 4,
                     Nome = "Galeria4",
-                    ServicoFK = 1
+                    ServicoFK = servicosIDs[0]
                 }
             );
 
