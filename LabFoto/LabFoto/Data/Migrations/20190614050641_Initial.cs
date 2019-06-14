@@ -98,8 +98,7 @@ namespace LabFoto.Migrations
                 name: "Requerentes",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ID = table.Column<string>(nullable: false),
                     Nome = table.Column<string>(nullable: false),
                     Telemovel = table.Column<string>(maxLength: 12, nullable: true),
                     Email = table.Column<string>(nullable: false),
@@ -256,7 +255,7 @@ namespace LabFoto.Migrations
                     DataEntrega = table.Column<DateTime>(nullable: true),
                     Total = table.Column<float>(nullable: true),
                     Hide = table.Column<bool>(nullable: false),
-                    RequerenteFK = table.Column<int>(nullable: true)
+                    RequerenteFK = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -430,15 +429,15 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "5b6b8f52-c0e3-4a6f-a3b5-cecc56fc871e", "Admin", "ADMIN" });
+                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "cb800ec3-7f15-4821-b459-ea0b8c8aa2a9", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Nome" },
                 values: new object[,]
                 {
-                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "78e8c0ce-7158-42fa-8e8e-e885cf7b0f4b", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEDIpc4nzfEl5N4L4dJn8M6inNmZPfQ6jHWFVjZgoUSMXmi2t+QRdb/WR3uwZ3ajrOw==", null, false, "", false, "admin1@admin1.com", "Admin1" },
-                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "71ba5fba-d38b-4b56-8b8f-1193d69a30a8", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEM8ieZX3yAxttiiBe1eg984aEnOHAdKjlhmgLAsCDEH7qBORoQ2o9LdrJNWEoAMyWA==", null, false, "", false, "user1@user1.com", "User1" }
+                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "29906239-bcff-4266-a0d9-99a9bdcd2c3c", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEOn7VmX3VwGnt1AquPCD9F47trRhv1YkV+eBWxlfGZKtTLoE3AgeQN9XBolBATz8JA==", null, false, "", false, "admin1@admin1.com", "Admin1" },
+                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "3b1c3e24-c8cf-4289-b389-b9ae43ebc3ad", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEM9LXeaq1mx25naN0vO9KOJlxXhtxqo9uMXX6BYIEBdCSxGjcBIdtXEDRiHegwLCZw==", null, false, "", false, "user1@user1.com", "User1" }
                 });
 
             migrationBuilder.InsertData(
@@ -480,11 +479,11 @@ namespace LabFoto.Migrations
                 columns: new[] { "ID", "Email", "Nome", "Responsavel", "Telemovel" },
                 values: new object[,]
                 {
-                    { 5, "manuel@ipt.pt", "Manuel", "Manuel", "987321546" },
-                    { 3, "joao@ipt.pt", "João", "Maria", "987654321" },
-                    { 2, "maria@ipt.pt", "Maria", "Maria", "987654321" },
-                    { 4, "jose@ipt.pt", "José", "José", "123789456" },
-                    { 1, "fernando@ipt.pt", "Fernando", "Fernando", "123456789" }
+                    { "916d75a4-c12e-40c4-bf29-7ec1e31696ac", "manuel@ipt.pt", "Manuel", "Manuel", "987321546" },
+                    { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", "joao@ipt.pt", "João", "Maria", "987654321" },
+                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", "maria@ipt.pt", "Maria", "Maria", "987654321" },
+                    { "d6e3fca1-c766-4333-8211-f63431b30181", "jose@ipt.pt", "José", "José", "123789456" },
+                    { "a0f118c8-8e40-4433-a695-e5ca01788331", "fernando@ipt.pt", "Fernando", "Fernando", "123456789" }
                 });
 
             migrationBuilder.InsertData(
@@ -524,14 +523,14 @@ namespace LabFoto.Migrations
                 columns: new[] { "ID", "DataDeCriacao", "DataEntrega", "Hide", "HorasEstudio", "HorasPosProducao", "IdentificacaoObra", "Nome", "Observacoes", "RequerenteFK", "Total" },
                 values: new object[,]
                 {
-                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2018, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 6, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 2f, 8f, "Tira larga, de tecido ou de madeira, que se dispõe transversalmente como ornato na parte superior de uma cortina.", "Sanefa", "Sanefa degradada na parte superior", 1, 40f },
-                    { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", new DateTime(2019, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 4f, 10f, "Vasos/Jarrões a parecem integrados em retábulos,tronos, mesas de altar em várias igrejas em Tomar.", "Vaso talha prata dourada", "", 1, 45f },
-                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2017, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2017, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 20f, 43f, "Seis cadeiras em madeira de cerejeira com acabamento em verniz", "Conjunto de Cadeiras", "", 1, 125f },
-                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", new DateTime(2019, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 17f, "Plantação de árvores na escola.", "Dia da árvore", "Presença do presidente nas plantações.", 2, 65f },
-                    { "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298", new DateTime(2018, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 2f, "Um cavalo queimado no matadouro", "Estátua do Cavalo queimado", "", 2, 0f },
-                    { "916d75a4-c12e-40c4-bf29-7ec1e31696ac", new DateTime(2018, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 3f, 4f, "Festa tradicional da aldeia de Azinhaga", "Festa do Bodo", "Muito bom", 3, 0f },
-                    { "aca4875a-721e-4cfc-827d-d48c7050b543", new DateTime(2019, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 0f, 0f, "Fotos da tabanca do Maltez", "Feira do Cavalo, Golegã", "Grande festa, aprovado", 4, 0f },
-                    { "b399e9c7-957e-4e85-9474-bad2cf8032c4", new DateTime(2019, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 4f, 2f, "Exposição na galeria de Sintra", "Exposição de Arte contemporânea", "", 5, 0f }
+                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2018, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 6, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 2f, 8f, "Tira larga, de tecido ou de madeira, que se dispõe transversalmente como ornato na parte superior de uma cortina.", "Sanefa", "Sanefa degradada na parte superior", "a0f118c8-8e40-4433-a695-e5ca01788331", 40f },
+                    { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", new DateTime(2019, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 4f, 10f, "Vasos/Jarrões a parecem integrados em retábulos,tronos, mesas de altar em várias igrejas em Tomar.", "Vaso talha prata dourada", "", "a0f118c8-8e40-4433-a695-e5ca01788331", 45f },
+                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2017, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2017, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 20f, 43f, "Seis cadeiras em madeira de cerejeira com acabamento em verniz", "Conjunto de Cadeiras", "", "a0f118c8-8e40-4433-a695-e5ca01788331", 125f },
+                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", new DateTime(2019, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 17f, "Plantação de árvores na escola.", "Dia da árvore", "Presença do presidente nas plantações.", "56d513fa-cedd-40d9-bd58-12a7ee3f129c", 65f },
+                    { "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298", new DateTime(2018, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 2f, "Um cavalo queimado no matadouro", "Estátua do Cavalo queimado", "", "56d513fa-cedd-40d9-bd58-12a7ee3f129c", 0f },
+                    { "916d75a4-c12e-40c4-bf29-7ec1e31696ac", new DateTime(2018, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 3f, 4f, "Festa tradicional da aldeia de Azinhaga", "Festa do Bodo", "Muito bom", "86dafe89-cc9c-4308-ace8-b3ed1f54a346", 0f },
+                    { "aca4875a-721e-4cfc-827d-d48c7050b543", new DateTime(2019, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 0f, 0f, "Fotos da tabanca do Maltez", "Feira do Cavalo, Golegã", "Grande festa, aprovado", "d6e3fca1-c766-4333-8211-f63431b30181", 0f },
+                    { "b399e9c7-957e-4e85-9474-bad2cf8032c4", new DateTime(2019, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 4f, 2f, "Exposição na galeria de Sintra", "Exposição de Arte contemporânea", "", "916d75a4-c12e-40c4-bf29-7ec1e31696ac", 0f }
                 });
 
             migrationBuilder.InsertData(

@@ -11,7 +11,7 @@ namespace LabFoto.Models.Tables
     {
 
         [Key]
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         [Required(ErrorMessage = "É necessário introduzir o nome do requerente.")]
         public string Nome { get; set; }

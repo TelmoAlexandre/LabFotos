@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190614045803_Initial")]
+    [Migration("20190614050641_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -389,9 +389,8 @@ namespace LabFoto.Migrations
 
             modelBuilder.Entity("LabFoto.Models.Tables.Requerente", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("ID")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Email")
                         .IsRequired();
@@ -411,7 +410,7 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            ID = 1,
+                            ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             Email = "fernando@ipt.pt",
                             Nome = "Fernando",
                             Responsavel = "Fernando",
@@ -419,7 +418,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 2,
+                            ID = "56d513fa-cedd-40d9-bd58-12a7ee3f129c",
                             Email = "maria@ipt.pt",
                             Nome = "Maria",
                             Responsavel = "Maria",
@@ -427,7 +426,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 3,
+                            ID = "86dafe89-cc9c-4308-ace8-b3ed1f54a346",
                             Email = "joao@ipt.pt",
                             Nome = "João",
                             Responsavel = "Maria",
@@ -435,7 +434,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 4,
+                            ID = "d6e3fca1-c766-4333-8211-f63431b30181",
                             Email = "jose@ipt.pt",
                             Nome = "José",
                             Responsavel = "José",
@@ -443,7 +442,7 @@ namespace LabFoto.Migrations
                         },
                         new
                         {
-                            ID = 5,
+                            ID = "916d75a4-c12e-40c4-bf29-7ec1e31696ac",
                             Email = "manuel@ipt.pt",
                             Nome = "Manuel",
                             Responsavel = "Manuel",
@@ -476,7 +475,7 @@ namespace LabFoto.Migrations
                     b.Property<string>("Observacoes")
                         .HasMaxLength(512);
 
-                    b.Property<int?>("RequerenteFK");
+                    b.Property<string>("RequerenteFK");
 
                     b.Property<float?>("Total");
 
@@ -498,7 +497,7 @@ namespace LabFoto.Migrations
                             IdentificacaoObra = "Tira larga, de tecido ou de madeira, que se dispõe transversalmente como ornato na parte superior de uma cortina.",
                             Nome = "Sanefa",
                             Observacoes = "Sanefa degradada na parte superior",
-                            RequerenteFK = 1,
+                            RequerenteFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             Total = 40f
                         },
                         new
@@ -512,7 +511,7 @@ namespace LabFoto.Migrations
                             IdentificacaoObra = "Plantação de árvores na escola.",
                             Nome = "Dia da árvore",
                             Observacoes = "Presença do presidente nas plantações.",
-                            RequerenteFK = 2,
+                            RequerenteFK = "56d513fa-cedd-40d9-bd58-12a7ee3f129c",
                             Total = 65f
                         },
                         new
@@ -526,7 +525,7 @@ namespace LabFoto.Migrations
                             IdentificacaoObra = "Vasos/Jarrões a parecem integrados em retábulos,tronos, mesas de altar em várias igrejas em Tomar.",
                             Nome = "Vaso talha prata dourada",
                             Observacoes = "",
-                            RequerenteFK = 1,
+                            RequerenteFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             Total = 45f
                         },
                         new
@@ -540,7 +539,7 @@ namespace LabFoto.Migrations
                             IdentificacaoObra = "Seis cadeiras em madeira de cerejeira com acabamento em verniz",
                             Nome = "Conjunto de Cadeiras",
                             Observacoes = "",
-                            RequerenteFK = 1,
+                            RequerenteFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             Total = 125f
                         },
                         new
@@ -553,7 +552,7 @@ namespace LabFoto.Migrations
                             IdentificacaoObra = "Festa tradicional da aldeia de Azinhaga",
                             Nome = "Festa do Bodo",
                             Observacoes = "Muito bom",
-                            RequerenteFK = 3,
+                            RequerenteFK = "86dafe89-cc9c-4308-ace8-b3ed1f54a346",
                             Total = 0f
                         },
                         new
@@ -566,7 +565,7 @@ namespace LabFoto.Migrations
                             IdentificacaoObra = "Fotos da tabanca do Maltez",
                             Nome = "Feira do Cavalo, Golegã",
                             Observacoes = "Grande festa, aprovado",
-                            RequerenteFK = 4,
+                            RequerenteFK = "d6e3fca1-c766-4333-8211-f63431b30181",
                             Total = 0f
                         },
                         new
@@ -580,7 +579,7 @@ namespace LabFoto.Migrations
                             IdentificacaoObra = "Um cavalo queimado no matadouro",
                             Nome = "Estátua do Cavalo queimado",
                             Observacoes = "",
-                            RequerenteFK = 2,
+                            RequerenteFK = "56d513fa-cedd-40d9-bd58-12a7ee3f129c",
                             Total = 0f
                         },
                         new
@@ -593,7 +592,7 @@ namespace LabFoto.Migrations
                             IdentificacaoObra = "Exposição na galeria de Sintra",
                             Nome = "Exposição de Arte contemporânea",
                             Observacoes = "",
-                            RequerenteFK = 5,
+                            RequerenteFK = "916d75a4-c12e-40c4-bf29-7ec1e31696ac",
                             Total = 0f
                         });
                 });
@@ -962,7 +961,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                            ConcurrencyStamp = "5b6b8f52-c0e3-4a6f-a3b5-cecc56fc871e",
+                            ConcurrencyStamp = "cb800ec3-7f15-4821-b459-ea0b8c8aa2a9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -1139,13 +1138,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "78e8c0ce-7158-42fa-8e8e-e885cf7b0f4b",
+                            ConcurrencyStamp = "29906239-bcff-4266-a0d9-99a9bdcd2c3c",
                             Email = "admin1@admin1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@ADMIN1.COM",
                             NormalizedUserName = "ADMIN1@ADMIN1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDIpc4nzfEl5N4L4dJn8M6inNmZPfQ6jHWFVjZgoUSMXmi2t+QRdb/WR3uwZ3ajrOw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOn7VmX3VwGnt1AquPCD9F47trRhv1YkV+eBWxlfGZKtTLoE3AgeQN9XBolBATz8JA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -1156,13 +1155,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "71ba5fba-d38b-4b56-8b8f-1193d69a30a8",
+                            ConcurrencyStamp = "3b1c3e24-c8cf-4289-b389-b9ae43ebc3ad",
                             Email = "user1@user1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@USER1.COM",
                             NormalizedUserName = "USER1@USER1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEM8ieZX3yAxttiiBe1eg984aEnOHAdKjlhmgLAsCDEH7qBORoQ2o9LdrJNWEoAMyWA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEM9LXeaq1mx25naN0vO9KOJlxXhtxqo9uMXX6BYIEBdCSxGjcBIdtXEDRiHegwLCZw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

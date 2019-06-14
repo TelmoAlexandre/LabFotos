@@ -58,7 +58,7 @@ namespace LabFoto.Models.Tables
         //Chave Forasteira para Requerentes
         [ForeignKey("Requerente")]
         [Display(Name = "Requerente")]
-        public int? RequerenteFK { get; set; }
+        public string RequerenteFK { get; set; }
         public virtual Requerente Requerente { get; set; }
     }
 }

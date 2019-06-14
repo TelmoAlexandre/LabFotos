@@ -71,15 +71,15 @@ namespace LabFoto.Controllers
         }
 
         // GET: Requerentes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
             var requerentes = await _context.Requerentes.Include(r => r.Servicos)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID.Equals(id));
             if (requerentes == null)
             {
                 return NotFound();
@@ -89,15 +89,15 @@ namespace LabFoto.Controllers
         }
 
         // GET: Requerentes/Details/5
-        public async Task<IActionResult> DetailsAjax(int? id)
+        public async Task<IActionResult> DetailsAjax(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
             var requerente = await _context.Requerentes.Include(r => r.Servicos)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID.Equals(id));
             if (requerente == null)
             {
                 return NotFound();
@@ -107,10 +107,10 @@ namespace LabFoto.Controllers
         }
 
         // GET: Requerentes/Details/5
-        public async Task<IActionResult> DetailsIndexAjax(int? id)
+        public async Task<IActionResult> DetailsIndexAjax(string id)
         {
 
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -126,16 +126,16 @@ namespace LabFoto.Controllers
         } 
         
         // GET: Requerentes/Details/5
-        public async Task<IActionResult> DetailsIndexAjaxDetails(int? id)
+        public async Task<IActionResult> DetailsIndexAjaxDetails(string id)
         {
             
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
             var requerente = await _context.Requerentes.Include(r => r.Servicos)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID.Equals(id));
             if (requerente == null)
             {
                 return NotFound();
@@ -173,9 +173,9 @@ namespace LabFoto.Controllers
         }
 
         // GET: Requerentes/Edit/5
-        public async Task<IActionResult> EditIndex(int? id)
+        public async Task<IActionResult> EditIndex(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -195,7 +195,7 @@ namespace LabFoto.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditIndex(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
         {
-            if (id != requerente.ID)
+            if (!id.Equals(requerente.ID))
             {
                 return NotFound();
             }
@@ -246,7 +246,7 @@ namespace LabFoto.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditDetails(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
         {
-            if (id != requerente.ID)
+            if (!id.Equals(requerente.ID))
             {
                 return NotFound();
             }
@@ -275,7 +275,7 @@ namespace LabFoto.Controllers
         }
 
         // GET: Requerentes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -283,7 +283,7 @@ namespace LabFoto.Controllers
             }
 
             var requerentes = await _context.Requerentes
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID.Equals(id));
             if (requerentes == null)
             {
                 return NotFound();
@@ -303,9 +303,9 @@ namespace LabFoto.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RequerentesExists(int id)
+        private bool RequerentesExists(string id)
         {
-            return _context.Requerentes.Any(e => e.ID == id);
+            return _context.Requerentes.Any(e => e.ID.Equals(id));
         }
     }
 }

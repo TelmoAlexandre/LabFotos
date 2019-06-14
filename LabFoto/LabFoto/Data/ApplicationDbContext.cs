@@ -123,10 +123,18 @@ namespace LabFoto.Data
                 }
             );
 
+            String[] requerentesIDs = new String[] {
+                "a0f118c8-8e40-4433-a695-e5ca01788331",
+                "56d513fa-cedd-40d9-bd58-12a7ee3f129c",
+                "86dafe89-cc9c-4308-ace8-b3ed1f54a346",
+                "d6e3fca1-c766-4333-8211-f63431b30181",
+                "916d75a4-c12e-40c4-bf29-7ec1e31696ac",
+            };
+
             modelBuilder.Entity<Requerente>().HasData(
                 new Requerente
                 {
-                    ID = 1,
+                    ID = requerentesIDs[0],
                     Nome = "Fernando",
                     Email = "fernando@ipt.pt",
                     Telemovel = "123456789",
@@ -134,7 +142,7 @@ namespace LabFoto.Data
                 },
                 new Requerente
                 {
-                    ID = 2,
+                    ID = requerentesIDs[1],
                     Nome = "Maria",
                     Email = "maria@ipt.pt",
                     Telemovel = "987654321",
@@ -142,7 +150,7 @@ namespace LabFoto.Data
                 },
                 new Requerente
                 {
-                    ID = 3,
+                    ID = requerentesIDs[2],
                     Nome = "João",
                     Email = "joao@ipt.pt",
                     Telemovel = "987654321",
@@ -150,7 +158,7 @@ namespace LabFoto.Data
                 },
                 new Requerente
                 {
-                    ID = 4,
+                    ID = requerentesIDs[3],
                     Nome = "José",
                     Email = "jose@ipt.pt",
                     Telemovel = "123789456",
@@ -158,7 +166,7 @@ namespace LabFoto.Data
                 },
                 new Requerente
                 {
-                    ID = 5,
+                    ID = requerentesIDs[4],
                     Nome = "Manuel",
                     Email = "manuel@ipt.pt",
                     Telemovel = "987321546",
@@ -189,7 +197,7 @@ namespace LabFoto.Data
                     HorasPosProducao = 8,
                     DataEntrega = new DateTime(2018, 6, 27),
                     Total = 40,
-                    RequerenteFK = 1,
+                    RequerenteFK = requerentesIDs[0],
                     Hide = false
                 },
                 new Servico
@@ -203,7 +211,7 @@ namespace LabFoto.Data
                     HorasPosProducao = 17,
                     DataEntrega = new DateTime(2019, 3, 30),
                     Total = 65,
-                    RequerenteFK = 2,
+                    RequerenteFK = requerentesIDs[1],
                     Hide = false
                 },
                 new Servico
@@ -217,7 +225,7 @@ namespace LabFoto.Data
                     HorasPosProducao = 10,
                     DataEntrega = new DateTime(2019, 4, 15),
                     Total = 45,
-                    RequerenteFK = 1,
+                    RequerenteFK = requerentesIDs[0],
                     Hide = false
                 },
                 new Servico
@@ -231,7 +239,7 @@ namespace LabFoto.Data
                     HorasPosProducao = 43,
                     DataEntrega = new DateTime(2017, 9, 20),
                     Total = 125,
-                    RequerenteFK = 1,
+                    RequerenteFK = requerentesIDs[0],
                     Hide = false
                 },
                 new Servico
@@ -245,7 +253,7 @@ namespace LabFoto.Data
                     HorasPosProducao = 4,
                     DataEntrega = null,
                     Total = 0,
-                    RequerenteFK = 3,
+                    RequerenteFK = requerentesIDs[2],
                     Hide = false
                 },
                 new Servico
@@ -259,7 +267,7 @@ namespace LabFoto.Data
                     HorasPosProducao = 0,
                     DataEntrega = null,
                     Total = 0,
-                    RequerenteFK = 4,
+                    RequerenteFK = requerentesIDs[3],
                     Hide = false
                 },
                 new Servico
@@ -273,7 +281,7 @@ namespace LabFoto.Data
                     HorasPosProducao = 2,
                     DataEntrega = new DateTime(2018, 2, 21),
                     Total = 0,
-                    RequerenteFK = 2,
+                    RequerenteFK = requerentesIDs[1],
                     Hide = false
                 },
                 new Servico
@@ -287,7 +295,7 @@ namespace LabFoto.Data
                     HorasPosProducao = 2,
                     DataEntrega = null,
                     Total = 0,
-                    RequerenteFK = 5,
+                    RequerenteFK = requerentesIDs[4],
                     Hide = false
                 }
             );
