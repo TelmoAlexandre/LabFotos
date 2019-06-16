@@ -23,7 +23,7 @@
         <div class="ui vertical fluid tabular menu">
             @foreach (var ser in Model.Servicos)
             {
-                <a class="item" id="list_nome" onclick="requerenteServicoDetails(`div_segment`, @ser.ID)" data-toggle="list" role="tab" aria-controls="home" href="#list-segment">@ser.Nome</a>
+                <a class="item" id="list_nome" onclick="requerenteServicoDetails(`div_segment`, '@ser.ID')" data-toggle="list" role="tab" aria-controls="home" href="#list-segment">@ser.Nome</a>
             }
         </div>
     </div>
