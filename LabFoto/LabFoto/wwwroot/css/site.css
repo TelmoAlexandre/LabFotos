@@ -111,3 +111,25 @@ body {
     height: 150px !important;
     object-fit: cover !important;
 }
+
+.my-gallery {
+    width: 100%;
+    float: left;
+}
+
+    .my-gallery img {
+        width: 150px !important;
+        height: 150px !important;
+        object-fit: cover !important;
+    }
+
+    .my-gallery figure {
+        display: block;
+        float: left;
+        margin: 0 5px 5px 0;
+        width: 150px;
+    }
+
+    .my-gallery figcaption {
+        display: none;
+    }

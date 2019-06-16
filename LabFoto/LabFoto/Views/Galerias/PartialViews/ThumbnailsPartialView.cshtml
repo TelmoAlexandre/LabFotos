@@ -1,9 +1,16 @@
 ﻿@model IEnumerable<LabFoto.Models.Tables.Fotografia>
 
-@foreach (var foto in Model)
-{
-    <div class="ui card">
-        <img class="medium-thumbnails" src="@foto.Thumbnail_Medium" />
-        <a href=@foto.DownloadUrl>Guardar</a>
-    </div>
-}
+<div class="my-gallery" id="my-gallery" itemscope hidden>
+    @foreach (var foto in Model)
+    {
+            @*<img class="medium-thumbnails" src="@foto.Thumbnail_Medium" />
+                <a href=@foto.DownloadUrl>Guardar</a>*@
+            <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                <a href="@foto.Thumbnail_Large" itemprop="contentUrl">
+                    <img src="@foto.Thumbnail_Medium" itemprop="thumbnail" alt="Image description" />
+                    <img class="hide" src="@foto.Thumbnail_Large"/>
+                </a>
+                <figcaption itemprop="caption description">@foto.Nome</figcaption>
+            </figure>
+    }
+</div>
