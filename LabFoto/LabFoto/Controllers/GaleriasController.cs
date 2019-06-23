@@ -24,7 +24,7 @@ namespace LabFoto.Controllers
         }
 
         // GET: Galerias
-        public async Task<IActionResult> Index(string serv)
+        public async Task<IActionResult> Index(string serv, int? metaID)
         {
             var galerias = from g in _context.Galerias
                            select g;
@@ -32,6 +32,11 @@ namespace LabFoto.Controllers
             if (!String.IsNullOrEmpty(serv))
             {
                 galerias = galerias.Where(g=>g.Servico.ID.Equals(serv));
+            }
+            if(metaID != null)
+            {
+                var galeriasMeta = _context.Galerias_Metadados.Where(gm => gm.MetadadoFK == metaID).Select(gm => gm.Galeria).ToList();
+                galerias = galerias.Where(g => galeriasMeta.Contains(g));
             }
 
             List<Fotografia> fotos = await galerias.Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();

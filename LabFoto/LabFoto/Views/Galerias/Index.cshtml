@@ -10,27 +10,41 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<div class="ui four doubling stackable cards">
+<div class="ui four douybl stackable cards">
     @foreach (var galeria in Model)
     {
         <div class="card">
             <div class="image">
-                @if (galeria.Fotografias.FirstOrDefault() != null)
-                {
-                    <img src="@galeria.Fotografias.FirstOrDefault().Thumbnail_Medium" class="medium-thumbnails" />
-                }
-                else
-                {
-                    <img src="~/images/default.png" class="medium-thumbnails">
-                }
+                <a asp-controller="Galerias" asp-action="Details" asp-route-id="@galeria.ID">
+                    @if (galeria.Fotografias.FirstOrDefault() != null)
+                    {
+                        <img src="@galeria.Fotografias.FirstOrDefault().Thumbnail_Medium" class="medium-thumbnails" />
+                    }
+                    else
+                    {
+                        <img src="~/images/default.png" class="medium-thumbnails">
+                    }
+                </a>
             </div>
             <div class="content">
-                <div class="header">@galeria.Nome</div>
+                <div class="header">
+                    <a class="plainTextLink" asp-controller="Galerias" asp-action="Details" asp-route-id="@galeria.ID">
+                        @galeria.Nome
+                    </a>
+                </div>
                 <div class="meta">
-                    <p>@Html.DisplayFor(modelItem => galeria.DataDeCriacao)</p>
+                    <span>@Html.DisplayFor(modelItem => galeria.DataDeCriacao)</span><br />
+                </div>
+                <div class="meta mt-1">
+                    @foreach (var meta in galeria.Galerias_Metadados)
+                    {
+                        <a asp-controller="Galerias" asp-action="Index" asp-route-metaID="@meta.MetadadoFK" style="font-size:0.8rem;">@meta.Metadado.Nome</a>
+                    }
                 </div>
                 <div class="description font-weight-bold">
-                    @galeria.Servico.Nome
+                    <a class="plainTextLink" asp-controller="Servicos" asp-action="Details" asp-route-id="@galeria.Servico.ID">
+                        @galeria.Servico.Nome
+                    </a>
                 </div>
             </div>
             <div class="extra content">
