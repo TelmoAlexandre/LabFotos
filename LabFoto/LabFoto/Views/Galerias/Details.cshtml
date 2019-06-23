@@ -4,8 +4,6 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
 <div>
     <h4>Galeria</h4>
     <hr />
@@ -118,36 +116,9 @@
 {
     <script>
         $(document).ready(function () {
-            $.ajax({
-                type: "GET",
-                url: "/Galerias/Thumbnails/" + @Model.ID,
-                success: function (resp) {
-                    $("#thumbnails").append(resp);
-                    if (initPhotoSwipeFromDOM('.my-gallery')) {
-                        var gallery = document.getElementById('my-gallery');
-                        $(".ui.card").remove();
-                        gallery.removeAttribute('hidden');
-                    } else {
-                        error();
-                    }
-                },
-                error: function () {
-                    error();
-                }
+            $("#thumbnails").load("/Galerias/Thumbnails/" + @Model.ID, function (resp) {
+                initPhotoSwipeFromDOM('.my-gallery');
             });
         });
-
-        var error = () => {
-            $("#thumbnails").html("Não foi possível carregar as imagens.");
-            // Notificação 'Noty'
-            new Noty({
-                type: 'error',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: 'Ocorreu um erro ao carregar as imagens.',
-                timeout: 4000,
-                progressBar: true
-            }).show();
-        };
     </script>
 }

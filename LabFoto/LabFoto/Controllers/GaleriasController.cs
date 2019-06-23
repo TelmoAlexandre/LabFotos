@@ -24,10 +24,11 @@ namespace LabFoto.Controllers
         }
 
         // GET: Galerias
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string serv)
         {
-            var applicationDbContext = _context.Galerias.Include(g => g.Servico);
-            return View(await applicationDbContext.ToListAsync());
+            var galerias = _context.Galerias.Where(g => g.Servico.ID.Equals(serv)).Include(g => g.Servico);
+
+            return View(await galerias.ToListAsync());
         }
 
         // GET: Galerias/Details/5

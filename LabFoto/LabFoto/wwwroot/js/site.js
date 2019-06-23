@@ -497,7 +497,6 @@ var initPhotoSwipeFromDOM = function (gallerySelector) {
             items = [],
             figureEl,
             linkEl,
-            size,
             item;
 
         for(var i = 0; i < numNodes; i++) {
@@ -577,8 +576,6 @@ var initPhotoSwipeFromDOM = function (gallerySelector) {
             nodeIndex++;
         }
 
-
-
         if (index >= 0) {
             // open PhotoSwipe if valid index found
             openPhotoSwipe(index, clickedGallery);
@@ -627,7 +624,6 @@ var initPhotoSwipeFromDOM = function (gallerySelector) {
 
             // define gallery index (for URL)
             galleryUID: galleryElement.getAttribute('data-pswp-uid'),
-            history: false,
             errorMsg: "Ocorreu um erro ao carregar a imagem."
         };
 
@@ -669,7 +665,7 @@ var initPhotoSwipeFromDOM = function (gallerySelector) {
                     item.h = this.height; // set image height
                     gallery.invalidateCurrItems(); // reinit Items
                     gallery.updateSize(true); // reinit Items
-                }
+                };
                 img.src = item.src; // let's download image
             }
         });
@@ -689,6 +685,4 @@ var initPhotoSwipeFromDOM = function (gallerySelector) {
     if (hashData.pid && hashData.gid) {
         openPhotoSwipe(hashData.pid, galleryElements[hashData.gid - 1], true, true);
     }
-
-    return true;
 };
