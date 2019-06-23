@@ -15,7 +15,7 @@
     {
         <div class="card">
             <div class="image">
-                <a asp-controller="Galerias" asp-action="Details" asp-route-id="@galeria.ID">
+                <a asp-action="Details" asp-route-id="@galeria.ID">
                     @if (galeria.Fotografias.FirstOrDefault() != null)
                     {
                         <img src="@galeria.Fotografias.FirstOrDefault().Thumbnail_Medium" class="medium-thumbnails" />
@@ -28,7 +28,7 @@
             </div>
             <div class="content">
                 <div class="header">
-                    <a class="plainTextLink" asp-controller="Galerias" asp-action="Details" asp-route-id="@galeria.ID">
+                    <a class="plainTextLink" asp-action="Details" asp-route-id="@galeria.ID">
                         @galeria.Nome
                     </a>
                 </div>
@@ -38,7 +38,7 @@
                 <div class="meta mt-1">
                     @foreach (var meta in galeria.Galerias_Metadados)
                     {
-                        <a asp-controller="Galerias" asp-action="Index" asp-route-metaID="@meta.MetadadoFK" style="font-size:0.8rem;">@meta.Metadado.Nome</a>
+                        <a asp-action="Index" asp-route-metaID="@meta.MetadadoFK" style="font-size:0.8rem;">@meta.Metadado.Nome</a>
                     }
                 </div>
                 <div class="description font-weight-bold">
@@ -49,10 +49,10 @@
             </div>
             <div class="extra content">
                 <span class="right floated">
-                    <a asp-controller="Galerias" asp-action="Edit" asp-route-id="@galeria.ID">
+                    <a asp-action="Edit" asp-route-id="@galeria.ID">
                         <i class="edit icon"></i>
                     </a>
-                    <a asp-controller="Galerias" asp-action="Details" asp-route-id="@galeria.ID">
+                    <a asp-action="Details" asp-route-id="@galeria.ID">
                         <i class="folder open icon"></i>
                     </a>
                 </span>

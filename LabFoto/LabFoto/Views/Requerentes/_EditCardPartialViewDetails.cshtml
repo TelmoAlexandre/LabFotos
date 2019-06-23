@@ -1,7 +1,7 @@
 ﻿@model LabFoto.Models.Tables.Requerente
 
 <form asp-controller="Requerentes" asp-action="Edit"
-      onsubmit="requerenteEditFormSubmitDetails(event, `div_@Model.ID` , `divDetails_@Model.ID`, `requerenteEditForm_@Model.ID`, `@Model.ID`)"
+      onsubmit="requerenteEditFormSubmitDetails(event, `div_@Model.ID` , `divDetails_@Model.ID`, `requerenteEditForm_@Model.ID`, '@Model.ID')"
       id="requerenteEditForm_@Model.ID">
     <div class="ui card">
         <div class="card">
