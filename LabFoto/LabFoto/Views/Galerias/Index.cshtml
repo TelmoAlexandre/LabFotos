@@ -9,39 +9,41 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataDeCriacao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Servico)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataDeCriacao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Servico.IdentificacaoObra)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="ui relaxed divided items">
+    @foreach (var galeria in Model)
+    {
+        <div class="item">
+            <div class="ui small image">
+                @if (galeria.Fotografias.FirstOrDefault() != null)
+                {
+                    <img src="@galeria.Fotografias.FirstOrDefault().Thumbnail_Medium" class="medium-thumbnails" />
+                }
+                else
+                {
+                    <img src="~/images/default.png" class="medium-thumbnails">
+                }
+            </div>
+            <div class="content">
+                <span class="header">@galeria.Nome</span>
+                <div class="meta">
+                    <span>@Html.DisplayFor(modelItem => galeria.DataDeCriacao)</span>
+                </div>
+                <div class="description">
+                    <span class="font-weight-bold">@galeria.Servico.Nome</span>
+                    <br />
+                    <span>
+                        @foreach (var metaDados in galeria.Galerias_Metadados)
+                        {
+                            <span class="mr-4">@metaDados.Metadado.Nome</span>
+                        }
+                    </span>
+                </div>
+                <a asp-controller="Galerias" asp-action="Details" asp-route-id="@galeria.ID" class="ui right floated tiny primary button">
+                    Ver galeria
+                    <i class="right chevron icon"></i>
+                </a>
+            </div>
+        </div>
+    }
+</div>

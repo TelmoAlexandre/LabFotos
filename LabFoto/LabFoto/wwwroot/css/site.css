@@ -108,7 +108,7 @@ body {
 
 .medium-thumbnails {
     width: 150px !important;
-    height: 150px !important;
+    height: 120px !important;
     object-fit: cover !important;
 }
 

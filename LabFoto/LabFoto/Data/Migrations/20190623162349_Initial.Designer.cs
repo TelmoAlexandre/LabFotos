@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190614050641_Initial")]
+    [Migration("20190623162349_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -348,6 +348,16 @@ namespace LabFoto.Migrations
                         new
                         {
                             MetadadoFK = 4,
+                            GaleriaFK = 4
+                        },
+                        new
+                        {
+                            MetadadoFK = 2,
+                            GaleriaFK = 4
+                        },
+                        new
+                        {
+                            MetadadoFK = 1,
                             GaleriaFK = 4
                         });
                 });
@@ -961,7 +971,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                            ConcurrencyStamp = "cb800ec3-7f15-4821-b459-ea0b8c8aa2a9",
+                            ConcurrencyStamp = "088d9476-e52f-45c2-af36-9331e623492e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -1138,13 +1148,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "29906239-bcff-4266-a0d9-99a9bdcd2c3c",
+                            ConcurrencyStamp = "77426a37-8c9f-4c85-9b9e-02317fd06d84",
                             Email = "admin1@admin1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@ADMIN1.COM",
                             NormalizedUserName = "ADMIN1@ADMIN1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOn7VmX3VwGnt1AquPCD9F47trRhv1YkV+eBWxlfGZKtTLoE3AgeQN9XBolBATz8JA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJxqHo4lF+WsSONRfQ19Q/CYM3wWEJqdVmihmeHnEywBpNYGmsbwn3N3mFNM8BsdSg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -1155,13 +1165,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3b1c3e24-c8cf-4289-b389-b9ae43ebc3ad",
+                            ConcurrencyStamp = "43a709a8-cef4-401f-9f3f-b307158e2ec8",
                             Email = "user1@user1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@USER1.COM",
                             NormalizedUserName = "USER1@USER1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEM9LXeaq1mx25naN0vO9KOJlxXhtxqo9uMXX6BYIEBdCSxGjcBIdtXEDRiHegwLCZw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDAjIlWqqz17PmWBeuxFUpZMsVBxbPKrCOjMmosvMj0OckJyE1j8UvZ0DrOcjlaDXg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

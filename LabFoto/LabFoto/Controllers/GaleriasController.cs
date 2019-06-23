@@ -26,14 +26,19 @@ namespace LabFoto.Controllers
         // GET: Galerias
         public async Task<IActionResult> Index(string serv)
         {
-            var galerias = _context.Galerias.Include(g => g.Servico);
+            var galerias = from g in _context.Galerias
+                           select g;
 
             if (!String.IsNullOrEmpty(serv))
             {
-                galerias = galerias.Where(g=>g.Servico.ID.Equals(serv)).Include(g => g.Servico);
+                galerias = galerias.Where(g=>g.Servico.ID.Equals(serv));
             }
 
-            return View(await galerias.ToListAsync());
+            List<Fotografia> fotos = await galerias.Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
+
+            await _onedrive.RefreshPhotoUrlsAsync(fotos);
+
+            return View(await galerias.Include(g => g.Servico).Include(g => g.Fotografias).Include(g=>g.Galerias_Metadados).ThenInclude(mt => mt.Metadado).ToListAsync());
         }
 
         // GET: Galerias/Details/5

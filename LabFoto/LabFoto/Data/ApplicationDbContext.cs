@@ -700,6 +700,16 @@ namespace LabFoto.Data
                 {
                     GaleriaFK = 4,
                     MetadadoFK = 4
+                },
+                new Galeria_Metadado
+                {
+                    GaleriaFK = 4,
+                    MetadadoFK = 2
+                },
+                new Galeria_Metadado
+                {
+                    GaleriaFK = 4,
+                    MetadadoFK = 1
                 }
             );
 

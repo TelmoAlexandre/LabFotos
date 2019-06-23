@@ -429,15 +429,15 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "cb800ec3-7f15-4821-b459-ea0b8c8aa2a9", "Admin", "ADMIN" });
+                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "088d9476-e52f-45c2-af36-9331e623492e", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Nome" },
                 values: new object[,]
                 {
-                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "29906239-bcff-4266-a0d9-99a9bdcd2c3c", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEOn7VmX3VwGnt1AquPCD9F47trRhv1YkV+eBWxlfGZKtTLoE3AgeQN9XBolBATz8JA==", null, false, "", false, "admin1@admin1.com", "Admin1" },
-                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "3b1c3e24-c8cf-4289-b389-b9ae43ebc3ad", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEM9LXeaq1mx25naN0vO9KOJlxXhtxqo9uMXX6BYIEBdCSxGjcBIdtXEDRiHegwLCZw==", null, false, "", false, "user1@user1.com", "User1" }
+                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "77426a37-8c9f-4c85-9b9e-02317fd06d84", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEJxqHo4lF+WsSONRfQ19Q/CYM3wWEJqdVmihmeHnEywBpNYGmsbwn3N3mFNM8BsdSg==", null, false, "", false, "admin1@admin1.com", "Admin1" },
+                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "43a709a8-cef4-401f-9f3f-b307158e2ec8", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEDAjIlWqqz17PmWBeuxFUpZMsVBxbPKrCOjMmosvMj0OckJyE1j8UvZ0DrOcjlaDXg==", null, false, "", false, "user1@user1.com", "User1" }
                 });
 
             migrationBuilder.InsertData(
@@ -630,6 +630,8 @@ namespace LabFoto.Migrations
                     { 2, 2 },
                     { 3, 3 },
                     { 4, 4 },
+                    { 2, 4 },
+                    { 1, 4 },
                     { 1, 1 }
                 });
 
