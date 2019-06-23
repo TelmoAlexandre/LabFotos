@@ -10,11 +10,11 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<div class="ui relaxed divided items">
+<div class="ui four doubling stackable cards">
     @foreach (var galeria in Model)
     {
-        <div class="item">
-            <div class="ui small image">
+        <div class="card">
+            <div class="image">
                 @if (galeria.Fotografias.FirstOrDefault() != null)
                 {
                     <img src="@galeria.Fotografias.FirstOrDefault().Thumbnail_Medium" class="medium-thumbnails" />
@@ -25,24 +25,27 @@
                 }
             </div>
             <div class="content">
-                <span class="header">@galeria.Nome</span>
+                <div class="header">@galeria.Nome</div>
                 <div class="meta">
-                    <span>@Html.DisplayFor(modelItem => galeria.DataDeCriacao)</span>
+                    <p>@Html.DisplayFor(modelItem => galeria.DataDeCriacao)</p>
                 </div>
-                <div class="description">
-                    <span class="font-weight-bold">@galeria.Servico.Nome</span>
-                    <br />
-                    <span>
-                        @foreach (var metaDados in galeria.Galerias_Metadados)
-                        {
-                            <span class="mr-4">@metaDados.Metadado.Nome</span>
-                        }
-                    </span>
+                <div class="description font-weight-bold">
+                    @galeria.Servico.Nome
                 </div>
-                <a asp-controller="Galerias" asp-action="Details" asp-route-id="@galeria.ID" class="ui right floated tiny primary button">
-                    Ver galeria
-                    <i class="right chevron icon"></i>
-                </a>
+            </div>
+            <div class="extra content">
+                <span class="right floated">
+                    <a asp-controller="Galerias" asp-action="Edit" asp-route-id="@galeria.ID">
+                        <i class="edit icon"></i>
+                    </a>
+                    <a asp-controller="Galerias" asp-action="Details" asp-route-id="@galeria.ID">
+                        <i class="folder open icon"></i>
+                    </a>
+                </span>
+                <span>
+                    <i class="images icon"></i>
+                    @galeria.Fotografias.Count Fotos
+                </span>
             </div>
         </div>
     }
