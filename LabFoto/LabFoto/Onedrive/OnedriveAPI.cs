@@ -31,34 +31,36 @@ namespace LabFoto.Onedrive
             {
                 foreach (var photo in photos)
                 {
-                    // Verificar se o token está válido
-                    await RefreshTokenAsync(photo.ContaOnedrive);
+                    if(photo != null) { 
+                        // Verificar se o token está válido
+                        await RefreshTokenAsync(photo.ContaOnedrive);
 
-                    string driveId = photo.ContaOnedrive.DriveId;
-                    string url = "https://graph.microsoft.com/v1.0/me" +
-                        "/drives/" + driveId +
-                        "/items/" + photo.ItemId +
-                        "?$expand=thumbnails";
-                    var request = new HttpRequestMessage(HttpMethod.Get, url);
-                    request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
+                        string driveId = photo.ContaOnedrive.DriveId;
+                        string url = "https://graph.microsoft.com/v1.0/me" +
+                            "/drives/" + driveId +
+                            "/items/" + photo.ItemId +
+                            "?$expand=thumbnails";
+                        var request = new HttpRequestMessage(HttpMethod.Get, url);
+                        request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
 
-                    // Fazer o pedido e obter resposta
-                    var response = await client.SendAsync(request);
+                        // Fazer o pedido e obter resposta
+                        var response = await client.SendAsync(request);
 
-                    // Caso retorne OK 2xx
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Converter a resposta para um objeto json
-                        JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
+                        // Caso retorne OK 2xx
+                        if (response.IsSuccessStatusCode)
+                        {
+                            // Converter a resposta para um objeto json
+                            JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                        photo.DownloadUrl = (string)content["@microsoft.graph.downloadUrl"];
+                            photo.DownloadUrl = (string)content["@microsoft.graph.downloadUrl"];
 
-                        JObject thumbnails = (JObject)content["thumbnails"][0];
-                        photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
-                        photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
-                        photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
+                            JObject thumbnails = (JObject)content["thumbnails"][0];
+                            photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
+                            photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
+                            photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
 
-                        _context.Update(photo);
+                            _context.Update(photo);
+                        }
                     }
                 }
                 await _context.SaveChangesAsync();

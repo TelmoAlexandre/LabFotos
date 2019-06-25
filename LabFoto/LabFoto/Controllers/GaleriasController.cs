@@ -39,9 +39,16 @@ namespace LabFoto.Controllers
                 galerias = galerias.Where(g => galeriasMeta.Contains(g));
             }
 
-            List<Fotografia> fotos = await galerias.Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
+            // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
+            List<Fotografia> photos = await galerias.Include(g => g.Fotografias).ThenInclude(f => f.ContaOnedrive).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
+            photos.RemoveAll(photo => photo == null);
+            // Juntar a conta onedrive associada
+            foreach (var photo in photos)
+            {
+                photo.ContaOnedrive = await _context.ContasOnedrive.FindAsync(photo.ContaOnedriveFK);
+            }
 
-            await _onedrive.RefreshPhotoUrlsAsync(fotos);
+            await _onedrive.RefreshPhotoUrlsAsync(photos);
 
             return View(await galerias.Include(g => g.Servico).Include(g => g.Fotografias).Include(g=>g.Galerias_Metadados).ThenInclude(mt => mt.Metadado).ToListAsync());
         }
