@@ -17,6 +17,7 @@ jQuery(document).ready(function ($) {
         $("#expandSearchSymbol").toggle();
         $("#collapseSearchSymbol").toggle();
     });
+
     // Adicionar novo input para as datas de execução nos formularios dos serviços
     $("#newDataDeExecucaoInput").click(function () {
         var count = $("#dataDeExecDiv div").length;
@@ -28,18 +29,6 @@ jQuery(document).ready(function ($) {
                 </span>
             </div>`
         );
-    });
-
-    // As dropdowns dos tipos e dos serviços solicitados são carregadas para um div de backup
-    // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
-    // recuperar o html dos divs de backup
-    $("#tiposBackup").load("/Servicos/TiposAjax", function () {
-        $("#searchTiposCB").html($("#tiposBackup").html());
-        $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-    });
-    $("#servSolicBackup").load("/Servicos/ServSolicAjax", function () {
-        $("#searchServSolicCB").html($("#servSolicBackup").html());
-        $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
     });
 
     // Ativar o Popper.j
@@ -155,12 +144,6 @@ function initModalEvents() {
         handleControllerResponse(resp, 'servSolicCheckboxes', 'modalNovoServSolic', '/Servicos/ServSolicAjax');
 }
 
-// Submit do form das pesquisas dos servicos
-submitSearchForm = (page) => {
-    $("#pageNum").val(page);
-    $("#servicosIndexSearchForm").submit();
-};
-
 flipCard = (shapeId, transition) => {
     $(`#${shapeId}`).shape(`${transition}`);
 };
@@ -171,44 +154,12 @@ requerentesSubmitSearchForm = (pageReq) => {
     $("#requerentesIndexSearchForm").submit();
 };
 
-// Limpar pesquisas dos servicos
-clearServicosSearch = () => {
-    $(`#searchParams input[type="search"]`).val("");
-    $(`#searchParams input[type="date"]`).val("");
-    // Recarregar as dropdows dos tipos e dos serviços solicitados
-    // Estes encontram-se num div de backup, pois tem o layout do semantic-ui
-    // Assim evita-se alterar o codigo do semantic-ui, pois isso pode levantar problemas
-    $("#searchTiposCB").html($("#tiposBackup").html());
-    $("#searchServSolicCB").html($("#servSolicBackup").html());
-    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-    submitSearchForm();
-};
-
 hideModal = () => {
     $(".ui.modal").modal("hide");
 };
 
 showModal = (modalId) => {
     $(`#${modalId}`).modal("show");
-};
-
-// Expandir e collapsar os accordions do Index dos serviços
-$("#accordionExpand").click(function (e) {
-    e.preventDefault();
-    $(".accordionBody").addClass("show");
-    $(".accordionOptions").toggle();
-    expandedAccordion = true;
-});
-$("#accordionCollapse").click(function (e) {
-    e.preventDefault();
-    $(".accordionBody").removeClass("show");
-    $(".accordionOptions").toggle();
-    expandedAccordion = false;
-});
-resetAccordionCollapse = (resp) => {
-    if (expandedAccordion) {
-        $(".accordionBody").addClass("show");
-    }
 };
 
 deleteElement = (id) => {
