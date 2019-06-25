@@ -181,10 +181,6 @@ clearServicosSearch = () => {
     $("#searchTiposCB").html($("#tiposBackup").html());
     $("#searchServSolicCB").html($("#servSolicBackup").html());
     $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-    // Fechar as opções de pesquisa
-    $("#searchOptions").slideToggle();
-    $("#expandSearchSymbol").toggle();
-    $("#collapseSearchSymbol").toggle();
     submitSearchForm();
 };
 

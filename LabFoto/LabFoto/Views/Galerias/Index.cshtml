@@ -1,66 +1,184 @@
-﻿@model IEnumerable<LabFoto.Models.Tables.Galeria>
+﻿@model LabFoto.Models.ViewModels.GaleriasIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Galerias</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<form asp-controller="Galerias" asp-action="IndexFilter" class="mb-2"
+      data-ajax="true" data-ajax-method="POST"
+      data-ajax-mode="replace" data-ajax-update="#cardsGalerias"
+      id="GaleriasSearchForm">
 
-<div class="ui four doubling stackable cards">
-    @foreach (var galeria in Model)
-    {
-        <div class="card">
-            <div class="image">
-                <a asp-action="Details" asp-route-id="@galeria.ID">
-                    @if (galeria.Fotografias.FirstOrDefault() != null)
-                    {
-                        <img src="@galeria.Fotografias.FirstOrDefault().Thumbnail_Medium" class="medium-thumbnails" />
-                    }
-                    else
-                    {
-                        <img src="~/images/default.png" class="medium-thumbnails">
-                    }
-                </a>
-            </div>
-            <div class="content">
-                <div class="header">
-                    <a class="plainTextLink" asp-action="Details" asp-route-id="@galeria.ID">
-                        @galeria.Nome
-                    </a>
+    <div class="ui segment padded">
+        <div class="ui form" id="searchParams">
+            <div class="fields">
+                <div class=" eight wide field">
+                    <div class="ui transparent left icon input large">
+                        <input type="search" id="nomeSearch" placeholder="Nome da galeria..." name="nomeSearch"
+                               onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                        <i class="search icon"></i>
+                    </div>
                 </div>
-                <div class="meta">
-                    <span style="font-size: 0.8rem;">@Html.DisplayFor(modelItem => galeria.DataDeCriacao)</span><br />
-                </div>
-                <div class="meta mt-1">
-                    @foreach (var meta in galeria.Galerias_Metadados)
-                    {
-                        <a asp-action="Index" asp-route-metaID="@meta.MetadadoFK" style="font-size:0.8rem;">@meta.Metadado.Nome</a>
-                    }
-                </div>
-                <div class="description font-weight-bold">
-                    <a class="plainTextLink" asp-controller="Servicos" asp-action="Details" asp-route-id="@galeria.Servico.ID">
-                        @galeria.Servico.Nome
-                    </a>
+                <div class="eight wide field">
+                    <div class="ui button inverted red mini" onclick="clearGaleriasSearch()">Limpar pesquisa</div>
                 </div>
             </div>
-            <div class="extra content">
-                <span class="right floated">
-                    <a asp-action="Edit" asp-route-id="@galeria.ID">
-                        <i class="edit icon"></i>
-                    </a>
-                    <a asp-action="Details" asp-route-id="@galeria.ID">
-                        <i class="folder open icon"></i>
-                    </a>
-                </span>
-                <span>
-                    <i class="images icon"></i>
-                    @galeria.Fotografias.Count Fotos
-                </span>
+
+            <div id="searchOptions" style="display:none" class="mt-4">
+
+                <div class="fields mb-0">
+                    <div class="eight wide field">
+                        <small class="form-text text-muted">
+                            Serviço
+                        </small>
+                    </div>
+                    <div class="eight wide field">
+                        <small class="form-text text-muted">
+                            Metadados
+                        </small>
+                    </div>
+                </div>
+                <div class="fields">
+                    <div class="eight wide field" id="servicosDropDown"
+                         onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                    </div>
+                    <div class="eight wide field" id="metadadosCB"
+                         onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                    </div>
+                </div>
+
+                <div class="fields">
+                    <div class="four wide field">
+                        <small class="form-text text-muted  ">
+                            Desde
+                        </small>
+                        <input type="date" class="searchServicoDate" name="dataSearchMin"
+                               onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                    </div>
+                    <div class="four wide field">
+                        <small class="form-text text-muted">
+                            Até
+                        </small>
+                        <input type="date" id="dataSearchMax" name="dataSearchMax"
+                               onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="mt-2 pointer col-md-4" id="expandSearchOptions">
+                    <div id="expandSearchSymbol">
+                        <i class="far fa-plus-square"></i>
+                        <span>Expandir opções de pesquisa</span>
+                    </div>
+                    <div id="collapseSearchSymbol" style="display:none">
+                        <i class="far fa-minus-square"></i>
+                        <span>Ocultar opções de pesquisa</span>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
+
+    <div class="row mt-2 mb-2">
+        <div class="col-md-6">
+            <a class="ui blue mini button" href="/Galerias/Create">
+                <i class="fas fa-plus"></i> Nova Galeria
+            </a>
+        </div>
+        <div class="col-md-3">
+            <div class="content unselectable" style="padding-top:10px;">
+                <span>Ordenar por </span>
+                <div class="ui inline dropdown">
+                    <input type="hidden" name="ordem" onchange="submitGaleriasSearchForm()" />
+                    <span class="text">data de criação</span>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div class="active item" data-text="data de criação" data-value="data">Data de criação</div>
+                        <div class="item" data-text="nome" data-value="nome">Nome</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="content unselectable" style="padding-top:10px;">
+                <div class="ui inline dropdown">
+                    <input type="hidden" name="galeriasPerPage" onchange="submitGaleriasSearchForm()" />
+                    <span>Ver </span>
+                    <span class="text" onchange="servicosPerPageRefresh">1</span>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div class="active item" data-text="1" data-value="1">1</div>
+                        <div class="item" data-text="2" data-value="2">2</div>
+                        <div class="item" data-text="5" data-value="5">5</div>
+                    </div>
+                </div>
+                <span> por página</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="cardsGalerias">
+        <partial name="PartialViews/_GaleriasIndexCardsPartialView" model="@Model" />
+    </div>
+</form>
+
+<div id="metadadosBackup" hidden></div>
+<div id="servicosBackup" hidden></div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            // A dropdown dos metadados são carregadas para um div de backup
+            // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
+            // recuperar o html dos divs de backup
+            $("#metadadosBackup").load("/Galerias/MetadadosDropdown", function () {
+                $("#metadadosCB").html($("#metadadosBackup").html());
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+            $("#servicosBackup").load("/Galerias/ServicosDropdown", function () {
+                $("#servicosDropDown").html($("#servicosBackup").html());
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+        });
+
+        clearGaleriasSearch = () => {
+            $(`#searchParams input[type="search"]`).val("");
+            $(`#searchParams input[type="date"]`).val("");
+            // Recarregar as dropdows dos tipos e dos serviços solicitados
+            // Estes encontram-se num div de backup, pois tem o layout do semantic-ui
+            // Assim evita-se alterar o codigo do semantic-ui, pois isso pode levantar problemas
+            $("#metadadosCB").html($("#metadadosBackup").html());
+            $("#servicosDropDown").html($("#servicosBackup").html());
+            $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            submitGaleriasSearchForm();
+        };
+
+        // Submit do form das pesquisas dos servicos
+        submitGaleriasSearchForm = (page) => {
+            $("#pageNum").val(page);
+            $("#GaleriasSearchForm").submit();
+        };
+    </script>
+
+    @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+    @if (ViewData["Feedback"] != null)
+    {
+        <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            // Notificação 'Noty'
+            new Noty({
+                type: 'success',
+                layout: 'bottomRight',
+                theme: 'bootstrap-v4',
+                text: '@ViewData["Feedback"]',
+                timeout: 4000,
+                progressBar: true
+            }).show();
+        }, false);
+        </script>
     }
-</div>
+}

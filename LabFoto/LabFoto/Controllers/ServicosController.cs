@@ -124,7 +124,7 @@ namespace LabFoto.Controllers
             return View(response);
         }
 
-        // GET: Servicos
+        // POST: Servicos/IndexFilter
         [HttpPost]
         public async Task<IActionResult> IndexFilter(string nomeSearch, DateTime? dataSearchMin, DateTime? dataSearchMax, string requerenteSearch, 
             string obraSearch, IFormCollection form, string ordem, int? page, int? servicosPerPage)

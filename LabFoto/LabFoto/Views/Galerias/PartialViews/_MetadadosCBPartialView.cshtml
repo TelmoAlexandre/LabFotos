@@ -1,0 +1,43 @@
+﻿@model LabFoto.Models.ViewModels.GaleriasViewModel
+
+@{
+    string values = "";
+    bool first = true;
+    // Definir os valores para serem introduzidos no input escondido.
+    // O semantic-ui funciona com um input escondido que tem valores numa string (ex: value="1,2,3")
+    foreach (var meta in Model.MetadadosList)
+    {
+        if (meta.Selected)
+        {
+            if (first)
+            {
+                values += meta.Value;
+                first = false;
+            }
+            else
+            {
+                values += "," + meta.Value;
+            }
+
+        }
+    }
+}
+
+<div class="ui multiple search selection dropdown">
+    <input type="hidden" name="metadados" value="@values">
+    <i class="dropdown icon"></i>
+    @foreach (var meta in Model.MetadadosList)
+    {
+        if (meta.Selected)
+        {
+            <a class="ui label transition visible" data-value="@meta.Value" style="display: inline-block !important;">@meta.Text<i class="delete icon"></i></a>
+        }
+    }
+    <div class="default text">Selecione o(s) metadado(s)</div>
+    <div class="menu">
+        @foreach (var meta in Model.MetadadosList)
+        {
+            <div class="item" data-value="@meta.Value">@meta.Text</div>
+        }
+    </div>
+</div>

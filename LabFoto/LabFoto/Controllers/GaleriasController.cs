@@ -9,6 +9,8 @@ using LabFoto.Data;
 using LabFoto.Models.Tables;
 using System.Net.Http;
 using LabFoto.Onedrive;
+using LabFoto.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace LabFoto.Controllers
 {
@@ -23,20 +25,69 @@ namespace LabFoto.Controllers
             _onedrive = new OnedriveAPI(context, clientFactory);
         }
 
-        // GET: Galerias
-        public async Task<IActionResult> Index(string serv, int? metaID)
+        #region Ajax
+
+        // GET: Galerias/MetadadosDropdown
+        // O id recebido é o Id da galeria
+        public IActionResult MetadadosDropdown(string id)
         {
+            GaleriasViewModel response = new GaleriasViewModel();
+
+            // Caso exista id, preenher as checkboxes de acordo com a galeria em questão
+            if (!String.IsNullOrEmpty(id))
+            {
+                response.MetadadosList = _context.Metadados.Select(mt => new SelectListItem()
+                {
+                    // Verificar se o metadado em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
+                    // da lista Galerias_Metadados
+                    // Caso exista, retorna verdade
+                    Selected = (_context.Galerias_Metadados.Where(gmt => gmt.GaleriaFK.Equals(id)).Where(gmt => gmt.MetadadoFK == mt.ID).Count() != 0),
+                    Text = mt.Nome,
+                    Value = mt.ID + ""
+                });
+            }
+            else
+            {
+                response.MetadadosList = _context.Metadados.Select(mt => new SelectListItem()
+                {
+                    Selected = false,
+                    Text = mt.Nome,
+                    Value = mt.ID + ""
+                });
+            }
+
+            return PartialView("PartialViews/_MetadadosCBPartialView", response);
+        }
+
+        // GET: Galerias/ServicosDropdown
+        public IActionResult ServicosDropdown()
+        {
+            // Todos os serviços numa SelectList
+            SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome");
+
+            return PartialView("PartialViews/ServicosDropdownPartialView", servicos);
+        }
+
+        #endregion Ajax
+
+        // GET: Galerias
+        public async Task<IActionResult> Index(string serv)
+        {
+            // Fornecer feedback ao cliente caso este exista.
+            // Este feedback é fornecido na view a partir de uma notificação 'Noty'
+            if (TempData["Feedback"] != null)
+            {
+                ViewData["Feedback"] = TempData["Feedback"];
+            }
+
+            // Todas as galerias
             var galerias = from g in _context.Galerias
                            select g;
 
+            // Pesquisar apenas as galerias de um serviço, caso o Id deste seja fornecido
             if (!String.IsNullOrEmpty(serv))
             {
                 galerias = galerias.Where(g=>g.Servico.ID.Equals(serv));
-            }
-            if(metaID != null)
-            {
-                var galeriasMeta = _context.Galerias_Metadados.Where(gm => gm.MetadadoFK == metaID).Select(gm => gm.Galeria).ToList();
-                galerias = galerias.Where(g => galeriasMeta.Contains(g));
             }
 
             // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
@@ -48,9 +99,102 @@ namespace LabFoto.Controllers
                 photo.ContaOnedrive = await _context.ContasOnedrive.FindAsync(photo.ContaOnedriveFK);
             }
 
+            // Refrescar as thumbnails das imagens da capa das galerias
             await _onedrive.RefreshPhotoUrlsAsync(photos);
 
-            return View(await galerias.Include(g => g.Servico).Include(g => g.Fotografias).Include(g=>g.Galerias_Metadados).ThenInclude(mt => mt.Metadado).ToListAsync());
+            galerias = galerias.Include(g => g.Servico)
+                .Include(g => g.Fotografias)
+                .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado)
+                .OrderByDescending(g => g.DataDeCriacao);
+
+            GaleriasIndexViewModel response = new GaleriasIndexViewModel()
+            {
+                Galerias = await galerias.Take(1).ToListAsync(),
+                FirstPage = true,
+                LastPage = (galerias.Count() <= 1),
+                PageNum = 1
+            };
+
+            return View(response);
+        }
+
+        // POST: Servicos/IndexFilter
+        [HttpPost]
+        public async Task<IActionResult> IndexFilter(string nomeSearch, DateTime? dataSearchMin, DateTime? dataSearchMax, string servicoID,
+            string metadados, string ordem, int? page, int? galeriasPerPage)
+
+        {
+            if (page == null) page = 1;
+            if (galeriasPerPage == null) galeriasPerPage = 1;
+            int skipNum = ((int)page - 1) * (int)galeriasPerPage;
+
+            // Query de todos os serviços
+            IQueryable<Galeria> galerias = _context.Galerias.Select(g => g);
+
+            // Caso exista pesquisa por nome
+            if (!String.IsNullOrEmpty(nomeSearch))
+            {
+                galerias = galerias.Where(s => s.Nome.Contains(nomeSearch));
+            }
+            // Caso exista pesquisa por servico
+            if (!String.IsNullOrEmpty(servicoID))
+            {
+                galerias = galerias.Where(g => g.ServicoFK.Equals(servicoID));
+            }
+            // Caso exista pesquisa por data min
+            if (dataSearchMin != null)
+            {
+                galerias = galerias.Where(s => s.DataDeCriacao >= dataSearchMin);
+            }
+            // Caso exista pesquisa por data max
+            if (dataSearchMax != null)
+            {
+                galerias = galerias.Where(s => s.DataDeCriacao <= dataSearchMax);
+            }
+            // Caso exista metadados
+            if (!String.IsNullOrEmpty(metadados))
+            {
+                foreach (string metaID in metadados.Split(","))
+                {
+                    var galeriasList = _context.Galerias_Metadados.Where(st => st.MetadadoFK == Int32.Parse(metaID)).Select(st => st.GaleriaFK).ToList();
+                    galerias = galerias.Where(s => galeriasList.Contains(s.ID));
+                }
+            }
+
+            if (!String.IsNullOrEmpty(ordem))
+            {
+                switch (ordem)
+                {
+                    case "data":
+                        galerias = galerias.OrderByDescending(s => s.DataDeCriacao);
+                        break;
+                    case "nome":
+                        galerias = galerias.OrderBy(s => s.Nome);
+                        break;
+                    default:
+                        galerias = galerias.OrderByDescending(s => s.DataDeCriacao);
+                        break;
+                }
+            }
+            else
+            {
+                galerias = galerias.OrderByDescending(s => s.DataDeCriacao);
+            }
+
+            galerias = galerias.Include(g => g.Fotografias)
+                .Include(g => g.Servico)
+                .Include(g => g.Galerias_Metadados).ThenInclude(gmt => gmt.Metadado)
+                .Skip(skipNum);
+
+            GaleriasIndexViewModel response = new GaleriasIndexViewModel
+            {
+                Galerias = await galerias.Take((int)galeriasPerPage).ToListAsync(),
+                FirstPage = (page == 1),
+                LastPage = (galerias.Count() <= (int)galeriasPerPage),
+                PageNum = (int)page
+            };
+
+            return PartialView("PartialViews/_GaleriasIndexCardsPartialView", response);
         }
 
         // GET: Galerias/Details/5

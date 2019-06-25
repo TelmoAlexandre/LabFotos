@@ -659,25 +659,29 @@ namespace LabFoto.Data
                 {
                     ID = 1,
                     Nome = "Galeria1",
-                    ServicoFK = servicosIDs[5]
+                    ServicoFK = servicosIDs[5],
+                    DataDeCriacao = new DateTime(2019,06,21)
                 },
                 new Galeria
                 {
                     ID = 2,
                     Nome = "Galeria2",
-                    ServicoFK = servicosIDs[0]
+                    ServicoFK = servicosIDs[0],
+                    DataDeCriacao = new DateTime(2019, 04, 3)
                 },
                 new Galeria
                 {
                     ID = 3,
                     Nome = "Galeria3",
-                    ServicoFK = servicosIDs[0]
+                    ServicoFK = servicosIDs[0],
+                    DataDeCriacao = new DateTime(2018, 2, 12)
                 },
                 new Galeria
                 {
                     ID = 4,
                     Nome = "Galeria4",
-                    ServicoFK = servicosIDs[0]
+                    ServicoFK = servicosIDs[2],
+                    DataDeCriacao = new DateTime(2018, 8, 8)
                 }
             );
 

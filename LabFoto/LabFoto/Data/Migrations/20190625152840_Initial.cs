@@ -429,15 +429,15 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "088d9476-e52f-45c2-af36-9331e623492e", "Admin", "ADMIN" });
+                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "48051a73-8103-41c1-ab08-416e2fe76b57", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Nome" },
                 values: new object[,]
                 {
-                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "77426a37-8c9f-4c85-9b9e-02317fd06d84", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEJxqHo4lF+WsSONRfQ19Q/CYM3wWEJqdVmihmeHnEywBpNYGmsbwn3N3mFNM8BsdSg==", null, false, "", false, "admin1@admin1.com", "Admin1" },
-                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "43a709a8-cef4-401f-9f3f-b307158e2ec8", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEDAjIlWqqz17PmWBeuxFUpZMsVBxbPKrCOjMmosvMj0OckJyE1j8UvZ0DrOcjlaDXg==", null, false, "", false, "user1@user1.com", "User1" }
+                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "cedf45d1-cdf0-40ee-a691-a6db819c7a52", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEMkHRXvS2inKZEZV7hCq94DKyQu/rdYf2FSx1mVTStif7aEQEv065kUBNho7hSGJnA==", null, false, "", false, "admin1@admin1.com", "Admin1" },
+                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "ef003f80-1b43-4025-9312-a14cdcf84edb", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEJ+GO6ov799KyKekGmIBZKbrNrr9QBTcH57RAd9N6xV3rMgoTiXDiU77r/MB6QyMSA==", null, false, "", false, "user1@user1.com", "User1" }
                 });
 
             migrationBuilder.InsertData(
@@ -538,10 +538,10 @@ namespace LabFoto.Migrations
                 columns: new[] { "ID", "DataDeCriacao", "Nome", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria2", "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria3", "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria4", "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria1", "aca4875a-721e-4cfc-827d-d48c7050b543" }
+                    { 2, new DateTime(2019, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria2", "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 3, new DateTime(2018, 2, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria3", "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 4, new DateTime(2018, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria4", "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 1, new DateTime(2019, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria1", "aca4875a-721e-4cfc-827d-d48c7050b543" }
                 });
 
             migrationBuilder.InsertData(

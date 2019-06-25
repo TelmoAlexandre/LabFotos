@@ -1,0 +1,99 @@
+﻿@model LabFoto.Models.ViewModels.GaleriasIndexViewModel
+
+
+
+@if (Model.Galerias.Count() == 0)
+{
+    <div class="my-lg-5 d-flex justify-content-center">
+        <p class="font-weight-bolder">Não foram encontradas galerias.</p>
+    </div>
+}
+else
+{
+    <div class="ui four doubling stackable cards mt-2">
+        @foreach (var galeria in Model.Galerias)
+        {
+            <div class="card">
+                <div class="image">
+                    <a asp-action="Details" asp-route-id="@galeria.ID">
+                        @if (galeria.Fotografias.FirstOrDefault() != null)
+                        {
+                            <img src="@galeria.Fotografias.FirstOrDefault().Thumbnail_Medium" class="medium-thumbnails" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default.png" class="medium-thumbnails">
+                        }
+                    </a>
+                </div>
+                <div class="content">
+                    <div class="header">
+                        <a class="plainTextLink" asp-action="Details" asp-route-id="@galeria.ID">
+                            @galeria.Nome
+                        </a>
+                    </div>
+                    <div class="meta">
+                        <span style="font-size: 0.8rem;">@Html.DisplayFor(modelItem => galeria.DataDeCriacao)</span><br />
+                    </div>
+                    <div class="meta mt-1">
+                        @foreach (var meta in galeria.Galerias_Metadados)
+                        {
+                            <span style="font-size:0.8rem;">@meta.Metadado.Nome</span>
+                        }
+                    </div>
+                    <div class="description font-weight-bold">
+                        <a class="plainTextLink" asp-controller="Servicos" asp-action="Details" asp-route-id="@galeria.Servico.ID">
+                            @galeria.Servico.Nome
+                        </a>
+                    </div>
+                </div>
+                <div class="extra content">
+                    <span class="right floated">
+                        <a asp-action="Edit" asp-route-id="@galeria.ID">
+                            <i class="edit icon"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@galeria.ID">
+                            <i class="folder open icon"></i>
+                        </a>
+                    </span>
+                    <span>
+                        <i class="images icon"></i>
+                        @galeria.Fotografias.Count Fotos
+                    </span>
+                </div>
+            </div>
+        }
+    </div>
+    // Paginação -----------------------------------------------------------------------------------------
+
+    string previousPage = (Model.FirstPage) ? "-" : Model.PageNum - 1 + "";
+    string nextPage = (Model.LastPage) ? "-" : Model.PageNum + 1 + "";
+    // Esconder as opções caso seja a primeira ou ultima página. Feito com CSS.
+    string disablePreviousPage = Model.FirstPage ? "disabled" : "";
+    string disableNextPage = Model.LastPage ? "disabled" : "";
+
+    <div class=" mt-4 unselectable">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @disablePreviousPage">
+                    <span class="page-link pointer" onclick="submitGaleriasSearchForm(@previousPage)">Anterior</span>
+                </li>
+                <li class="page-item @disablePreviousPage"><span class="page-link pointer" onclick="submitGaleriasSearchForm(@previousPage)">@previousPage</span></li>
+                <li class="page-item active" unselectable="on"><span class="page-link pointer">@Model.PageNum</span></li>
+                <li class="page-item @disableNextPage"><span class="page-link pointer" onclick="submitGaleriasSearchForm(@nextPage)">@nextPage</span></li>
+                <li class="page-item @disableNextPage">
+                    <span class="page-link pointer" onclick="submitGaleriasSearchForm(@nextPage)">Próxima</span>
+                </li>
+            </ul>
+        </nav>
+        <input type="number" name="page" id="pageNum" hidden />
+    </div>
+}
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    }, false);
+</script>
