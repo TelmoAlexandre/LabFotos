@@ -14,13 +14,19 @@
             <div class="fields">
                 <div class=" eight wide field">
                     <div class="ui transparent left icon input large">
-                        <input type="search" id="nomeSearch" placeholder="Nome da galeria..." name="nomeSearch"
-                               onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                        <input type="search" id="nomeSearch" placeholder="Nome da galeria..." name="nomeSearch">
                         <i class="search icon"></i>
                     </div>
                 </div>
-                <div class="eight wide field">
-                    <div class="ui button inverted red mini" onclick="clearGaleriasSearch()">Limpar pesquisa</div>
+                <div class="eight wide field unselectable">
+                    <div class="ui button blue mini" onclick="submitSearchForm()" tabindex="0">
+                        <i class="search icon"></i>
+                        Pesquisar
+                    </div>
+                    <div class="ui button inverted red mini" onclick="clearSearch()" tabindex="0">
+                        <i class="eraser icon"></i>
+                        Limpar pesquisa
+                    </div>
                 </div>
             </div>
 
@@ -40,32 +46,32 @@
                 </div>
                 <div class="fields">
                     <div class="eight wide field" id="servicosDropDown"
-                         onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                         onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
                     </div>
                     <div class="eight wide field" id="metadadosCB"
-                         onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                         onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
                     </div>
                 </div>
 
                 <div class="fields">
-                    <div class="four wide field">
+                    <div class="eight wide field">
                         <small class="form-text text-muted  ">
                             Desde
                         </small>
                         <input type="date" class="searchServicoDate" name="dataSearchMin"
-                               onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
                     </div>
-                    <div class="four wide field">
+                    <div class="eight wide field">
                         <small class="form-text text-muted">
                             Até
                         </small>
                         <input type="date" id="dataSearchMax" name="dataSearchMax"
-                               onkeyup="this.onchange()" onchange="submitGaleriasSearchForm()" onsearch="this.onchange()">
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
                     </div>
                 </div>
             </div>
 
-            <div class="field">
+            <div class="field unselectable">
                 <div class="mt-2 pointer col-md-4" id="expandSearchOptions">
                     <div id="expandSearchSymbol">
                         <i class="far fa-plus-square"></i>
@@ -90,7 +96,7 @@
             <div class="content unselectable" style="padding-top:10px;">
                 <span>Ordenar por </span>
                 <div class="ui inline dropdown">
-                    <input type="hidden" name="ordem" onchange="submitGaleriasSearchForm()" />
+                    <input type="hidden" name="ordem" onchange="submitSearchForm()" />
                     <span class="text">data de criação</span>
                     <i class="dropdown icon"></i>
                     <div class="menu">
@@ -103,7 +109,7 @@
         <div class="col-md-2">
             <div class="content unselectable" style="padding-top:10px;">
                 <div class="ui inline dropdown">
-                    <input type="hidden" name="galeriasPerPage" onchange="submitGaleriasSearchForm()" />
+                    <input type="hidden" name="galeriasPerPage" onchange="submitSearchForm()" />
                     <span>Ver </span>
                     <span class="text" onchange="servicosPerPageRefresh">1</span>
                     <i class="dropdown icon"></i>
@@ -119,7 +125,6 @@
     </div>
 
     <div id="cardsGalerias">
-        <div class="ui active centered text inline loader" style="margin-top:100px;">A carregar...</div>
     </div>
 </form>
 
@@ -129,10 +134,11 @@
 @section scripts
 {
     <script>
-        var loader = '<div class="ui active centered text inline loader" style="margin-top:100px;">A carregar...</div>';
+        var loader = '<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:100px;">A carregar...</div>';
 
         $(document).ready(function () {
             $("#cardsGalerias").html(loader);
+
             // A dropdown dos metadados são carregadas para um div de backup
             // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
             // recuperar o html dos divs de backup
@@ -144,10 +150,33 @@
                 $("#servicosDropDown").html($("#servicosBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
-            $("#cardsGalerias").load("/Galerias/InitialGaleria");
+
+            $.ajax({
+                type: "GET",
+                url: "/Galerias/InitialGaleria",
+                success: function (resp) {
+                    $("#cardsGalerias").html(resp);
+                },
+                error: function () {
+                    $("#cardsGalerias").html(`
+                        <div class="ui negative message">
+                          <div class="header">
+                            Ocorreu um erro
+                          </div>
+                          <p>Infelizmente não foi possível carregar as galerias.</p>
+                        </div>
+                    `);
+                }
+            });
         });
 
-        clearGaleriasSearch = () => {
+        $(".input").on('keyup', function (e) {
+            if (e.keyCode == 13) {
+                submitSearchForm();
+            }
+        });
+
+        clearSearch = () => {
             $(`#searchParams input[type="search"]`).val("");
             $(`#searchParams input[type="date"]`).val("");
             // Recarregar as dropdows dos tipos e dos serviços solicitados
@@ -156,11 +185,11 @@
             $("#metadadosCB").html($("#metadadosBackup").html());
             $("#servicosDropDown").html($("#servicosBackup").html());
             $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-            submitGaleriasSearchForm();
+            submitSearchForm();
         };
 
         // Submit do form das pesquisas dos servicos
-        submitGaleriasSearchForm = (page) => {
+        submitSearchForm = (page) => {
             $("#pageNum").val(page);
             $("#GaleriasSearchForm").submit();
             $("#cardsGalerias").html(loader);

@@ -14,7 +14,7 @@ else
         @foreach (var galeria in Model.Galerias)
         {
             <div class="card">
-                <div class="image">
+                <div class="image unselectable">
                     <a asp-action="Details" asp-route-id="@galeria.ID">
                         @if (galeria.Fotografias.FirstOrDefault() != null)
                         {
@@ -76,13 +76,13 @@ else
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
                 <li class="page-item @disablePreviousPage">
-                    <span class="page-link pointer" onclick="submitGaleriasSearchForm(@previousPage)">Anterior</span>
+                    <span class="page-link pointer" onclick="submitSearchForm(@previousPage)">Anterior</span>
                 </li>
-                <li class="page-item @disablePreviousPage"><span class="page-link pointer" onclick="submitGaleriasSearchForm(@previousPage)">@previousPage</span></li>
+                <li class="page-item @disablePreviousPage"><span class="page-link pointer" onclick="submitSearchForm(@previousPage)">@previousPage</span></li>
                 <li class="page-item active" unselectable="on"><span class="page-link pointer">@Model.PageNum</span></li>
-                <li class="page-item @disableNextPage"><span class="page-link pointer" onclick="submitGaleriasSearchForm(@nextPage)">@nextPage</span></li>
+                <li class="page-item @disableNextPage"><span class="page-link pointer" onclick="submitSearchForm(@nextPage)">@nextPage</span></li>
                 <li class="page-item @disableNextPage">
-                    <span class="page-link pointer" onclick="submitGaleriasSearchForm(@nextPage)">Próxima</span>
+                    <span class="page-link pointer" onclick="submitSearchForm(@nextPage)">Próxima</span>
                 </li>
             </ul>
         </nav>

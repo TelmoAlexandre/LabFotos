@@ -20,13 +20,19 @@
             <div class="fields">
                 <div class=" eight wide field">
                     <div class="ui transparent left icon input large">
-                        <input type="search" id="nomeSearch" placeholder="Nome do serviço..." name="nomeSearch"
-                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        <input type="search" id="nomeSearch" placeholder="Nome do serviço..." name="nomeSearch">
                         <i class="search icon"></i>
                     </div>
                 </div>
-                <div class="eight wide field">
-                    <div class="ui button inverted red mini" onclick="clearServicosSearch()">Limpar pesquisa</div>
+                <div class="eight wide field unselectable">
+                    <div class="ui button blue mini" onclick="submitSearchForm()" tabindex="0">
+                        <i class="search icon"></i>
+                        Pesquisar
+                    </div>
+                    <div class="ui button inverted red mini" onclick="clearSearch()" tabindex="0">
+                        <i class="eraser icon"></i>
+                        Limpar pesquisa
+                    </div>
                 </div>
             </div>
 
@@ -35,15 +41,13 @@
                 <div class="fields">
                     <div class="eight wide field">
                         <div class="ui transparent left icon input">
-                            <input type="search" id="requerenteSearch" placeholder="Requerente..." name="requerenteSearch"
-                                   onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                            <input type="search" id="requerenteSearch" placeholder="Requerente..." name="requerenteSearch">
                             <i class="user outline icon"></i>
                         </div>
                     </div>
                     <div class="eight wide field">
                         <div class="ui transparent left icon input">
-                            <input type="search" id="obraSearch" placeholder="Indentificação/Obra..." name="obraSearch"
-                                   onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                            <input type="search" id="obraSearch" placeholder="Indentificação/Obra..." name="obraSearch">
                             <i class="pencil alternate icon"></i>
                         </div>
                     </div>
@@ -71,14 +75,14 @@
                 </div>
 
                 <div class="fields">
-                    <div class="four wide field">
+                    <div class="eight wide field">
                         <small class="form-text text-muted  ">
                             Desde
                         </small>
                         <input type="date" class="searchServicoDate" name="dataSearchMin"
                                onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
                     </div>
-                    <div class="four wide field">
+                    <div class="eight wide field">
                         <small class="form-text text-muted">
                             Até
                         </small>
@@ -88,7 +92,7 @@
                 </div>
             </div>
 
-            <div class="field">
+            <div class="field unselectable">
                 <div class="mt-2 pointer col-md-4" id="expandSearchOptions">
                     <div id="expandSearchSymbol">
                         <i class="far fa-plus-square"></i>
@@ -140,12 +144,12 @@
             </div>
         </div>
         <div class="col-md-1">
-            <button class="btn btn-sm btn-dark float-right ml-2 accordionOptions" id="accordionExpand" data-toggle="tooltip" title="Expandir detalhes">
+            <span class="btn btn-sm btn-dark float-right ml-2 accordionOptions pointer" id="accordionExpand" data-toggle="tooltip" title="Expandir detalhes">
                 <i class="fas fa-chevron-down"></i>
-            </button>
-            <button class="btn btn-sm btn-dark float-right ml-2 accordionOptions" id="accordionCollapse" style="display:none;" data-toggle="tooltip" title="Ocultar detalhes">
+            </span>
+            <span class="btn btn-sm btn-dark float-right ml-2 accordionOptions pointer" id="accordionCollapse" style="display:none;" data-toggle="tooltip" title="Ocultar detalhes">
                 <i class="fas fa-chevron-up"></i>
-            </button>
+            </span>
         </div>
     </div>
 
@@ -176,6 +180,12 @@
             });
         });
 
+        $(".input").on('keyup', function (e) {
+            if (e.keyCode == 13) {
+                submitSearchForm();
+            }
+        });
+
         // Submit do form das pesquisas dos servicos
         submitSearchForm = (page) => {
             $("#pageNum").val(page);
@@ -183,7 +193,7 @@
         };
 
         // Limpar pesquisas dos servicos
-        clearServicosSearch = () => {
+        clearSearch = () => {
             $(`#searchParams input[type="search"]`).val("");
             $(`#searchParams input[type="date"]`).val("");
             // Recarregar as dropdows dos tipos e dos serviços solicitados

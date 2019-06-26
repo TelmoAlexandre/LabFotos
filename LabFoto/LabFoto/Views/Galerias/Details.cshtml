@@ -30,7 +30,6 @@
 </div>
 
 <div id="thumbnails">
-    <div class="ui active centered text inline loader" style="margin-top:100px;">A carregar...</div>
 </div>
 
 @{
@@ -99,13 +98,36 @@
 
 </div>
 
-
 @section scripts
 {
     <script>
+        var loader = `<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:100px;">A carregar...</div>`;
+
+    var refresh = () =>  {
+                    initPhotoSwipeFromDOM('.my-gallery');
+    };
+
         $(document).ready(function () {
-            $("#thumbnails").load("/Galerias/Thumbnails/" + @Model.ID, function (resp) {
-                initPhotoSwipeFromDOM('.my-gallery');
+            $("#thumbnails").html(loader);
+
+            $.ajax({
+                type: "GET",
+                url: "/Galerias/Thumbnails/@Model.ID",
+                success: function (resp) {
+                    $("#thumbnails").html(resp);
+                    // Iniciar a galeria do PhotoSwipe
+                    initPhotoSwipeFromDOM('.my-gallery');
+                },
+                error: function () {
+                    $("#thumbnails").html(`
+                        <div class="ui negative message">
+                          <div class="header">
+                            Ocorreu um erro
+                          </div>
+                          <p>Infelizmente não foi possível carregar as fotografias.</p>
+                        </div>
+                    `);
+                }
             });
         });
     </script>
