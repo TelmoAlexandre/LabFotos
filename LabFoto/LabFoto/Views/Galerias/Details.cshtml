@@ -30,19 +30,12 @@
 </div>
 
 <div class="ui seven cards" id="thumbnails">
-    @{
-        if (Model.Fotografias != null)
-        {
-            @foreach (var foto in Model.Fotografias)
-            {
-                <div class="ui card">
-                    <div class="ui placeholder" style="width:150px; height:150px;">
-                        <div class="image"></div>
-                    </div>
-                </div>
-            }
-        }
-    }
+</div>
+
+<div class="ui page dimmer" id="pageDimmer">
+    <div class="content">
+        <div class="ui large text loader">A carregar...</div>
+    </div>
 </div>
 
 @{ 
@@ -116,8 +109,11 @@
 {
     <script>
         $(document).ready(function () {
+            $('#pageDimmer').dimmer('show');
+
             $("#thumbnails").load("/Galerias/Thumbnails/" + @Model.ID, function (resp) {
                 initPhotoSwipeFromDOM('.my-gallery');
+                $('#pageDimmer').dimmer('hide');
             });
         });
     </script>
