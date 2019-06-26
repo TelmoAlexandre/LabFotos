@@ -3,38 +3,71 @@
 @{
     ViewData["Title"] = "Index";
 }
+
+<h1>Requerentes</h1>
+
 <form asp-controller="Requerentes" asp-action="IndexFilter" class="mb-2"
       data-ajax="true" data-ajax-method="POST"
       data-ajax-mode="replace" data-ajax-update="#cardsRequerentes"
       data-ajax-success="resetAccordionCollapse"
       id="requerentesIndexSearchForm">
-    <div class="container">
-        <h1>Requerentes</h1>
-        <div class="row mt-3 mb-1">
-            <div class="col-md-12"><small class="text-muted">Pesquisa</small></div>
-            <div class="form-group col-md-4 mb-4">
-                <input type="search" name="nomeSearch" class="form-control" placeholder="Nome" onkeyup="this.onchange()" onchange="requerentesSubmitSearchForm()" onsearch="this.onchange()" />
-            </div>
-            <div class="col-md-2">
-                <div class="content unselectable">
-                    <div class="ui inline dropdown">
-                        <input type="hidden" name="requerentesPerPage" onchange="requerentesSubmitSearchForm()" />
-                        <span>Ver </span>
-                        <span class="text" onchange="requerentesPerPageRefresh">2</span>
-                        <i class="dropdown icon"></i>
-                        <div class="menu">
-                            <div class="active item" data-text="2" data-value="2">2</div>
-                            <div class="item" data-text="5" data-value="5">5</div>
-                        </div>
+
+    <div class="ui segment padded pb-1">
+        <div class="ui form" id="searchParams">
+            <div class="fields">
+                <div class="six wide field">
+                    <div class="ui transparent left icon input large">
+                        <input type="search" id="nomeSearch" placeholder="Nome do requerente..." name="nomeSearch">
+                        <i class="search icon"></i>
                     </div>
-                    <span> por página</span>
+                </div>
+                <div class="ten wide field unselectable">
+                    <div class="ui button blue mini" onclick="requerentesSubmitSearchForm()" tabindex="0">
+                        <i class="search icon"></i>
+                        Pesquisar
+                    </div>
+                    <div class="ui button inverted red mini" onclick="clearSearch()" tabindex="0">
+                        <i class="eraser icon"></i>
+                        Limpar pesquisa
+                    </div>
                 </div>
             </div>
         </div>
-        <input type="number" name="pageReq" id="pageReqNum" hidden />
     </div>
+    <div class="content ml-2 mb-4 unselectable" style="padding-top:10px;">
+        <div class="ui inline dropdown">
+            <input type="hidden" name="requerentesPerPage" onchange="requerentesSubmitSearchForm()" />
+            <span>Ver </span>
+            <span class="text" onchange="requerentesPerPageRefresh">1</span>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <div class="active item" data-text="1" data-value="1">1</div>
+                <div class="item" data-text="2" data-value="2">2</div>
+                <div class="item" data-text="5" data-value="5">5</div>
+            </div>
+        </div>
+        <span> por página</span>
+    </div>
+
+    <input type="number" name="pageReq" id="pageReqNum" hidden />
 </form>
 
 <div id="cardsRequerentes">
     <partial name="_IndexCardsPartialView" model="@Model" />
 </div>
+
+@section scripts
+{
+    <script>
+        clearSearch = () => {
+            $(`#searchParams input[type="search"]`).val("");
+            requerentesSubmitSearchForm();
+        };
+
+        $(".input").on('keyup', function (e) {
+            if (e.keyCode == 13) {
+                requerentesSubmitSearchForm();
+            }
+        });
+    </script>
+}
