@@ -438,8 +438,8 @@ var initPhotoSwipeFromDOM = function (gallerySelector) {
 
     // parse slide data (url, title, size ...) from DOM elements
     // (children of gallerySelector)
-    var parseThumbnailElements = function (el) {
-        var thumbElements = el.childNodes,
+    var parseThumbnailElements = function () {
+        var thumbElements = document.querySelectorAll(`${gallerySelector} figure`),
             numNodes = thumbElements.length,
             items = [],
             figureEl,
@@ -564,7 +564,7 @@ var initPhotoSwipeFromDOM = function (gallerySelector) {
             options,
             items;
 
-        items = parseThumbnailElements(galleryElement);
+        items = parseThumbnailElements();
 
         // define options (if needed)
         options = {
