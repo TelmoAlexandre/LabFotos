@@ -119,23 +119,20 @@
     </div>
 
     <div id="cardsGalerias">
+        <div class="ui active centered text inline loader" style="margin-top:100px;">A carregar...</div>
     </div>
 </form>
 
 <div id="metadadosBackup" hidden></div>
 <div id="servicosBackup" hidden></div>
 
-<div class="ui page dimmer" id="pageDimmer">
-    <div class="content">
-        <div class="ui large text loader">A carregar...</div>
-    </div>
-</div>
-
 @section scripts
 {
     <script>
-    $(document).ready(function () {
-            $('#pageDimmer').dimmer('show');
+        var loader = '<div class="ui active centered text inline loader" style="margin-top:100px;">A carregar...</div>';
+
+        $(document).ready(function () {
+            $("#cardsGalerias").html(loader);
             // A dropdown dos metadados são carregadas para um div de backup
             // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
             // recuperar o html dos divs de backup
@@ -147,9 +144,7 @@
                 $("#servicosDropDown").html($("#servicosBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
-            $("#cardsGalerias").load("/Galerias/InitialGaleria", function () {
-                $('#pageDimmer').dimmer('hide');
-            });
+            $("#cardsGalerias").load("/Galerias/InitialGaleria");
         });
 
         clearGaleriasSearch = () => {
@@ -168,6 +163,7 @@
         submitGaleriasSearchForm = (page) => {
             $("#pageNum").val(page);
             $("#GaleriasSearchForm").submit();
+            $("#cardsGalerias").html(loader);
         };
     </script>
 
@@ -175,17 +171,17 @@
     @if (ViewData["Feedback"] != null)
     {
         <script>
-        document.addEventListener('DOMContentLoaded', function(){
-            // Notificação 'Noty'
-            new Noty({
-                type: 'success',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: '@ViewData["Feedback"]',
-                timeout: 4000,
-                progressBar: true
-            }).show();
-        }, false);
+            document.addEventListener('DOMContentLoaded', function(){
+                // Notificação 'Noty'
+                new Noty({
+                    type: 'success',
+                    layout: 'bottomRight',
+                    theme: 'bootstrap-v4',
+                    text: '@ViewData["Feedback"]',
+                    timeout: 4000,
+                    progressBar: true
+                }).show();
+            }, false);
         </script>
     }
 }

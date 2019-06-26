@@ -29,16 +29,11 @@
     </dl>
 </div>
 
-<div class="ui seven cards" id="thumbnails">
+<div id="thumbnails">
+    <div class="ui active centered text inline loader" style="margin-top:100px;">A carregar...</div>
 </div>
 
-<div class="ui page dimmer" id="pageDimmer">
-    <div class="content">
-        <div class="ui large text loader">A carregar...</div>
-    </div>
-</div>
-
-@{ 
+@{
     /*
         Modal utilizado na biblioteca PhotoSwipe
      */
@@ -109,11 +104,8 @@
 {
     <script>
         $(document).ready(function () {
-            $('#pageDimmer').dimmer('show');
-
             $("#thumbnails").load("/Galerias/Thumbnails/" + @Model.ID, function (resp) {
                 initPhotoSwipeFromDOM('.my-gallery');
-                $('#pageDimmer').dimmer('hide');
             });
         });
     </script>
