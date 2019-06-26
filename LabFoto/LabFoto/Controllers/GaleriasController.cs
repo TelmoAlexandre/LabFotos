@@ -68,6 +68,41 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/ServicosDropdownPartialView", servicos);
         }
 
+        public async Task<IActionResult> InitialGaleria()
+        {
+            var galerias = _context.Galerias.Select(g => g);
+
+            int totalGalerias = galerias.Count();
+
+            galerias = galerias.Include(g => g.Servico)
+                .OrderByDescending(g => g.DataDeCriacao)
+                .Take(1)
+                .Include(g => g.Fotografias)
+                .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado);
+
+            // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
+            List<Fotografia> photos = await galerias.Include(g => g.Fotografias).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
+            photos.RemoveAll(photo => photo == null);
+            // Juntar a conta onedrive associada
+            foreach (var photo in photos)
+            {
+                photo.ContaOnedrive = await _context.ContasOnedrive.FindAsync(photo.ContaOnedriveFK);
+            }
+
+            // Refrescar as thumbnails das imagens da capa das galerias
+            await _onedrive.RefreshPhotoUrlsAsync(photos);
+
+            GaleriasIndexViewModel response = new GaleriasIndexViewModel
+            {
+                Galerias = await galerias.ToListAsync(),
+                FirstPage = true,
+                LastPage = (totalGalerias <= 1),
+                PageNum = 1
+            };
+
+            return PartialView("PartialViews/_GaleriasIndexCardsPartialView", response);
+        }
+
         #endregion Ajax
 
         // GET: Galerias
@@ -80,42 +115,45 @@ namespace LabFoto.Controllers
                 ViewData["Feedback"] = TempData["Feedback"];
             }
 
-            // Todas as galerias
-            var galerias = from g in _context.Galerias
-                           select g;
+            //// Todas as galerias
+            //var galerias = from g in _context.Galerias
+            //               select g;
 
-            // Pesquisar apenas as galerias de um serviço, caso o Id deste seja fornecido
-            if (!String.IsNullOrEmpty(serv))
-            {
-                galerias = galerias.Where(g=>g.Servico.ID.Equals(serv));
-            }
+            //// Pesquisar apenas as galerias de um serviço, caso o Id deste seja fornecido
+            //if (!String.IsNullOrEmpty(serv))
+            //{
+            //    galerias = galerias.Where(g=>g.Servico.ID.Equals(serv));
+            //}
 
-            // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
-            List<Fotografia> photos = await galerias.Include(g => g.Fotografias).ThenInclude(f => f.ContaOnedrive).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
-            photos.RemoveAll(photo => photo == null);
-            // Juntar a conta onedrive associada
-            foreach (var photo in photos)
-            {
-                photo.ContaOnedrive = await _context.ContasOnedrive.FindAsync(photo.ContaOnedriveFK);
-            }
+            //int totalGalerias = galerias.Count();
 
-            // Refrescar as thumbnails das imagens da capa das galerias
-            await _onedrive.RefreshPhotoUrlsAsync(photos);
+            //galerias = galerias.Include(g => g.Servico)
+            //    .Include(g => g.Fotografias)
+            //    .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado)
+            //    .OrderByDescending(g => g.DataDeCriacao)
+            //    .Take(1);
 
-            galerias = galerias.Include(g => g.Servico)
-                .Include(g => g.Fotografias)
-                .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado)
-                .OrderByDescending(g => g.DataDeCriacao);
+            //// Selecionar a primeira foto em todas as galerias e remover os nulls da lista
+            //List<Fotografia> photos = await galerias.Include(g => g.Fotografias).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
+            //photos.RemoveAll(photo => photo == null);
+            //// Juntar a conta onedrive associada
+            //foreach (var photo in photos)
+            //{
+            //    photo.ContaOnedrive = await _context.ContasOnedrive.FindAsync(photo.ContaOnedriveFK);
+            //}
 
-            GaleriasIndexViewModel response = new GaleriasIndexViewModel()
-            {
-                Galerias = await galerias.Take(1).ToListAsync(),
-                FirstPage = true,
-                LastPage = (galerias.Count() <= 1),
-                PageNum = 1
-            };
+            //// Refrescar as thumbnails das imagens da capa das galerias
+            //await _onedrive.RefreshPhotoUrlsAsync(photos);
 
-            return View(response);
+            //GaleriasIndexViewModel response = new GaleriasIndexViewModel()
+            //{
+            //    Galerias = await galerias.ToListAsync(),
+            //    FirstPage = true,
+            //    LastPage = (totalGalerias <= 1),
+            //    PageNum = 1
+            //};
+
+            return View();
         }
 
         // POST: Servicos/IndexFilter
@@ -186,11 +224,26 @@ namespace LabFoto.Controllers
                 .Include(g => g.Galerias_Metadados).ThenInclude(gmt => gmt.Metadado)
                 .Skip(skipNum);
 
+            int totalGalerias = galerias.Count();
+            galerias = galerias.Take((int)galeriasPerPage);
+
+            // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
+            List<Fotografia> photos = await galerias.Include(g => g.Fotografias).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
+            photos.RemoveAll(photo => photo == null);
+            // Juntar a conta onedrive associada
+            foreach (var photo in photos)
+            {
+                photo.ContaOnedrive = await _context.ContasOnedrive.FindAsync(photo.ContaOnedriveFK);
+            }
+
+            // Refrescar as thumbnails das imagens da capa das galerias
+            await _onedrive.RefreshPhotoUrlsAsync(photos);
+
             GaleriasIndexViewModel response = new GaleriasIndexViewModel
             {
-                Galerias = await galerias.Take((int)galeriasPerPage).ToListAsync(),
+                Galerias = await galerias.ToListAsync(),
                 FirstPage = (page == 1),
-                LastPage = (galerias.Count() <= (int)galeriasPerPage),
+                LastPage = (totalGalerias <= (int)galeriasPerPage),
                 PageNum = (int)page
             };
 

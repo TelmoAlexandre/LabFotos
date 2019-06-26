@@ -1,6 +1,4 @@
-﻿@model LabFoto.Models.ViewModels.GaleriasIndexViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Index";
 }
 
@@ -121,17 +119,23 @@
     </div>
 
     <div id="cardsGalerias">
-        <partial name="PartialViews/_GaleriasIndexCardsPartialView" model="@Model" />
     </div>
 </form>
 
 <div id="metadadosBackup" hidden></div>
 <div id="servicosBackup" hidden></div>
 
+<div class="ui page dimmer" id="pageDimmer">
+    <div class="content">
+        <div class="ui large text loader">A carregar...</div>
+    </div>
+</div>
+
 @section scripts
 {
     <script>
-        $(document).ready(function () {
+    $(document).ready(function () {
+            $('#pageDimmer').dimmer('show');
             // A dropdown dos metadados são carregadas para um div de backup
             // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
             // recuperar o html dos divs de backup
@@ -142,6 +146,9 @@
             $("#servicosBackup").load("/Galerias/ServicosDropdown", function () {
                 $("#servicosDropDown").html($("#servicosBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+            $("#cardsGalerias").load("/Galerias/InitialGaleria", function () {
+                $('#pageDimmer').dimmer('hide');
             });
         });
 
