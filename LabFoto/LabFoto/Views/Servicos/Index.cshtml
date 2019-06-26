@@ -9,7 +9,7 @@
 <div class="row" style="padding-left:15px">
 </div>
 
-<form asp-controller="Servicos" asp-action="IndexFilter" class="mb-2"
+<form asp-controller="Servicos" asp-action="IndexFilter" class="mb-2 unselectable"
       data-ajax="true" data-ajax-method="POST"
       data-ajax-mode="replace" data-ajax-update="#cardsServicos"
       data-ajax-success="resetAccordionCollapse"
@@ -24,7 +24,7 @@
                         <i class="search icon"></i>
                     </div>
                 </div>
-                <div class="eight wide field unselectable">
+                <div class="eight wide field">
                     <div class="ui button blue mini" onclick="submitSearchForm()" tabindex="0">
                         <i class="search icon"></i>
                         Pesquisar
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <div class="field unselectable">
+            <div class="field">
                 <div class="mt-2 pointer col-md-4" id="expandSearchOptions">
                     <div id="expandSearchSymbol">
                         <i class="far fa-plus-square"></i>
@@ -114,7 +114,7 @@
             </a>
         </div>
         <div class="col-md-3">
-            <div class="content unselectable" style="padding-top:10px;">
+            <div class="content" style="padding-top:10px;">
                 <span>Ordenar por </span>
                 <div class="ui inline dropdown">
                     <input type="hidden" name="ordem" onchange="submitSearchForm()" />
@@ -128,7 +128,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="content unselectable" style="padding-top:10px;">
+            <div class="content" style="padding-top:10px;">
                 <div class="ui inline dropdown">
                     <input type="hidden" name="servicosPerPage" onchange="submitSearchForm()" />
                     <span>Ver </span>
