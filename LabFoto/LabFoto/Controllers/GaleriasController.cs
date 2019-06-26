@@ -65,7 +65,7 @@ namespace LabFoto.Controllers
             // Todos os serviços numa SelectList
             SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome");
 
-            return PartialView("PartialViews/ServicosDropdownPartialView", servicos);
+            return PartialView("PartialViews/_ServicosDropdownPartialView", servicos);
         }
 
         public async Task<IActionResult> InitialGaleria()
@@ -283,7 +283,7 @@ namespace LabFoto.Controllers
 
             await _onedrive.RefreshPhotoUrlsAsync(photos);
 
-            return PartialView("PartialViews/ThumbnailsPartialView", photos);
+            return PartialView("PartialViews/_ThumbnailsPartialView", photos);
         }
 
         // GET: Galerias/Create
