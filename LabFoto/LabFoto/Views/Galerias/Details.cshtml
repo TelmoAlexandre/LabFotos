@@ -33,9 +33,9 @@
 </div>
 
 @{
-    /*
-        Modal utilizado na biblioteca PhotoSwipe
-     */
+/*
+    Modal utilizado na biblioteca PhotoSwipe
+ */
 }
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
@@ -102,10 +102,6 @@
 {
     <script>
         var loader = `<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:100px;">A carregar...</div>`;
-
-    var refresh = () =>  {
-                    initPhotoSwipeFromDOM('.my-gallery');
-    };
 
         $(document).ready(function () {
             $("#thumbnails").html(loader);
