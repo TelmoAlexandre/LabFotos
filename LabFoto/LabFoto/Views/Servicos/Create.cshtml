@@ -35,14 +35,12 @@
             <div class="eight wide field">
                 <label>Tipo de serviço:</label>
                 <div class="fluid field mb-1" id="tiposCheckboxes">
-                    <partial name="PartialViews/_TiposCheckboxesPartialView" model="@Model" />
                 </div>
                 <div class="ui mini basic blue button" id="btnModalNovoTipo"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Tipo</span></div>
             </div>
             <div class="eight wide field">
                 <label>Serviços Solicitados:</label>
                 <div class="fluid field mb-1" id="servSolicCheckboxes">
-                    <partial name="PartialViews/_ServSolicitadosCbPartialView" model="@Model" />
                 </div>
                 <div class="ui mini basic blue button" id="btnModalNovoServSolic"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Serviço Solicitado</span></div>
             </div>
@@ -132,4 +130,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var loading = '<div class="ui active centered inline small loader"></div>';
+
+        jQuery(document).ready(function ($) {
+            $(`#tiposCheckboxes`).html(loading);
+            $(`#servSolicCheckboxes`).html(loading);
+            $(`#tiposCheckboxes`).load(`/Servicos/TiposAjax/`, function () {
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+            $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/`, function () {
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+        });
+    </script>
 }

@@ -34,7 +34,6 @@ jQuery(document).ready(function ($) {
     // Ativar o Popper.j
     $('[data-toggle="tooltip"]').tooltip();
     // Incializar componente do semantic
-    $('.ui.dropdown').dropdown();
     $('.ui.accordion').accordion();
 });
 
