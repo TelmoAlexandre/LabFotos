@@ -193,7 +193,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditIndex(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
+        public async Task<IActionResult> EditIndex(string id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
         {
             if (!id.Equals(requerente.ID))
             {
@@ -224,7 +224,7 @@ namespace LabFoto.Controllers
         }
 
         // GET: Requerentes/Edit/5
-        public async Task<IActionResult> EditDetails(int? id)
+        public async Task<IActionResult> EditDetails(string id)
         {
             if (id == null)
             {
@@ -244,7 +244,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditDetails(int id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
+        public async Task<IActionResult> EditDetails(string id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
         {
             if (!id.Equals(requerente.ID))
             {

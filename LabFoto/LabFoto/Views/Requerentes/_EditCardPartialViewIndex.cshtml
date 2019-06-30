@@ -1,10 +1,10 @@
 ﻿@model LabFoto.Models.Tables.Requerente
 
 <form asp-controller="Requerentes" asp-action="Edit"
-      onsubmit="requerenteEditFormSubmitIndex(event, `div_@Model.ID` , `divDetails_@Model.ID`, `requerenteEditForm_@Model.ID`, '@Model.ID')"
+      onsubmit="requerenteEditFormSubmitIndex(event, `div_@Model.ID` , `divDetails_@Model.ID`, `requerenteEditForm_@Model.ID`, `@Model.ID`)"
       id="requerenteEditForm_@Model.ID">
     <div class="ui card">
-        <div class="card">
+        <div class="card requerenteSide">
             <div class="card-body">
                 <div class="ui transparent left icon fluid input">
                     <input asp-for="@Model.Nome" placeholder="Nome.." class="font-weight-bold pl-0" style="font-size:20px;">
@@ -41,11 +41,11 @@
                         </div>
                     </div>
                     <span class="btn float-right pointer" data-toggle="tooltip" title="Guardar"
-                          onclick="confirmForm('requerenteEditForm_@Model.ID')">
+                          onclick="confirmForm(`requerenteEditForm_@Model.ID`)">
                         <i class="save outline icon"></i>
                     </span>
                     <span class="btn float-right pointer" data-toggle="tooltip" title="Voltar"
-                          onclick="flipCard('div_@Model.ID', 'flip over')">
+                          onclick="flipCard(`div_@Model.ID`, `flip over`)">
                         <i class="undo icon"></i>
                     </span>
                 </div>

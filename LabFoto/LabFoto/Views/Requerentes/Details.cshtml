@@ -23,7 +23,7 @@
         <div class="ui vertical fluid tabular menu">
             @foreach (var ser in Model.Servicos)
             {
-                <a class="item" id="list_nome" onclick="requerenteServicoDetails(`div_segment`, '@ser.ID')" data-toggle="list" role="tab" aria-controls="home" href="#list-segment">@ser.Nome</a>
+                <a class="item" id="list_nome" onclick="requerenteServicoDetails(`div_segment`, `@ser.ID`)" data-toggle="list" role="tab" aria-controls="home" href="#list-segment">@ser.Nome</a>
             }
         </div>
     </div>
@@ -87,3 +87,24 @@
         </div>
     </div>
 </div>
+
+@section scripts
+{
+    <script>
+        
+        editarRequerenteDetails = (divEdicao, divRequerente, idRequerente) => {
+            flipCard(`${divRequerente}`, 'flip back');
+            // $(`#${divRequerente}`).shape('flip back');
+            requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditDetails/${idRequerente}`);
+        };
+        
+        // Detalhes do serviço com o id que recebe por parametro
+        // e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
+        requerenteServicoDetails = (divId, servicoId) => {
+            $(`#${divId}`).html($(`#loadingServico`));
+            $(`#loadingServico`).removeAttr('hidden');
+            $(`#${divId}`).load(`/Servicos/DetailsAjax/${servicoId}`);
+        };
+
+    </script>
+}

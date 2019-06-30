@@ -96,19 +96,6 @@ function initModalEvents() {
         );
     });
 
-    editarRequerenteIndex = (divEdicao, divRequerente, idRequerente) => {
-        $(`#${divRequerente}`).shape('flip back');
-        $(`#${divEdicao}`).width('290px');
-        $(`#${divEdicao}`).height('291.1px');
-        requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditIndex/${idRequerente}`);
-    };
-
-    editarRequerenteDetails = (divEdicao, divRequerente, idRequerente) => {
-        $(`#${divRequerente}`).shape('flip back');
-        $(`#${divEdicao}`).width('290px');
-        $(`#${divEdicao}`).height('291.1px');
-        requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditDetails/${idRequerente}`);
-    };
 
     // Modal do novo tipo com fetch do formulário em Ajax
     $("#btnModalNovoTipo").click(function (e) {
@@ -146,12 +133,6 @@ function initModalEvents() {
 
 flipCard = (shapeId, transition) => {
     $(`#${shapeId}`).shape(`${transition}`);
-};
-
-// Submit do form das pesquisas dos requerentes
-requerentesSubmitSearchForm = (pageReq) => {
-    $("#pageReqNum").val(pageReq);
-    $("#requerentesIndexSearchForm").submit();
 };
 
 hideModal = () => {
@@ -199,13 +180,6 @@ servicoRequerenteDetails = (divModalDetails, requerenteId) => {
     });
 };
 
-// Detalhes do serviço com o id que recebe por parametro
-// e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
-requerenteServicoDetails = (divId, servicoId) => {
-    $(`#${divId}`).html($(`#loadingServico`));
-    $(`#loadingServico`).removeAttr('hidden');
-    $(`#${divId}`).load(`/Servicos/DetailsAjax/${servicoId}`);
-};
 
 createTipoOnServicosEdit = (e, idServico) => {
     e.preventDefault(); // Não deixar o form submeter
