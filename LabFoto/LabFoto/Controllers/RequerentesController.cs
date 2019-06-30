@@ -167,7 +167,7 @@ namespace LabFoto.Controllers
             {
                 _context.Add(requerente);
                 await _context.SaveChangesAsync();
-                return Json(new { success = true });
+                return Json(new { success = true, Id = requerente.ID });
             }
             return PartialView("_RequerentesCreateForm", requerente);
         }

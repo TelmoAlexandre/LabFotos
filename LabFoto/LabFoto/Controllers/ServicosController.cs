@@ -26,39 +26,31 @@ namespace LabFoto.Controllers
         #region Ajax
 
         // GET: Servicos
-        public async Task<IActionResult> RequerentesAjax()
+        public async Task<IActionResult> RequerentesAjax(string id)
         {
-            var requerentes = await _context.Requerentes.ToListAsync();
-            var lastRequrente = await _context.Requerentes.LastOrDefaultAsync();
-            return PartialView("_RequerentesDropbox", new SelectList(requerentes, "ID", "Nome", lastRequrente.ID));
+            var requerentes = await _context.Requerentes.OrderBy(r => r.Nome).ToListAsync();
+            // Caso exista id no parametro, mostrar esse requerente já selecionado, senão mostra o ultimo id
+            var lastRequrente = (!String.IsNullOrEmpty(id)) ? await _context.Requerentes.FindAsync(id) : await _context.Requerentes.LastOrDefaultAsync();
+            ServicosCreateViewModel response = new ServicosCreateViewModel()
+            {
+                RequerentesList = new SelectList(requerentes, "ID", "Nome", lastRequrente.ID)
+            };
+            return PartialView("_RequerentesDropbox", response);
         }
 
         // GET: Servicos/TiposAjax
         public IActionResult TiposAjax(string id)
         {
             ServicosCreateViewModel response = new ServicosCreateViewModel();
-
-            // Caso exista id, preenher as checkboxes de acordo com o serviço em questão
-            if (!String.IsNullOrEmpty(id))
+            response.TiposList = _context.Tipos.OrderBy(t => t.Nome).Select(t => new SelectListItem()
             {
-                response.TiposList = _context.Tipos.Select(t => new SelectListItem()
-                {
-                    // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor da lista servicos_tipos
-                    // Caso exista, retorna verdade
-                    Selected = (_context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(id)).Where(st => st.TipoFK == t.ID).Count() != 0),
-                    Text = t.Nome,
-                    Value = t.ID + ""
-                });
-            }
-            else
-            {
-                response.TiposList = _context.Tipos.Select(t => new SelectListItem()
-                {
-                    Selected = false,
-                    Text = t.Nome,
-                    Value = t.ID + ""
-                });
-            }
+                // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor da lista servicos_tipos
+                // Caso exista, retorna verdade
+                // Caso não exista id, retorna todos a falso
+                Selected = (!String.IsNullOrEmpty(id)) ? (_context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(id)).Where(st => st.TipoFK == t.ID).Count() != 0) : false,
+                Text = t.Nome,
+                Value = t.ID + ""
+            });
 
             return PartialView("PartialViews/_TiposCheckboxesPartialView", response);
         }
@@ -66,30 +58,17 @@ namespace LabFoto.Controllers
         // GET: Servicos/ServSolicAjax
         public IActionResult ServSolicAjax(string id)
         {
-            ServicosCreateViewModel response = new ServicosCreateViewModel();
-
-            // Caso exista id, preenher as checkboxes de acordo com o serviço em questão
-            if (!String.IsNullOrEmpty(id))
+            ServicosCreateViewModel response = new ServicosCreateViewModel() { };
+            response.ServSolicitados = _context.ServicosSolicitados.OrderBy(ss => ss.Nome).Select(ss => new SelectListItem()
             {
-                response.ServSolicitados = _context.ServicosSolicitados.Select(ss => new SelectListItem()
-                {
-                    // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
-                    // da lista servicos_servicosSolicitados
-                    // Caso exista, retorna verdade
-                    Selected = (_context.Servicos_ServicosSolicitados.Where(sss => sss.ServicoFK.Equals(id)).Where(sss => sss.ServicoSolicitadoFK == ss.ID).Count() != 0),
-                    Text = ss.Nome,
-                    Value = ss.ID + ""
-                });
-            }
-            else
-            {
-                response.ServSolicitados = _context.ServicosSolicitados.Select(ss => new SelectListItem()
-                {
-                    Selected = false,
-                    Text = ss.Nome,
-                    Value = ss.ID + ""
-                });
-            }
+                // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
+                // da lista servicos_servicosSolicitados
+                // Caso exista, retorna verdade
+                // Caso não exista id, retorna todos a falso
+                Selected = (!String.IsNullOrEmpty(id)) ? (_context.Servicos_ServicosSolicitados.Where(sss => sss.ServicoFK.Equals(id)).Where(sss => sss.ServicoSolicitadoFK == ss.ID).Count() != 0) : false,
+                Text = ss.Nome,
+                Value = ss.ID + ""
+            });
 
             return PartialView("PartialViews/_ServSolicitadosCbPartialView", response);
         }
@@ -103,7 +82,7 @@ namespace LabFoto.Controllers
         {
             // Fornecer feedback ao cliente caso este exista.
             // Este feedback é fornecido na view a partir de uma notificação 'Noty'
-            if (TempData["Feedback"] !=null)
+            if (TempData["Feedback"] != null)
             {
                 ViewData["Feedback"] = TempData["Feedback"];
             }
@@ -114,7 +93,8 @@ namespace LabFoto.Controllers
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)
                 .OrderByDescending(s => s.DataDeCriacao);
 
-            ServicosIndexViewModel response = new ServicosIndexViewModel {
+            ServicosIndexViewModel response = new ServicosIndexViewModel
+            {
                 Servicos = await servicos.Take(1).ToListAsync(),
                 FirstPage = true,
                 LastPage = (servicos.Count() <= 1),
@@ -126,7 +106,7 @@ namespace LabFoto.Controllers
 
         // POST: Servicos/IndexFilter
         [HttpPost]
-        public async Task<IActionResult> IndexFilter(string nomeSearch, DateTime? dataSearchMin, DateTime? dataSearchMax, string requerenteSearch, 
+        public async Task<IActionResult> IndexFilter(string nomeSearch, DateTime? dataSearchMin, DateTime? dataSearchMax, string requerenteSearch,
             string obraSearch, IFormCollection form, string ordem, int? page, int? servicosPerPage)
 
         {
@@ -167,7 +147,7 @@ namespace LabFoto.Controllers
             // Caso exista tipos
             if (!String.IsNullOrEmpty(tipos))
             {
-                foreach(string tipoID in tipos.Split(","))
+                foreach (string tipoID in tipos.Split(","))
                 {
                     var serTipo = _context.Servicos_Tipos.Where(st => st.TipoFK == Int32.Parse(tipoID)).Select(st => st.ServicoFK).ToList();
                     servicos = servicos.Where(s => serTipo.Contains(s.ID));
@@ -187,11 +167,14 @@ namespace LabFoto.Controllers
             {
                 switch (ordem)
                 {
-                    case "data": servicos = servicos.OrderByDescending(s => s.DataDeCriacao);
+                    case "data":
+                        servicos = servicos.OrderByDescending(s => s.DataDeCriacao);
                         break;
-                    case "nome": servicos = servicos.OrderBy(s => s.Nome);
+                    case "nome":
+                        servicos = servicos.OrderBy(s => s.Nome);
                         break;
-                    default: servicos = servicos.OrderByDescending(s => s.DataDeCriacao);
+                    default:
+                        servicos = servicos.OrderByDescending(s => s.DataDeCriacao);
                         break;
                 }
             }
@@ -206,7 +189,8 @@ namespace LabFoto.Controllers
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)
                 .Skip(skipNum);
 
-            ServicosIndexViewModel response = new ServicosIndexViewModel {
+            ServicosIndexViewModel response = new ServicosIndexViewModel
+            {
                 Servicos = await servicos.Take((int)servicosPerPage).ToListAsync(),
                 FirstPage = (page == 1),
                 LastPage = (servicos.Count() <= (int)servicosPerPage),
@@ -262,7 +246,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            ViewData["details"] = false; 
+            ViewData["details"] = false;
             return PartialView("_DetailsPartial", servicos);
         }
 
@@ -273,23 +257,7 @@ namespace LabFoto.Controllers
         // GET: Servicos/Create
         public IActionResult Create()
         {
-            ServicosCreateViewModel response = new ServicosCreateViewModel
-            {
-                RequerentesList = new SelectList(_context.Requerentes, "ID", "Nome"),
-                TiposList = _context.Tipos.Select(t => new SelectListItem()
-                {
-                    Selected = false,
-                    Text = t.Nome,
-                    Value = t.ID + ""
-                }),
-                ServSolicitados = _context.ServicosSolicitados.Select(s => new SelectListItem()
-                {
-                    Selected = false,
-                    Text = s.Nome,
-                    Value = s.ID + ""
-                })
-            };
-            return View(response);
+            return View(new ServicosCreateViewModel());
         }
 
         // POST: Servicos/Create
@@ -303,7 +271,8 @@ namespace LabFoto.Controllers
         {
             // Certificar que é selecionado pelo menos 1 tipo no formulario
             string datasExec = form["DataExecucao"];
-            if (servico.RequerenteFK == null) {
+            if (servico.RequerenteFK == null)
+            {
                 ModelState.AddModelError("Servico.RequerenteFK", "É necessário escolher um requerente.");
             }
 
@@ -447,8 +416,8 @@ namespace LabFoto.Controllers
             ServicosCreateViewModel response = new ServicosCreateViewModel
             {
                 Servico = servico,
-                RequerentesList = new SelectList(_context.Requerentes, "ID", "Nome", servico.RequerenteFK),
-                TiposList = _context.Tipos.Select(t => new SelectListItem()
+                RequerentesList = new SelectList(_context.Requerentes.OrderBy(r => r.Nome), "ID", "Nome", servico.RequerenteFK),
+                TiposList = _context.Tipos.OrderBy(t => t.Nome).Select(t => new SelectListItem()
                 {
                     // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor da lista servicos_tipos
                     // Caso exista, retorna verdade
@@ -456,14 +425,14 @@ namespace LabFoto.Controllers
                     Text = t.Nome,
                     Value = t.ID + ""
                 }),
-                ServSolicitados = _context.ServicosSolicitados.Select(s => new SelectListItem()
+                ServSolicitados = _context.ServicosSolicitados.OrderBy(ss => ss.Nome).Select(s => new SelectListItem()
                 {
                     // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor da lista servicos_servicosSolicitados
                     // Caso exista, retorna verdade
                     Selected = (sevicosSolicitados.Where(st => st.ServicoSolicitadoFK == s.ID).Count() != 0),
                     Text = s.Nome,
                     Value = s.ID + ""
-                })            
+                })
             };
             return View(response);
         }
@@ -495,7 +464,7 @@ namespace LabFoto.Controllers
                     // Tratamento Tipos
                     if (!String.IsNullOrEmpty(Tipos)) // Caso existam tipos a serem adicionados
                     {
-                        
+
                         array = Tipos.Split(","); // Partir os tipos num array
                         foreach (Servico_Tipo servTipo in allServTipos) // Remover os tipos que não foram selecionados nas checkboxes
                         {
@@ -505,14 +474,15 @@ namespace LabFoto.Controllers
                             }
                         }
                         // Relacionar novos que foram selecionados nas checkboxes
-                        foreach(string tipoId in array)
+                        foreach (string tipoId in array)
                         {
                             int intId = Int32.Parse(tipoId);
 
                             // Caso não exista relação entre o serviço e o tipo, cria uma
                             if (allServTipos.Where(st => st.TipoFK == intId).ToList().Count == 0)
                             {
-                                _context.Servicos_Tipos.Add(new Servico_Tipo {
+                                _context.Servicos_Tipos.Add(new Servico_Tipo
+                                {
                                     ServicoFK = servico.ID,
                                     TipoFK = intId
                                 });
@@ -593,7 +563,7 @@ namespace LabFoto.Controllers
                                     var existsInDatasExecucao = await _context.DataExecucao.Where(d => d.Data == data).FirstOrDefaultAsync();
 
                                     // Caso exista, associar essa data já existente
-                                    if(existsInDatasExecucao != null)
+                                    if (existsInDatasExecucao != null)
                                     {
                                         _context.Servicos_DatasExecucao.Add(
                                             new Servico_DataExecucao()
@@ -636,7 +606,7 @@ namespace LabFoto.Controllers
                         // Certificar que pelo menos 1 serviço solicitado é selecionado no formulário
                         if (datasExecucaoArray != null)
                         {
-                            if(sde.DataExecucao != null)
+                            if (sde.DataExecucao != null)
                             {
                                 if (!ExistsInStringArray(datasExecucaoArray, string.Format("{0:yyyy-MM-dd}", sde.DataExecucao.Data)))
                                     _context.Servicos_DatasExecucao.Remove(sde);
@@ -676,7 +646,8 @@ namespace LabFoto.Controllers
             var sevicosSolicitados = await _context.Servicos_ServicosSolicitados.Where(st => st.ServicoFK == id).ToListAsync();
 
             return View(
-                new ServicosCreateViewModel {
+                new ServicosCreateViewModel
+                {
                     Servico = servico,
                     RequerentesList = new SelectList(_context.Requerentes, "ID", "Nome", servico.RequerenteFK),
                     TiposList = _context.Tipos.Select(t => new SelectListItem()
@@ -729,7 +700,7 @@ namespace LabFoto.Controllers
 
         private bool ExistsInStringArray(string[] array, string str)
         {
-            foreach(string s in array)
+            foreach (string s in array)
             {
                 if (s.Equals(str))
                 {

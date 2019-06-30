@@ -24,12 +24,7 @@
         <div class="fields">
             <div class="eight wide field"></div>
             <div class="eight wide field">
-                <div class="ui animated basic primary mini button mt-1" id="btnModalNovoRequerente">
-                    <div class="visible content"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Requerente</span></div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" id="btnModalNovoRequerente"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Requerente</span></div>
             </div>
         </div>
         <div class="fluid wide field">
@@ -41,26 +36,14 @@
             <div class="eight wide field">
                 <label>Tipo de serviço:</label>
                 <div class="fluid field mb-1" id="tiposCheckboxes">
-                    <partial name="PartialViews/_TiposCheckboxesPartialView" model="@Model" />
                 </div>
-                <div class="ui animated basic primary mini button" onclick="showModal('modalNovoTipo')">
-                    <div class="visible content"><i class="fas fa-plus"></i> Novo Tipo</div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" onclick="showModal('modalNovoTipo')"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Tipo</span></div>
             </div>
             <div class="eight wide field">
                 <label>Serviços Solicitados:</label>
                 <div class="fluid field mb-1" id="servSolicCheckboxes">
-                    <partial name="PartialViews/_ServSolicitadosCbPartialView" model="@Model" />
                 </div>
-                <div class="ui animated basic primary mini button" onclick="showModal('modalNovoServSolic')">
-                    <div class="visible content"><i class="fas fa-plus"></i> Novo Serviço Solicitado</div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" onclick="showModal('modalNovoServSolic')"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Serviço Solicitado</span></div>
             </div>
         </div>
         <div class="field">
@@ -80,12 +63,7 @@
                         </div>
                     }
                 </div>
-                <div class="ui animated basic primary mini button" id="newDataDeExecucaoInput">
-                    <div class="visible content"><i class="fas fa-plus"></i> Nova Data</div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" id="newDataDeExecucaoInput"><i class="fas fa-user-plus"></i><span class="ml-2">Nova Data</span></div>
             </div>
             <div class="four wide field">
                 <label asp-for="Servico.DataEntrega"></label>
@@ -108,20 +86,9 @@
                 <span asp-validation-for="Servico.Total" class="text-danger"></span>
             </div>
         </div>
-        <div class="ui buttons">
-            <div class="ui animated green small button" onclick="confirmForm('servicosEditForm')">
-                <div class="visible content">Guardar</div>
-                <div class="hidden content">
-                    <i class="checkmark icon"></i>
-                </div>
-            </div>
-            <div class="or" data-text="ou"></div>
-            <div class="ui animated grey small button" onclick="modalCancel('modalCancel')">
-                <div class="visible content">Cancelar</div>
-                <div class="hidden content">
-                    Voltar?
-                </div>
-            </div>
+        <div class="mt-5">
+            <div class="ui primary button" onclick="confirmForm('servicosEditForm')"><i class="save icon"></i><span class="ml-2">Guardar</span></div>
+            <div class="ui button" onclick="modalCancel('modalCancel')"><span>Cancelar</span></div>
         </div>
     </div>
 </form>
@@ -135,20 +102,19 @@
     <div class="content" id="divFormNovoTipo">
         <div class="ui raised segment fluidCorners">
             <a class="ui blue ribbon label mb-3">Novo Tipo</a>
-            <form asp-controller="Tipos" asp-action="Create" onsubmit="createTipoOnServicosEdit(event,@Model.Servico.ID)">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="ui form">
-                    <div class="field">
-                        <label asp-for="Tipo.Nome"></label>
-                        <input asp-for="Tipo.Nome" placeholder="Tipo" />
-                        <span asp-validation-for="Tipo.Nome" class="text-danger"></span>
-                    </div>
-                    <div class="fields">
-                        <div class="eight wide field"><button class="ui button primary fluid" type="submit">Adicionar</button></div>
-                        <div class="eight wide field"><span class="ui button fluid" onclick="hideModal()">Cancelar</span></div>
-                    </div>
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="ui form">
+                <div class="field">
+                    <label asp-for="Tipo.Nome"></label>
+                    <input asp-for="Tipo.Nome" placeholder="Tipo" />
+                    <span asp-validation-for="Tipo.Nome" class="text-danger"></span>
                 </div>
-            </form>
+                <div class="fields">
+                    <div class="eight wide field"><button class="ui button primary fluid" onclick="createTipoOnServicosEdit('@Model.Servico.ID')">Adicionar</button></div>
+                    <div class="eight wide field"><span class="ui button fluid" onclick="hideModal()">Cancelar</span></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -157,20 +123,19 @@
     <div class="content" id="divFormNovoServSolic">
         <div class="ui raised segment fluidCorners">
             <a class="ui blue ribbon label mb-3">Novo Tipo</a>
-            <form asp-controller="ServicosSolicitados" asp-action="Create" onsubmit="createServSolicOnServicosEdit(event,@Model.Servico.ID)">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="ui form">
-                    <div class="field">
-                        <label asp-for="ServicoSolicitado.Nome"></label>
-                        <input asp-for="ServicoSolicitado.Nome" placeholder="Serviço Solicitado" />
-                        <span asp-validation-for="ServicoSolicitado.Nome" class="text-danger"></span>
-                    </div>
-                    <div class="fields">
-                        <div class="eight wide field"><button class="ui button fluid primary" type="submit">Adicionar</button></div>
-                        <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
-                    </div>
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="ui form">
+                <div class="field">
+                    <label asp-for="ServicoSolicitado.Nome"></label>
+                    <input asp-for="ServicoSolicitado.Nome" placeholder="Serviço Solicitado" />
+                    <span asp-validation-for="ServicoSolicitado.Nome" class="text-danger"></span>
                 </div>
-            </form>
+                <div class="fields">
+                    <div class="eight wide field"><button class="ui button fluid primary" onclick="createServSolicOnServicosEdit('@Model.Servico.ID')">Adicionar</button></div>
+                    <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -209,4 +174,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var loading = '<div class="ui active centered inline small loader"></div>';
+
+        jQuery(document).ready(function ($) {
+            $(`#tiposCheckboxes`).html(loading);
+            $(`#servSolicCheckboxes`).html(loading);
+            $(`#tiposCheckboxes`).load(`/Servicos/TiposAjax/@Model.Servico.ID`, function () {
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+            $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/@Model.Servico.ID`, function () {
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+        });
+    </script>
 }

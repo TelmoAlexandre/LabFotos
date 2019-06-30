@@ -23,12 +23,7 @@
         <div class="fields">
             <div class="eight wide field"></div>
             <div class="eight wide field">
-                <div class="ui animated basic primary mini button mt-1" id="btnModalNovoRequerente">
-                    <div class="visible content"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Requerente</span></div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" id="btnModalNovoRequerente"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Requerente</span></div>
             </div>
         </div>
         <div class="fluid wide field">
@@ -40,26 +35,14 @@
             <div class="eight wide field">
                 <label>Tipo de serviço:</label>
                 <div class="fluid field mb-1" id="tiposCheckboxes">
-                    <partial name="PartialViews/_TiposCheckboxesPartialView" model="@Model" />
                 </div>
-                <div class="ui animated basic primary mini button" id="btnModalNovoTipo">
-                    <div class="visible content"><i class="fas fa-plus"></i> Novo Tipo</div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" id="btnModalNovoTipo"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Tipo</span></div>
             </div>
             <div class="eight wide field">
                 <label>Serviços Solicitados:</label>
                 <div class="fluid field mb-1" id="servSolicCheckboxes">
-                    <partial name="PartialViews/_ServSolicitadosCbPartialView" model="@Model" />
                 </div>
-                <div class="ui animated basic primary mini button" id="btnModalNovoServSolic">
-                    <div class="visible content"><i class="fas fa-plus"></i> Novo Serviço Solicitado</div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" id="btnModalNovoServSolic"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Serviço Solicitado</span></div>
             </div>
         </div>
         <div class="field">
@@ -71,12 +54,7 @@
             <div class="four wide field">
                 <label class="control-label font-weight-bold">Datas de Execução</label>
                 <div id="dataDeExecDiv"></div>
-                <div class="ui animated basic primary mini button" id="newDataDeExecucaoInput">
-                    <div class="visible content"><i class="fas fa-plus"></i> Nova Data</div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" id="newDataDeExecucaoInput"><i class="fas fa-user-plus"></i><span class="ml-2">Nova Data</span></div>
             </div>
             <div class="four wide field">
                 <label asp-for="Servico.DataEntrega"></label>
@@ -99,20 +77,9 @@
                 <span asp-validation-for="Servico.Total" class="text-danger"></span>
             </div>
         </div>
-        <div class="ui buttons">
-            <div class="ui animated green small button" onclick="confirmForm('servicosCreateForm')">
-                <div class="visible content">Criar</div>
-                <div class="hidden content">
-                    <i class="checkmark icon"></i>
-                </div>
-            </div>
-            <div class="or" data-text="ou"></div>
-            <div class="ui animated grey small button" onclick="modalCancel('modalCancel')">
-                <div class="visible content">Cancelar</div>
-                <div class="hidden content">
-                    Voltar?
-                </div>
-            </div>
+        <div class="mt-5">
+            <div class="ui primary button" onclick="confirmForm('servicosCreateForm')"><i class="check icon"></i><span class="ml-2">Criar</span></div>
+            <div class="ui button" onclick="modalCancel('modalCancel')"><span>Cancelar</span></div>
         </div>
     </div>
 </form>
@@ -163,4 +130,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var loading = '<div class="ui active centered inline small loader"></div>';
+
+        jQuery(document).ready(function ($) {
+            $(`#tiposCheckboxes`).html(loading);
+            $(`#servSolicCheckboxes`).html(loading);
+            $(`#tiposCheckboxes`).load(`/Servicos/TiposAjax/`, function () {
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+            $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/`, function () {
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+        });
+    </script>
 }
