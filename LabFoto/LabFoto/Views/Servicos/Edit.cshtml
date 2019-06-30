@@ -24,12 +24,7 @@
         <div class="fields">
             <div class="eight wide field"></div>
             <div class="eight wide field">
-                <div class="ui animated basic primary mini button mt-1" id="btnModalNovoRequerente">
-                    <div class="visible content"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Requerente</span></div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" id="btnModalNovoRequerente"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Requerente</span></div>
             </div>
         </div>
         <div class="fluid wide field">
@@ -43,24 +38,14 @@
                 <div class="fluid field mb-1" id="tiposCheckboxes">
                     <partial name="PartialViews/_TiposCheckboxesPartialView" model="@Model" />
                 </div>
-                <div class="ui animated basic primary mini button" onclick="showModal('modalNovoTipo')">
-                    <div class="visible content"><i class="fas fa-plus"></i> Novo Tipo</div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" onclick="showModal('modalNovoTipo')"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Tipo</span></div>
             </div>
             <div class="eight wide field">
                 <label>Serviços Solicitados:</label>
                 <div class="fluid field mb-1" id="servSolicCheckboxes">
                     <partial name="PartialViews/_ServSolicitadosCbPartialView" model="@Model" />
                 </div>
-                <div class="ui animated basic primary mini button" onclick="showModal('modalNovoServSolic')">
-                    <div class="visible content"><i class="fas fa-plus"></i> Novo Serviço Solicitado</div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" onclick="showModal('modalNovoServSolic')"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Serviço Solicitado</span></div>
             </div>
         </div>
         <div class="field">
@@ -80,12 +65,7 @@
                         </div>
                     }
                 </div>
-                <div class="ui animated basic primary mini button" id="newDataDeExecucaoInput">
-                    <div class="visible content"><i class="fas fa-plus"></i> Nova Data</div>
-                    <div class="hidden content">
-                        Adicionar?
-                    </div>
-                </div>
+                <div class="ui mini basic blue button" id="newDataDeExecucaoInput"><i class="fas fa-user-plus"></i><span class="ml-2">Nova Data</span></div>
             </div>
             <div class="four wide field">
                 <label asp-for="Servico.DataEntrega"></label>
@@ -108,20 +88,9 @@
                 <span asp-validation-for="Servico.Total" class="text-danger"></span>
             </div>
         </div>
-        <div class="ui buttons">
-            <div class="ui animated green small button" onclick="confirmForm('servicosEditForm')">
-                <div class="visible content">Guardar</div>
-                <div class="hidden content">
-                    <i class="checkmark icon"></i>
-                </div>
-            </div>
-            <div class="or" data-text="ou"></div>
-            <div class="ui animated grey small button" onclick="modalCancel('modalCancel')">
-                <div class="visible content">Cancelar</div>
-                <div class="hidden content">
-                    Voltar?
-                </div>
-            </div>
+        <div class="mt-5">
+            <div class="ui primary button" onclick="confirmForm('servicosEditForm')"><i class="save icon"></i><span class="ml-2">Guardar</span></div>
+            <div class="ui button" onclick="modalCancel('modalCancel')"><span>Cancelar</span></div>
         </div>
     </div>
 </form>

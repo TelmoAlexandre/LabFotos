@@ -26,11 +26,15 @@ namespace LabFoto.Controllers
         #region Ajax
 
         // GET: Servicos
-        public async Task<IActionResult> RequerentesAjax()
+        public async Task<IActionResult> RequerentesAjax(string id)
         {
             var requerentes = await _context.Requerentes.ToListAsync();
-            var lastRequrente = await _context.Requerentes.LastOrDefaultAsync();
-            return PartialView("_RequerentesDropbox", new SelectList(requerentes, "ID", "Nome", lastRequrente.ID));
+            // Caso exista id no parametro, mostrar esse requerente já selecionado, senão mostra o ultimo id
+            var lastRequrente = (!String.IsNullOrEmpty(id))? await _context.Requerentes.FindAsync(id) : await _context.Requerentes.LastOrDefaultAsync();
+            ServicosCreateViewModel response = new ServicosCreateViewModel() {
+                RequerentesList = new SelectList(requerentes, "ID", "Nome", lastRequrente.ID)
+            };
+            return PartialView("_RequerentesDropbox", response);
         }
 
         // GET: Servicos/TiposAjax

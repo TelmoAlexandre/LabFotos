@@ -62,6 +62,9 @@ function initModalEvents() {
 
     handleControllerResponse = (resp, divId, modalId, href) => {
         if (resp.success) {
+            if (resp.id !== null) {
+                href = `${href}?id=${resp.id}`;
+            }
             $(`#${divId}`).load(`${href}`, function () {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
