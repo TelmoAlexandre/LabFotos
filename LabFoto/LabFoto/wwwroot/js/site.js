@@ -209,9 +209,7 @@ requerenteServicoDetails = (divId, servicoId) => {
     $(`#${divId}`).load(`/Servicos/DetailsAjax/${servicoId}`);
 };
 
-createTipoOnServicosEdit = (e, idServico) => {
-    e.preventDefault(); // Não deixar o form submeter
-
+createTipoOnServicosEdit = (idServico) => {
     $.ajax({
         type: "POST",
         url: "/Tipos/Create",
@@ -227,6 +225,38 @@ createTipoOnServicosEdit = (e, idServico) => {
                 });
                 $(`#modalNovoTipo`).modal('hide');
                 $("#Tipo_Nome").val(null); // Limpa o campo do formulário
+                // Notificação 'Noty'
+                new Noty({
+                    type: 'success',
+                    layout: 'bottomRight',
+                    theme: 'bootstrap-v4',
+                    text: 'Adicionado com sucesso.',
+                    timeout: 4000,
+                    progressBar: true
+                }).show();
+            }
+        }
+    });
+};
+
+createServSolicOnServicosEdit = (idServico) => {
+
+    $.ajax({
+        type: "POST",
+        url: "/ServicosSolicitados/Create",
+        data: {
+            "ServicoSolicitado.Nome": $("#ServicoSolicitado_Nome").val(),
+            "__RequestVerificationToken": $("#divFormNovoServSolic input[name='__RequestVerificationToken']").val(),
+            "X-Requested-With": "XMLHttpRequest",
+            "fields": $("#divFormNovoServSolic input[name='ServSolicitados']").val()
+        },
+        success: function (resp) {
+            if (resp.success) {
+                $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/${idServico}`, function () {
+                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+                });
+                $(`#modalNovoServSolic`).modal('hide'); // Esconder o modal
+                $("#ServicoSolicitado_Nome").val(null); // Limpa o campo do formulário
                 // Notificação 'Noty'
                 new Noty({
                     type: 'success',
@@ -303,38 +333,6 @@ requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, r
                     layout: 'bottomRight',
                     theme: 'bootstrap-v4',
                     text: 'Guardado com sucesso.',
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
-            }
-        }
-    });
-};
-
-createServSolicOnServicosEdit = (e, idServico) => {
-    e.preventDefault(); // Não deixar o form submeter
-
-    $.ajax({
-        type: "POST",
-        url: "/ServicosSolicitados/Create",
-        data: {
-            "ServicoSolicitado.Nome": $("#ServicoSolicitado_Nome").val(),
-            "__RequestVerificationToken": $("#divFormNovoServSolic input[name='__RequestVerificationToken']").val(),
-            "X-Requested-With": "XMLHttpRequest"
-        },
-        success: function (resp) {
-            if (resp.success) {
-                $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/${idServico}`, function () {
-                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-                });
-                $(`#modalNovoServSolic`).modal('hide'); // Esconder o modal
-                $("#ServicoSolicitado_Nome").val(null); // Limpa o campo do formulário
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'success',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: 'Adicionado com sucesso.',
                     timeout: 4000,
                     progressBar: true
                 }).show();

@@ -102,20 +102,19 @@
     <div class="content" id="divFormNovoTipo">
         <div class="ui raised segment fluidCorners">
             <a class="ui blue ribbon label mb-3">Novo Tipo</a>
-            <form asp-controller="Tipos" asp-action="Create" onsubmit="createTipoOnServicosEdit(event,@Model.Servico.ID)">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="ui form">
-                    <div class="field">
-                        <label asp-for="Tipo.Nome"></label>
-                        <input asp-for="Tipo.Nome" placeholder="Tipo" />
-                        <span asp-validation-for="Tipo.Nome" class="text-danger"></span>
-                    </div>
-                    <div class="fields">
-                        <div class="eight wide field"><button class="ui button primary fluid" type="submit">Adicionar</button></div>
-                        <div class="eight wide field"><span class="ui button fluid" onclick="hideModal()">Cancelar</span></div>
-                    </div>
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="ui form">
+                <div class="field">
+                    <label asp-for="Tipo.Nome"></label>
+                    <input asp-for="Tipo.Nome" placeholder="Tipo" />
+                    <span asp-validation-for="Tipo.Nome" class="text-danger"></span>
                 </div>
-            </form>
+                <div class="fields">
+                    <div class="eight wide field"><button class="ui button primary fluid" onclick="createTipoOnServicosEdit('@Model.Servico.ID')">Adicionar</button></div>
+                    <div class="eight wide field"><span class="ui button fluid" onclick="hideModal()">Cancelar</span></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -124,20 +123,19 @@
     <div class="content" id="divFormNovoServSolic">
         <div class="ui raised segment fluidCorners">
             <a class="ui blue ribbon label mb-3">Novo Tipo</a>
-            <form asp-controller="ServicosSolicitados" asp-action="Create" onsubmit="createServSolicOnServicosEdit(event,@Model.Servico.ID)">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="ui form">
-                    <div class="field">
-                        <label asp-for="ServicoSolicitado.Nome"></label>
-                        <input asp-for="ServicoSolicitado.Nome" placeholder="Serviço Solicitado" />
-                        <span asp-validation-for="ServicoSolicitado.Nome" class="text-danger"></span>
-                    </div>
-                    <div class="fields">
-                        <div class="eight wide field"><button class="ui button fluid primary" type="submit">Adicionar</button></div>
-                        <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
-                    </div>
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="ui form">
+                <div class="field">
+                    <label asp-for="ServicoSolicitado.Nome"></label>
+                    <input asp-for="ServicoSolicitado.Nome" placeholder="Serviço Solicitado" />
+                    <span asp-validation-for="ServicoSolicitado.Nome" class="text-danger"></span>
                 </div>
-            </form>
+                <div class="fields">
+                    <div class="eight wide field"><button class="ui button fluid primary" onclick="createServSolicOnServicosEdit('@Model.Servico.ID')">Adicionar</button></div>
+                    <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
