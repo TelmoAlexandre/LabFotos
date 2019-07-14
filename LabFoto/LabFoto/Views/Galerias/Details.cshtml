@@ -29,13 +29,17 @@
     </dl>
 </div>
 
+<button onclick="downloadSelected()">download</button>
+<button onclick="selectAllCB()">Selecionar todas</button>
+<button onclick="clearCB()">Remover todas</button>
+
 <div id="thumbnails">
 </div>
 
 @{
-/*
-    Modal utilizado na biblioteca PhotoSwipe
- */
+    /*
+        Modal utilizado na biblioteca PhotoSwipe
+     */
 }
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
@@ -102,6 +106,7 @@
 {
     <script>
         var loader = `<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:100px;">A carregar...</div>`;
+        var urls = [];
 
         $(document).ready(function () {
             $("#thumbnails").html(loader);
@@ -113,6 +118,7 @@
                     $("#thumbnails").html(resp);
                     // Iniciar a galeria do PhotoSwipe
                     initPhotoSwipeFromDOM('.my-gallery');
+                    $('.ui.checkbox').checkbox();
                 },
                 error: function () {
                     $("#thumbnails").html(`
@@ -126,5 +132,63 @@
                 }
             });
         });
+
+    function clearCB() {
+        $(".ui.toggle.checkbox.checked").click();
+    }
+    function selectAllCB() {
+        clearCB();
+         $(".ui.toggle.checkbox").click();
+    }
+
+        function pushToURLs(newUrl) {
+            // Caso o url exista no array, retira-lo
+            if (urls.includes(newUrl)) {
+                let newArray = [];
+                urls.forEach((url) => {
+                    if (url !== newUrl) {
+                        newArray.push(url);
+                    }
+                });
+                urls = newArray;
+            } else {
+                urls.push(newUrl);
+            }
+        }
+
+    function download(url) {
+        var link = document.createElement("a");
+        link.download = name;
+        link.href = url;
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        delete link;
+    }
+
+    function downloadSelected() {
+        let links = urls;
+        clearCB();
+        if (links.length != 0) {
+            let delay = 0;
+            links.forEach(url => {
+                if (url !== '') {
+                    setTimeout(() => {
+                        var link = document.createElement("a");
+                        link.download = name;
+                        link.href = url;
+                        link.style.display = "none";
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        delete link;
+                    }, delay);
+                    delay += 8000;
+                }
+            });
+        }
+    }
+
     </script>
 }

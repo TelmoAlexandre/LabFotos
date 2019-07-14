@@ -32,12 +32,15 @@ else
                         </figure>
                     </div>
                     <div class="ui mini attached relaxed bottom buttons">
-                        <span class="ui button">
+                        <span class="ui button" onclick="download('@foto.DownloadUrl')">
                             <i class="save icon"></i>
                         </span>
                         <button class="ui button">
                             <i class="sliders horizontal icon"></i>
                         </button>
+                    </div>
+                    <div class="ui toggle checkbox" onclick="pushToURLs('@foto.DownloadUrl')">
+                        <input type="checkbox" tabindex="0" class="hidden">
                     </div>
                 </div>
             }
