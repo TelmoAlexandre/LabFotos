@@ -3,7 +3,9 @@ using LabFoto.Models.Tables;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -206,5 +208,104 @@ namespace LabFoto.Onedrive
         {
             return _context.Galerias.Any(e => e.ID == id);
         }
+
+        /// <summary>
+        /// Upload file to onedrive
+        /// </summary>
+        /// <param name="filePath">file path in local dick</param>
+        /// <returns>uploaded file info with json format</returns>
+        public async Task<string> UploadFileAsync(string filePath)
+        {
+            #region create upload session
+            string uploadUri = "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_api/v2.0/drives/b!0812_G3q10uofJYDjbiF50gxK5lECPtEqi3cKXzbQsT29-ASFmlYSqg3p9xBheG7/items/0127OBJ5N6Y2GOVW7725BZO354PWSELRRZ/uploadSession?guid='e2583d2f-b520-44bf-b873-d8ff262428b3'&path='~tmp6E_tedsdsdsadasds.CR2'&overwrite=True&rename=False&dc=0&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTYzMTIzMDI2IiwiZXhwIjoiMTU2MzIwOTQyNiIsImVuZHBvaW50dXJsIjoiU2tDbmI1ZS9PU3FZOGZNemtKb2VWV1prUHQzZkRtNVV0N3FhcjZtU1R5Yz0iLCJlbmRwb2ludHVybExlbmd0aCI6IjMxOCIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiTlRVeFl6QTBZVEl0WkRRNU1DMDBaVEptTFRnek4yRXRaR0kyTURVeU1XUmxNV00zIiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJnaXZlbl9uYW1lIjoiVGVsbW8iLCJmYW1pbHlfbmFtZSI6IkFsZXhhbmRyZSIsInNpZ25pbl9zdGF0ZSI6IltcImttc2lcIl0iLCJhcHBpZCI6IjJkYTc0ODRjLTllZWEtNDlhMy1iMzM3LWY1OWE5N2Y3OWU0NyIsInRpZCI6IjIxZTkwZGZjLTU0ZjEtNGIyMS04ZjNiLTdmYjk3OThlZDJlMCIsInVwbiI6ImFsdW5vMTkwODlAaXB0LnB0IiwicHVpZCI6IjEwMDM3RkZFOTA4OTQ2MzQiLCJjYWNoZWtleSI6IjBoLmZ8bWVtYmVyc2hpcHwxMDAzN2ZmZTkwODk0NjM0QGxpdmUuY29tIiwic2NwIjoibXlmaWxlcy5yZWFkIGFsbGZpbGVzLnJlYWQgbXlmaWxlcy53cml0ZSBhbGxmaWxlcy53cml0ZSIsInR0IjoiMiIsInVzZVBlcnNpc3RlbnRDb29raWUiOm51bGx9.VnkzTG9SRDlrNmt3Nk9kSzBuVjZyT2dOd2ZlckxxYlJ4dHBWR2JjdGR6QT0";
+            #endregion
+
+            #region upload the file fragment
+            string result = string.Empty;
+            using (FileStream stream = File.OpenRead(filePath))
+            {
+                long position = 0;
+                long totalLength = stream.Length;
+                int length = 3 * 1024 * 1024;
+
+                while (true)
+                {
+                    byte[] bytes = await ReadFileFragmentAsync(stream, position, length);
+                    if (position >= totalLength)
+                    {
+                        break;
+                    }
+
+                    result = await UploadFileFragmentAsync(bytes, uploadUri, position, totalLength);
+
+                    position += bytes.Length;
+                }
+            }
+            #endregion
+
+            return result;
+        }
+
+        /// <summary>
+        /// upload file fragment
+        /// </summary>
+        /// <param name="datas">file fragment</param>
+        /// <param name="uploadUri">upload uri</param>
+        /// <param name="position">postion of the file bytes</param>
+        /// <param name="totalLength">the file bytes lenght</param>
+        /// <returns>expire time with json format</returns>
+        private async Task<string> UploadFileFragmentAsync(byte[] data, string uploadUri, long position, long totalLength)
+        {
+            string token = "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFBUDB3TGxxZExWVG9PcEE0a3d6U254LV91OXR3NlZ4UVBGdGxNOHZmUWhUSVBjVllBMGlOQzg2bVJnUVZnbjZLM3hqMzdUMzkxYXNmakNqamZwcWx5R0RFRmNvTExZTzQtVHZ6UkRtN3lBN1NBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoidTRPZk5GUEh3RUJvc0hqdHJhdU9iVjg0TG5ZIiwia2lkIjoidTRPZk5GUEh3RUJvc0hqdHJhdU9iVjg0TG5ZIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8yMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAvIiwiaWF0IjoxNTYzMTIxNTMxLCJuYmYiOjE1NjMxMjE1MzEsImV4cCI6MTU2MzEyNTQzMSwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IjQyRmdZSGk1V0thYVo3R3ZhbzNQQlJIOU85My96dDdzYnp2QUZEYS8wV0dWbmFGeXloMEEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJhcHBpZCI6IjJkYTc0ODRjLTllZWEtNDlhMy1iMzM3LWY1OWE5N2Y3OWU0NyIsImFwcGlkYWNyIjoiMSIsImZhbWlseV9uYW1lIjoiQWxleGFuZHJlIiwiZ2l2ZW5fbmFtZSI6IlRlbG1vIiwiaXBhZGRyIjoiMTg4LjI1MS4yMjYuMTM4IiwibmFtZSI6IlRlbG1vIE9saXZlaXJhIEFsZXhhbmRyZSIsIm9pZCI6ImM3MmRlNTZiLTVkZmUtNDMyOC05MzBkLTA0YTNkNzJmMjUzMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0zMTAwNjczNzQ2LTQyNzA1ODM2MjYtMjQyNTI0MjA0OS0xNzgyOSIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0Iiwic2NwIjoiRmlsZXMuUmVhZCBGaWxlcy5SZWFkLkFsbCBGaWxlcy5SZWFkV3JpdGUgRmlsZXMuUmVhZFdyaXRlLkFsbCBwcm9maWxlIG9wZW5pZCBlbWFpbCIsInNpZ25pbl9zdGF0ZSI6WyJrbXNpIl0sInN1YiI6Ill1UmFBUEtFWUp5T3h5eUVjbWRSMk1kbmFMTzk0OTVBM2RDZ0VaVDkzOUEiLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1bmlxdWVfbmFtZSI6ImFsdW5vMTkwODlAaXB0LnB0IiwidXBuIjoiYWx1bm8xOTA4OUBpcHQucHQiLCJ1dGkiOiI3bFcyamI3UGxFMkRHWDN2V1JJbUFBIiwidmVyIjoiMS4wIiwieG1zX3N0Ijp7InN1YiI6ImV3aGxrN1JiaFY3blhtNzR1NVNBSVBONzBiS2lucExYTU5CUHdUQVNRdFkifSwieG1zX3RjZHQiOjE0MjkyNjcyMDh9.ZAlD4P-AcFAnyY6yeJ6RGTHOQPPH-0CoQJEpoXscphCFFOs5bTm8C5hhC_EKW7IFkyy5Tsx_STQ3aR4_ghZkrFi4OGdl-1NVVeP3p6r6vr2Hozgvw0uzYhwYC_Q9DWCabmKTFakH6M8TXfuGnyGHMqjb-aeRidYZQDxLqHZzlbx8qqn3nvOI8M1PwO2786VlYBWRd3IVjzbQFKb6lb29iUvmiGvWHQHXgrWacd1rVuu5tPEcc8vQWRhQ7dc8aGmvYbEBiB5Hcr2NfDHqAPf-0BVb9CCWSnEcQYj0hqCI25A4dFBxOgYJWg8lOi6ln8fzK1PMWxAjnVSMBhlmPsncRg";
+
+            //var request = await InitAuthRequest(uploadUri, HTTPMethod.Put, datas, null);
+            var request = WebRequest.Create(uploadUri) as HttpWebRequest;
+            request.Method = "Put";
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.Headers.Add("Authorization", $"bearer {token}");
+            }
+            request.Headers.Add("Content-Range", $"bytes {position}-{position + data.Length - 1}/{totalLength}");
+
+            try
+            {
+                if (data != null)
+                {
+                    Stream dataStream = request.GetRequestStream();
+                    dataStream.Write(data, 0, data.Length);
+                    dataStream.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            var response = await request.GetResponseAsync();
+
+            return "kappa";
+        }
+
+        /// <summary>
+        /// read file fragment
+        /// </summary>
+        /// <param name="stream">file stream</param>
+        /// <param name="startPos">start position</param>
+        /// <param name="count">take count</param>
+        /// <returns>the fragment of file with byte[]</returns>
+        private async Task<byte[]> ReadFileFragmentAsync(FileStream stream, long startPos, int count)
+        {
+            if (startPos >= stream.Length || startPos < 0 || count <= 0)
+                return null;
+
+            long trimCount = startPos + count > stream.Length ? stream.Length - startPos : count;
+
+            byte[] retBytes = new byte[trimCount];
+            stream.Seek(startPos, SeekOrigin.Begin);
+            await stream.ReadAsync(retBytes, 0, (int)trimCount);
+            return retBytes;
+        }
+
     }
 }
