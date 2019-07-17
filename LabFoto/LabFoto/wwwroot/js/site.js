@@ -480,26 +480,15 @@ var initPhotoSwipeFromDOM = function (gallerySelector) {
         // find index of clicked item by looping through all child nodes
         // alternatively, you may define index via data- attribute
         var clickedGallery = clickedListItem.parentNode,
-            childNodes = clickedListItem.parentNode.childNodes,
-            numChildNodes = childNodes.length,
-            nodeIndex = 0,
             index;
 
-        for (var i = 0; i < numChildNodes; i++) {
-            if (childNodes[i].nodeType !== 1) {
-                continue;
-            }
-
-            if (childNodes[i] === clickedListItem) {
-                index = nodeIndex;
-                break;
-            }
-            nodeIndex++;
-        }
+        index = e.target.getAttribute('data-index');
 
         if (index >= 0) {
             // open PhotoSwipe if valid index found
             openPhotoSwipe(index, clickedGallery);
+        } else {
+            openPhotoSwipe(0, clickedGallery);
         }
         return false;
     };
