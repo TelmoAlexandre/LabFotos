@@ -1,20 +1,19 @@
-﻿@model IEnumerable<LabFoto.Models.Tables.Fotografia>
+﻿@model LabFoto.Models.ViewModels.GaleriasDetailsThumbnailsViewModel
 
-@if (Model.Count() == 0)
+@if (Model.Fotos.Count() == 0)
 {
-    <div class="ui placeholder tiny segment">
-        <div class="ui icon header">
-            <i class="images outline icon" style="height: auto;"></i>
-            Não existem fotografias na galeria.
+        <div class="ui placeholder tiny segment">
+            <div class="ui icon header">
+                <i class="images outline icon" style="height: auto;"></i>
+                Não existem fotografias.
+            </div>
         </div>
-        <div class="ui primary button"><i class="cloud upload icon"></i> Adicionar</div>
-    </div>
 }
 else
 {
     <div class="my-gallery" id="my-gallery" itemscope>
         <div class="ui six doubling stackable cards mt-2">
-            @foreach (var foto in Model)
+            @foreach (var foto in Model.Fotos)
             {
                 <div class="card remove-card-border">
                     <div class="content p-1">

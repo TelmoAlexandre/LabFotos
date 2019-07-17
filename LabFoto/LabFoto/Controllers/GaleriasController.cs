@@ -11,6 +11,8 @@ using System.Net.Http;
 using LabFoto.Onedrive;
 using LabFoto.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using LabFoto.Models;
 
 namespace LabFoto.Controllers
 {
@@ -105,6 +107,7 @@ namespace LabFoto.Controllers
 
         #endregion Ajax
 
+        #region Index
         // GET: Galerias
         public async Task<IActionResult> Index(string serv)
         {
@@ -114,44 +117,6 @@ namespace LabFoto.Controllers
             {
                 ViewData["Feedback"] = TempData["Feedback"];
             }
-
-            //// Todas as galerias
-            //var galerias = from g in _context.Galerias
-            //               select g;
-
-            //// Pesquisar apenas as galerias de um serviço, caso o Id deste seja fornecido
-            //if (!String.IsNullOrEmpty(serv))
-            //{
-            //    galerias = galerias.Where(g=>g.Servico.ID.Equals(serv));
-            //}
-
-            //int totalGalerias = galerias.Count();
-
-            //galerias = galerias.Include(g => g.Servico)
-            //    .Include(g => g.Fotografias)
-            //    .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado)
-            //    .OrderByDescending(g => g.DataDeCriacao)
-            //    .Take(1);
-
-            //// Selecionar a primeira foto em todas as galerias e remover os nulls da lista
-            //List<Fotografia> photos = await galerias.Include(g => g.Fotografias).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
-            //photos.RemoveAll(photo => photo == null);
-            //// Juntar a conta onedrive associada
-            //foreach (var photo in photos)
-            //{
-            //    photo.ContaOnedrive = await _context.ContasOnedrive.FindAsync(photo.ContaOnedriveFK);
-            //}
-
-            //// Refrescar as thumbnails das imagens da capa das galerias
-            //await _onedrive.RefreshPhotoUrlsAsync(photos);
-
-            //GaleriasIndexViewModel response = new GaleriasIndexViewModel()
-            //{
-            //    Galerias = await galerias.ToListAsync(),
-            //    FirstPage = true,
-            //    LastPage = (totalGalerias <= 1),
-            //    PageNum = 1
-            //};
 
             return View();
         }
@@ -249,7 +214,9 @@ namespace LabFoto.Controllers
 
             return PartialView("PartialViews/_GaleriasIndexCardsPartialView", response);
         }
+        #endregion
 
+        #region Details
         // GET: Galerias/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -272,20 +239,98 @@ namespace LabFoto.Controllers
             return View(galeria);
         }
 
-        public async Task<IActionResult> Thumbnails(int? id)
+        public async Task<IActionResult> Thumbnails(int id = 0)
         {
-            if(id == null)
+            if (id == 0)
             {
                 return NotFound();
             }
 
-            var photos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).ToListAsync();
+            var fotos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).ToListAsync();
 
-            await _onedrive.RefreshPhotoUrlsAsync(photos);
+            await _onedrive.RefreshPhotoUrlsAsync(fotos);
 
-            return PartialView("PartialViews/_ThumbnailsPartialView", photos);
+            var response = new GaleriasDetailsThumbnailsViewModel
+            {
+                Fotos = fotos,
+                GaleriaId = id
+            };
+
+            return PartialView("PartialViews/_ThumbnailsPartialView", response);
         }
+        #endregion
 
+        #region UploadFiles
+        [HttpPost]
+        public async Task<IActionResult> UploadFiles(List<IFormFile> files, int galeriaId)
+        {
+            // Irá conter todos os caminhos para os ficheiros temporários
+            List<string> filePaths = new List<string>();
+
+            foreach (var formFile in files)
+            {
+                if (formFile.Length > 0)
+                {
+                    #region Recolher informações do ficheiro e guardar-lo no servidor
+                    string fileName = formFile.FileName;
+
+                    // Criar um caminho temporário para o ficheiro
+                    var filePath = Path.GetTempFileName();
+                    filePaths.Append(filePath);
+
+                    // Guardar o ficheiro temporário no servidor.
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
+                    #endregion
+
+                    #region Upload do ficheiro
+                    // Dar upload do ficheiro para a onedrive
+                    // Será selecionada uma conta com espaço de forma automática
+                    UploadedPhotoModel response = await _onedrive.UploadFileAsync(filePath, fileName);
+                    #endregion
+
+                    // Caso o upload tenha tido sucesso
+                    if (response.Success)
+                    {
+                        #region Adicionar foto à Bd
+                        try
+                        {
+                            Fotografia foto = new Fotografia
+                            {
+                                Nome = response.ItemName,
+                                ItemId = response.ItemId,
+                                ContaOnedriveFK = response.Conta.ID,
+                                GaleriaFK = galeriaId,
+                                Formato = GetFileFormat(response.ItemName)
+                            };
+
+                            await _context.AddAsync(foto);
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            throw;
+                        }
+                        #endregion
+                    }
+                    else
+                    {
+                        // Tratar da do insucesso
+                    }
+                }
+            }
+
+            #region Apagar os ficheiros temporários
+            _onedrive.DeleteFiles(filePaths); // Apagar todos os ficheiros temporário do servidor 
+            #endregion
+
+            return RedirectToAction("Details", new { id = galeriaId });
+        } 
+        #endregion
+
+        #region Create
         // GET: Galerias/Create
         public IActionResult Create()
         {
@@ -308,8 +353,10 @@ namespace LabFoto.Controllers
             }
             ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "IdentificacaoObra", galeria.ServicoFK);
             return View(galeria);
-        }
+        } 
+        #endregion
 
+        #region Edit
         // GET: Galerias/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -362,7 +409,9 @@ namespace LabFoto.Controllers
             ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "IdentificacaoObra", galeria.ServicoFK);
             return View(galeria);
         }
+        #endregion
 
+        #region Delete
         // GET: Galerias/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -380,7 +429,7 @@ namespace LabFoto.Controllers
             }
 
             return View(galeria);
-        }
+        } 
 
         // POST: Galerias/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -392,10 +441,32 @@ namespace LabFoto.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
+
+        #region AuxMethods
+
+        /// <summary>
+        /// Retorna o formato a partir de um nome.
+        /// </summary>
+        /// <param name="name">Nome do ficheiro. Tem que conter o formato</param>
+        /// <returns></returns>
+        private string GetFileFormat(string name)
+        {
+            try
+            {
+                return name.Split(".")[2];
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
 
         private bool GaleriaExists(int id)
         {
             return _context.Galerias.Any(e => e.ID == id);
         }
+
+        #endregion
     }
 }
