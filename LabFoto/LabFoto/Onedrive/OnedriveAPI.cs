@@ -1,4 +1,5 @@
 ﻿using LabFoto.Data;
+using LabFoto.Models;
 using LabFoto.Models.Tables;
 using Newtonsoft.Json.Linq;
 using System;
@@ -33,7 +34,8 @@ namespace LabFoto.Onedrive
             {
                 foreach (var photo in photos)
                 {
-                    if(photo != null) { 
+                    if (photo != null)
+                    {
                         // Verificar se o token está válido
                         await RefreshTokenAsync(photo.ContaOnedrive);
 
@@ -87,6 +89,7 @@ namespace LabFoto.Onedrive
             {
                 try
                 {
+                    #region Preparar pedido HTTP
                     string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
                     var request = new HttpRequestMessage(HttpMethod.Get, url);
                     request.Content = new StringContent(
@@ -97,11 +100,13 @@ namespace LabFoto.Onedrive
                         "&grant_type=refresh_token" +
                         "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
                         Encoding.UTF8, "application/x-www-form-urlencoded"
-                    );
+                    ); 
+                    #endregion
 
                     // Fazer o pedido e obter resposta
                     var response = await client.SendAsync(request);
 
+                    #region Tratar resposta
                     if (response.IsSuccessStatusCode)
                     {
                         JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
@@ -119,12 +124,13 @@ namespace LabFoto.Onedrive
                     else
                     {
                         return false;
-                    }                    
+                    } 
+                    #endregion
                 }
                 catch (Exception)
                 {
                     return false;
-                }                
+                }
             }
 
             return true;
@@ -134,6 +140,7 @@ namespace LabFoto.Onedrive
         {
             try
             {
+                #region Preparar pedido HTTP
                 // Inicializar o pedido com o codigo recebido quando foram pedidas as permissões ao utilizador
                 string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -145,17 +152,20 @@ namespace LabFoto.Onedrive
                     "&grant_type=authorization_code" +
                     "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
                     Encoding.UTF8, "application/x-www-form-urlencoded"
-                );
+                ); 
+                #endregion
 
                 // Fazer o pedido e obter resposta
                 var response = await client.SendAsync(request);
 
+                #region Tratar resposta
                 // Caso retorne OK 200
                 if (response.IsSuccessStatusCode)
                 {
                     // Converter a resposta para um objeto json
                     return JObject.Parse(await response.Content.ReadAsStringAsync());
-                }
+                } 
+                #endregion
             }
             catch (Exception)
             {
@@ -169,19 +179,23 @@ namespace LabFoto.Onedrive
         {
             try
             {
+                #region Preparar pedido HTTP
                 // Inicializar o pedido com o token de autenticação
                 var request = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/drives/");
-                request.Headers.Add("Authorization", "Bearer " + token);
+                request.Headers.Add("Authorization", "Bearer " + token); 
+                #endregion
 
-                // Fazer o pedido e obter resposta
+                // Fazer o pedido
                 var response = await client.SendAsync(request);
 
+                #region Interpretar resposta
                 // Caso retorne OK 2xx
                 if (response.IsSuccessStatusCode)
                 {
                     // Converter a resposta para um objeto json
                     return JObject.Parse(await response.Content.ReadAsStringAsync());
-                }
+                } 
+                #endregion
             }
             catch (Exception)
             {
@@ -209,25 +223,55 @@ namespace LabFoto.Onedrive
             return _context.Galerias.Any(e => e.ID == id);
         }
 
-        /// <summary>
-        /// Upload file to onedrive
-        /// </summary>
-        /// <param name="filePath">file path in local dick</param>
-        /// <returns>uploaded file info with json format</returns>
-        public async Task<string> UploadFileAsync(string filePath)
-        {
-            #region create upload session
-            string uploadUri = "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_api/v2.0/drives/b!0812_G3q10uofJYDjbiF50gxK5lECPtEqi3cKXzbQsT29-ASFmlYSqg3p9xBheG7/items/0127OBJ5N6Y2GOVW7725BZO354PWSELRRZ/uploadSession?guid='e2583d2f-b520-44bf-b873-d8ff262428b3'&path='~tmp6E_tedsdsdsadasds.CR2'&overwrite=True&rename=False&dc=0&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTYzMTIzMDI2IiwiZXhwIjoiMTU2MzIwOTQyNiIsImVuZHBvaW50dXJsIjoiU2tDbmI1ZS9PU3FZOGZNemtKb2VWV1prUHQzZkRtNVV0N3FhcjZtU1R5Yz0iLCJlbmRwb2ludHVybExlbmd0aCI6IjMxOCIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiTlRVeFl6QTBZVEl0WkRRNU1DMDBaVEptTFRnek4yRXRaR0kyTURVeU1XUmxNV00zIiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJnaXZlbl9uYW1lIjoiVGVsbW8iLCJmYW1pbHlfbmFtZSI6IkFsZXhhbmRyZSIsInNpZ25pbl9zdGF0ZSI6IltcImttc2lcIl0iLCJhcHBpZCI6IjJkYTc0ODRjLTllZWEtNDlhMy1iMzM3LWY1OWE5N2Y3OWU0NyIsInRpZCI6IjIxZTkwZGZjLTU0ZjEtNGIyMS04ZjNiLTdmYjk3OThlZDJlMCIsInVwbiI6ImFsdW5vMTkwODlAaXB0LnB0IiwicHVpZCI6IjEwMDM3RkZFOTA4OTQ2MzQiLCJjYWNoZWtleSI6IjBoLmZ8bWVtYmVyc2hpcHwxMDAzN2ZmZTkwODk0NjM0QGxpdmUuY29tIiwic2NwIjoibXlmaWxlcy5yZWFkIGFsbGZpbGVzLnJlYWQgbXlmaWxlcy53cml0ZSBhbGxmaWxlcy53cml0ZSIsInR0IjoiMiIsInVzZVBlcnNpc3RlbnRDb29raWUiOm51bGx9.VnkzTG9SRDlrNmt3Nk9kSzBuVjZyT2dOd2ZlckxxYlJ4dHBWR2JjdGR6QT0";
-            #endregion
+        #region Upload
 
-            #region upload the file fragment
-            string result = string.Empty;
+        /// <summary>
+        /// Upload do ficheiro para a Onedrive.
+        /// </summary>
+        /// <param name="filePath">Caminho do ficheiro no disco.</param>
+        /// <param name="fileName">Nome do ficheiro.</param>
+        /// <returns>Booleano que indica o sucesso do método.</returns>
+        public async Task<UploadedPhotoModel> UploadFileAsync(string filePath, string fileName)
+        {
+            WebResponse result = null;
+            ContaOnedrive conta = null;
+
             using (FileStream stream = File.OpenRead(filePath))
             {
                 long position = 0;
                 long totalLength = stream.Length;
                 int length = 3 * 1024 * 1024;
 
+                #region Encontrar conta e refrescar token
+                // Encontrar a conta onedrive a ser utilizada para o upload
+                conta = GetAccountToUpload(totalLength);
+                // Se a conta retornar null, poderá ser porque já não existem contas com espaço
+                if (conta == null)
+                {
+                    // Verificar se as contas têm espaço
+                    // Enviar e-mail ao administrador
+                    return new UploadedPhotoModel
+                    {
+                        Success = false,
+                        ErrorDescription = "Não foi possível adquirir uma conta com espaço suficiente."
+                    };
+                }
+                await RefreshTokenAsync(conta);
+                #endregion
+
+                #region Criar sessão de upload
+                string uploadUrl = await GetUploadSessionAsync(conta, fileName);
+                if (uploadUrl == "Error")
+                {
+                    // Não foi possível fazer a sessão de upload
+                    return new UploadedPhotoModel {
+                        Success = false,
+                        ErrorDescription = "Não foi possível criar sessão de upload."
+                    };
+                }
+                #endregion
+
+                #region upload the file fragment
                 while (true)
                 {
                     byte[] bytes = await ReadFileFragmentAsync(stream, position, length);
@@ -236,14 +280,92 @@ namespace LabFoto.Onedrive
                         break;
                     }
 
-                    result = await UploadFileFragmentAsync(bytes, uploadUri, position, totalLength);
+                    result = await UploadFileFragmentAsync(bytes, uploadUrl, position, totalLength, conta.AccessToken);
 
                     position += bytes.Length;
                 }
+                #endregion
+                
+                #region Adicionar foto à BD e apagar do disco
+                if (result != null && conta != null)
+                {
+                    string itemId = "", itemName = "";
+                    using (Stream dataStream = result.GetResponseStream()) // Recolher a stream que contem o conteudo 
+                    {
+                        StreamReader reader = new StreamReader(dataStream); // Abrir a stream
+                        string responseFromServer = reader.ReadToEnd(); // Ler o conteudo  
+                        JObject content = JObject.Parse(responseFromServer); // Converter a resposta para um objeto json
+                        itemId = (string)content["id"]; // Recolher o id da imagem na onedrive
+                        itemName = (string)content["name"]; // Recolher o nome da imagem na onedrive
+
+                        // Adicionar à BD
+                        if (!String.IsNullOrEmpty(itemId) && !String.IsNullOrEmpty(itemName))
+                        {
+                            return new UploadedPhotoModel
+                            {
+                                ItemId = itemId,
+                                ItemName = itemName,
+                                Conta = conta,
+                                Success = true
+                            };
+                        }
+                    }
+                    result.Close();
+                }
+                #endregion
             }
+
+            return new UploadedPhotoModel
+            {
+                Success = false,
+                ErrorDescription = "Não foi possível fazer upload do ficheiro."
+            };
+        }
+
+        /// <summary>
+        /// Procura uma conta onedrive com espaço suficiente para alojar o tamanho do ficheiro que chega por parametro.
+        /// </summary>
+        /// <param name="fileSize">Tamanho do ficheiro utilizado para upload</param>
+        /// <returns>Conta Onedrive</returns>
+        public ContaOnedrive GetAccountToUpload(long fileSize)
+        {
+            // Seleciona um conta com espaço sufeciente para o triplo do tamanho do ficheiro, como salvaguarda
+            return _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining)*3 > fileSize).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Cria uma sessão de upload
+        /// </summary>
+        /// <param name="conta">Conta Onedrive</param>
+        /// <param name="fileName">Nome do ficheiro. Este irá ser utilizado na OneDrive.</param>
+        /// <returns>Url da sessão</returns>
+        public async Task<string> GetUploadSessionAsync(ContaOnedrive conta, string fileName)
+        {
+            #region Preparar pedido HTTP
+            string url = "https://graph.microsoft.com/v1.0/me/drives/" + conta.DriveId + "/root:/" + fileName + ":/createUploadSession";
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Add("Authorization", "Bearer " + conta.AccessToken);
+            // Especificar que em caso de nomes iguais, a onedrive altera o nome e carrega a imagem na mesma
+            request.Content = new StringContent("{\"item\":{\"@microsoft.graph.conflictBehavior\": \"rename\"}}", Encoding.UTF8, "application/json"); 
             #endregion
 
-            return result;
+            // Fazer o pedido e obter resposta
+            var response = await client.SendAsync(request);
+
+            #region Tratar resposta ao pedido
+            // Caso retorne OK 2xx
+            if (response.IsSuccessStatusCode)
+            {
+                // Converter a resposta para um objeto json
+                JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                return (string)content["uploadUrl"];
+            }
+            else
+            {
+                return "Error";
+            } 
+            #endregion
         }
 
         /// <summary>
@@ -254,10 +376,9 @@ namespace LabFoto.Onedrive
         /// <param name="position">postion of the file bytes</param>
         /// <param name="totalLength">the file bytes lenght</param>
         /// <returns>expire time with json format</returns>
-        private async Task<string> UploadFileFragmentAsync(byte[] data, string uploadUri, long position, long totalLength)
+        private async Task<WebResponse> UploadFileFragmentAsync(byte[] data, string uploadUri, long position, long totalLength, string token)
         {
-            string token = "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFBUDB3TGxxZExWVG9PcEE0a3d6U254LV91OXR3NlZ4UVBGdGxNOHZmUWhUSVBjVllBMGlOQzg2bVJnUVZnbjZLM3hqMzdUMzkxYXNmakNqamZwcWx5R0RFRmNvTExZTzQtVHZ6UkRtN3lBN1NBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoidTRPZk5GUEh3RUJvc0hqdHJhdU9iVjg0TG5ZIiwia2lkIjoidTRPZk5GUEh3RUJvc0hqdHJhdU9iVjg0TG5ZIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8yMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAvIiwiaWF0IjoxNTYzMTIxNTMxLCJuYmYiOjE1NjMxMjE1MzEsImV4cCI6MTU2MzEyNTQzMSwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IjQyRmdZSGk1V0thYVo3R3ZhbzNQQlJIOU85My96dDdzYnp2QUZEYS8wV0dWbmFGeXloMEEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJhcHBpZCI6IjJkYTc0ODRjLTllZWEtNDlhMy1iMzM3LWY1OWE5N2Y3OWU0NyIsImFwcGlkYWNyIjoiMSIsImZhbWlseV9uYW1lIjoiQWxleGFuZHJlIiwiZ2l2ZW5fbmFtZSI6IlRlbG1vIiwiaXBhZGRyIjoiMTg4LjI1MS4yMjYuMTM4IiwibmFtZSI6IlRlbG1vIE9saXZlaXJhIEFsZXhhbmRyZSIsIm9pZCI6ImM3MmRlNTZiLTVkZmUtNDMyOC05MzBkLTA0YTNkNzJmMjUzMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0zMTAwNjczNzQ2LTQyNzA1ODM2MjYtMjQyNTI0MjA0OS0xNzgyOSIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0Iiwic2NwIjoiRmlsZXMuUmVhZCBGaWxlcy5SZWFkLkFsbCBGaWxlcy5SZWFkV3JpdGUgRmlsZXMuUmVhZFdyaXRlLkFsbCBwcm9maWxlIG9wZW5pZCBlbWFpbCIsInNpZ25pbl9zdGF0ZSI6WyJrbXNpIl0sInN1YiI6Ill1UmFBUEtFWUp5T3h5eUVjbWRSMk1kbmFMTzk0OTVBM2RDZ0VaVDkzOUEiLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1bmlxdWVfbmFtZSI6ImFsdW5vMTkwODlAaXB0LnB0IiwidXBuIjoiYWx1bm8xOTA4OUBpcHQucHQiLCJ1dGkiOiI3bFcyamI3UGxFMkRHWDN2V1JJbUFBIiwidmVyIjoiMS4wIiwieG1zX3N0Ijp7InN1YiI6ImV3aGxrN1JiaFY3blhtNzR1NVNBSVBONzBiS2lucExYTU5CUHdUQVNRdFkifSwieG1zX3RjZHQiOjE0MjkyNjcyMDh9.ZAlD4P-AcFAnyY6yeJ6RGTHOQPPH-0CoQJEpoXscphCFFOs5bTm8C5hhC_EKW7IFkyy5Tsx_STQ3aR4_ghZkrFi4OGdl-1NVVeP3p6r6vr2Hozgvw0uzYhwYC_Q9DWCabmKTFakH6M8TXfuGnyGHMqjb-aeRidYZQDxLqHZzlbx8qqn3nvOI8M1PwO2786VlYBWRd3IVjzbQFKb6lb29iUvmiGvWHQHXgrWacd1rVuu5tPEcc8vQWRhQ7dc8aGmvYbEBiB5Hcr2NfDHqAPf-0BVb9CCWSnEcQYj0hqCI25A4dFBxOgYJWg8lOi6ln8fzK1PMWxAjnVSMBhlmPsncRg";
-
+            #region Preparar pedido HTTP
             //var request = await InitAuthRequest(uploadUri, HTTPMethod.Put, datas, null);
             var request = WebRequest.Create(uploadUri) as HttpWebRequest;
             request.Method = "Put";
@@ -280,11 +401,10 @@ namespace LabFoto.Onedrive
             catch (Exception ex)
             {
                 throw;
-            }
+            } 
+            #endregion
 
-            var response = await request.GetResponseAsync();
-
-            return "kappa";
+            return await request.GetResponseAsync();
         }
 
         /// <summary>
@@ -307,5 +427,25 @@ namespace LabFoto.Onedrive
             return retBytes;
         }
 
+        #endregion Upload
+
+        /// <summary>
+        /// Corre uma Thread que apaga todos os fiheiros passados no array de caminhos.
+        /// </summary>
+        /// <param name="paths">string[] - Todos os caminhos dos ficheiros a apagar.</param>
+        public void DeleteFiles(List<string> paths)
+        {
+            foreach (var path in paths)
+            {
+                try
+                {
+                    File.Delete(path);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
     }
 }
