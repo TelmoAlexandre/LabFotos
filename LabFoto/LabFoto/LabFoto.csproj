@@ -39,6 +39,8 @@
     <Compile Remove="Data\Migrations\20190614050641_Initial.Designer.cs" />
     <Compile Remove="Data\Migrations\20190623162349_Initial.cs" />
     <Compile Remove="Data\Migrations\20190623162349_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190625152840_Initial.cs" />
+    <Compile Remove="Data\Migrations\20190625152840_Initial.Designer.cs" />
   </ItemGroup>
 
 
@@ -52,6 +54,9 @@
 
 
   <ItemGroup>
+    <Content Update="Views\ContasOnedrive\Create.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="Views\ServicosSolicitados\Index.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

@@ -17,7 +17,8 @@ namespace LabFoto.Onedrive
     {
         private readonly ApplicationDbContext _context;
         private readonly IHttpClientFactory _clientFactory;
-        private readonly HttpClient client;
+        private readonly HttpClient _client;
+        private readonly string _redirectUrl = "https://localhost:44354/ContasOnedrive/InitAccount";
 
         public OnedriveAPI(ApplicationDbContext context, IHttpClientFactory clientFactory)
         {
@@ -25,7 +26,7 @@ namespace LabFoto.Onedrive
             _clientFactory = clientFactory;
 
             // Este cliente vai ser utilizado para envio e recepção pedidos Http
-            client = _clientFactory.CreateClient();
+            _client = _clientFactory.CreateClient();
         }
 
         public async Task<bool> RefreshPhotoUrlsAsync(List<Fotografia> photos)
@@ -36,20 +37,25 @@ namespace LabFoto.Onedrive
                 {
                     if (photo != null)
                     {
+                        #region Refrescar token
                         // Verificar se o token está válido
-                        await RefreshTokenAsync(photo.ContaOnedrive);
+                        await RefreshTokenAsync(photo.ContaOnedrive); 
+                        #endregion
 
+                        #region Preparar pedido HTTP
                         string driveId = photo.ContaOnedrive.DriveId;
                         string url = "https://graph.microsoft.com/v1.0/me" +
                             "/drives/" + driveId +
                             "/items/" + photo.ItemId +
                             "?$expand=thumbnails";
                         var request = new HttpRequestMessage(HttpMethod.Get, url);
-                        request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
+                        request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken); 
+                        #endregion
 
                         // Fazer o pedido e obter resposta
-                        var response = await client.SendAsync(request);
+                        var response = await _client.SendAsync(request);
 
+                        #region Tratar resposta
                         // Caso retorne OK 2xx
                         if (response.IsSuccessStatusCode)
                         {
@@ -64,7 +70,8 @@ namespace LabFoto.Onedrive
                             photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
 
                             _context.Update(photo);
-                        }
+                        } 
+                        #endregion
                     }
                 }
                 await _context.SaveChangesAsync();
@@ -96,7 +103,7 @@ namespace LabFoto.Onedrive
                         "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
                         "&scope=offline_access+files.read+files.read.all" +
                         "&refresh_token=" + conta.RefreshToken +
-                        "&redirect_uri=" + "https://localhost:44354/ContasOnedrive/Create" +
+                        "&redirect_uri=" + _redirectUrl +
                         "&grant_type=refresh_token" +
                         "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
                         Encoding.UTF8, "application/x-www-form-urlencoded"
@@ -104,7 +111,7 @@ namespace LabFoto.Onedrive
                     #endregion
 
                     // Fazer o pedido e obter resposta
-                    var response = await client.SendAsync(request);
+                    var response = await _client.SendAsync(request);
 
                     #region Tratar resposta
                     if (response.IsSuccessStatusCode)
@@ -148,7 +155,7 @@ namespace LabFoto.Onedrive
                     "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
                     "&scope=offline_access+files.read+files.read.all" +
                     "&code=" + code +
-                    "&redirect_uri=" + "https://localhost:44354/ContasOnedrive/Create" +
+                    "&redirect_uri=" + _redirectUrl +
                     "&grant_type=authorization_code" +
                     "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
                     Encoding.UTF8, "application/x-www-form-urlencoded"
@@ -156,7 +163,7 @@ namespace LabFoto.Onedrive
                 #endregion
 
                 // Fazer o pedido e obter resposta
-                var response = await client.SendAsync(request);
+                var response = await _client.SendAsync(request);
 
                 #region Tratar resposta
                 // Caso retorne OK 200
@@ -186,7 +193,7 @@ namespace LabFoto.Onedrive
                 #endregion
 
                 // Fazer o pedido
-                var response = await client.SendAsync(request);
+                var response = await _client.SendAsync(request);
 
                 #region Interpretar resposta
                 // Caso retorne OK 2xx
@@ -205,15 +212,22 @@ namespace LabFoto.Onedrive
             return null;
         }
 
-        public string GetPermissionsUrl()
+        /// <summary>
+        /// Retorna o url onde será necessário dar permissões à aplicação.
+        /// </summary>
+        /// <param name="returnUrl">Url para onde será redirecionado o utilizar após ceder permissões.</param>
+        /// <param name="state">Um valor que será retornado da API da Microsoft. Este será utilizado para identificar
+        /// o ID da conta quando o cliente retorna à aplicaçã0</param>
+        /// <returns></returns>
+        public string GetPermissionsUrl(int state = 0)
         {
             string permissionsUrl =
                 "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/authorize?" +
                 "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
                 "&response_type=code" +
-                "&redirect_uri=https://localhost:44354/ContasOnedrive/Create&response_mode=query" +
+                "&redirect_uri=" + _redirectUrl + "&response_mode=query" +
                 "&scope=offline_access%20files.read%20files.read.all%20files.readwrite%20files.readwrite.all" +
-                "&state=12345";
+                "&state=" + state;
 
             return permissionsUrl;
         }
@@ -350,7 +364,7 @@ namespace LabFoto.Onedrive
             #endregion
 
             // Fazer o pedido e obter resposta
-            var response = await client.SendAsync(request);
+            var response = await _client.SendAsync(request);
 
             #region Tratar resposta ao pedido
             // Caso retorne OK 2xx

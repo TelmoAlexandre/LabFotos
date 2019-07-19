@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190625152840_Initial")]
+    [Migration("20190719151814_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -31,6 +31,8 @@ namespace LabFoto.Migrations
 
                     b.Property<string>("DriveId");
 
+                    b.Property<string>("Password");
+
                     b.Property<string>("Quota_Remaining");
 
                     b.Property<string>("Quota_Total");
@@ -40,6 +42,8 @@ namespace LabFoto.Migrations
                     b.Property<string>("RefreshToken");
 
                     b.Property<DateTime>("TokenDate");
+
+                    b.Property<string>("Username");
 
                     b.HasKey("ID");
 
@@ -51,11 +55,13 @@ namespace LabFoto.Migrations
                             ID = 1,
                             AccessToken = "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEQ29NcGpKWHJ4VHE5Vkc5dGUtN0ZYanFlQnJmd0RNOHRIbzdVaExaTGdSN25mcnlhbjZxQ1d3aDYxTWt1dkdWdWo0MzAtQjZzSmRfS1hpNnZqT0lBQU1iel84cGJ5VFpOeVJnMlBMVXM4TkNBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiSEJ4bDltQWU2Z3hhdkNrY29PVTJUSHNETmEwIiwia2lkIjoiSEJ4bDltQWU2Z3hhdkNrY29PVTJUSHNETmEwIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8yMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAvIiwiaWF0IjoxNTU5MjMzNDg0LCJuYmYiOjE1NTkyMzM0ODQsImV4cCI6MTU1OTIzNzM4NCwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkFTUUEyLzhMQUFBQXNjNHl5bjlWM010SWJjUjBUZDUzZDdmcTVQQjBUU1d5QmE5bjVablJjQ289IiwiYW1yIjpbInB3ZCJdLCJhcHBfZGlzcGxheW5hbWUiOiJMYWJGb3RvIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJhcHBpZGFjciI6IjEiLCJmYW1pbHlfbmFtZSI6IkFsZXhhbmRyZSIsImdpdmVuX25hbWUiOiJUZWxtbyIsImlwYWRkciI6IjE4OC4yNTEuMjI2LjEzOCIsIm5hbWUiOiJUZWxtbyBPbGl2ZWlyYSBBbGV4YW5kcmUiLCJvaWQiOiJjNzJkZTU2Yi01ZGZlLTQzMjgtOTMwZC0wNGEzZDcyZjI1MzMiLCJvbnByZW1fc2lkIjoiUy0xLTUtMjEtMzEwMDY3Mzc0Ni00MjcwNTgzNjI2LTI0MjUyNDIwNDktMTc4MjkiLCJwbGF0ZiI6IjMiLCJwdWlkIjoiMTAwMzdGRkU5MDg5NDYzNCIsInNjcCI6IkZpbGVzLlJlYWQgRmlsZXMuUmVhZC5BbGwgRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgcHJvZmlsZSBvcGVuaWQgZW1haWwiLCJzaWduaW5fc3RhdGUiOlsia21zaSJdLCJzdWIiOiJZdVJhQVBLRVlKeU94eXlFY21kUjJNZG5hTE85NDk1QTNkQ2dFWlQ5MzlBIiwidGlkIjoiMjFlOTBkZmMtNTRmMS00YjIxLThmM2ItN2ZiOTc5OGVkMmUwIiwidW5pcXVlX25hbWUiOiJhbHVubzE5MDg5QGlwdC5wdCIsInVwbiI6ImFsdW5vMTkwODlAaXB0LnB0IiwidXRpIjoiVV9GbXNLblI3a20tMWVPcUZOeXZBQSIsInZlciI6IjEuMCIsInhtc19zdCI6eyJzdWIiOiJld2hsazdSYmhWN25YbTc0dTVTQUlQTjcwYktpbnBMWE1OQlB3VEFTUXRZIn0sInhtc190Y2R0IjoxNDI5MjY3MjA4fQ.RxpyPNjTQaRlpAmM9BaKnU4zGoCry1_JZ-k4F-ADhlKoK-SRDdt6UhPfoysq4vxDrwCD5SSJwf93ygV2sM19etyHAKwS_ZWFDjrpyXEq0aftm_6A-LVTrI_KmjX3u64b8joyGGailTcMBc1gkk21jKt6nnoXNJuKXNXrK3mQGSI7xosG9WOmbWB54VoTCDEY0rUgIkO5_e0R9bIXURShNgiNgV5GpPhjAV1Oo3qWPEVrR41-8LkLMKqFbtLFfPouk7C4KlOB6AWb69Qew02h1KqIir_Xe3m1xiNqQ1l_bM2dYGdNgvGhoXQgge4JzGkrINOAkOp9KhuS_bRl7Cvjdw",
                             DriveId = "b!0812_G3q10uofJYDjbiF50gxK5lECPtEqi3cKXzbQsT29-ASFmlYSqg3p9xBheG7",
+                            Password = "test",
                             Quota_Remaining = "5497452095469",
                             Quota_Total = "5497558138880",
                             Quota_Used = "97597600",
                             RefreshToken = "OAQABAAAAAADCoMpjJXrxTq9VG9te-7FXmM_2aSL25b4X-gFBQOTiVTf4ph2zQdl02erPQ3k02lPQlapDOFcjBLEcumEFhUTuy70kmHovua_emPvKZa19egLTTDt8F6IfIJ8g0hfsOk79EQenHJWd5lmcFU5Bpu2H4jXkvcfDSrbwza_HXp40bXuG-ZUE4BHwytKwk9n3X06xo6dxxuaQ_8CsW1MEXSy-nJpK9E1Wn3e1z4twuo15ejemgOFzD4_VYPMKlKHJXqzYhC5WMLk1-oA-dYaZ9g5TdEr3nJKeYYvxWnXP420nnLq8tLLR-Hu7CHoPRYeTzh-5_TWd3Os6SJXO_ucP-BETYvEoVRJVjfA8RvJz9JITqY2Rihkd1S28oe4mWyKg6PcbrbewiW7B8kGdKh2So2tPoTZw-vI_1CRV6X8m72zizO5QL6NZX2Egs6lRMMEWm3ZhvJYbFwuaR6x63ocYPbylFU1ll8x6iF2FBhVjrjVfn9B3Vj967J3WR2TB-ayYG8kGyXgHkXr1P0IRdAlLHoK93K1gRinjqXq3_qqARWta78NcJQ0q9g1fsuju6uGgVfShwMzloSZXlBQXMCPKp1Orkjs__5AJApgD5PsVPWMhTxkN3KSUiXU3liEYBuPUHi27s_jU4ZU9Id2c0-ItUjoa3S5IXcZ9W2IA-RCKgTzmeLk4Fs8_0M0-h07Yy6SnB_xq_jp7Ox-2RwQpwbmRxfmpqpCr9lY-7qF7Xer6E9GOKZrbivoqXmszEbK7H-fjeg43dpivTkH84Zwvb5natg8JhV2RBGK5YKBL2R4k04H30id9YdF34T_s-7FlEikGh7dZgv8XkVnbJbGjrfyPGZx7HfeqOGdK9Y3jjMXtcOb6SCAA",
-                            TokenDate = new DateTime(2019, 5, 29, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                            TokenDate = new DateTime(2019, 5, 29, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            Username = "aluno19089@ipt.pt"
                         });
                 });
 
@@ -971,7 +977,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                            ConcurrencyStamp = "48051a73-8103-41c1-ab08-416e2fe76b57",
+                            ConcurrencyStamp = "1cc1a918-8483-4117-98c5-3704d97e68aa",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -1148,13 +1154,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cedf45d1-cdf0-40ee-a691-a6db819c7a52",
+                            ConcurrencyStamp = "143c5f1c-3d59-4fd1-a7d9-fc44ce89efe7",
                             Email = "admin1@admin1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@ADMIN1.COM",
                             NormalizedUserName = "ADMIN1@ADMIN1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMkHRXvS2inKZEZV7hCq94DKyQu/rdYf2FSx1mVTStif7aEQEv065kUBNho7hSGJnA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDUEKmWxzhvmGwXdegQXHXi1bs5Y927bCFwGoS17QM5xJjJ0k5lHjz6G1Xaj4+kwtg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -1165,13 +1171,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ef003f80-1b43-4025-9312-a14cdcf84edb",
+                            ConcurrencyStamp = "541da627-f6b2-46df-8958-cb32b53dfabe",
                             Email = "user1@user1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@USER1.COM",
                             NormalizedUserName = "USER1@USER1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJ+GO6ov799KyKekGmIBZKbrNrr9QBTcH57RAd9N6xV3rMgoTiXDiU77r/MB6QyMSA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEL7frbma8Iw+2VSceBGLb42r0qNulYsfBKxEKxPlpfbLjPCueovzuzSQ0Inoo4uE+g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

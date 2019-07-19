@@ -7,19 +7,13 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="AskPermitions">Create New</a>
+    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DriveId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccessToken)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RefreshToken)
+                @Html.DisplayNameFor(model => model.Username)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Quota_Total)
@@ -38,15 +32,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DriveId)
-                </td>
-                <td>
-                    @*@Html.DisplayFor(modelItem => item.AccessToken)*@
-                    Grande demais
-                </td>
-                <td>
-                    @*@Html.DisplayFor(modelItem => item.RefreshToken)*@
-                    Grande demais
+                    @Html.DisplayFor(modelItem => item.Username)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Quota_Total)
@@ -72,7 +58,7 @@
         document.addEventListener('DOMContentLoaded', function(){
             // Notificação 'Noty'
             new Noty({
-                type: 'success',
+                type: '@ViewData["Type"]',
                 layout: 'bottomRight',
                 theme: 'bootstrap-v4',
                 text: '@ViewData["Feedback"]',
