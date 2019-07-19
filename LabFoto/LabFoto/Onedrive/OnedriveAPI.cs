@@ -301,7 +301,7 @@ namespace LabFoto.Onedrive
                 }
                 #endregion
 
-                #region Adicionar foto à BD
+                #region Identificar as informações do ficheiro na onedrive
                 if (result != null && conta != null)
                 {
                     string itemId = "", itemName = "";
