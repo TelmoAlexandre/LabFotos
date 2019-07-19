@@ -39,7 +39,7 @@ namespace LabFoto.Onedrive
                     {
                         #region Refrescar token
                         // Verificar se o token está válido
-                        await RefreshTokenAsync(photo.ContaOnedrive); 
+                        await RefreshTokenAsync(photo.ContaOnedrive);
                         #endregion
 
                         #region Preparar pedido HTTP
@@ -49,7 +49,7 @@ namespace LabFoto.Onedrive
                             "/items/" + photo.ItemId +
                             "?$expand=thumbnails";
                         var request = new HttpRequestMessage(HttpMethod.Get, url);
-                        request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken); 
+                        request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
                         #endregion
 
                         // Fazer o pedido e obter resposta
@@ -70,7 +70,7 @@ namespace LabFoto.Onedrive
                             photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
 
                             _context.Update(photo);
-                        } 
+                        }
                         #endregion
                     }
                 }
@@ -107,7 +107,7 @@ namespace LabFoto.Onedrive
                         "&grant_type=refresh_token" +
                         "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
                         Encoding.UTF8, "application/x-www-form-urlencoded"
-                    ); 
+                    );
                     #endregion
 
                     // Fazer o pedido e obter resposta
@@ -131,7 +131,7 @@ namespace LabFoto.Onedrive
                     else
                     {
                         return false;
-                    } 
+                    }
                     #endregion
                 }
                 catch (Exception)
@@ -159,7 +159,7 @@ namespace LabFoto.Onedrive
                     "&grant_type=authorization_code" +
                     "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
                     Encoding.UTF8, "application/x-www-form-urlencoded"
-                ); 
+                );
                 #endregion
 
                 // Fazer o pedido e obter resposta
@@ -171,7 +171,7 @@ namespace LabFoto.Onedrive
                 {
                     // Converter a resposta para um objeto json
                     return JObject.Parse(await response.Content.ReadAsStringAsync());
-                } 
+                }
                 #endregion
             }
             catch (Exception)
@@ -189,7 +189,7 @@ namespace LabFoto.Onedrive
                 #region Preparar pedido HTTP
                 // Inicializar o pedido com o token de autenticação
                 var request = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/drives/");
-                request.Headers.Add("Authorization", "Bearer " + token); 
+                request.Headers.Add("Authorization", "Bearer " + token);
                 #endregion
 
                 // Fazer o pedido
@@ -201,7 +201,7 @@ namespace LabFoto.Onedrive
                 {
                     // Converter a resposta para um objeto json
                     return JObject.Parse(await response.Content.ReadAsStringAsync());
-                } 
+                }
                 #endregion
             }
             catch (Exception)
@@ -278,7 +278,8 @@ namespace LabFoto.Onedrive
                 if (uploadUrl == "Error")
                 {
                     // Não foi possível fazer a sessão de upload
-                    return new UploadedPhotoModel {
+                    return new UploadedPhotoModel
+                    {
                         Success = false,
                         ErrorDescription = "Não foi possível criar sessão de upload."
                     };
@@ -299,8 +300,8 @@ namespace LabFoto.Onedrive
                     position += bytes.Length;
                 }
                 #endregion
-                
-                #region Adicionar foto à BD e apagar do disco
+
+                #region Adicionar foto à BD
                 if (result != null && conta != null)
                 {
                     string itemId = "", itemName = "";
@@ -312,9 +313,12 @@ namespace LabFoto.Onedrive
                         itemId = (string)content["id"]; // Recolher o id da imagem na onedrive
                         itemName = (string)content["name"]; // Recolher o nome da imagem na onedrive
 
-                        // Adicionar à BD
                         if (!String.IsNullOrEmpty(itemId) && !String.IsNullOrEmpty(itemName))
                         {
+                            #region Atualizar o espaço da conta
+                            await UpdateDriveInfoAsync(conta);
+                            #endregion
+
                             return new UploadedPhotoModel
                             {
                                 ItemId = itemId,
@@ -344,7 +348,7 @@ namespace LabFoto.Onedrive
         public ContaOnedrive GetAccountToUpload(long fileSize)
         {
             // Seleciona um conta com espaço sufeciente para o triplo do tamanho do ficheiro, como salvaguarda
-            return _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining)*3 > fileSize).FirstOrDefault();
+            return _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).FirstOrDefault();
         }
 
         /// <summary>
@@ -360,7 +364,7 @@ namespace LabFoto.Onedrive
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Add("Authorization", "Bearer " + conta.AccessToken);
             // Especificar que em caso de nomes iguais, a onedrive altera o nome e carrega a imagem na mesma
-            request.Content = new StringContent("{\"item\":{\"@microsoft.graph.conflictBehavior\": \"rename\"}}", Encoding.UTF8, "application/json"); 
+            request.Content = new StringContent("{\"item\":{\"@microsoft.graph.conflictBehavior\": \"rename\"}}", Encoding.UTF8, "application/json");
             #endregion
 
             // Fazer o pedido e obter resposta
@@ -378,7 +382,7 @@ namespace LabFoto.Onedrive
             else
             {
                 return "Error";
-            } 
+            }
             #endregion
         }
 
@@ -415,7 +419,7 @@ namespace LabFoto.Onedrive
             catch (Exception ex)
             {
                 throw;
-            } 
+            }
             #endregion
 
             return await request.GetResponseAsync();
@@ -461,5 +465,50 @@ namespace LabFoto.Onedrive
                 }
             }
         }
+
+        #region AuxMethods
+        private async Task<bool> UpdateDriveInfoAsync(ContaOnedrive conta)
+        {
+            if (IsTokenValid(conta))
+            {
+                try
+                {
+                    // Faz o pedido HTTP.GET para pedir as informações da Onedrive
+                    // Para que estas possam ser associadas ao objeto 'conta'
+                    JObject driveInfo = await GetDriveInfoAsync(conta.AccessToken);
+
+                    // Transformar o array num array de objetos
+                    JObject[] values = driveInfo["value"].Select(s => (JObject)s).ToArray();
+
+                    JObject quota = (JObject)values[0]["quota"];
+                    string quota_Total = (string)quota["total"];
+                    string quota_Used = (string)quota["used"];
+                    string quota_Remaining = (string)quota["remaining"];
+
+                    // Atualizar a conta com as informações recolhidas da API da Onedrive
+                    conta.Quota_Remaining = quota_Remaining;
+                    conta.Quota_Total = quota_Total;
+                    conta.Quota_Used = quota_Used;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+                try
+                {
+                    _context.Update(conta);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        } 
+        #endregion
     }
 }

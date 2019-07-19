@@ -187,7 +187,7 @@ namespace LabFoto.Controllers
             {
                 // Feeback ao utilizador - Vai ser redirecionado para o Index
                 TempData["Feedback"] = "Conta Onedrive adiconada com sucesso.";
-                TempData["Type"] = "sucess";
+                TempData["Type"] = "success";
             }
             else
             {
