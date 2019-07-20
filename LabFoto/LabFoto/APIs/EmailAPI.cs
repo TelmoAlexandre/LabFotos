@@ -72,8 +72,8 @@ namespace LabFoto.Onedrive
             SendToAdmins("Notificação Erro - " + title,
                 "<h2 style='color:red;'>" + title + "</h2>" +
                 "</br>" +
-                "<p>Classe:" + classFile + "</p>" +
-                "<p>Método:" + method + "</p>" +
+                "<p>Classe: " + classFile + "</p>" +
+                "<p>Método: " + method + "</p>" +
                 "</br>" +
                 "<p style='font-weight: bold;'>Detalhes: " + details + "</p>");
         }
