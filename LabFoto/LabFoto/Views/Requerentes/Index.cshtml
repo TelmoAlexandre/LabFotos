@@ -79,7 +79,7 @@
 
         editarRequerenteIndex = (divEdicao, divRequerente, idRequerente) => {
             $(`#${divRequerente}`).shape('flip back');
-            requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditIndex/${idRequerente}`);
+            requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditIndex/${idRequerente}`);
         };
 
 

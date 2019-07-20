@@ -172,11 +172,11 @@
             // As dropdowns dos tipos e dos serviços solicitados são carregadas para um div de backup
             // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
             // recuperar o html dos divs de backup
-            $("#tiposBackup").load("/Servicos/TiposAjax", function () {
+            $("#tiposBackup").load(siteUrl + "/Servicos/TiposAjax", function () {
                 $("#searchTiposCB").html($("#tiposBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
-            $("#servSolicBackup").load("/Servicos/ServSolicAjax", function () {
+            $("#servSolicBackup").load(siteUrl + "/Servicos/ServSolicAjax", function () {
                 $("#searchServSolicCB").html($("#servSolicBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });

@@ -4,40 +4,40 @@
     ViewData["Title"] = "Details";
 }
 
-    <div class="mb-4">
-        <form method="post" enctype="multipart/form-data" asp-controller="Galerias" asp-action="UploadFiles" asp-route-galeriaId="@Model.ID">
-            <div class="ui attached segment">
-                <p class="ui blue ribbon label mb-3">Galeria</p>
-                <dl class="row">
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Nome)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Nome)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.DataDeCriacao)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.DataDeCriacao)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Servico)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Servico.Nome)
-                    </dd>
-                </dl>
-            </div>
-            <div class="ui two bottom attached buttons">
-                <label for="file-upload" class="ui primary button">
-                    <i class="plus icon"></i> Selecionar fotografias
-                </label>
-                <input id="file-upload" type="file" name="files" multiple hidden>
-                <button type="submit" class="ui green button"><i class="cloud upload icon"></i> Carregar</button>
-            </div>
-        </form>
-    </div>
+<div class="mb-4">
+    <form method="post" enctype="multipart/form-data" asp-controller="Galerias" asp-action="UploadFiles" asp-route-galeriaId="@Model.ID">
+        <div class="ui attached segment">
+            <p class="ui blue ribbon label mb-3">Galeria</p>
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Nome)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Nome)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.DataDeCriacao)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.DataDeCriacao)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Servico)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Servico.Nome)
+                </dd>
+            </dl>
+        </div>
+        <div class="ui two bottom attached buttons">
+            <label for="file-upload" class="ui primary button">
+                <i class="plus icon"></i> Selecionar fotografias
+            </label>
+            <input id="file-upload" type="file" name="files" multiple hidden>
+            <button type="submit" class="ui green button"><i class="cloud upload icon"></i> Carregar</button>
+        </div>
+    </form>
+</div>
 
 <button onclick="downloadSelected()" class="ui button">download</button>
 <button onclick="selectAllCB()" class="ui button">Selecionar todas</button>
@@ -123,7 +123,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "/Galerias/Thumbnails/@Model.ID",
+                url: siteUrl + "/Galerias/Thumbnails/@Model.ID",
                 success: function (resp) {
                     $("#thumbnails").html(resp);
                     // Iniciar a galeria do PhotoSwipe

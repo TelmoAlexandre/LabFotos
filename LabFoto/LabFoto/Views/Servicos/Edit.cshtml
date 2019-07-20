@@ -180,10 +180,10 @@
         jQuery(document).ready(function ($) {
             $(`#tiposCheckboxes`).html(loading);
             $(`#servSolicCheckboxes`).html(loading);
-            $(`#tiposCheckboxes`).load(`/Servicos/TiposAjax/@Model.Servico.ID`, function () {
+            $(`#tiposCheckboxes`).load(siteUrl + `/Servicos/TiposAjax/@Model.Servico.ID`, function () {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
-            $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/@Model.Servico.ID`, function () {
+            $(`#servSolicCheckboxes`).load(siteUrl + `/Servicos/ServSolicAjax/@Model.Servico.ID`, function () {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
         });

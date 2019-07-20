@@ -142,18 +142,18 @@
             // A dropdown dos metadados são carregadas para um div de backup
             // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
             // recuperar o html dos divs de backup
-            $("#metadadosBackup").load("/Galerias/MetadadosDropdown", function () {
+            $("#metadadosBackup").load(siteUrl + "/Galerias/MetadadosDropdown", function () {
                 $("#metadadosCB").html($("#metadadosBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
-            $("#servicosBackup").load("/Galerias/ServicosDropdown", function () {
+            $("#servicosBackup").load(siteUrl + "/Galerias/ServicosDropdown", function () {
                 $("#servicosDropDown").html($("#servicosBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
 
             $.ajax({
                 type: "GET",
-                url: "/Galerias/InitialGaleria",
+                url: siteUrl + "/Galerias/InitialGaleria",
                 success: function (resp) {
                     $("#cardsGalerias").html(resp);
                 },

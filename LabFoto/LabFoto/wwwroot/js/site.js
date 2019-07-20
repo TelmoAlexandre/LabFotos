@@ -2,6 +2,7 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 var expandedAccordion = false;
+var siteUrl = "https://localhost:44354";
 
 jQuery(document).ready(function ($) {
 
@@ -94,7 +95,7 @@ function initModalEvents() {
         servicoFormsLoadAjax(
             'newRequerenteForm',
             'modalNovoRequerente',
-            '/Requerentes/CreateFormAjax'
+            siteUrl + '/Requerentes/CreateFormAjax'
         );
     });
 
@@ -106,7 +107,7 @@ function initModalEvents() {
         servicoFormsLoadAjax(
             'divFormNovoTipo',
             'modalNovoTipo',
-            '/Tipos/Create'
+            siteUrl + '/Tipos/Create'
         );
     });
     // Modal do novo tipo com fetch do formulário em Ajax
@@ -116,21 +117,21 @@ function initModalEvents() {
         servicoFormsLoadAjax(
             'divFormNovoServSolic',
             'modalNovoServSolic',
-            '/ServicosSolicitados/Create'
+            siteUrl + '/ServicosSolicitados/Create'
         );
     });
 
     // Resposta do POST do formulário do novo requrente
     novoRequerente = (resp) =>
-        handleControllerResponse(resp, 'requerentesDropbox', 'modalNovoRequerente', '/Servicos/RequerentesAjax');
+        handleControllerResponse(resp, 'requerentesDropbox', 'modalNovoRequerente', siteUrl + '/Servicos/RequerentesAjax');
 
     // Resposta do POST do formulário do novo tipo
     novoTipo = (resp) =>
-        handleControllerResponse(resp, 'tiposCheckboxes', 'modalNovoTipo', '/Servicos/TiposAjax');
+        handleControllerResponse(resp, 'tiposCheckboxes', 'modalNovoTipo', siteUrl + '/Servicos/TiposAjax');
 
     // Resposta do POST do formulário do novo tipo
     novoServSolic = (resp) =>
-        handleControllerResponse(resp, 'servSolicCheckboxes', 'modalNovoServSolic', '/Servicos/ServSolicAjax');
+        handleControllerResponse(resp, 'servSolicCheckboxes', 'modalNovoServSolic', siteUrl + '/Servicos/ServSolicAjax');
 }
 
 flipCard = (shapeId, transition) => {
@@ -177,7 +178,7 @@ modalCancel = (id) => {
 servicoRequerenteDetails = (divModalDetails, requerenteId) => {
     $(`#${divModalDetails}`).modal('show');
     $(`#${divModalDetails}`).html(getLoadingBarHtml);
-    $(`#${divModalDetails}`).load(`/Requerentes/DetailsAjax/${requerenteId}`, function () {
+    $(`#${divModalDetails}`).load(siteUrl + `/Requerentes/DetailsAjax/${requerenteId}`, function () {
         $('[data-toggle="tooltip"]').tooltip();
     });
 };
@@ -186,7 +187,7 @@ servicoRequerenteDetails = (divModalDetails, requerenteId) => {
 createTipoOnServicosEdit = (idServico) => {
     $.ajax({
         type: "POST",
-        url: "/Tipos/Create",
+        url: siteUrl + "/Tipos/Create",
         data: {
             "Tipo.Nome": $("#Tipo_Nome").val(),
             "__RequestVerificationToken": $("#modalNovoTipo input[name='__RequestVerificationToken']").val(),
@@ -194,7 +195,7 @@ createTipoOnServicosEdit = (idServico) => {
         },
         success: function (resp) {
             if (resp.success) {
-                $(`#tiposCheckboxes`).load(`/Servicos/TiposAjax/${idServico}`, function () {
+                $(`#tiposCheckboxes`).load(siteUrl + `/Servicos/TiposAjax/${idServico}`, function () {
                     $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
                 });
                 $(`#modalNovoTipo`).modal('hide');
@@ -217,7 +218,7 @@ createServSolicOnServicosEdit = (idServico) => {
 
     $.ajax({
         type: "POST",
-        url: "/ServicosSolicitados/Create",
+        url: siteUrl + "/ServicosSolicitados/Create",
         data: {
             "ServicoSolicitado.Nome": $("#ServicoSolicitado_Nome").val(),
             "__RequestVerificationToken": $("#divFormNovoServSolic input[name='__RequestVerificationToken']").val(),
@@ -226,7 +227,7 @@ createServSolicOnServicosEdit = (idServico) => {
         },
         success: function (resp) {
             if (resp.success) {
-                $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/${idServico}`, function () {
+                $(`#servSolicCheckboxes`).load(siteUrl + `/Servicos/ServSolicAjax/${idServico}`, function () {
                     $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
                 });
                 $(`#modalNovoServSolic`).modal('hide'); // Esconder o modal
@@ -250,7 +251,7 @@ requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, req
 
     $.ajax({
         type: "POST",
-        url: `/Requerentes/EditIndex/${requerenteId}`,
+        url: siteUrl + `/Requerentes/EditIndex/${requerenteId}`,
         data: {
             "Nome": $(`#${formEditId} #Nome`).val(),
             "Email": $(`#${formEditId} #Email`).val(),
@@ -263,7 +264,7 @@ requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, req
             if (resp.success) {
                 $(`#${divDetailsId}`).html(getLoadingBarHtml);
                 $(`#${divRequerente}`).shape('flip over');
-                $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjax/${requerenteId}`, function () {
+                $(`#${divDetailsId}`).load(siteUrl + `/Requerentes/DetailsIndexAjax/${requerenteId}`, function () {
                     $('[data-toggle="tooltip"]').tooltip();
                 });
                 // Notificação 'Noty'
@@ -285,7 +286,7 @@ requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, r
 
     $.ajax({
         type: "POST",
-        url: `/Requerentes/EditDetails/${requerenteId}`,
+        url: siteUrl + `/Requerentes/EditDetails/${requerenteId}`,
         data: {
             "Nome": $(`#${formEditId} #Nome`).val(),
             "Email": $(`#${formEditId} #Email`).val(),
@@ -298,7 +299,7 @@ requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, r
             if (resp.success) {
                 $(`#${divDetailsId}`).html(getLoadingBarHtml);
                 $(`#${divRequerente}`).shape('flip over');
-                $(`#${divDetailsId}`).load(`/Requerentes/DetailsIndexAjaxDetails/${requerenteId}`, function () {
+                $(`#${divDetailsId}`).load(siteUrl + `/Requerentes/DetailsIndexAjaxDetails/${requerenteId}`, function () {
                     $('[data-toggle="tooltip"]').tooltip();
                 });
                 // Notificação 'Noty'
@@ -322,7 +323,7 @@ showEditIndex = (tipoId, controllerName) => {
     $(`#indexDetails_${tipoId} .ui.button`).addClass('loading'); // Mostra loading no butão editar
 
     // Pede o form. Em caso de sucesso, corre a função
-    $(`#indexEdit_${tipoId}`).load(`/${controllerName}/Edit/${tipoId}`, function () {
+    $(`#indexEdit_${tipoId}`).load(siteUrl + `/${controllerName}/Edit/${tipoId}`, function () {
         $(`#indexDetails_${tipoId}`).slideToggle(); // Esconde o details
         $(`#indexDetails_${tipoId} .ui.button`).removeClass('loading'); // Remove loading no botão editar
         $(`#indexEdit_${tipoId}`).slideToggle(); // Mostra o form editar
@@ -355,7 +356,7 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
 
     $.ajax({
         type: "POST",
-        url: `/${controllerName}/Edit/${id}`,
+        url: siteUrl + `/${controllerName}/Edit/${id}`,
         data: data,
         success: function (resp) {
             $(`#editFormTiposIndex_${id} .saveButton`).removeClass('loading'); // Remove o loading no botão guardar
@@ -363,7 +364,7 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
             if (resp.success) { // Caso seja editado com sucesso
 
                 // Carregar o details pois este foi alterado.
-                $(`#indexDetails_${id}`).load(`/${controllerName}/Details/${id}`, function () {
+                $(`#indexDetails_${id}`).load(siteUrl + `/${controllerName}/Details/${id}`, function () {
 
                     // Esconder o edit e mostrar o details
                     $(`#indexEdit_${id}`).slideToggle();

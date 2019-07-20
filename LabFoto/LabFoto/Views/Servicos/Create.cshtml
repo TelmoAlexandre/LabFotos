@@ -136,10 +136,10 @@
         jQuery(document).ready(function ($) {
             $(`#tiposCheckboxes`).html(loading);
             $(`#servSolicCheckboxes`).html(loading);
-            $(`#tiposCheckboxes`).load(`/Servicos/TiposAjax/`, function () {
+            $(`#tiposCheckboxes`).load(siteUrl + `/Servicos/TiposAjax/`, function () {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
-            $(`#servSolicCheckboxes`).load(`/Servicos/ServSolicAjax/`, function () {
+            $(`#servSolicCheckboxes`).load(siteUrl + `/Servicos/ServSolicAjax/`, function () {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
         });

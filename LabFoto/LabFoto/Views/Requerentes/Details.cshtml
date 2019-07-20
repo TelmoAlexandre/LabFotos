@@ -1,5 +1,8 @@
 ﻿@model LabFoto.Models.Tables.Requerente
 
+@using Microsoft.Extensions.Options;
+@inject IOptions<AppSettings> Settings
+
 @{
     ViewData["Title"] = "Detalhes";
 }
@@ -91,19 +94,19 @@
 @section scripts
 {
     <script>
-        
+
         editarRequerenteDetails = (divEdicao, divRequerente, idRequerente) => {
             flipCard(`${divRequerente}`, 'flip back');
             // $(`#${divRequerente}`).shape('flip back');
-            requerenteFormsLoadAjax(`${divEdicao}`, `/Requerentes/EditDetails/${idRequerente}`);
+            requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditDetails/${idRequerente}`);
         };
-        
+
         // Detalhes do serviço com o id que recebe por parametro
         // e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
         requerenteServicoDetails = (divId, servicoId) => {
             $(`#${divId}`).html($(`#loadingServico`));
             $(`#loadingServico`).removeAttr('hidden');
-            $(`#${divId}`).load(`/Servicos/DetailsAjax/${servicoId}`);
+            $(`#${divId}`).load(siteUrl + `/Servicos/DetailsAjax/${servicoId}`);
         };
 
     </script>

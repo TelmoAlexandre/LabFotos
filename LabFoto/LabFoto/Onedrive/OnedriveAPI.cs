@@ -31,7 +31,7 @@ namespace LabFoto.Onedrive
             // Este cliente vai ser utilizado para envio e recepção pedidos Http
             _client = _clientFactory.CreateClient();
 
-            _redirectUrl = _AppSettings.SiteUrl + "ContasOnedrive/InitAccount";
+            _redirectUrl = _AppSettings.SiteUrl + "/ContasOnedrive/InitAccount";
         } 
 
         #region Thumbnails
