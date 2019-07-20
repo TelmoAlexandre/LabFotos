@@ -20,18 +20,20 @@ namespace LabFoto.Onedrive
         private readonly IHttpClientFactory _clientFactory;
         private readonly HttpClient _client;
         private readonly string _redirectUrl = "";
-        private readonly AppSettings _AppSettings;
+        private readonly AppSettings _appSettings;
+        private readonly Email _email;
 
         public OnedriveAPI(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings)
         {
             _context = context;
             _clientFactory = clientFactory;
-            _AppSettings = settings.Value;
+            _appSettings = settings.Value;
+            _email = new Email(settings);
 
             // Este cliente vai ser utilizado para envio e recepção pedidos Http
             _client = _clientFactory.CreateClient();
 
-            _redirectUrl = _AppSettings.SiteUrl + "/ContasOnedrive/InitAccount";
+            _redirectUrl = _appSettings.SiteUrl + "/ContasOnedrive/InitAccount";
         } 
 
         #region Thumbnails
@@ -71,7 +73,7 @@ namespace LabFoto.Onedrive
                             photo.DownloadUrl = (string)content["@microsoft.graph.downloadUrl"];
 
                             JObject thumbnails = (JObject)content["thumbnails"][0];
-                            photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
+                            photo.Thumbnail_Large = (string)thumbnails["ddd"]["url"];
                             photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
                             photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
 
@@ -84,8 +86,9 @@ namespace LabFoto.Onedrive
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _email.NotifyError("Erro ao refrescar thumbnails", "OnedriveAPI", "RefreshPhotoUrlsAsync", e.Message);
                 return false;
             }
         } 
@@ -262,7 +265,7 @@ namespace LabFoto.Onedrive
             {
                 long position = 0;
                 long totalLength = stream.Length;
-                int uploadFragmentSizeInMB = _AppSettings.UploadFragmentSizeInMB;
+                int uploadFragmentSizeInMB = _appSettings.UploadFragmentSizeInMB;
                 int length = uploadFragmentSizeInMB * 1024 * 1024;
 
                 #region Encontrar conta e refrescar token
