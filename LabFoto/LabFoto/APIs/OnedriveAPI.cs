@@ -34,9 +34,14 @@ namespace LabFoto.Onedrive
             _client = _clientFactory.CreateClient();
 
             _redirectUrl = _appSettings.SiteUrl + "/ContasOnedrive/InitAccount";
-        } 
+        }
 
         #region Thumbnails
+        /// <summary>
+        /// Refresca as thumbnails de uma lista de fotos.
+        /// </summary>
+        /// <param name="photos">Lista de fotos a serem refrecadas.</param>
+        /// <returns></returns>
         public async Task<bool> RefreshPhotoUrlsAsync(List<Fotografia> photos)
         {
             try
@@ -73,7 +78,7 @@ namespace LabFoto.Onedrive
                             photo.DownloadUrl = (string)content["@microsoft.graph.downloadUrl"];
 
                             JObject thumbnails = (JObject)content["thumbnails"][0];
-                            photo.Thumbnail_Large = (string)thumbnails["ddd"]["url"];
+                            photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
                             photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
                             photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
 
@@ -88,54 +93,90 @@ namespace LabFoto.Onedrive
             }
             catch (Exception e)
             {
-                _email.NotifyError("Erro ao refrescar thumbnails", "OnedriveAPI", "RefreshPhotoUrlsAsync", e.Message);
+                _email.NotifyError("Erro ao refrescar thumbnails.", "OnedriveAPI", "RefreshPhotoUrlsAsync", e.Message);
                 return false;
             }
-        } 
+        }
         #endregion
 
         #region Token
-        // Verifica se o token de uma conta já expirou
+        /// <summary>
+        /// Verifica se o token de uma conta já expirou
+        /// </summary>
+        /// <param name="conta"></param>
+        /// <returns></returns>
         private bool IsTokenValid(ContaOnedrive conta)
         {
             return ((DateTime.Now - conta.TokenDate).TotalSeconds < 3400);
         }
 
+        /// <summary>
+        /// Refresca o token de uma conta caso este esteja expirado.
+        /// </summary>
+        /// <param name="conta">Conta Onedrive.</param>
+        /// <returns></returns>
         private async Task<bool> RefreshTokenAsync(ContaOnedrive conta)
         {
             if (!IsTokenValid(conta))
             {
+                #region Preparar pedido HTTP
+                string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Content = new StringContent(
+                    "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
+                    "&scope=offline_access+files.read+files.read.all" +
+                    "&refresh_token=" + conta.RefreshToken +
+                    "&redirect_uri=" + _redirectUrl +
+                    "&grant_type=refresh_token" +
+                    "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
+                    Encoding.UTF8, "application/x-www-form-urlencoded"
+                );
+                #endregion
+
+                #region Fazer o pedido HTTP
+                HttpResponseMessage response = null;
                 try
                 {
-                    #region Preparar pedido HTTP
-                    string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
-                    var request = new HttpRequestMessage(HttpMethod.Get, url);
-                    request.Content = new StringContent(
-                        "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
-                        "&scope=offline_access+files.read+files.read.all" +
-                        "&refresh_token=" + conta.RefreshToken +
-                        "&redirect_uri=" + _redirectUrl +
-                        "&grant_type=refresh_token" +
-                        "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
-                        Encoding.UTF8, "application/x-www-form-urlencoded"
-                    );
-                    #endregion
-
                     // Fazer o pedido e obter resposta
-                    var response = await _client.SendAsync(request);
+                    response = await _client.SendAsync(request);
+                }
+                catch (Exception e)
+                {
+                    _email.NotifyError("Erro no pedido HTTP de um token.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
+                    return false;
+                } 
+                #endregion
 
-                    #region Tratar resposta
-                    if (response.IsSuccessStatusCode)
+                #region Tratar resposta
+                if (response != null)
+                {
+                    if (response != null && response.IsSuccessStatusCode)
                     {
-                        JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
+                        try
+                        {
+                            JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                        // Atualizar a data do token
-                        conta.TokenDate = DateTime.Now;
-                        conta.AccessToken = (string)content["access_token"];
-                        conta.RefreshToken = (string)content["refresh_token"];
+                            // Atualizar a data do token
+                            conta.TokenDate = DateTime.Now;
+                            conta.AccessToken = (string)content["access_token"];
+                            conta.RefreshToken = (string)content["refresh_token"];
+                        }
+                        catch (Exception e)
+                        {
+                            _email.NotifyError("Erro ao interpretar o JSON da resposta.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
+                            return false;
+                        }
 
-                        _context.Update(conta);
-                        await _context.SaveChangesAsync();
+                        try
+                        {
+                            _context.Update(conta);
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (Exception e)
+                        {
+                            _email.NotifyError("Erro ao dar update à conta Onedrive localmente.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
+                            return false;
+                        }
 
                         return true;
                     }
@@ -143,87 +184,128 @@ namespace LabFoto.Onedrive
                     {
                         return false;
                     }
-                    #endregion
                 }
-                catch (Exception)
+                else
                 {
                     return false;
                 }
+                #endregion
             }
 
             return true;
         }
 
+        /// <summary>
+        /// Pedir o primeiro token da conta via o Código returnado pelos servidores da Microsoft.
+        /// </summary>
+        /// <param name="code">Código retornado pela Microsoft.</param>
+        /// <returns></returns>
         public async Task<JObject> GetInitialTokenAsync(string code)
         {
+
+            #region Preparar pedido HTTP
+            // Inicializar o pedido com o codigo recebido quando foram pedidas as permissões ao utilizador
+            string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Content = new StringContent(
+                "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
+                "&scope=offline_access+files.read+files.read.all" +
+                "&code=" + code +
+                "&redirect_uri=" + _redirectUrl +
+                "&grant_type=authorization_code" +
+                "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
+                Encoding.UTF8, "application/x-www-form-urlencoded"
+            );
+            #endregion
+
+            #region Fazer o pedido HTTP
+            HttpResponseMessage response = null; ;
             try
             {
-                #region Preparar pedido HTTP
-                // Inicializar o pedido com o codigo recebido quando foram pedidas as permissões ao utilizador
-                string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                request.Content = new StringContent(
-                    "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
-                    "&scope=offline_access+files.read+files.read.all" +
-                    "&code=" + code +
-                    "&redirect_uri=" + _redirectUrl +
-                    "&grant_type=authorization_code" +
-                    "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
-                    Encoding.UTF8, "application/x-www-form-urlencoded"
-                );
-                #endregion
-
                 // Fazer o pedido e obter resposta
-                var response = await _client.SendAsync(request);
+                response = await _client.SendAsync(request);
+            }
+            catch (Exception e)
+            {
+                _email.NotifyError("Erro no pedido HTTP de um token.", "OnedriveAPI", "GetInitialTokenAsync", e.Message);
+                return null;
+            } 
+            #endregion
 
-                #region Tratar resposta
-                // Caso retorne OK 200
+            #region Tratar resposta
+            // Caso retorne OK 200
+            if (response != null)
+            {
                 if (response.IsSuccessStatusCode)
                 {
                     // Converter a resposta para um objeto json
-                    return JObject.Parse(await response.Content.ReadAsStringAsync());
-                }
-                #endregion
+                    try
+                    {
+                        return JObject.Parse(await response.Content.ReadAsStringAsync());
+                    }
+                    catch (Exception e)
+                    {
+                        _email.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetInitialTokenAsync", e.Message);
+                        return null;
+                    }
+                } 
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            #endregion
 
             return null;
         }
         #endregion
 
         #region DriveInfo
+        /// <summary>
+        /// Recolhe as informações necessárias da conta Onedrive para futuros pedidos.
+        /// </summary>
+        /// <param name="token">Token da conta Onedrive.</param>
+        /// <returns></returns>
         public async Task<JObject> GetDriveInfoAsync(string token)
         {
+            #region Preparar pedido HTTP
+            // Inicializar o pedido com o token de autenticação
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/drives/");
+            request.Headers.Add("Authorization", "Bearer " + token);
+            #endregion
+
+            #region Fazer o pedido HTTP
+            HttpResponseMessage response = null;
             try
             {
-                #region Preparar pedido HTTP
-                // Inicializar o pedido com o token de autenticação
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/drives/");
-                request.Headers.Add("Authorization", "Bearer " + token);
-                #endregion
-
                 // Fazer o pedido
-                var response = await _client.SendAsync(request);
+                response = await _client.SendAsync(request);
+            }
+            catch (Exception e)
+            {
+                _email.NotifyError("Erro no pedido HTTP das informações da drive.", "OnedriveAPI", "GetDriveInfoAsync", e.Message);
+                return null;
+            } 
+            #endregion
 
-                #region Interpretar resposta
-                // Caso retorne OK 2xx
+            #region Interpretar resposta
+            // Caso retorne OK 2xx
+            if (response != null)
+            {
                 if (response.IsSuccessStatusCode)
                 {
                     // Converter a resposta para um objeto json
-                    return JObject.Parse(await response.Content.ReadAsStringAsync());
-                }
-                #endregion
+                    try
+                    {
+                        return JObject.Parse(await response.Content.ReadAsStringAsync());
+                    }
+                    catch (Exception e)
+                    {
+                        _email.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetDriveInfoAsync", e.Message);
+                        return null;
+                    }
+                } 
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            #endregion
 
             return null;
-        } 
+        }
         #endregion
 
         #region Permissions
@@ -245,7 +327,7 @@ namespace LabFoto.Onedrive
                 "&state=" + state;
 
             return permissionsUrl;
-        } 
+        }
         #endregion
 
         #region Upload
@@ -274,8 +356,6 @@ namespace LabFoto.Onedrive
                 // Se a conta retornar null, poderá ser porque já não existem contas com espaço
                 if (conta == null)
                 {
-                    // Verificar se as contas têm espaço
-                    // Enviar e-mail ao administrador
                     return new UploadedPhotoModel
                     {
                         Success = false,
@@ -298,7 +378,7 @@ namespace LabFoto.Onedrive
                 }
                 #endregion
 
-                #region upload the file fragment
+                #region Upload do fragmento do ficheiro
                 while (true)
                 {
                     byte[] bytes = await ReadFileFragmentAsync(stream, position, length);
@@ -319,11 +399,23 @@ namespace LabFoto.Onedrive
                     string itemId = "", itemName = "";
                     using (Stream dataStream = result.GetResponseStream()) // Recolher a stream que contem o conteudo 
                     {
-                        StreamReader reader = new StreamReader(dataStream); // Abrir a stream
-                        string responseFromServer = reader.ReadToEnd(); // Ler o conteudo  
-                        JObject content = JObject.Parse(responseFromServer); // Converter a resposta para um objeto json
-                        itemId = (string)content["id"]; // Recolher o id da imagem na onedrive
-                        itemName = (string)content["name"]; // Recolher o nome da imagem na onedrive
+                        try
+                        {
+                            StreamReader reader = new StreamReader(dataStream); // Abrir a stream
+                            string responseFromServer = reader.ReadToEnd(); // Ler o conteudo  
+                            JObject content = JObject.Parse(responseFromServer); // Converter a resposta para um objeto json
+                            itemId = (string)content["id"]; // Recolher o id da imagem na onedrive
+                            itemName = (string)content["name"]; // Recolher o nome da imagem na onedrive
+                        }
+                        catch (Exception e)
+                        {
+                            _email.NotifyError("Erro ao recolher as informações do ficheiro que foi feito o upload.", "OnedriveAPI", "UploadFileAsync", e.Message);
+                            return new UploadedPhotoModel
+                            {
+                                Success = false,
+                                ErrorDescription = "Não foi possível fazer upload do ficheiro."
+                            };
+                        }
 
                         if (!String.IsNullOrEmpty(itemId) && !String.IsNullOrEmpty(itemName))
                         {
@@ -359,8 +451,17 @@ namespace LabFoto.Onedrive
         /// <returns>Conta Onedrive</returns>
         public ContaOnedrive GetAccountToUpload(long fileSize)
         {
-            // Seleciona um conta com espaço sufeciente para o triplo do tamanho do ficheiro, como salvaguarda
-            return _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).FirstOrDefault();
+            try
+            {
+                // Seleciona um conta com espaço sufeciente para o triplo do tamanho do ficheiro, como salvaguarda
+                return _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                _email.NotifyError("Erro ao tentar encontrar um conta com espaço livre.", "OnedriveAPI", "GetAccountToUpload", e.Message);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -379,22 +480,40 @@ namespace LabFoto.Onedrive
             request.Content = new StringContent("{\"item\":{\"@microsoft.graph.conflictBehavior\": \"rename\"}}", Encoding.UTF8, "application/json");
             #endregion
 
-            // Fazer o pedido e obter resposta
-            var response = await _client.SendAsync(request);
+            #region Fazer pedido HTTP
+            HttpResponseMessage response = null;
+            try
+            {
+                // Fazer o pedido e obter resposta
+                response = await _client.SendAsync(request);
+            }
+            catch (Exception e)
+            {
+                _email.NotifyError("Erro ao enviar pedido HTTP.", "OnedriveAPI", "GetUploadSessionAsync", e.Message);
+            }
+            #endregion
 
             #region Tratar resposta ao pedido
             // Caso retorne OK 2xx
-            if (response.IsSuccessStatusCode)
+            if (response != null)
             {
-                // Converter a resposta para um objeto json
-                JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
+                if (response.IsSuccessStatusCode)
+                {
+                    try
+                    {
+                        // Converter a resposta para um objeto json
+                        JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                return (string)content["uploadUrl"];
+                        return (string)content["uploadUrl"];
+                    }
+                    catch (Exception e)
+                    {
+                        _email.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetUploadSessionAsync", e.Message);
+                    }
+                }
             }
-            else
-            {
-                return "Error";
-            }
+
+            return "Error";
             #endregion
         }
 
@@ -428,9 +547,9 @@ namespace LabFoto.Onedrive
                     dataStream.Close();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                _email.NotifyError("Erro ao preparar os dados fragmentados do ficheiro para envio.", "OnedriveAPI", "UploadFileFragmentAsync", e.Message);
             }
             #endregion
 
@@ -472,15 +591,20 @@ namespace LabFoto.Onedrive
                 {
                     File.Delete(path);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    throw;
+                    _email.NotifyError("Erro ao tentar apagar um ficheiro temporario do disco.", "OnedriveAPI", "DeleteFiles", e.Message);
                 }
             }
-        } 
+        }
         #endregion
 
         #region AuxMethods
+        /// <summary>
+        /// Atualiza as informações sobre o espaço ocupado na conta Onedrive.
+        /// </summary>
+        /// <param name="conta">Conta Onedrive.</param>
+        /// <returns></returns>
         private async Task<bool> UpdateDriveInfoAsync(ContaOnedrive conta)
         {
             if (IsTokenValid(conta))
@@ -504,8 +628,9 @@ namespace LabFoto.Onedrive
                     conta.Quota_Total = quota_Total;
                     conta.Quota_Used = quota_Used;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    _email.NotifyError("Erro ao interpretar o JSON da resposta.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
                     return false;
                 }
 
@@ -515,9 +640,9 @@ namespace LabFoto.Onedrive
                     await _context.SaveChangesAsync();
                     return true;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    return false;
+                    _email.NotifyError("Erro ao dar update à conta Onedrive localmente.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
                 }
             }
 
