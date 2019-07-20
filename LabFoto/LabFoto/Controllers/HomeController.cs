@@ -12,6 +12,7 @@ using LabFoto.Data;
 using LabFoto.Onedrive;
 using Microsoft.AspNetCore.Http;
 using LabFoto.Models.Tables;
+using Microsoft.Extensions.Options;
 
 namespace LabFoto.Controllers
 {
@@ -21,13 +22,13 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly OnedriveAPI _onedrive;
 
-        public HomeController(ApplicationDbContext context, IHttpClientFactory clientFactory)
+        public HomeController(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings)
         {
             _context = context;
-            _onedrive = new OnedriveAPI(context, clientFactory);
+            _onedrive = new OnedriveAPI(context, clientFactory, settings);
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }

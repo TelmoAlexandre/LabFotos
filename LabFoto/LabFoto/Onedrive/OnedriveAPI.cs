@@ -1,6 +1,7 @@
 ﻿using LabFoto.Data;
 using LabFoto.Models;
 using LabFoto.Models.Tables;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -18,17 +19,22 @@ namespace LabFoto.Onedrive
         private readonly ApplicationDbContext _context;
         private readonly IHttpClientFactory _clientFactory;
         private readonly HttpClient _client;
-        private readonly string _redirectUrl = "https://localhost:44354/ContasOnedrive/InitAccount";
+        private readonly string _redirectUrl = "";
+        private readonly AppSettings _AppSettings;
 
-        public OnedriveAPI(ApplicationDbContext context, IHttpClientFactory clientFactory)
+        public OnedriveAPI(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings)
         {
             _context = context;
             _clientFactory = clientFactory;
+            _AppSettings = settings.Value;
 
             // Este cliente vai ser utilizado para envio e recepção pedidos Http
             _client = _clientFactory.CreateClient();
-        }
 
+            _redirectUrl = _AppSettings.SiteUrl + "ContasOnedrive/InitAccount";
+        } 
+
+        #region Thumbnails
         public async Task<bool> RefreshPhotoUrlsAsync(List<Fotografia> photos)
         {
             try
@@ -82,8 +88,10 @@ namespace LabFoto.Onedrive
             {
                 return false;
             }
-        }
+        } 
+        #endregion
 
+        #region Token
         // Verifica se o token de uma conta já expirou
         private bool IsTokenValid(ContaOnedrive conta)
         {
@@ -181,7 +189,9 @@ namespace LabFoto.Onedrive
 
             return null;
         }
+        #endregion
 
+        #region DriveInfo
         public async Task<JObject> GetDriveInfoAsync(string token)
         {
             try
@@ -210,8 +220,10 @@ namespace LabFoto.Onedrive
             }
 
             return null;
-        }
+        } 
+        #endregion
 
+        #region Permissions
         /// <summary>
         /// Retorna o url onde será necessário dar permissões à aplicação.
         /// </summary>
@@ -230,12 +242,8 @@ namespace LabFoto.Onedrive
                 "&state=" + state;
 
             return permissionsUrl;
-        }
-
-        private bool GaleriaExists(int id)
-        {
-            return _context.Galerias.Any(e => e.ID == id);
-        }
+        } 
+        #endregion
 
         #region Upload
 
@@ -254,7 +262,8 @@ namespace LabFoto.Onedrive
             {
                 long position = 0;
                 long totalLength = stream.Length;
-                int length = 3 * 1024 * 1024;
+                int uploadFragmentSizeInMB = _AppSettings.UploadFragmentSizeInMB;
+                int length = uploadFragmentSizeInMB * 1024 * 1024;
 
                 #region Encontrar conta e refrescar token
                 // Encontrar a conta onedrive a ser utilizada para o upload
@@ -416,7 +425,7 @@ namespace LabFoto.Onedrive
                     dataStream.Close();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -447,6 +456,7 @@ namespace LabFoto.Onedrive
 
         #endregion Upload
 
+        #region DeleteFiles
         /// <summary>
         /// Corre uma Thread que apaga todos os fiheiros passados no array de caminhos.
         /// </summary>
@@ -464,7 +474,8 @@ namespace LabFoto.Onedrive
                     throw;
                 }
             }
-        }
+        } 
+        #endregion
 
         #region AuxMethods
         private async Task<bool> UpdateDriveInfoAsync(ContaOnedrive conta)
@@ -508,7 +519,12 @@ namespace LabFoto.Onedrive
             }
 
             return false;
-        } 
+        }
+
+        private bool GaleriaExists(int id)
+        {
+            return _context.Galerias.Any(e => e.ID == id);
+        }
         #endregion
     }
 }

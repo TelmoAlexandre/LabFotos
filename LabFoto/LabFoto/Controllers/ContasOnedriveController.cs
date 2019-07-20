@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using LabFoto.Onedrive;
+using Microsoft.Extensions.Options;
+using LabFoto.Models;
 
 namespace LabFoto.Controllers
 {
@@ -20,10 +22,10 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly OnedriveAPI _onedrive;
 
-        public ContasOnedriveController(ApplicationDbContext context, IHttpClientFactory clientFactory)
+        public ContasOnedriveController(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings)
         {
             _context = context;
-            _onedrive = new OnedriveAPI(context, clientFactory);
+            _onedrive = new OnedriveAPI(context, clientFactory, settings);
         }
 
         #region Index

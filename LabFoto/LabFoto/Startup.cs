@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using LabFoto.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using LabFoto.Models;
 
 namespace LabFoto
 {
@@ -44,6 +45,8 @@ namespace LabFoto
 
             // Adicionar o IHttpClientFactory para poderem ser feito pedidos HTTP
             services.AddHttpClient();
+            // Configuração para aceder às variáveis globais
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

@@ -13,6 +13,7 @@ using LabFoto.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using LabFoto.Models;
+using Microsoft.Extensions.Options;
 
 namespace LabFoto.Controllers
 {
@@ -21,10 +22,10 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly OnedriveAPI _onedrive;
 
-        public GaleriasController(ApplicationDbContext context, IHttpClientFactory clientFactory)
+        public GaleriasController(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings)
         {
             _context = context;
-            _onedrive = new OnedriveAPI(context, clientFactory);
+            _onedrive = new OnedriveAPI(context, clientFactory, settings);
         }
 
         #region Ajax
@@ -109,7 +110,7 @@ namespace LabFoto.Controllers
 
         #region Index
         // GET: Galerias
-        public async Task<IActionResult> Index(string serv)
+        public  IActionResult Index(string serv)
         {
             // Fornecer feedback ao cliente caso este exista.
             // Este feedback é fornecido na view a partir de uma notificação 'Noty'
@@ -309,7 +310,7 @@ namespace LabFoto.Controllers
                             await _context.AddAsync(foto);
                             await _context.SaveChangesAsync();
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             throw;
                         }
