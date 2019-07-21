@@ -128,6 +128,30 @@
         
         var urls = [];
 
+        $(document).ready(function () {
+            $("#thumbnails").html(loader);
+            $.ajax({
+                type: "GET",
+                url: siteUrl + "/Galerias/Thumbnails/@Model.ID",
+                success: function (resp) {
+                    $("#thumbnails").html(resp);
+                    // Iniciar a galeria do PhotoSwipe
+                    initPhotoSwipeFromDOM('.my-gallery');
+                    $('.ui.checkbox').checkbox();
+                },
+                error: function () {
+                    $("#thumbnails").html(`
+                        <div class="ui negative message mt-3">
+                          <div class="header">
+                            Ocorreu um erro
+                          </div>
+                          <p>Infelizmente não foi possível carregar as fotografias.</p>
+                        </div>
+                    `);
+                }
+            });
+        });
+
         document.getElementById('uploader').onsubmit = function (e) {
             e.preventDefault();
 
@@ -194,7 +218,7 @@
                     contentType: false,
                     processData: false,
                     data: blob                    // d is the chunk got by readAsBinaryString(...)
-                }).done(function (r) {           // if 'd' is uploaded successfully then ->
+                }).done(function (resp) {           // if 'd' is uploaded successfully then ->
 
                     loaded += step;
 
@@ -209,6 +233,7 @@
                             ;
                     } else {                // if file is uploaded completely
                         loaded = total;            // just changed loaded which could be used to show status.
+                        informServerOfImage(resp, json.contaId); // Enviar resposta da onedrive para o servidor para que este crie o ficheiro na BD
 
                         // Enquanto houver ficheiros para dar upload
                         if (i < files.length - 1) {
@@ -220,10 +245,30 @@
                         } else {
                             updateFileBar(100);
                             updateTotalBar();
+                            RedirectIfAllFilesAreUploaded();
                         }
                     }
                 });
             };
+        }
+
+        function informServerOfImage(resp, contaId) {
+            $.ajax({
+                url: siteUrl + "/Galerias/RegisterFile",
+                type: "POST",
+                data: {
+                    "galeriaId": @Model.ID,
+                    "contaId": contaId,
+                    "fileOnedriveId": resp.id,
+                    "fileOnedriveName": resp.name
+                },
+                success: function (resp) {
+                    $("#photosContainer").append(resp);
+                    // Iniciar a galeria do PhotoSwipe
+                    initPhotoSwipeFromDOM('.my-gallery');
+                    $('.ui.checkbox').checkbox();
+                }
+            });
         }
 
         function initProgressBars(total) {
@@ -278,30 +323,6 @@
                 }).show();
             }
         }
-
-        $(document).ready(function () {
-            $("#thumbnails").html(loader);
-            $.ajax({
-                type: "GET",
-                url: siteUrl + "/Galerias/Thumbnails/@Model.ID",
-                success: function (resp) {
-                    $("#thumbnails").html(resp);
-                    // Iniciar a galeria do PhotoSwipe
-                    initPhotoSwipeFromDOM('.my-gallery');
-                    $('.ui.checkbox').checkbox();
-                },
-                error: function () {
-                    $("#thumbnails").html(`
-                        <div class="ui negative message mt-3">
-                          <div class="header">
-                            Ocorreu um erro
-                          </div>
-                          <p>Infelizmente não foi possível carregar as fotografias.</p>
-                        </div>
-                    `);
-                }
-            });
-        });
 
     function clearCB() {
         $(".ui.toggle.checkbox.checked").click();

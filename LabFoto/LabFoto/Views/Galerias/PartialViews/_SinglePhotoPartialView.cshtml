@@ -1,0 +1,29 @@
+﻿@model LabFoto.Models.ViewModels.SinglePhotoViewModel
+
+<div class="card remove-card-border">
+    <div class="content p-1">
+        <div class="header" style="font-size:0.8rem;">
+            @Model.Foto.Nome
+        </div>
+    </div>
+    <div class="image">
+        <figure itemprop="associatedMedia" class="fluid m-0" itemscope>
+            <a href="@Model.Foto.Thumbnail_Large" itemprop="contentUrl">
+                <img src="@Model.Foto.Thumbnail_Medium" class="small-thumbnails" itemprop="thumbnail" alt="Image description" style="height:150px !important;" data-index="@Model.Index" />
+                <img class="hide" src="@Model.Foto.Thumbnail_Large" />
+            </a>
+            <figcaption itemprop="caption description" hidden>@Model.Foto.Nome</figcaption>
+        </figure>
+    </div>
+    <div class="ui mini attached relaxed bottom buttons">
+        <span class="ui button" onclick="download('@Model.Foto.DownloadUrl')">
+            <i class="save icon"></i>
+        </span>
+        <button class="ui button">
+            <i class="sliders horizontal icon"></i>
+        </button>
+    </div>
+    <div class="ui toggle checkbox" onclick="pushToURLs('@Model.Foto.DownloadUrl')">
+        <input type="checkbox" tabindex="0" class="hidden">
+    </div>
+</div>

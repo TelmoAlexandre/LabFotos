@@ -21,9 +21,9 @@ namespace LabFoto.Models.ViewModels
         public Servico Servico { get; set; }
         public SelectList ServicosList { get; set; }
     }
-    public class GaleriasDetailsThumbnailsViewModel
+    public class SinglePhotoViewModel
     {
-        public IEnumerable<Fotografia> Fotos { get; set; }
-        public int GaleriaId { get; set; }
+        public Fotografia Foto { get; set; }
+        public int Index { get; set; }
     }
 }

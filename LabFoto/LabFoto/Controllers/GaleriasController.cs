@@ -251,13 +251,7 @@ namespace LabFoto.Controllers
 
             await _onedrive.RefreshPhotoUrlsAsync(fotos);
 
-            var response = new GaleriasDetailsThumbnailsViewModel
-            {
-                Fotos = fotos,
-                GaleriaId = id
-            };
-
-            return PartialView("PartialViews/_ThumbnailsPartialView", response);
+            return PartialView("PartialViews/_ThumbnailsPartialView", fotos);
         }
         #endregion
 
@@ -347,8 +341,45 @@ namespace LabFoto.Controllers
                 return Json(new { success = false, error = "Não foi possível criar sessão de upload." });
             }
             #endregion
-            var response = Json(new { success = true, url = uploadUrl });
-            return response;
+
+            return Json(new { success = true, url = uploadUrl, contaId = conta.ID });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterFile(int galeriaId, string fileOnedriveId, string fileOnedriveName, int contaId)
+        {
+            #region Adicionar foto à Bd
+            try
+            {
+                Fotografia foto = new Fotografia
+                {
+                    Nome = fileOnedriveName,
+                    ItemId = fileOnedriveId,
+                    ContaOnedriveFK = contaId,
+                    GaleriaFK = galeriaId,
+                    Formato = GetFileFormat(fileOnedriveName)
+                };
+
+                await _context.AddAsync(foto);
+                await _context.SaveChangesAsync();
+
+                List<Fotografia> fotos = new List<Fotografia>();
+                fotos.Add(await _context.Fotografias.Include(f => f.ContaOnedrive).FirstOrDefaultAsync(f => f.ID == foto.ID));
+
+                await _onedrive.RefreshPhotoUrlsAsync(fotos);
+
+                var response = new SinglePhotoViewModel
+                {
+                    Foto = foto,
+                    Index = _context.Fotografias.Count() - 1
+                };
+                return PartialView("PartialViews/_SinglePhotoPartialView", response);
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false });
+            }
+            #endregion
         }
         #endregion
 
