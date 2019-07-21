@@ -48,6 +48,8 @@
     <input type="submit" value="Upload file" />
 </form>
 
+<div id="progressBarsContainer"></div>
+
 <div id="thumbnails" class="mt-4">
 </div>
 
@@ -121,33 +123,29 @@
 {
     <script>
         var loader = `<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:100px;">A carregar...</div>`;
+        var fileBar = `<div class="ui green active progress" id="fileBar" style="display:none;"><div class="bar"><div class="progress"></div></div><div class="label">A carregar...</div></div>`;
+        var totalBar = `<div class="ui indicating progress" data-value="0" id="totalBar" style="display:none;"><div class="bar"><div class="progress"></div></div><div class="label">Aguarde um momento...</div></div>`;
+        
         var urls = [];
-
-        function uploadSuccess() {
-            window.location.href = siteUrl + '/Galerias/Details/@Model.ID';
-        }
 
         document.getElementById('uploader').onsubmit = function (e) {
             e.preventDefault();
 
             var fileInput = document.getElementById('fileInput');
-            Array.from(fileInput.files).forEach(f => {
+            initProgressBars(fileInput.files.length);
 
-                upload(f);
-
-            });
-
-            return false;
+            upload(fileInput.files, 0);
         }
 
-        function upload(file) {
+        function upload(files, i) {
+
             $.ajax({
                 type: "GET",
-                url: siteUrl + `/Galerias/UploadSession?size=${file.size}&name=${file.name}`,
+                url: siteUrl + `/Galerias/UploadSession?size=${files[i].size}&name=${files[i].name}`,
                 success: function (resp) {
                     if (resp.success) {
                         // Visto que foi recebido um url de upload, fazer o upload do ficheiro.
-                        uploadFile(file, resp);
+                        uploadFile(files, i, resp);
                     } else {
                         // Notificação 'Noty'
                         new Noty({
@@ -174,10 +172,11 @@
             });
         }
 
-        function uploadFile(file, json) {
+    function uploadFile(files, i, json) {
 
+            var file = files[i];
             var loaded = 0;
-            var step = 2 * 1024 * 1024;
+            var step = 1 * 1024 * 1024;
             var total = file.size;
             var reader = new FileReader();
             var blob = file.slice(loaded, step); //a single chunk in starting of step size
@@ -203,16 +202,85 @@
                         blob = file.slice(loaded, loaded + step);  // getting next chunk
                         chunksize = blob.size;
                         reader.readAsBinaryString(blob);        //reading it through file reader which will call onload again. So it will happen recursively until file is completely uploaded.
-                    } else {                       // if file is uploaded completely
+                        $('#fileBar')
+                            .progress({
+                                percent: (loaded * 100) / total
+                            })
+                            ;
+                    } else {                // if file is uploaded completely
                         loaded = total;            // just changed loaded which could be used to show status.
+
+                        // Enquanto houver ficheiros para dar upload
+                        if (i < files.length - 1) {
+                            i++;
+                            updateFileBar(0);
+                            updateTotalBar();
+                            // Dar upload ao próximo ficheiro
+                            upload(files, i);
+                        } else {
+                            updateFileBar(100);
+                            updateTotalBar();
+                        }
                     }
-                })
+                });
             };
+        }
+
+        function initProgressBars(total) {
+            // Dar reset às progress bars
+            $("#progressBarsContainer").html(fileBar + "<br />" + totalBar);
+
+            // Definir o total de ficheiros a serem carregados
+            document.getElementById('totalBar').setAttribute("data-total", total);
+
+            $('#fileBar').show();
+            $('#totalBar').show()
+                .progress({
+                    label: 'ratio',
+                    text: {
+                        ratio: '{value} de {total}',
+                        success : '{total} Fotografia(s) Carregada(s)!'
+                    }
+                }
+            );
+        }
+
+        function updateFileBar(percent) {
+            $('#fileBar')
+                .progress({
+                    percent: percent,
+                    text: {
+                      active  : 'A carregar...',
+                      success : 'Carregado!'
+                    }
+                }
+            );
+        }
+
+        function updateTotalBar() {
+            $('#totalBar')
+                .progress('increment')
+            ;
+            // Quando a operação estiver concluida, esconder a barra de progresso de um ficheiro passado algum tempo
+            if (document.getElementById('totalBar').getAttribute("data-percent") == 100) {
+                setTimeout(() => {
+                    $('#fileBar').fadeOut(2000);
+                    $('#totalBar').fadeOut(2000);
+                }, 2000);
+                // Notificação 'Noty'
+                new Noty({
+                    type: 'success',
+                    layout: 'bottomRight',
+                    theme: 'bootstrap-v4',
+                    text: "Fotografias adicionadas com sucesso.",
+                    timeout: 4000,
+                    progressBar: true
+                }).show();
+            }
         }
 
         $(document).ready(function () {
             $("#thumbnails").html(loader);
-
             $.ajax({
                 type: "GET",
                 url: siteUrl + "/Galerias/Thumbnails/@Model.ID",
