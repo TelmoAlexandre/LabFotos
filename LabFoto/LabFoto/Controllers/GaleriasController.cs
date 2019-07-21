@@ -329,6 +329,27 @@ namespace LabFoto.Controllers
 
             return RedirectToAction("Details", new { id = galeriaId });
         } 
+
+        public async Task<IActionResult> UploadSession(long size, string name)
+        {
+            #region Encontrar conta e refrescar token
+            ContaOnedrive conta = _onedrive.GetAccountToUpload(size);
+            if (conta == null)
+            {
+                return Json(new { success = false, details = "Não foi possível encontrar uma conta para alojar o ficheiro." });
+            }
+            #endregion
+
+            #region Criar sessão de upload
+            string uploadUrl = await _onedrive.GetUploadSessionAsync(conta, name);
+            if (uploadUrl == "Error")
+            {
+                return Json(new { success = false, error = "Não foi possível criar sessão de upload." });
+            }
+            #endregion
+            var response = Json(new { success = true, url = uploadUrl });
+            return response;
+        }
         #endregion
 
         #region Create
