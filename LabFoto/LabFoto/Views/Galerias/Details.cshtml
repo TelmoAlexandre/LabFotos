@@ -43,6 +43,11 @@
 <button onclick="selectAllCB()" class="ui button">Selecionar todas</button>
 <button onclick="clearCB()" class="ui button">Remover todas</button>
 
+<form id="uploader">
+    <input id="fileInput" type="file" multiple>
+    <input type="submit" value="Upload file" />
+</form>
+
 <div id="thumbnails" class="mt-4">
 </div>
 
@@ -117,6 +122,61 @@
     <script>
         var loader = `<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:100px;">A carregar...</div>`;
         var urls = [];
+
+        function uploadSuccess() {
+            window.location.href = siteUrl + '/Galerias/Details/@Model.ID';
+        }
+
+        document.getElementById('uploader').onsubmit = function (e) {
+            e.preventDefault();
+
+            var fileInput = document.getElementById('fileInput');
+            Array.from(fileInput.files).forEach(f => {
+
+                uploadFile(f);
+
+            });
+
+            return false;
+        }
+
+        function uploadFile(file) {
+
+            var loaded = 0;
+            var step = 2 * 1024 * 1024;
+            var total = file.size;
+            var reader = new FileReader();
+            var blob = file.slice(loaded, step); //a single chunk in starting of step size
+            var chunksize = blob.size;
+            reader.readAsBinaryString(blob);   // reading that chunk. when it read it, onload will be invoked
+
+            reader.onload = function (e) {
+
+                $.ajax({
+                    url: "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_api/v2.0/drives/b!0812_G3q10uofJYDjbiF50gxK5lECPtEqi3cKXzbQsT29-ASFmlYSqg3p9xBheG7/items/0127OBJ5N6Y2GOVW7725BZO354PWSELRRZ/uploadSession?guid='51f2b315-a3ac-45dd-bd27-c3334994cb13'&path='~tmp1D_testsss.cr2'&overwrite=True&rename=False&dc=0&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTYzNzM5MDU0IiwiZXhwIjoiMTU2MzgyNTQ1NCIsImVuZHBvaW50dXJsIjoiQXJuTzRGOWVITFcrWDBRNU9YZ213YzN1ZnVEeVdwc1BPaU82eFpHRFpmbz0iLCJlbmRwb2ludHVybExlbmd0aCI6IjMxMSIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiTURneFltTmhNR1V0T1RGaE5DMDBOREV5TFRnM05UQXRZVGswTURnd1kyRTRPREJqIiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJnaXZlbl9uYW1lIjoiVGVsbW8iLCJmYW1pbHlfbmFtZSI6IkFsZXhhbmRyZSIsInNpZ25pbl9zdGF0ZSI6IltcImttc2lcIl0iLCJhcHBpZCI6IjJkYTc0ODRjLTllZWEtNDlhMy1iMzM3LWY1OWE5N2Y3OWU0NyIsInRpZCI6IjIxZTkwZGZjLTU0ZjEtNGIyMS04ZjNiLTdmYjk3OThlZDJlMCIsInVwbiI6ImFsdW5vMTkwODlAaXB0LnB0IiwicHVpZCI6IjEwMDM3RkZFOTA4OTQ2MzQiLCJjYWNoZWtleSI6IjBoLmZ8bWVtYmVyc2hpcHwxMDAzN2ZmZTkwODk0NjM0QGxpdmUuY29tIiwic2NwIjoibXlmaWxlcy5yZWFkIGFsbGZpbGVzLnJlYWQgbXlmaWxlcy53cml0ZSBhbGxmaWxlcy53cml0ZSIsInR0IjoiMiIsInVzZVBlcnNpc3RlbnRDb29raWUiOm51bGx9.dXB2alVFdHFZaXlvb05mQWpZd1MvQ3JjeUpQbXFSNlNDVElSMkpzc3RSVT0",
+                    type: "PUT",
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFBUDB3TGxxZExWVG9PcEE0a3d6U254UnJsNHpIMm9Ua3BtaWw2eFB5OW1iZXlTVDJ6TF9PWmQwejBNYnhHLWU4azFiMy1NYU05ZkhDRkdYSWNjUUQ2cWc4WUdoZGFYZ1FyQ2tEY1pSNmJfdENBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoidTRPZk5GUEh3RUJvc0hqdHJhdU9iVjg0TG5ZIiwia2lkIjoidTRPZk5GUEh3RUJvc0hqdHJhdU9iVjg0TG5ZIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8yMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAvIiwiaWF0IjoxNTYzNzM4NTg3LCJuYmYiOjE1NjM3Mzg1ODcsImV4cCI6MTU2Mzc0MjQ4NywiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkFTUUEyLzhNQUFBQTA2NUY4WEdnRGpDWGdkd1dQVEQwU3hkZTBJdmJHcWJENVhUeEJObXlvVlk9IiwiYW1yIjpbInB3ZCJdLCJhcHBfZGlzcGxheW5hbWUiOiJMYWJGb3RvIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJhcHBpZGFjciI6IjEiLCJmYW1pbHlfbmFtZSI6IkFsZXhhbmRyZSIsImdpdmVuX25hbWUiOiJUZWxtbyIsImlwYWRkciI6IjE4OC4yNTEuMjI2LjEzOCIsIm5hbWUiOiJUZWxtbyBPbGl2ZWlyYSBBbGV4YW5kcmUiLCJvaWQiOiJjNzJkZTU2Yi01ZGZlLTQzMjgtOTMwZC0wNGEzZDcyZjI1MzMiLCJvbnByZW1fc2lkIjoiUy0xLTUtMjEtMzEwMDY3Mzc0Ni00MjcwNTgzNjI2LTI0MjUyNDIwNDktMTc4MjkiLCJwbGF0ZiI6IjMiLCJwdWlkIjoiMTAwMzdGRkU5MDg5NDYzNCIsInNjcCI6IkZpbGVzLlJlYWQgRmlsZXMuUmVhZC5BbGwgRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgcHJvZmlsZSBvcGVuaWQgZW1haWwiLCJzaWduaW5fc3RhdGUiOlsia21zaSJdLCJzdWIiOiJZdVJhQVBLRVlKeU94eXlFY21kUjJNZG5hTE85NDk1QTNkQ2dFWlQ5MzlBIiwidGlkIjoiMjFlOTBkZmMtNTRmMS00YjIxLThmM2ItN2ZiOTc5OGVkMmUwIiwidW5pcXVlX25hbWUiOiJhbHVubzE5MDg5QGlwdC5wdCIsInVwbiI6ImFsdW5vMTkwODlAaXB0LnB0IiwidXRpIjoiUWNqOVJENURDMFNpcVh5QVVZdFZBQSIsInZlciI6IjEuMCIsInhtc19zdCI6eyJzdWIiOiJld2hsazdSYmhWN25YbTc0dTVTQUlQTjcwYktpbnBMWE1OQlB3VEFTUXRZIn0sInhtc190Y2R0IjoxNDI5MjY3MjA4fQ.ATYEHa02zY7ex3qYEC6edSQ1Fb7XSBQk3N5DqJPSCzzLQxzm7hzglp974ic41Z-HbaA58L-35VQdbZU5v84inu9oJTvs-SghqPmqpqQn_R4dGfkqSZDhpkRJfAt3bjW9UDCGriZ2MRRM-QPv-qGK9Nd4Tth8V7cSEZGOfUjDsk8SsJfcK8J9u5EgTrrnznsqlZcPmOif8uodHVEPKMwX04HREmtC2QdE51FYcNL5eH8ew7ZkWHlRJBx6xhigVxmwKS91vnYdZw6jnvXOX4HV_Kc6iKYwY0tJ6uNcjbO0sP1mzCqJ6oXMMM_T0O70j24Jrb2r-6QPfDWVa6-zwLcEbQ");
+                        request.setRequestHeader("Content-Range", `bytes ${loaded}-${loaded + chunksize - 1}/${total}`);
+                    },
+                    contentType: false,
+                    processData: false,
+                    data: blob                    // d is the chunk got by readAsBinaryString(...)
+                }).done(function (r) {           // if 'd' is uploaded successfully then ->
+
+                    loaded += step;
+
+                    if (loaded <= total) {            // if file is not completely uploaded
+                        blob = file.slice(loaded, loaded + step);  // getting next chunk
+                        chunksize = blob.size;
+                        reader.readAsBinaryString(blob);        //reading it through file reader which will call onload again. So it will happen recursively until file is completely uploaded.
+                    } else {                       // if file is uploaded completely
+                        loaded = total;            // just changed loaded which could be used to show status.
+                    }
+                })
+            };
+
+        }
 
         $(document).ready(function () {
             $("#thumbnails").html(loader);
