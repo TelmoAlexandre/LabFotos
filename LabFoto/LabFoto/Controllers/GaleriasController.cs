@@ -20,12 +20,12 @@ namespace LabFoto.Controllers
     public class GaleriasController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly OnedriveAPI _onedrive;
+        private readonly IOnedriveAPI _onedrive;
 
-        public GaleriasController(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings)
+        public GaleriasController(ApplicationDbContext context, IOnedriveAPI onedrive)
         {
             _context = context;
-            _onedrive = new OnedriveAPI(context, clientFactory, settings);
+            _onedrive = onedrive;
         }
 
         #region Ajax

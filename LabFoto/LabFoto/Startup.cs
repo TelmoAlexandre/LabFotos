@@ -14,6 +14,7 @@ using LabFoto.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using LabFoto.Models;
+using LabFoto.Onedrive;
 
 namespace LabFoto
 {
@@ -47,6 +48,7 @@ namespace LabFoto
             services.AddHttpClient();
             // Configuração para aceder às variáveis globais
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.AddScoped<IOnedriveAPI, OnedriveAPI>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

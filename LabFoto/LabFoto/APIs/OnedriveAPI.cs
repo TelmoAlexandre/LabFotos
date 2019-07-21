@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace LabFoto.Onedrive
 {
-    public class OnedriveAPI
+    public class OnedriveAPI : IOnedriveAPI
     {
         private readonly ApplicationDbContext _context;
         private readonly IHttpClientFactory _clientFactory;
@@ -144,7 +144,7 @@ namespace LabFoto.Onedrive
                 {
                     _email.NotifyError("Erro no pedido HTTP de um token.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
                     return false;
-                } 
+                }
                 #endregion
 
                 #region Tratar resposta
@@ -229,7 +229,7 @@ namespace LabFoto.Onedrive
             {
                 _email.NotifyError("Erro no pedido HTTP de um token.", "OnedriveAPI", "GetInitialTokenAsync", e.Message);
                 return null;
-            } 
+            }
             #endregion
 
             #region Tratar resposta
@@ -248,7 +248,7 @@ namespace LabFoto.Onedrive
                         _email.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetInitialTokenAsync", e.Message);
                         return null;
                     }
-                } 
+                }
             }
             #endregion
 
@@ -281,7 +281,7 @@ namespace LabFoto.Onedrive
             {
                 _email.NotifyError("Erro no pedido HTTP das informações da drive.", "OnedriveAPI", "GetDriveInfoAsync", e.Message);
                 return null;
-            } 
+            }
             #endregion
 
             #region Interpretar resposta
@@ -300,7 +300,7 @@ namespace LabFoto.Onedrive
                         _email.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetDriveInfoAsync", e.Message);
                         return null;
                     }
-                } 
+                }
             }
             #endregion
 
@@ -654,5 +654,17 @@ namespace LabFoto.Onedrive
             return _context.Galerias.Any(e => e.ID == id);
         }
         #endregion
+    }
+
+    public interface IOnedriveAPI
+    {
+        Task<bool> RefreshPhotoUrlsAsync(List<Fotografia> photos);
+        Task<JObject> GetInitialTokenAsync(string code);
+        Task<JObject> GetDriveInfoAsync(string token);
+        Task<UploadedPhotoModel> UploadFileAsync(string filePath, string fileName);
+        ContaOnedrive GetAccountToUpload(long fileSize);
+        Task<string> GetUploadSessionAsync(ContaOnedrive conta, string fileName);
+        string GetPermissionsUrl(int state = 0);
+        void DeleteFiles(List<string> paths);
     }
 }

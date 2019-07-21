@@ -20,12 +20,12 @@ namespace LabFoto.Controllers
     public class ContasOnedriveController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly OnedriveAPI _onedrive;
+        private readonly IOnedriveAPI _onedrive;
 
-        public ContasOnedriveController(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings)
+        public ContasOnedriveController(ApplicationDbContext context, IOnedriveAPI onedrive)
         {
             _context = context;
-            _onedrive = new OnedriveAPI(context, clientFactory, settings);
+            _onedrive = onedrive;
         }
 
         #region Index

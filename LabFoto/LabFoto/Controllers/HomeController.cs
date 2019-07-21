@@ -20,12 +20,12 @@ namespace LabFoto.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly OnedriveAPI _onedrive;
+        private readonly IOnedriveAPI _onedrive;
 
-        public HomeController(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings)
+        public HomeController(ApplicationDbContext context, IOnedriveAPI onedrive)
         {
             _context = context;
-            _onedrive = new OnedriveAPI(context, clientFactory, settings);
+            _onedrive = onedrive;
         }
 
         public IActionResult Index()
