@@ -250,8 +250,13 @@ namespace LabFoto.Controllers
             var fotos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).ToListAsync();
 
             await _onedrive.RefreshPhotoUrlsAsync(fotos);
+            var response = new ThumbnailsViewModel
+            {
+                Fotos = fotos,
+                Index = 0
+            };
 
-            return PartialView("PartialViews/_ThumbnailsPartialView", fotos);
+            return PartialView("PartialViews/_ThumbnailsPartialView", response);
         }
         #endregion
 
@@ -368,12 +373,12 @@ namespace LabFoto.Controllers
 
                 await _onedrive.RefreshPhotoUrlsAsync(fotos);
 
-                var response = new SinglePhotoViewModel
+                var response = new ThumbnailsViewModel
                 {
-                    Foto = foto,
+                    Fotos = fotos,
                     Index = _context.Fotografias.Count() - 1
                 };
-                return PartialView("PartialViews/_SinglePhotoPartialView", response);
+                return PartialView("PartialViews/_ListPhotosPartialView", response);
             }
             catch (Exception)
             {

@@ -1,0 +1,37 @@
+﻿@model LabFoto.Models.ViewModels.ThumbnailsViewModel
+
+@{
+    int i = Model.Index; // Usando para definir index nas fotos. Para saber qualquer a foto clicada (no PhotoSwipe)
+    foreach (var foto in Model.Fotos)
+    {
+        <div class="card remove-card-border">
+            <div class="content p-1">
+                <div class="header" style="font-size:0.8rem;">
+                    @foto.Nome
+                </div>
+            </div>
+            <div class="image">
+                <figure itemprop="associatedMedia" class="fluid m-0" itemscope>
+                    <a href="@foto.Thumbnail_Large" itemprop="contentUrl">
+                        <img src="@foto.Thumbnail_Medium" class="small-thumbnails" itemprop="thumbnail" alt="Image description" style="height:150px !important;" data-index="@i" />
+                        <img class="hide" src="@foto.Thumbnail_Large" />
+                    </a>
+                    <figcaption itemprop="caption description" hidden>@foto.Nome</figcaption>
+                </figure>
+            </div>
+            <div class="ui mini attached relaxed bottom buttons">
+                <span class="ui button" onclick="download('@foto.DownloadUrl')">
+                    <i class="save icon"></i>
+                </span>
+                <button class="ui button">
+                    <i class="sliders horizontal icon"></i>
+                </button>
+            </div>
+            <div class="ui toggle checkbox" onclick="pushToURLs('@foto.DownloadUrl')">
+                <input type="checkbox" tabindex="0" class="hidden">
+            </div>
+        </div>
+
+        i++;
+    }
+}
