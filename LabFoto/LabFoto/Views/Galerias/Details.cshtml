@@ -38,12 +38,13 @@
                 <div id="progressBarsContainer" class="mb-2 mt-4"></div>
             </div>
         </div>
-        <div class="ui two bottom attached buttons">
-            <label for="fileInput" class="ui primary button">
-                <i class="plus icon"></i> Selecionar Fotografias <span id="fileCount"></span>
+        <div class="ui two top attached buttons">
+            <label for="fileInput" class="ui primary button" id="btnFileInput">
+                <i class="plus icon"></i> Selecionar Fotografia(s) <span id="fileCount"></span>
             </label>
-            <input id="fileInput" type="file" name="files" multiple hidden>
-            <button type="submit" class="ui green button"><i class="cloud upload icon"></i> Carregar</button>
+            <input id="fileInput" onchange="updateSelectedFiles()" type="file" name="files" multiple hidden>
+            <button type="submit" class="ui green button" id="btnUploadSubmit"><i class="cloud upload icon"></i> Carregar</button>
+            <span class="ui green button pointer" id="btnFinishUpload" style="display:none;"><i class="check icon"></i> Finalizar</span>
         </div>
     </div>
 </form>
@@ -186,15 +187,35 @@
         document.getElementById('uploader').onsubmit = function (e) {
             e.preventDefault();
 
-            var fileInput = document.getElementById('fileInput');
-            initProgressBars(fileInput.files.length);
+            var files = document.getElementById('fileInput').files;
 
-            upload(fileInput.files, 0);
+            if (files.length != 0) {
+
+                // Desabilitar o botão de upload
+                $("#btnFinishUpload").hide()
+                $("#btnUploadSubmit")
+                    .attr("disabled", true)
+                    .addClass("disabled loading");
+                $("#btnFileInput")
+                    .attr("disabled", true)
+                    .addClass("disabled");
+
+                initProgressBars(files.length);
+                upload(files, 0);
+            }
         }
 
-        document.getElementById('uploader').onchange = function (e) {
-            var count = document.getElementById('fileInput').files.length;
-            $("#fileCount").html((count!=0)? ` - ${count} Selecionada(s)` : "");
+        document.getElementById('btnFinishUpload').onclick = function (e) {
+            e.preventDefault();
+
+            // Esconder as barras de progresso, preparar os botões para um novo upload
+            $("#fileBar").fadeOut();
+            $("#totalBar").fadeOut();
+            $("#btnFinishUpload").hide();
+            $("#btnUploadSubmit").show();
+            $("#btnFileInput")
+                .attr("disabled", false)
+                .removeClass("disabled");
         }
 
         function upload(files, i) {
@@ -231,11 +252,12 @@
             });
         }
 
-    function uploadFile(files, i, json) {
+        function uploadFile(files, i, json) {
 
             // Recolher o tamanho de cada fragmento do appsettings.json
             var fragmentSize = @AppSettings.Value.UploadFragmentSizeInMB;
 
+            //
             var file = files[i];
             var loaded = 0;
             var step = fragmentSize * 1024 * 1024;
@@ -261,27 +283,26 @@
                     loaded += step;
 
                     if (loaded <= total) {            // if file is not completely uploaded
+
                         blob = file.slice(loaded, loaded + step);  // getting next chunk
                         chunksize = blob.size;
                         reader.readAsBinaryString(blob);        //reading it through file reader which will call onload again. So it will happen recursively until file is completely uploaded.
-                        $('#fileBar')
-                            .progress({
-                                percent: (loaded * 100) / total
-                            })
-                            ;
+                        updateFileBar((loaded * 100) / total);
+
                     } else {                // if file is uploaded completely
+
                         loaded = total;            // just changed loaded which could be used to show status.
                         informServerOfImage(resp, json.contaId); // Enviar resposta da onedrive para o servidor para que este crie o ficheiro na BD
                         updateFileBar(100);
+                        updateTotalBar();
+
                         // Enquanto houver ficheiros para dar upload
                         if (i < files.length - 1) {
-                            i++;
-                            updateTotalBar();
                             // Dar upload ao próximo ficheiro
+                            i++;
                             upload(files, i);
                         } else {
-                            updateFileBar(100);
-                            updateTotalBar();
+                            uploadCompleted();
                         }
                     }
                 });
@@ -305,6 +326,36 @@
                     $('.ui.checkbox').checkbox();
                 }
             });
+        }
+
+        function uploadCompleted() {
+
+            // Notificação 'Noty'
+            new Noty({
+                type: 'success',
+                layout: 'bottomRight',
+                theme: 'bootstrap-v4',
+                text: "Fotografia(s) adicionada(s) com sucesso!",
+                timeout: 4000,
+                progressBar: true
+            }).show();
+
+            // Remover os ficheiros carregados do inputFile
+            var fileInput = $("#fileInput");
+            fileInput.replaceWith(fileInput.val('').clone(true)); // Substituir o input file com um clone seu para limpar os ficheiros selecionados
+            updateSelectedFiles();
+
+            // Reactivar os botões novamente
+            $("#btnUploadSubmit").hide();
+            $("#btnFinishUpload").show();
+            $("#btnUploadSubmit")
+                .attr("disabled", false)
+                .removeClass("disabled loading");
+        }
+
+        function updateSelectedFiles() {
+                var count = document.getElementById('fileInput').files.length;
+                $("#fileCount").html((count!=0)? ` - ${count} Selecionada(s)` : "");
         }
 
         function initProgressBars(total) {
@@ -343,23 +394,12 @@
             $('#totalBar')
                 .progress('increment')
             ;
-            // Quando a operação estiver concluida, esconder a barra de progresso de um ficheiro passado algum tempo
-            if (document.getElementById('totalBar').getAttribute("data-percent") == 100) {
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'success',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: "Fotografia(s) adicionada(s) com sucesso!",
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
-            }
         }
 
         function clearCB() {
             $(".ui.toggle.checkbox.checked").click();
-        }
+    }
+
         function selectAllCB() {
             clearCB();
              $(".ui.toggle.checkbox").click();
@@ -380,39 +420,39 @@
             }
         }
 
-    function download(url) {
-        var link = document.createElement("a");
-        link.download = name;
-        link.href = url;
-        link.style.display = "none";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        delete link;
-    }
-
-    function downloadSelected() {
-        let links = urls;
-        clearCB();
-        if (links.length != 0) {
-            let delay = 0;
-            links.forEach(url => {
-                if (url !== '') {
-                    setTimeout(() => {
-                        var link = document.createElement("a");
-                        link.download = name;
-                        link.href = url;
-                        link.style.display = "none";
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        delete link;
-                    }, delay);
-                    delay += 8000;
-                }
-            });
+        function download(url) {
+            var link = document.createElement("a");
+            link.download = name;
+            link.href = url;
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            delete link;
         }
-    }
+
+        function downloadSelected() {
+            let links = urls;
+            clearCB();
+            if (links.length != 0) {
+                let delay = 0;
+                links.forEach(url => {
+                    if (url !== '') {
+                        setTimeout(() => {
+                            var link = document.createElement("a");
+                            link.download = name;
+                            link.href = url;
+                            link.style.display = "none";
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            delete link;
+                        }, delay);
+                        delay += 8000;
+                    }
+                });
+            }
+        }
 
     </script>
 }
