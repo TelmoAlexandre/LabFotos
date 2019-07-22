@@ -2,7 +2,6 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 var expandedAccordion = false;
-var siteUrl = "https://localhost:44354";
 
 jQuery(document).ready(function ($) {
 

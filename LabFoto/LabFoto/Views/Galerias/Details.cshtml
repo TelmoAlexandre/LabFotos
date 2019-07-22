@@ -1,49 +1,52 @@
 ﻿@model LabFoto.Models.Tables.Galeria
 
+@using Microsoft.Extensions.Options;
+@inject IOptions<AppSettings> AppSettings
+
 @{
     ViewData["Title"] = "Details";
 }
 
 
-    <form id="uploader">
-        <div class="mb-4 ui attached segment">
-            <div class="ui grid">
-                <div class="eight wide column">
-                    <p class="ui blue ribbon label mb-3">Galeria</p>
-                    <dl class="row">
-                        <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => model.Nome)
-                        </dt>
-                        <dd class="col-sm-10">
-                            @Html.DisplayFor(model => model.Nome)
-                        </dd>
-                        <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => model.DataDeCriacao)
-                        </dt>
-                        <dd class="col-sm-10">
-                            @Html.DisplayFor(model => model.DataDeCriacao)
-                        </dd>
-                        <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => model.Servico)
-                        </dt>
-                        <dd class="col-sm-10">
-                            @Html.DisplayFor(model => model.Servico.Nome)
-                        </dd>
-                    </dl>
-                </div>
-                <div class="eight wide column">
-                    <div id="progressBarsContainer" class="mb-2 mt-4"></div>
-                </div>
+<form id="uploader">
+    <div class="mb-4 ui attached segment">
+        <div class="ui grid">
+            <div class="eight wide column">
+                <p class="ui blue ribbon label mb-3">Galeria</p>
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Nome)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Nome)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DataDeCriacao)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DataDeCriacao)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Servico)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Servico.Nome)
+                    </dd>
+                </dl>
             </div>
-            <div class="ui two bottom attached buttons">
-                <label for="fileInput" class="ui primary button">
-                    <i class="plus icon"></i> Selecionar Fotografias <span id="fileCount"></span>
-                </label>
-                <input id="fileInput" type="file" name="files" multiple hidden>
-                <button type="submit" class="ui green button"><i class="cloud upload icon"></i> Carregar</button>
+            <div class="eight wide column">
+                <div id="progressBarsContainer" class="mb-2 mt-4"></div>
             </div>
         </div>
-    </form>
+        <div class="ui two bottom attached buttons">
+            <label for="fileInput" class="ui primary button">
+                <i class="plus icon"></i> Selecionar Fotografias <span id="fileCount"></span>
+            </label>
+            <input id="fileInput" type="file" name="files" multiple hidden>
+            <button type="submit" class="ui green button"><i class="cloud upload icon"></i> Carregar</button>
+        </div>
+    </div>
+</form>
 
 <button onclick="downloadSelected()" class="ui button">download</button>
 <button onclick="selectAllCB()" class="ui button">Selecionar todas</button>
@@ -189,10 +192,10 @@
             upload(fileInput.files, 0);
         }
 
-    document.getElementById('uploader').onchange = function (e) {
-        var count = document.getElementById('fileInput').files.length;
-        $("#fileCount").html((count!=0)? ` - ${count} Selecionada(s)` : "");
-    }
+        document.getElementById('uploader').onchange = function (e) {
+            var count = document.getElementById('fileInput').files.length;
+            $("#fileCount").html((count!=0)? ` - ${count} Selecionada(s)` : "");
+        }
 
         function upload(files, i) {
             $.ajax({
@@ -230,9 +233,12 @@
 
     function uploadFile(files, i, json) {
 
+            // Recolher o tamanho de cada fragmento do appsettings.json
+            var fragmentSize = @AppSettings.Value.UploadFragmentSizeInMB;
+
             var file = files[i];
             var loaded = 0;
-            var step = 0.5 * 1024 * 1024;
+            var step = fragmentSize * 1024 * 1024;
             var total = file.size;
             var reader = new FileReader();
             var blob = file.slice(loaded, step); //a single chunk in starting of step size
@@ -344,20 +350,20 @@
                     type: 'success',
                     layout: 'bottomRight',
                     theme: 'bootstrap-v4',
-                    text: "Fotografias adicionadas com sucesso.",
-                    timeout: 8000,
+                    text: "Fotografia(s) adicionada(s) com sucesso!",
+                    timeout: 4000,
                     progressBar: true
                 }).show();
             }
         }
 
-    function clearCB() {
-        $(".ui.toggle.checkbox.checked").click();
-    }
-    function selectAllCB() {
-        clearCB();
-         $(".ui.toggle.checkbox").click();
-    }
+        function clearCB() {
+            $(".ui.toggle.checkbox.checked").click();
+        }
+        function selectAllCB() {
+            clearCB();
+             $(".ui.toggle.checkbox").click();
+        }
 
         function pushToURLs(newUrl) {
             // Caso o url exista no array, retira-lo
