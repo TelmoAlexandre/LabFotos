@@ -1,19 +1,2 @@
 ﻿@model LabFoto.Models.ViewModels.ThumbnailsViewModel
 
-@if (Model.Fotos.Count() == 0)
-{
-        <div class="ui placeholder tiny segment">
-            <div class="ui icon header">
-                <i class="images outline icon" style="height: auto;"></i>
-                Não existem fotografias.
-            </div>
-        </div>
-}
-else
-{
-    <div class="my-gallery" id="my-gallery" itemscope>
-        <div class="ui six doubling stackable cards mt-2" id="photosContainer">
-           <partial name="PartialViews/_ListPhotosPartialView" model="@Model" />
-        </div>
-    </div>
-}

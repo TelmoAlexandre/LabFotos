@@ -4,53 +4,69 @@
     ViewData["Title"] = "Details";
 }
 
-<div class="mb-4">
-    <form method="post" enctype="multipart/form-data" asp-controller="Galerias" asp-action="UploadFiles" asp-route-galeriaId="@Model.ID">
-        <div class="ui attached segment">
-            <p class="ui blue ribbon label mb-3">Galeria</p>
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Nome)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Nome)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.DataDeCriacao)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.DataDeCriacao)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Servico)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Servico.Nome)
-                </dd>
-            </dl>
-        </div>
-        <div class="ui two bottom attached buttons">
-            <label for="file-upload" class="ui primary button">
-                <i class="plus icon"></i> Selecionar fotografias
-            </label>
-            <input id="file-upload" type="file" name="files" multiple hidden>
-            <button type="submit" class="ui green button"><i class="cloud upload icon"></i> Carregar</button>
+
+    <form id="uploader">
+        <div class="mb-4 ui attached segment">
+            <div class="ui grid">
+                <div class="eight wide column">
+                    <p class="ui blue ribbon label mb-3">Galeria</p>
+                    <dl class="row">
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.Nome)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.Nome)
+                        </dd>
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.DataDeCriacao)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.DataDeCriacao)
+                        </dd>
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.Servico)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.Servico.Nome)
+                        </dd>
+                    </dl>
+                </div>
+                <div class="eight wide column">
+                    <div id="progressBarsContainer" class="mb-2 mt-4"></div>
+                </div>
+            </div>
+            <div class="ui two bottom attached buttons">
+                <label for="fileInput" class="ui primary button">
+                    <i class="plus icon"></i> Selecionar Fotografias <span id="fileCount"></span>
+                </label>
+                <input id="fileInput" type="file" name="files" multiple hidden>
+                <button type="submit" class="ui green button"><i class="cloud upload icon"></i> Carregar</button>
+            </div>
         </div>
     </form>
-</div>
 
 <button onclick="downloadSelected()" class="ui button">download</button>
 <button onclick="selectAllCB()" class="ui button">Selecionar todas</button>
 <button onclick="clearCB()" class="ui button">Remover todas</button>
 
-<form id="uploader">
-    <input id="fileInput" type="file" multiple>
-    <input type="submit" value="Upload file" />
-</form>
-
-<div id="progressBarsContainer"></div>
 
 <div id="thumbnails" class="mt-4">
+    @if (Model.Fotografias.Count() == 0)
+    {
+        <div class="ui placeholder tiny segment">
+            <div class="ui icon header">
+                <i class="images outline icon" style="height: auto;"></i>
+                Não existem fotografias.
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="my-gallery" id="my-gallery" itemscope>
+            <div class="ui six doubling stackable cards mt-2" id="photosContainer">
+            </div>
+        </div>
+    }
 </div>
 
 @{
@@ -122,22 +138,25 @@
 @section scripts
 {
     <script>
-        var loader = `<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:100px;">A carregar...</div>`;
-        var fileBar = `<div class="ui green active progress" id="fileBar" style="display:none;"><div class="bar"><div class="progress"></div></div><div class="label">A carregar...</div></div>`;
-        var totalBar = `<div class="ui indicating progress" data-value="0" id="totalBar" style="display:none;"><div class="bar"><div class="progress"></div></div><div class="label">Aguarde um momento...</div></div>`;
-        
+        var loader = `<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:40px;" id="loader">A carregar...</div>`;
+        var fileBar = `<div class="ui green active progress mb-0" id="fileBar" style="display:none;"><div class="bar"><div class="progress"></div></div></div>`;
+        var totalBar = `<div class="ui indicating progress" data-value="0" id="totalBar" style="display:none;"><div class="bar"><div class="progress"></div></div><div class="label">A processar...</div></div>`;
+
         var urls = [];
 
-        $(document).ready(function () {
-            $("#thumbnails").html(loader);
+        function getPhotos(page) {
+            $("#thumbnails").append(loader);
             $.ajax({
                 type: "GET",
-                url: siteUrl + "/Galerias/Thumbnails/@Model.ID",
+                url: siteUrl + "/Galerias/Thumbnails/@Model.ID?page="+page,
                 success: function (resp) {
-                    $("#thumbnails").html(resp);
-                    // Iniciar a galeria do PhotoSwipe
-                    initPhotoSwipeFromDOM('.my-gallery');
-                    $('.ui.checkbox').checkbox();
+                    if (resp.noMorePhotos == null) {
+                        $("#photosContainer").append(resp);
+                        $('.ui.checkbox').checkbox();
+                        page++;
+                        getPhotos(page);
+                    }
+                    $("#loader").remove(); // Remove a barra de loading
                 },
                 error: function () {
                     $("#thumbnails").html(`
@@ -150,6 +169,15 @@
                     `);
                 }
             });
+        }
+
+        $(document).ready(function () {
+            // Caso existam fotografias na galeria, pedi-las
+            @if (Model.Fotografias.Count() != 0) {
+                @: getPhotos(1);
+            }
+            // Iniciar a galeria do PhotoSwipe
+            initPhotoSwipeFromDOM('.my-gallery');
         });
 
         document.getElementById('uploader').onsubmit = function (e) {
@@ -161,8 +189,12 @@
             upload(fileInput.files, 0);
         }
 
-        function upload(files, i) {
+    document.getElementById('uploader').onchange = function (e) {
+        var count = document.getElementById('fileInput').files.length;
+        $("#fileCount").html((count!=0)? ` - ${count} Selecionada(s)` : "");
+    }
 
+        function upload(files, i) {
             $.ajax({
                 type: "GET",
                 url: siteUrl + `/Galerias/UploadSession?size=${files[i].size}&name=${files[i].name}`,
@@ -200,7 +232,7 @@
 
             var file = files[i];
             var loaded = 0;
-            var step = 1 * 1024 * 1024;
+            var step = 0.5 * 1024 * 1024;
             var total = file.size;
             var reader = new FileReader();
             var blob = file.slice(loaded, step); //a single chunk in starting of step size
@@ -234,18 +266,16 @@
                     } else {                // if file is uploaded completely
                         loaded = total;            // just changed loaded which could be used to show status.
                         informServerOfImage(resp, json.contaId); // Enviar resposta da onedrive para o servidor para que este crie o ficheiro na BD
-
+                        updateFileBar(100);
                         // Enquanto houver ficheiros para dar upload
                         if (i < files.length - 1) {
                             i++;
-                            updateFileBar(0);
                             updateTotalBar();
                             // Dar upload ao próximo ficheiro
                             upload(files, i);
                         } else {
                             updateFileBar(100);
                             updateTotalBar();
-                            RedirectIfAllFilesAreUploaded();
                         }
                     }
                 });
@@ -284,6 +314,7 @@
                     label: 'ratio',
                     text: {
                         ratio: '{value} de {total}',
+                        active: '{value} de {total} Carregadas',
                         success : '{total} Fotografia(s) Carregada(s)!'
                     }
                 }
@@ -308,17 +339,13 @@
             ;
             // Quando a operação estiver concluida, esconder a barra de progresso de um ficheiro passado algum tempo
             if (document.getElementById('totalBar').getAttribute("data-percent") == 100) {
-                setTimeout(() => {
-                    $('#fileBar').fadeOut(2000);
-                    $('#totalBar').fadeOut(2000);
-                }, 2000);
                 // Notificação 'Noty'
                 new Noty({
                     type: 'success',
                     layout: 'bottomRight',
                     theme: 'bootstrap-v4',
                     text: "Fotografias adicionadas com sucesso.",
-                    timeout: 4000,
+                    timeout: 8000,
                     progressBar: true
                 }).show();
             }

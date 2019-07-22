@@ -240,14 +240,24 @@ namespace LabFoto.Controllers
             return View(galeria);
         }
 
-        public async Task<IActionResult> Thumbnails(int id = 0)
+        public async Task<IActionResult> Thumbnails(int id = 0, int page = 0)
         {
+            var photosPerRequest = 12;
             if (id == 0)
             {
                 return NotFound();
             }
 
-            var fotos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).ToListAsync();
+            int skipNum = ((int)page - 1) * photosPerRequest;
+
+            List<Fotografia> fotos = null;
+                fotos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).Skip(skipNum).Take(photosPerRequest).ToListAsync();
+
+            // Caso já não exista mais fotos
+            if (fotos == null || fotos.Count() == 0)
+            {
+                return Json(new { noMorePhotos = true});
+            }
 
             await _onedrive.RefreshPhotoUrlsAsync(fotos);
             var response = new ThumbnailsViewModel
@@ -255,8 +265,8 @@ namespace LabFoto.Controllers
                 Fotos = fotos,
                 Index = 0
             };
-
-            return PartialView("PartialViews/_ThumbnailsPartialView", response);
+            
+            return PartialView("PartialViews/_ListPhotosPartialView", response);
         }
         #endregion
 
