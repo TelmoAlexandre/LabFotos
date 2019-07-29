@@ -79,7 +79,7 @@ namespace LabFoto.Controllers
 
             galerias = galerias.Include(g => g.Servico)
                 .OrderByDescending(g => g.DataDeCriacao)
-                .Take(4)
+                .Take(8)
                 .Include(g => g.Fotografias)
                 .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado);
 
@@ -99,7 +99,7 @@ namespace LabFoto.Controllers
             {
                 Galerias = await galerias.ToListAsync(),
                 FirstPage = true,
-                LastPage = (totalGalerias <= 4),
+                LastPage = (totalGalerias <= 8),
                 PageNum = 1
             };
 
@@ -125,7 +125,7 @@ namespace LabFoto.Controllers
         // POST: Servicos/IndexFilter
         [HttpPost]
         public async Task<IActionResult> IndexFilter(string nomeSearch, DateTime? dataSearchMin, DateTime? dataSearchMax, string servicoID,
-            string metadados, string ordem, int page = 1, int galeriasPerPage = 4)
+            string metadados, string ordem, int page = 1, int galeriasPerPage = 8)
 
         {
             int skipNum = ((int)page - 1) * galeriasPerPage;
@@ -382,10 +382,14 @@ namespace LabFoto.Controllers
 
                 await _onedrive.RefreshPhotoUrlsAsync(fotos);
 
+                // Encontrar index da fotografia para fornecer ao photoSwipe
+                Galeria galeria = await _context.Galerias.Include(g => g.Fotografias).FirstOrDefaultAsync(g => g.ID.Equals(galeriaId));
+                int index = galeria.Fotografias.Count() -1;
+
                 var response = new ThumbnailsViewModel
                 {
                     Fotos = fotos,
-                    Index = _context.Fotografias.Count() - 1
+                    Index = index
                 };
                 return PartialView("PartialViews/_ListPhotosPartialView", response);
             }
