@@ -255,9 +255,11 @@ namespace LabFoto.Controllers
         #region Create
 
         // GET: Servicos/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new ServicosCreateViewModel());
+            return View(new ServicosCreateViewModel() {
+                RequerentesList = new SelectList(await _context.Requerentes.OrderBy(r => r.Nome).ToListAsync(), "ID", "Nome")
+            });
         }
 
         // POST: Servicos/Create
