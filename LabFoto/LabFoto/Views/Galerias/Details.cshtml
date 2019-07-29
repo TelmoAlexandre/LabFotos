@@ -13,29 +13,40 @@
         <div class="ui grid">
             <div class="eight wide column">
                 <p class="ui blue ribbon label mb-3">Galeria</p>
-                <dl class="row">
-                    <dt class="col-sm-2">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">
                         @Html.DisplayNameFor(model => model.Nome)
                     </dt>
-                    <dd class="col-sm-10">
+                    <dd class="col-sm-8">
                         @Html.DisplayFor(model => model.Nome)
                     </dd>
-                    <dt class="col-sm-2">
+                    <dt class="col-sm-4">
                         @Html.DisplayNameFor(model => model.DataDeCriacao)
                     </dt>
-                    <dd class="col-sm-10">
+                    <dd class="col-sm-8">
                         @Html.DisplayFor(model => model.DataDeCriacao)
                     </dd>
-                    <dt class="col-sm-2">
+                    <dt class="col-sm-4">
                         @Html.DisplayNameFor(model => model.Servico)
                     </dt>
-                    <dd class="col-sm-10">
+                    <dd class="col-sm-8">
                         @Html.DisplayFor(model => model.Servico.Nome)
                     </dd>
                 </dl>
+                <div>
+                    <span class="font-weight-bold">Metadados</span>
+                    <div class="ui labels mt-2">
+                        @foreach (var metadado in Model.Galerias_Metadados)
+                        {
+                            <span class="ui basic label">
+                                <i class="pencil alternate icon"></i> @metadado.Metadado.Nome
+                            </span>
+                        }
+                    </div>
+                </div>
             </div>
             <div class="eight wide column">
-                <div id="progressBarsContainer" class="mb-2 mt-4"></div>
+                <div id="progressBarsContainer" class="mb-2 mt-5"></div>
             </div>
         </div>
         <div class="ui two top attached buttons">

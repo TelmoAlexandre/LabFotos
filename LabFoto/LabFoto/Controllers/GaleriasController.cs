@@ -226,6 +226,7 @@ namespace LabFoto.Controllers
 
             var galeria = await _context.Galerias
                 .Include(g => g.Servico).Include(g => g.Fotografias)
+                .Include(g => g.Galerias_Metadados).ThenInclude(gm => gm.Metadado)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
             var photos = await _context.Fotografias.Where(f => f.GaleriaFK == id).ToListAsync();
