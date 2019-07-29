@@ -269,8 +269,8 @@ namespace LabFoto.Controllers
             [Bind("ID,Nome,DataDeCriacao,IdentificacaoObra,Observacoes,HorasEstudio,HorasPosProducao,DataEntrega,Total,RequerenteFK")] Servico servico,
             IFormCollection form, string Tipos, string ServSolicitados)
         {
-            // Certificar que é selecionado pelo menos 1 tipo no formulario
             string datasExec = form["DataExecucao"];
+            // Certificar que é selecionado um requerente
             if (servico.RequerenteFK == null)
             {
                 ModelState.AddModelError("Servico.RequerenteFK", "É necessário escolher um requerente.");

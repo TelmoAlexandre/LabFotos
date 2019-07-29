@@ -14,16 +14,14 @@ namespace LabFoto.Models.ViewModels
         public bool LastPage { get; set; }
         public int PageNum { get; set; }
     }
-    public class GaleriasViewModel
-    {
-        public Galeria Galeria { get; set; }
-        public IEnumerable<SelectListItem> MetadadosList { get; set; }
-        public Servico Servico { get; set; }
-        public SelectList ServicosList { get; set; }
-    }
     public class ThumbnailsViewModel
     {
         public IEnumerable<Fotografia> Fotos { get; set; }
         public int Index { get; set; }
+    }
+    public class GaleriasCreateViewModel
+    {
+        public Galeria Galeria { get; set; }
+        public SelectList Servicos { get; set; }
     }
 }

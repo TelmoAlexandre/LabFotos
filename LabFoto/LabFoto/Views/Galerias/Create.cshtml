@@ -1,42 +1,87 @@
-﻿@model LabFoto.Models.Tables.Galeria
+﻿@model LabFoto.Models.ViewModels.GaleriasCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Galeria</h4>
+<h1>Criar Nova Galeria</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+<form asp-action="Create" id="galeriasCreateForm">
+    <div class="ui form">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="field">
+            <label asp-for="Galeria.Nome"></label>
+            <input asp-for="Galeria.Nome"/>
+            <span asp-validation-for="Galeria.Nome" class="text-danger"></span>
+        </div>
+
+        <div class="fields">
+            <div class="ten wide field">
+                <label asp-for="Galeria.ServicoFK"></label>
+                <partial name="PartialViews/_ServicosDropdownPartialView" model="@Model.Servicos" />
+                <span asp-validation-for="Galeria.ServicoFK" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DataDeCriacao" class="control-label"></label>
-                <input asp-for="DataDeCriacao" class="form-control" />
-                <span asp-validation-for="DataDeCriacao" class="text-danger"></span>
+            <div class="six wide field">
+                <label asp-for="Galeria.DataDeCriacao"></label>
+                <input asp-for="Galeria.DataDeCriacao" value="@DateTime.Now.ToString("yyyy-MM-dd")"/>
+                <span asp-validation-for="Galeria.DataDeCriacao" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ServicoFK" class="control-label"></label>
-                <select asp-for="ServicoFK" class ="form-control" asp-items="ViewBag.ServicoFK"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+
+        <div class="field">
+            <label asp-for="Galeria.Galerias_Metadados"></label>
+            <div class="field" id="metadadosCB"></div>
+        </div>
+    </div>
+    <div class="mt-3">
+        <div class="ui primary button" onclick="confirmForm('galeriasCreateForm')"><i class="check icon"></i><span class="ml-2">Criar</span></div>
+        <div class="ui button" onclick="modalCancel('modalCancel')"><span>Cancelar</span></div>
+    </div>
+</form>
+
+<div class="ui basic mini modal" id="confirmarSubmit">
+    <div class="content">
+        <p>Tem a certeza que pretende criar a Galeria?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="ui basic mini modal" id="modalCancel">
+    <div class="content">
+        <p>Tem a certeza que pretende cancelar?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <a class="ui green ok inverted button" href="/Galerias">
+            <i class="checkmark icon"></i>
+            Sim
+        </a>
+    </div>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    jQuery(document).ready(function ($) {
+            $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            $("#metadadosCB").html(smallLoader);
+
+            $("#metadadosCB").load(siteUrl + "/Galerias/MetadadosDropdown", function () {
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+        });
+    </script>
 }

@@ -11,9 +11,10 @@ namespace LabFoto.Models.Tables
     {
         [Key]
         public int ID { get; set; }
+        [Required(ErrorMessage = "É necessário preencher o nome da galeria"), StringLength(255), Display(Prompt = "Nome da Galeria")]
         public string Nome { get; set; }
 
-        [DataType(DataType.Date), Display(Name = "Data de Criação")]
+        [Required(ErrorMessage = "É necessário preencher a data de criação"), DataType(DataType.Date), Display(Name = "Data de Criação")]
         public DateTime DataDeCriacao { get; set; }
 
         //Chave Forasteira para Servico
@@ -23,6 +24,8 @@ namespace LabFoto.Models.Tables
         public Servico Servico { get; set; }
 
         public virtual ICollection<Fotografia> Fotografias { get; set; }
+
+        [Display(Name = "Metadados")]
         public virtual ICollection<Galeria_Metadado> Galerias_Metadados { get; set; }
     }
 }

@@ -96,6 +96,10 @@
         // Recolher o url do site do appsettings.json
         // Esta variável está disponivel em todo o javascript da aplicação
         var siteUrl = "@AppSettings.Value.SiteUrl";
+
+        // Loaders do semantic para serem acedidos em todo o javascript
+        var loader = '<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:100px;">A carregar...</div>';
+        var smallLoader = '<div class="ui active centered inline small loader"></div>';
     </script>
 
     <environment include="Development">

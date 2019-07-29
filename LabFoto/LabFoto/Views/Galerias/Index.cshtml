@@ -111,12 +111,12 @@
                 <div class="ui inline dropdown">
                     <input type="hidden" name="galeriasPerPage" onchange="submitSearchForm()" />
                     <span>Ver </span>
-                    <span class="text" onchange="servicosPerPageRefresh">1</span>
+                    <span class="text" onchange="servicosPerPageRefresh">4</span>
                     <i class="dropdown icon"></i>
                     <div class="menu">
-                        <div class="active item" data-text="1" data-value="1">1</div>
-                        <div class="item" data-text="2" data-value="2">2</div>
-                        <div class="item" data-text="5" data-value="5">5</div>
+                        <div class="active item" data-text="1" data-value="4">4</div>
+                        <div class="item" data-text="2" data-value="8">8</div>
+                        <div class="item" data-text="5" data-value="16">16</div>
                     </div>
                 </div>
                 <span> por página</span>
@@ -134,10 +134,11 @@
 @section scripts
 {
     <script>
-        var loader = '<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:100px;">A carregar...</div>';
-
         $(document).ready(function () {
+
             $("#cardsGalerias").html(loader);
+            $("#metadadosCB").html(smallLoader);
+            $("#servicosDropDown").html(smallLoader);
 
             // A dropdown dos metadados são carregadas para um div de backup
             // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
@@ -151,24 +152,28 @@
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
 
-            $.ajax({
-                type: "GET",
-                url: siteUrl + "/Galerias/InitialGaleria",
-                success: function (resp) {
-                    $("#cardsGalerias").html(resp);
-                },
-                error: function () {
-                    $("#cardsGalerias").html(`
-                        <div class="ui negative message">
-                          <div class="header">
-                            Ocorreu um erro
-                          </div>
-                          <p>Infelizmente não foi possível carregar as galerias.</p>
-                        </div>
-                    `);
-                }
-            });
+            getInitialGalerias();
         });
+
+        function getInitialGalerias() {
+            $.ajax({
+                    type: "GET",
+                    url: siteUrl + "/Galerias/InitialGaleria",
+                    success: function (resp) {
+                        $("#cardsGalerias").html(resp);
+                    },
+                    error: function () {
+                        $("#cardsGalerias").html(`
+                            <div class="ui negative message">
+                              <div class="header">
+                                Ocorreu um erro
+                              </div>
+                              <p>Infelizmente não foi possível carregar as galerias.</p>
+                            </div>
+                        `);
+                    }
+                });
+        }
 
         $(".input").on('keyup', function (e) {
             if (e.keyCode == 13) {

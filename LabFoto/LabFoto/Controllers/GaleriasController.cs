@@ -34,12 +34,12 @@ namespace LabFoto.Controllers
         // O id recebido é o Id da galeria
         public IActionResult MetadadosDropdown(string id)
         {
-            GaleriasViewModel response = new GaleriasViewModel();
+            IEnumerable<SelectListItem> response;
 
             // Caso exista id, preenher as checkboxes de acordo com a galeria em questão
             if (!String.IsNullOrEmpty(id))
             {
-                response.MetadadosList = _context.Metadados.Select(mt => new SelectListItem()
+                response = _context.Metadados.Select(mt => new SelectListItem()
                 {
                     // Verificar se o metadado em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
                     // da lista Galerias_Metadados
@@ -51,7 +51,7 @@ namespace LabFoto.Controllers
             }
             else
             {
-                response.MetadadosList = _context.Metadados.Select(mt => new SelectListItem()
+                response = _context.Metadados.Select(mt => new SelectListItem()
                 {
                     Selected = false,
                     Text = mt.Nome,
@@ -79,7 +79,7 @@ namespace LabFoto.Controllers
 
             galerias = galerias.Include(g => g.Servico)
                 .OrderByDescending(g => g.DataDeCriacao)
-                .Take(1)
+                .Take(4)
                 .Include(g => g.Fotografias)
                 .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado);
 
@@ -125,11 +125,9 @@ namespace LabFoto.Controllers
         // POST: Servicos/IndexFilter
         [HttpPost]
         public async Task<IActionResult> IndexFilter(string nomeSearch, DateTime? dataSearchMin, DateTime? dataSearchMax, string servicoID,
-            string metadados, string ordem, int? page, int? galeriasPerPage)
+            string metadados, string ordem, int page = 1, int galeriasPerPage = 4)
 
         {
-            if (page == null) page = 1;
-            if (galeriasPerPage == null) galeriasPerPage = 1;
             int skipNum = ((int)page - 1) * (int)galeriasPerPage;
 
             // Query de todos os serviços
@@ -191,7 +189,7 @@ namespace LabFoto.Controllers
                 .Skip(skipNum);
 
             int totalGalerias = galerias.Count();
-            galerias = galerias.Take((int)galeriasPerPage);
+            galerias = galerias.Take(galeriasPerPage);
 
             // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
             List<Fotografia> photos = await galerias.Include(g => g.Fotografias).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
@@ -209,8 +207,8 @@ namespace LabFoto.Controllers
             {
                 Galerias = await galerias.ToListAsync(),
                 FirstPage = (page == 1),
-                LastPage = (totalGalerias <= (int)galeriasPerPage),
-                PageNum = (int)page
+                LastPage = (totalGalerias <= galeriasPerPage),
+                PageNum = page
             };
 
             return PartialView("PartialViews/_GaleriasIndexCardsPartialView", response);
@@ -402,8 +400,15 @@ namespace LabFoto.Controllers
         // GET: Galerias/Create
         public IActionResult Create()
         {
-            ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "IdentificacaoObra");
-            return View();
+            // Todos os serviços numa SelectList
+            SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome");
+            var response = new GaleriasCreateViewModel
+            {
+                Galeria = new Galeria(),
+                Servicos = servicos
+            };
+
+            return View(response);
         }
 
         // POST: Galerias/Create
@@ -411,16 +416,56 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Nome,DataDeCriacao,ServicoFK")] Galeria galeria)
+        public async Task<IActionResult> Create([Bind("ID,Nome,DataDeCriacao")] Galeria galeria, string servicoID, string metadados)
         {
+            // Certificar que é selecionado um servico
+            if (String.IsNullOrEmpty(servicoID))
+            {
+                ModelState.AddModelError("Galeria.ServicoFK", "É necessário escolher um serviço.");
+            }
+
             if (ModelState.IsValid)
             {
+                // Associar os metadados à galeria
+                if (!String.IsNullOrEmpty(metadados)) // Caso existam metadados a serem adicionados
+                {
+                    string[] array = metadados.Split(","); // Partir os tipos num array
+                    List<Galeria_Metadado> metadadosList = new List<Galeria_Metadado>();
+
+                    foreach (string metadadoId in array) // Correr esse array
+                    {
+                        // Associar o tipo
+                        Galeria_Metadado gm = new Galeria_Metadado
+                        {
+                            GaleriaFK = galeria.ID,
+                            MetadadoFK = Int32.Parse(metadadoId)
+                        };
+                        metadadosList.Add(gm);
+                    }
+                    galeria.Galerias_Metadados = metadadosList;
+                }
+                galeria.ServicoFK = servicoID;
+
                 _context.Add(galeria);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "IdentificacaoObra", galeria.ServicoFK);
-            return View(galeria);
+
+            SelectList servicos = null;
+
+            if (!String.IsNullOrEmpty(servicoID))
+            {
+                servicos = new SelectList(_context.Servicos, "ID", "Nome", _context.Servicos.FindAsync(servicoID));
+            }
+            else
+            {
+                servicos = new SelectList(_context.Servicos, "ID", "Nome");
+            }
+
+            return View(new GaleriasCreateViewModel {
+                Galeria = galeria,
+                Servicos = servicos
+            });
         } 
         #endregion
 
