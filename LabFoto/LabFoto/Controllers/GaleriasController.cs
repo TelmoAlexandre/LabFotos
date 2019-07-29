@@ -73,7 +73,7 @@ namespace LabFoto.Controllers
 
         public async Task<IActionResult> InitialGaleria()
         {
-            var galerias = _context.Galerias.Select(g => g);
+            var galerias = _context.Galerias.Include(g => g.Fotografias).Select(g => g);
 
             int totalGalerias = galerias.Count();
 
@@ -84,7 +84,7 @@ namespace LabFoto.Controllers
                 .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado);
 
             // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
-            List<Fotografia> photos = await galerias.Include(g => g.Fotografias).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
+            List<Fotografia> photos = await galerias.Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
             photos.RemoveAll(photo => photo == null);
             // Juntar a conta onedrive associada
             foreach (var photo in photos)
@@ -99,7 +99,7 @@ namespace LabFoto.Controllers
             {
                 Galerias = await galerias.ToListAsync(),
                 FirstPage = true,
-                LastPage = (totalGalerias <= 1),
+                LastPage = (totalGalerias <= 4),
                 PageNum = 1
             };
 
@@ -128,7 +128,7 @@ namespace LabFoto.Controllers
             string metadados, string ordem, int page = 1, int galeriasPerPage = 4)
 
         {
-            int skipNum = ((int)page - 1) * (int)galeriasPerPage;
+            int skipNum = ((int)page - 1) * galeriasPerPage;
 
             // Query de todos os serviços
             IQueryable<Galeria> galerias = _context.Galerias.Select(g => g);
@@ -217,9 +217,9 @@ namespace LabFoto.Controllers
 
         #region Details
         // GET: Galerias/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -227,9 +227,9 @@ namespace LabFoto.Controllers
             var galeria = await _context.Galerias
                 .Include(g => g.Servico).Include(g => g.Fotografias)
                 .Include(g => g.Galerias_Metadados).ThenInclude(gm => gm.Metadado)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID.Equals(id));
 
-            var photos = await _context.Fotografias.Where(f => f.GaleriaFK == id).ToListAsync();
+            var photos = await _context.Fotografias.Where(f => f.GaleriaFK.Equals(id)).ToListAsync();
 
             if (galeria == null)
             {
@@ -239,10 +239,10 @@ namespace LabFoto.Controllers
             return View(galeria);
         }
 
-        public async Task<IActionResult> Thumbnails(int id = 0, int page = 0)
+        public async Task<IActionResult> Thumbnails(string id, int page = 0)
         {
-            var photosPerRequest = 12;
-            if (id == 0)
+            var photosPerRequest = 6;
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -250,7 +250,7 @@ namespace LabFoto.Controllers
             int skipNum = ((int)page - 1) * photosPerRequest;
 
             List<Fotografia> fotos = null;
-                fotos = await _context.Fotografias.Where(f => f.GaleriaFK == id).Include(f => f.ContaOnedrive).Skip(skipNum).Take(photosPerRequest).ToListAsync();
+                fotos = await _context.Fotografias.Where(f => f.GaleriaFK.Equals(id)).Include(f => f.ContaOnedrive).Skip(skipNum).Take(photosPerRequest).ToListAsync();
 
             // Caso já não exista mais fotos
             if (fotos == null || fotos.Count() == 0)
@@ -271,7 +271,7 @@ namespace LabFoto.Controllers
 
         #region UploadFiles
         [HttpPost]
-        public async Task<IActionResult> UploadFiles(List<IFormFile> files, int galeriaId)
+        public async Task<IActionResult> UploadFiles(List<IFormFile> files, string galeriaId)
         {
             // Irá conter todos os caminhos para os ficheiros temporários
             List<string> filePaths = new List<string>();
@@ -360,7 +360,7 @@ namespace LabFoto.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterFile(int galeriaId, string fileOnedriveId, string fileOnedriveName, int contaId)
+        public async Task<IActionResult> RegisterFile(string galeriaId, string fileOnedriveId, string fileOnedriveName, int contaId)
         {
             #region Adicionar foto à Bd
             try
@@ -495,7 +495,7 @@ namespace LabFoto.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,DataDeCriacao,ServicoFK")] Galeria galeria)
         {
-            if (id != galeria.ID)
+            if (!id.Equals(galeria.ID))
             {
                 return NotFound();
             }
@@ -536,7 +536,7 @@ namespace LabFoto.Controllers
 
             var galeria = await _context.Galerias
                 .Include(g => g.Servico)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID.Equals(id));
             if (galeria == null)
             {
                 return NotFound();
@@ -576,9 +576,9 @@ namespace LabFoto.Controllers
             }
         }
 
-        private bool GaleriaExists(int id)
+        private bool GaleriaExists(string id)
         {
-            return _context.Galerias.Any(e => e.ID == id);
+            return _context.Galerias.Any(e => e.ID.Equals(id));
         }
 
         #endregion

@@ -33,7 +33,7 @@ namespace LabFoto.Models.Tables
 
         //Chave Forasteira para Galeria
         [ForeignKey("Galeria")]
-        public int GaleriaFK { get; set; }
+        public string GaleriaFK { get; set; }
         public Galeria Galeria { get; set; }
     }
 }

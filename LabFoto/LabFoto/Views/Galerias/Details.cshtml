@@ -4,7 +4,7 @@
 @inject IOptions<AppSettings> AppSettings
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes";
 }
 
 
@@ -30,7 +30,7 @@
                         @Html.DisplayNameFor(model => model.Servico)
                     </dt>
                     <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.Servico.Nome)
+                        <a href="/Servicos/Details/@Model.Servico.ID" target="_blank" class="plainTextLink font-weight-bold">@Model.Servico.Nome</a>
                     </dd>
                 </dl>
                 <div>
@@ -63,7 +63,6 @@
 <button onclick="downloadSelected()" class="ui button">download</button>
 <button onclick="selectAllCB()" class="ui button">Selecionar todas</button>
 <button onclick="clearCB()" class="ui button">Remover todas</button>
-
 
 <div id="thumbnails" class="mt-4">
     @if (Model.Fotografias.Count() == 0)
@@ -325,7 +324,7 @@
                 url: siteUrl + "/Galerias/RegisterFile",
                 type: "POST",
                 data: {
-                    "galeriaId": @Model.ID,
+                    "galeriaId": "@Model.ID",
                     "contaId": contaId,
                     "fileOnedriveId": resp.id,
                     "fileOnedriveName": resp.name

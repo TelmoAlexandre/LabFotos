@@ -17,7 +17,7 @@ namespace LabFoto.Models.Tables
 
         //Chave Forasteira para Pedidos de Servico
         [ForeignKey("Galeria")]
-        public int GaleriaFK { get; set; }
+        public string GaleriaFK { get; set; }
         public virtual Galeria Galeria { get; set; }
     }
 }

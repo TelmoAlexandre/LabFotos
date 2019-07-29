@@ -662,11 +662,6 @@ namespace LabFoto.Onedrive
 
             return false;
         }
-
-        private bool GaleriaExists(int id)
-        {
-            return _context.Galerias.Any(e => e.ID == id);
-        }
         #endregion
     }
 }

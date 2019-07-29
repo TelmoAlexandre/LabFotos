@@ -10,7 +10,7 @@ namespace LabFoto.Models.Tables
     public class Galeria
     {
         [Key]
-        public int ID { get; set; }
+        public string ID { get; set; }
         [Required(ErrorMessage = "É necessário preencher o nome da galeria"), StringLength(255), Display(Prompt = "Nome da Galeria")]
         public string Nome { get; set; }
 
