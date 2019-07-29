@@ -66,13 +66,17 @@
 
 <div id="thumbnails" class="mt-4">
     @if (Model.Fotografias.Count() == 0)
-    {
-        <div class="ui placeholder tiny segment">
-            <div class="ui icon header">
-                <i class="images outline icon" style="height: auto;"></i>
-                Não existem fotografias.
+        {
+            <div class="my-gallery" id="my-gallery" itemscope>
+                <div class="ui six doubling stackable mt-2" id="photosContainer">
+                    <div class="ui placeholder tiny segment">
+                        <div class="ui icon header">
+                            <i class="images outline icon" style="height: auto;"></i>
+                            Não existem fotografias.
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
     }
     else
     {
@@ -81,7 +85,7 @@
             </div>
         </div>
     }
-</div>
+ </div>
 
 @{
     /*
@@ -267,7 +271,6 @@
             // Recolher o tamanho de cada fragmento do appsettings.json
             var fragmentSize = @AppSettings.Value.UploadFragmentSizeInMB;
 
-            //
             var file = files[i];
             var loaded = 0;
             var step = fragmentSize * 1024 * 1024;
@@ -330,7 +333,19 @@
                     "fileOnedriveName": resp.name
                 },
                 success: function (resp) {
-                    $("#photosContainer").append(resp);
+
+                    // Quando não existem fotografias, mostra-se um placeholder, quando forem adicionadas as primeiras fotografias, 
+                    // adicionar a classe card para as mostrar em pequenos cartões
+                    if ($("#photosContainer").hasClass("cards"))
+                    {
+                        $("#photosContainer").append(resp);
+                    }
+                    else
+                    {
+                        $("#photosContainer").addClass("cards");
+                        $("#photosContainer").html(resp); // Substitui o placeholder "Nao existem fotografias" pela primeira fotografia
+                    }
+
                     // Iniciar a galeria do PhotoSwipe
                     initPhotoSwipeFromDOM('.my-gallery');
                     $('.ui.checkbox').checkbox();

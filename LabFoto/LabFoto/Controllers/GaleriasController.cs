@@ -449,7 +449,7 @@ namespace LabFoto.Controllers
 
                 _context.Add(galeria);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = galeria.ID });
             }
 
             SelectList servicos = null;
