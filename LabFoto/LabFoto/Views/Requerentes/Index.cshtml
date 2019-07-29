@@ -57,31 +57,38 @@
 
 @section scripts
 {
-    <script>
+<script>
 
-        // Submit do form das pesquisas dos requerentes
-        requerentesSubmitSearchForm = (pageReq) => {
-            $("#pageReqNum").val(pageReq);
-            $("#requerentesIndexSearchForm").submit();
-        };
+    $(document).ready(function () {
+        $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+    });
 
-        clearSearch = () => {
-            $(`#searchParams input[type="search"]`).val("");
+    // Submit do form das pesquisas dos requerentes
+    requerentesSubmitSearchForm = (pageReq) => {
+        $("#pageReqNum").val(pageReq);
+        $("#requerentesIndexSearchForm").submit();
+    };
+
+    clearSearch = () => {
+        $(`#searchParams input[type="search"]`).val("");
+        requerentesSubmitSearchForm();
+    };
+
+    //pesquisar quando o utilizador pressionar a tecla 'ENTER'
+    $(".input").on('keyup', function (e) {
+        if (e.keyCode == 13) {
             requerentesSubmitSearchForm();
         };
+    });
 
-        //pesquisar quando o utilizador pressionar a tecla 'ENTER'
-        $(".input").on('keyup', function (e) {
-            if (e.keyCode == 13) {
-                requerentesSubmitSearchForm();
-            }
-        });
+    editarRequerenteIndex = (divEdit, divRequerente, idRequerente) => {
 
-        editarRequerenteIndex = (divEdicao, divRequerente, idRequerente) => {
+        $(`#${divEdit}`).load(siteUrl + `/Requerentes/EditIndex/${idRequerente}`, function () {
+            $('[data-toggle="tooltip"]').tooltip();
             $(`#${divRequerente}`).shape('flip back');
-            requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditIndex/${idRequerente}`);
-        };
+        });
+        //requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditIndex/${idRequerente}`);
+    };
 
-
-    </script>
+</script>
 }

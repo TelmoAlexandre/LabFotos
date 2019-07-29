@@ -22,6 +22,7 @@ namespace LabFoto.Controllers
             _context = context;
         }
 
+        #region Index
         // GET: Requerentes
         public async Task<IActionResult> Index(int? page = 1)
         {
@@ -69,6 +70,9 @@ namespace LabFoto.Controllers
 
             return PartialView("_IndexCardsPartialView", response);
         }
+        #endregion Index
+
+        #region Details
 
         // GET: Requerentes/Details/5
         public async Task<IActionResult> Details(string id)
@@ -144,6 +148,10 @@ namespace LabFoto.Controllers
             return PartialView("_RequerenteDetailsPartial", requerente);
         }
 
+        #endregion Details
+
+        #region Create
+
         // GET: Requerentes/Create
         public IActionResult Create()
         {
@@ -171,6 +179,9 @@ namespace LabFoto.Controllers
             return PartialView("_RequerentesCreateForm", requerente);
         }
 
+        #endregion Create
+
+        #region Edit
         // GET: Requerentes/Edit/5
         public async Task<IActionResult> EditIndex(string id)
         {
@@ -273,6 +284,9 @@ namespace LabFoto.Controllers
             return PartialView("_EditCardPartialViewDetails", requerente);
         }
 
+        #endregion Edit
+
+        #region Delete
         // GET: Requerentes/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -301,6 +315,8 @@ namespace LabFoto.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        #endregion Delete
 
         private bool RequerentesExists(string id)
         {
