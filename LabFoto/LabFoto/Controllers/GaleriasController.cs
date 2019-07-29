@@ -236,6 +236,13 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
+            // Fornecer feedback ao cliente caso este exista.
+            // Este feedback é fornecido na view a partir de uma notificação 'Noty'
+            if (TempData["Feedback"] != null)
+            {
+                ViewData["Feedback"] = TempData["Feedback"];
+            }
+
             return View(galeria);
         }
 
@@ -453,6 +460,8 @@ namespace LabFoto.Controllers
 
                 _context.Add(galeria);
                 await _context.SaveChangesAsync();
+
+                TempData["Feedback"] = "Galeria criada com sucesso.";
                 return RedirectToAction(nameof(Details), new { id = galeria.ID });
             }
 
@@ -476,9 +485,9 @@ namespace LabFoto.Controllers
 
         #region Edit
         // GET: Galerias/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -488,8 +497,16 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "IdentificacaoObra", galeria.ServicoFK);
-            return View(galeria);
+
+            // Todos os serviços numa SelectList
+            SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome", galeria.ServicoFK);
+            var response = new GaleriasCreateViewModel
+            {
+                Galeria = galeria,
+                Servicos = servicos
+            };
+
+            return View(response);
         }
 
         // POST: Galerias/Edit/5
@@ -497,17 +514,65 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,DataDeCriacao,ServicoFK")] Galeria galeria)
+        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,DataDeCriacao")] Galeria galeria, string servicoID, string metadados)
         {
             if (!id.Equals(galeria.ID))
             {
                 return NotFound();
             }
 
+            // Certificar que é selecionado um servico
+            if (String.IsNullOrEmpty(servicoID))
+            {
+                ModelState.AddModelError("Galeria.ServicoFK", "É necessário escolher um serviço.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    galeria.ServicoFK = servicoID;
+
+                    List<Galeria_Metadado> allMetadados = await _context.Galerias_Metadados.Where(g => g.GaleriaFK.Equals(galeria.ID)).ToListAsync();
+
+                    // Associar os metadados à galeria
+                    if (!String.IsNullOrEmpty(metadados)) // Caso existam metadados a serem adicionados
+                    {
+                        string[] array = metadados.Split(","); // Partir os metadados num array
+
+                        foreach(var galeria_metadado in allMetadados) // Remover os metadados que não foram selecionados nas checkboxes
+                        {
+                            if (!metadados.Contains(galeria_metadado.MetadadoFK.ToString()))
+                            {
+                                _context.Remove(galeria_metadado);
+                            }
+                        }
+
+                        // Relacionar novos metadados que foram selecionados nas checkboxes
+                        foreach (string metadadosId in array)
+                        {
+                            int intId = Int32.Parse(metadadosId);
+
+                            // Caso não exista relação entre o serviço e o tipo, cria uma
+                            if (allMetadados.Where(st => st.MetadadoFK == intId).ToList().Count == 0)
+                            {
+                                _context.Galerias_Metadados.Add(new Galeria_Metadado
+                                {
+                                    GaleriaFK = galeria.ID,
+                                    MetadadoFK = intId
+                                });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Caso não exista metadados na galeria, apagar todos os que existem na bd
+                        foreach(var galeria_metadado in allMetadados)
+                        {
+                            _context.Remove(galeria_metadado);
+                        }
+                    }
+
                     _context.Update(galeria);
                     await _context.SaveChangesAsync();
                 }
@@ -522,10 +587,20 @@ namespace LabFoto.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
+                TempData["Feedback"] = "Galeria editada com sucesso.";
+                return RedirectToAction(nameof(Details), new { id = galeria.ID});
             }
-            ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "IdentificacaoObra", galeria.ServicoFK);
-            return View(galeria);
+
+            // Todos os serviços numa SelectList
+            SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome", galeria.ServicoFK);
+            var response = new GaleriasCreateViewModel
+            {
+                Galeria = galeria,
+                Servicos = servicos
+            };
+
+            return View(response);
         }
         #endregion
 

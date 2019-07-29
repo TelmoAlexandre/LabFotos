@@ -7,3 +7,24 @@
 <h1>Detalhes</h1>
 
 <partial name="_DetailsPartial" model="Model" />
+
+@section scripts
+{
+    @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+    @if (ViewData["Feedback"] != null)
+    {
+        <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            // Notificação 'Noty'
+            new Noty({
+                type: 'success',
+                layout: 'bottomRight',
+                theme: 'bootstrap-v4',
+                text: '@ViewData["Feedback"]',
+                timeout: 4000,
+                progressBar: true
+            }).show();
+        }, false);
+        </script>
+    }
+}

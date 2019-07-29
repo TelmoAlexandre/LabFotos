@@ -224,6 +224,14 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
             ViewData["details"] = true;
+
+            // Fornecer feedback ao cliente caso este exista.
+            // Este feedback é fornecido na view a partir de uma notificação 'Noty'
+            if (TempData["Feedback"] != null)
+            {
+                ViewData["Feedback"] = TempData["Feedback"];
+            }
+
             return View(servicos);
         }
 
@@ -363,7 +371,7 @@ namespace LabFoto.Controllers
                     }
 
                     TempData["Feedback"] = "Serviço criado com sucesso.";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Details), new { id = servico.ID});
                 }
             }
             catch (Exception)
@@ -461,12 +469,11 @@ namespace LabFoto.Controllers
                     string[] array;
 
                     // Todos os tipos associados a este serviço
-                    List<Servico_Tipo> allServTipos = _context.Servicos_Tipos.Where(st => st.ServicoFK == servico.ID).ToList();
+                    List<Servico_Tipo> allServTipos = await _context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(servico.ID)).ToListAsync();
 
                     // Tratamento Tipos
                     if (!String.IsNullOrEmpty(Tipos)) // Caso existam tipos a serem adicionados
                     {
-
                         array = Tipos.Split(","); // Partir os tipos num array
                         foreach (Servico_Tipo servTipo in allServTipos) // Remover os tipos que não foram selecionados nas checkboxes
                         {
@@ -501,7 +508,7 @@ namespace LabFoto.Controllers
                     }
 
                     // Todos os Servicos Solicitados associados a este serviço
-                    List<Servico_ServicoSolicitado> allServSSolic = _context.Servicos_ServicosSolicitados.Where(st => st.ServicoFK == servico.ID).ToList();
+                    List<Servico_ServicoSolicitado> allServSSolic = await _context.Servicos_ServicosSolicitados.Where(st => st.ServicoFK.Equals(servico.ID)).ToListAsync();
 
                     // Tratamento Servicos Solicitados
                     if (ServSolicitados.Length != 0)
@@ -602,7 +609,7 @@ namespace LabFoto.Controllers
                         }
                     }
 
-                    // Remoção dos serviços solicitados
+                    // Remoção das Datas de execuca
                     foreach (Servico_DataExecucao sde in datasExecList)
                     {
                         // Certificar que pelo menos 1 serviço solicitado é selecionado no formulário
@@ -638,7 +645,7 @@ namespace LabFoto.Controllers
                 }
 
                 TempData["Feedback"] = "Serviço editado com sucesso.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = servico.ID });
             }
 
             // Lista da tabela intermediaria dos servico com os seus tipos

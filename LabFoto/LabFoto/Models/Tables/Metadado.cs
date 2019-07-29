@@ -10,6 +10,7 @@ namespace LabFoto.Models.Tables
     {
         [Key]
         public int ID { get; set; }
+        [Required(ErrorMessage = "É necessário preencher o nome.")]
         public string Nome { get; set; }
 
         public virtual ICollection<Galeria_Metadado> Galerias_Metadados { get; set; }

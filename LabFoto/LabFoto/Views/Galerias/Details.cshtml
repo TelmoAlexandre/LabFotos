@@ -13,6 +13,9 @@
         <div class="ui grid">
             <div class="eight wide column">
                 <p class="ui blue ribbon label mb-3">Galeria</p>
+                <a asp-action="Edit" asp-route-id="@Model.ID" class="ml-2 ui basic mini button">
+                    <i class="edit icon"></i> Editar
+                </a>
                 <dl class="row mb-0">
                     <dt class="col-sm-4">
                         @Html.DisplayNameFor(model => model.Nome)
@@ -33,23 +36,30 @@
                         <a href="/Servicos/Details/@Model.Servico.ID" target="_blank" class="plainTextLink font-weight-bold">@Model.Servico.Nome</a>
                     </dd>
                 </dl>
-                <div>
-                    <span class="font-weight-bold">Metadados</span>
-                    <div class="ui labels mt-2">
-                        @foreach (var metadado in Model.Galerias_Metadados)
-                        {
-                            <span class="ui basic label">
-                                <i class="pencil alternate icon"></i> @metadado.Metadado.Nome
-                            </span>
-                        }
-                    </div>
-                </div>
             </div>
             <div class="eight wide column">
-                <div id="progressBarsContainer" class="mb-2 mt-5"></div>
+                <div id="progressBarsContainer" class="mb-2 mt-4"></div>
             </div>
         </div>
-        <div class="ui two top attached buttons">
+        <div>
+            @if (Model.Galerias_Metadados.Count() > 0)
+            {
+                <span class="font-weight-bold">Metadados</span>
+                <div class="ui labels mt-2">
+                    @foreach (var metadado in Model.Galerias_Metadados)
+                    {
+                        <span class="ui basic label">
+                            <i class="pencil alternate icon"></i> @metadado.Metadado.Nome
+                        </span>
+                    }
+                </div>
+            }
+            else
+            {
+                <span>Não existem metadados.</span>
+            }
+        </div>
+        <div class="ui two top attached buttons mt-3">
             <label for="fileInput" class="ui primary button" id="btnFileInput">
                 <i class="plus icon"></i> Selecionar Fotografia(s) <span id="fileCount"></span>
             </label>
@@ -66,17 +76,17 @@
 
 <div id="thumbnails" class="mt-4">
     @if (Model.Fotografias.Count() == 0)
-        {
-            <div class="my-gallery" id="my-gallery" itemscope>
-                <div class="ui six doubling stackable mt-2" id="photosContainer">
-                    <div class="ui placeholder tiny segment">
-                        <div class="ui icon header">
-                            <i class="images outline icon" style="height: auto;"></i>
-                            Não existem fotografias.
-                        </div>
+    {
+        <div class="my-gallery" id="my-gallery" itemscope>
+            <div class="ui six doubling stackable mt-2" id="photosContainer">
+                <div class="ui placeholder tiny segment">
+                    <div class="ui icon header">
+                        <i class="images outline icon" style="height: auto;"></i>
+                        Não existem fotografias.
                     </div>
                 </div>
             </div>
+        </div>
     }
     else
     {
@@ -85,7 +95,7 @@
             </div>
         </div>
     }
- </div>
+</div>
 
 @{
     /*
@@ -334,7 +344,7 @@
                 },
                 success: function (resp) {
 
-                    // Quando não existem fotografias, mostra-se um placeholder, quando forem adicionadas as primeiras fotografias, 
+                    // Quando não existem fotografias, mostra-se um placeholder, quando forem adicionadas as primeiras fotografias,
                     // adicionar a classe card para as mostrar em pequenos cartões
                     if ($("#photosContainer").hasClass("cards"))
                     {
@@ -480,4 +490,22 @@
         }
 
     </script>
+    
+@{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+    @if (ViewData["Feedback"] != null)
+    {
+        <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            // Notificação 'Noty'
+            new Noty({
+                type: 'success',
+                layout: 'bottomRight',
+                theme: 'bootstrap-v4',
+                text: '@ViewData["Feedback"]',
+                timeout: 4000,
+                progressBar: true
+            }).show();
+        }, false);
+        </script>
+    }
 }

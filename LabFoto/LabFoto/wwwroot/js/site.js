@@ -120,17 +120,33 @@ function initModalEvents() {
         );
     });
 
-    // Resposta do POST do formulário do novo requrente
+    // Modal do novo metadado com fetch do formulário em Ajax
+    $("#btnModalNovoMetadado").click(function (e) {
+        e.preventDefault();
+
+        // Loading equanto dá fetch ao formulário
+        servicoFormsLoadAjax(
+            'newMetadadoForm',
+            'modalNovoMetadado',
+            siteUrl + '/Metadados/Create'
+        );
+    });
+
+    // Resposta do POST do formulário do novo requerente nos serviços
     novoRequerente = (resp) =>
         handleControllerResponse(resp, 'requerentesDropbox', 'modalNovoRequerente', siteUrl + '/Servicos/RequerentesAjax');
 
-    // Resposta do POST do formulário do novo tipo
+    // Resposta do POST do formulário do novo tipo nos serviços
     novoTipo = (resp) =>
         handleControllerResponse(resp, 'tiposCheckboxes', 'modalNovoTipo', siteUrl + '/Servicos/TiposAjax');
 
-    // Resposta do POST do formulário do novo tipo
+    // Resposta do POST do formulário do novo serviço solicitado nos serviços
     novoServSolic = (resp) =>
         handleControllerResponse(resp, 'servSolicCheckboxes', 'modalNovoServSolic', siteUrl + '/Servicos/ServSolicAjax');
+
+    // Resposta do POST do formulário do novo metadado nas galerias
+    novoMetadado = (resp) =>
+        handleControllerResponse(resp, 'metadadosCB', 'modalNovoMetadado', siteUrl + '/Galerias/MetadadosDropdown');
 }
 
 flipCard = (shapeId, transition) => {
@@ -240,6 +256,39 @@ createServSolicOnServicosEdit = (idServico) => {
                     timeout: 4000,
                     progressBar: true
                 }).show();
+            }
+        }
+    });
+};
+
+createMetadadoOnGaleriasEdit = (idGaleria) => {
+    $.ajax({
+        type: "POST",
+        url: siteUrl + "/Metadados/Create",
+        data: {
+            "Metadado.Nome": $("#Metadado_Nome").val(),
+            "galeriaId": $("#galeriaId").val(),
+            "__RequestVerificationToken": $("#modalNovoMetadado input[name='__RequestVerificationToken']").val(),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        success: function (resp) {
+            if (resp.success) {
+                $(`#metadadosCB`).load(siteUrl + `/Galerias/MetadadosDropdown/${idGaleria}`, function () {
+                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+                });
+                $(`#modalNovoMetadado`).modal('hide');
+                $(`#newMetadadoForm`).load(siteUrl + `/Metadados/CreateOnGaleriaEdit/${idGaleria}` );
+                // Notificação 'Noty'
+                new Noty({
+                    type: 'success',
+                    layout: 'bottomRight',
+                    theme: 'bootstrap-v4',
+                    text: 'Adicionado com sucesso.',
+                    timeout: 4000,
+                    progressBar: true
+                }).show();
+            } else {
+                $(`#newMetadadoForm`).html(resp);
             }
         }
     });

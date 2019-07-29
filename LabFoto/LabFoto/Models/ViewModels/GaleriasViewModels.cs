@@ -23,5 +23,6 @@ namespace LabFoto.Models.ViewModels
     {
         public Galeria Galeria { get; set; }
         public SelectList Servicos { get; set; }
+        public Metadado Metadado { get; set; }
     }
 }

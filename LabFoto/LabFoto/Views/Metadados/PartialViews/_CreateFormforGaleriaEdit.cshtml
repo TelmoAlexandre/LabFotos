@@ -1,0 +1,20 @@
+﻿@model LabFoto.Models.ViewModels.MetadadoEditFormViewModel
+
+<div class="ui raised segment fluidCorners">
+    <a class="ui blue ribbon label mb-3">Novo Metadado</a>
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" name="galeriaId" value="@Model.GaleriaId" id="galeriaId"/>
+
+    <div class="ui form">
+        <div class="field">
+            <label asp-for="Metadado.Nome"></label>
+            <input asp-for="Metadado.Nome" placeholder="Tipo" />
+            <span asp-validation-for="Metadado.Nome" class="text-danger"></span>
+        </div>
+        <div class="fields">
+            <div class="eight wide field"><button class="ui button fluid primary" onclick="createMetadadoOnGaleriasEdit('@Model.GaleriaId')">Adicionar</button></div>
+            <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
+        </div>
+    </div>
+</div>
