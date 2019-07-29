@@ -66,7 +66,7 @@ namespace LabFoto.Onedrive
                     {
                         #region Refrescar token
                         // Verificar se o token está válido
-                        await RefreshTokenAsync(photo.ContaOnedrive);
+                        await RefreshTokenAsync(photo.ContaOnedrive, 2600);
                         #endregion
 
                         #region Preparar pedido HTTP
@@ -119,9 +119,9 @@ namespace LabFoto.Onedrive
         /// </summary>
         /// <param name="conta"></param>
         /// <returns></returns>
-        private bool IsTokenValid(ContaOnedrive conta)
+        private bool IsTokenValid(ContaOnedrive conta, int seconds)
         {
-            return ((DateTime.Now - conta.TokenDate).TotalSeconds < 3400);
+            return ((DateTime.Now - conta.TokenDate).TotalSeconds < seconds);
         }
 
         /// <summary>
@@ -129,9 +129,9 @@ namespace LabFoto.Onedrive
         /// </summary>
         /// <param name="conta">Conta Onedrive.</param>
         /// <returns></returns>
-        private async Task<bool> RefreshTokenAsync(ContaOnedrive conta)
+        private async Task<bool> RefreshTokenAsync(ContaOnedrive conta, int seconds = 3400)
         {
-            if (!IsTokenValid(conta))
+            if (!IsTokenValid(conta, seconds))
             {
                 #region Preparar pedido HTTP
                 string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
@@ -376,7 +376,7 @@ namespace LabFoto.Onedrive
                         ErrorDescription = "Não foi possível adquirir uma conta com espaço suficiente."
                     };
                 }
-                await RefreshTokenAsync(conta);
+                await RefreshTokenAsync(conta, 2000);
                 #endregion
 
                 #region Criar sessão de upload
@@ -621,7 +621,7 @@ namespace LabFoto.Onedrive
         /// <returns></returns>
         private async Task<bool> UpdateDriveInfoAsync(ContaOnedrive conta)
         {
-            if (IsTokenValid(conta))
+            if (IsTokenValid(conta, 3400))
             {
                 try
                 {
