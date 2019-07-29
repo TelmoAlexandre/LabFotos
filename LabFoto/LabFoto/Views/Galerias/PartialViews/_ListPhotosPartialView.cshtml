@@ -19,17 +19,13 @@
                     <figcaption itemprop="caption description" hidden>@foto.Nome</figcaption>
                 </figure>
             </div>
-            <div class="ui mini attached relaxed bottom buttons">
-                <span class="ui button" onclick="download('@foto.DownloadUrl')">
-                    <i class="save icon"></i>
-                </span>
-                <button class="ui button">
-                    <i class="sliders horizontal icon"></i>
-                </button>
+            <div class="ui small basic icon buttons">
+                <button class="ui button" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i></button>
+                <button class="ui button"><i class="sliders horizontal icon"></i></button>
             </div>
-            <div class="ui toggle checkbox" onclick="pushToURLs('@foto.DownloadUrl')">
+            @*<div class="ui toggle checkbox" onclick="pushToURLs('@foto.DownloadUrl')">
                 <input type="checkbox" tabindex="0" class="hidden">
-            </div>
+            </div>*@
         </div>
 
         i++;
