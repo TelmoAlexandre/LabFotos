@@ -49,6 +49,7 @@ namespace LabFoto
             // Configuração para aceder às variáveis globais
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped<IOnedriveAPI, OnedriveAPI>();
+            services.AddScoped<IEmailAPI, EmailAPI>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

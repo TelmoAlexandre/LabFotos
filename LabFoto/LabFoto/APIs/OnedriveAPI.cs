@@ -14,6 +14,20 @@ using System.Threading.Tasks;
 
 namespace LabFoto.Onedrive
 {
+    #region Interface
+    public interface IOnedriveAPI
+    {
+        Task<bool> RefreshPhotoUrlsAsync(List<Fotografia> photos);
+        Task<JObject> GetInitialTokenAsync(string code);
+        Task<JObject> GetDriveInfoAsync(string token);
+        Task<UploadedPhotoModel> UploadFileAsync(string filePath, string fileName);
+        ContaOnedrive GetAccountToUpload(long fileSize);
+        Task<string> GetUploadSessionAsync(ContaOnedrive conta, string fileName);
+        string GetPermissionsUrl(int state = 0);
+        void DeleteFiles(List<string> paths);
+    } 
+    #endregion
+
     public class OnedriveAPI : IOnedriveAPI
     {
         private readonly ApplicationDbContext _context;
@@ -21,14 +35,14 @@ namespace LabFoto.Onedrive
         private readonly HttpClient _client;
         private readonly string _redirectUrl = "";
         private readonly AppSettings _appSettings;
-        private readonly Email _email;
+        private readonly IEmailAPI _emailAPI;
 
-        public OnedriveAPI(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings)
+        public OnedriveAPI(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings, IEmailAPI emailAPI)
         {
             _context = context;
             _clientFactory = clientFactory;
             _appSettings = settings.Value;
-            _email = new Email(settings);
+            _emailAPI = emailAPI;
 
             // Este cliente vai ser utilizado para envio e recepção pedidos Http
             _client = _clientFactory.CreateClient();
@@ -93,7 +107,7 @@ namespace LabFoto.Onedrive
             }
             catch (Exception e)
             {
-                _email.NotifyError("Erro ao refrescar thumbnails.", "OnedriveAPI", "RefreshPhotoUrlsAsync", e.Message);
+                _emailAPI.NotifyError("Erro ao refrescar thumbnails.", "OnedriveAPI", "RefreshPhotoUrlsAsync", e.Message);
                 return false;
             }
         }
@@ -142,7 +156,7 @@ namespace LabFoto.Onedrive
                 }
                 catch (Exception e)
                 {
-                    _email.NotifyError("Erro no pedido HTTP de um token.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
+                    _emailAPI.NotifyError("Erro no pedido HTTP de um token.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
                     return false;
                 }
                 #endregion
@@ -163,7 +177,7 @@ namespace LabFoto.Onedrive
                         }
                         catch (Exception e)
                         {
-                            _email.NotifyError("Erro ao interpretar o JSON da resposta.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
+                            _emailAPI.NotifyError("Erro ao interpretar o JSON da resposta.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
                             return false;
                         }
 
@@ -174,7 +188,7 @@ namespace LabFoto.Onedrive
                         }
                         catch (Exception e)
                         {
-                            _email.NotifyError("Erro ao dar update à conta Onedrive localmente.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
+                            _emailAPI.NotifyError("Erro ao dar update à conta Onedrive localmente.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
                             return false;
                         }
 
@@ -227,7 +241,7 @@ namespace LabFoto.Onedrive
             }
             catch (Exception e)
             {
-                _email.NotifyError("Erro no pedido HTTP de um token.", "OnedriveAPI", "GetInitialTokenAsync", e.Message);
+                _emailAPI.NotifyError("Erro no pedido HTTP de um token.", "OnedriveAPI", "GetInitialTokenAsync", e.Message);
                 return null;
             }
             #endregion
@@ -245,7 +259,7 @@ namespace LabFoto.Onedrive
                     }
                     catch (Exception e)
                     {
-                        _email.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetInitialTokenAsync", e.Message);
+                        _emailAPI.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetInitialTokenAsync", e.Message);
                         return null;
                     }
                 }
@@ -279,7 +293,7 @@ namespace LabFoto.Onedrive
             }
             catch (Exception e)
             {
-                _email.NotifyError("Erro no pedido HTTP das informações da drive.", "OnedriveAPI", "GetDriveInfoAsync", e.Message);
+                _emailAPI.NotifyError("Erro no pedido HTTP das informações da drive.", "OnedriveAPI", "GetDriveInfoAsync", e.Message);
                 return null;
             }
             #endregion
@@ -297,7 +311,7 @@ namespace LabFoto.Onedrive
                     }
                     catch (Exception e)
                     {
-                        _email.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetDriveInfoAsync", e.Message);
+                        _emailAPI.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetDriveInfoAsync", e.Message);
                         return null;
                     }
                 }
@@ -409,7 +423,7 @@ namespace LabFoto.Onedrive
                         }
                         catch (Exception e)
                         {
-                            _email.NotifyError("Erro ao recolher as informações do ficheiro que foi feito o upload.", "OnedriveAPI", "UploadFileAsync", e.Message);
+                            _emailAPI.NotifyError("Erro ao recolher as informações do ficheiro que foi feito o upload.", "OnedriveAPI", "UploadFileAsync", e.Message);
                             return new UploadedPhotoModel
                             {
                                 Success = false,
@@ -458,7 +472,7 @@ namespace LabFoto.Onedrive
             }
             catch (Exception e)
             {
-                _email.NotifyError("Erro ao tentar encontrar um conta com espaço livre.", "OnedriveAPI", "GetAccountToUpload", e.Message);
+                _emailAPI.NotifyError("Erro ao tentar encontrar um conta com espaço livre.", "OnedriveAPI", "GetAccountToUpload", e.Message);
             }
 
             return null;
@@ -489,7 +503,7 @@ namespace LabFoto.Onedrive
             }
             catch (Exception e)
             {
-                _email.NotifyError("Erro ao enviar pedido HTTP.", "OnedriveAPI", "GetUploadSessionAsync", e.Message);
+                _emailAPI.NotifyError("Erro ao enviar pedido HTTP.", "OnedriveAPI", "GetUploadSessionAsync", e.Message);
             }
             #endregion
 
@@ -508,7 +522,7 @@ namespace LabFoto.Onedrive
                     }
                     catch (Exception e)
                     {
-                        _email.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetUploadSessionAsync", e.Message);
+                        _emailAPI.NotifyError("Erro ao tratar o JSON da resposta.", "OnedriveAPI", "GetUploadSessionAsync", e.Message);
                     }
                 }
             }
@@ -549,7 +563,7 @@ namespace LabFoto.Onedrive
             }
             catch (Exception e)
             {
-                _email.NotifyError("Erro ao preparar os dados fragmentados do ficheiro para envio.", "OnedriveAPI", "UploadFileFragmentAsync", e.Message);
+                _emailAPI.NotifyError("Erro ao preparar os dados fragmentados do ficheiro para envio.", "OnedriveAPI", "UploadFileFragmentAsync", e.Message);
             }
             #endregion
 
@@ -593,7 +607,7 @@ namespace LabFoto.Onedrive
                 }
                 catch (Exception e)
                 {
-                    _email.NotifyError("Erro ao tentar apagar um ficheiro temporario do disco.", "OnedriveAPI", "DeleteFiles", e.Message);
+                    _emailAPI.NotifyError("Erro ao tentar apagar um ficheiro temporario do disco.", "OnedriveAPI", "DeleteFiles", e.Message);
                 }
             }
         }
@@ -630,7 +644,7 @@ namespace LabFoto.Onedrive
                 }
                 catch (Exception e)
                 {
-                    _email.NotifyError("Erro ao interpretar o JSON da resposta.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
+                    _emailAPI.NotifyError("Erro ao interpretar o JSON da resposta.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
                     return false;
                 }
 
@@ -642,7 +656,7 @@ namespace LabFoto.Onedrive
                 }
                 catch (Exception e)
                 {
-                    _email.NotifyError("Erro ao dar update à conta Onedrive localmente.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
+                    _emailAPI.NotifyError("Erro ao dar update à conta Onedrive localmente.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
                 }
             }
 
@@ -654,17 +668,5 @@ namespace LabFoto.Onedrive
             return _context.Galerias.Any(e => e.ID == id);
         }
         #endregion
-    }
-
-    public interface IOnedriveAPI
-    {
-        Task<bool> RefreshPhotoUrlsAsync(List<Fotografia> photos);
-        Task<JObject> GetInitialTokenAsync(string code);
-        Task<JObject> GetDriveInfoAsync(string token);
-        Task<UploadedPhotoModel> UploadFileAsync(string filePath, string fileName);
-        ContaOnedrive GetAccountToUpload(long fileSize);
-        Task<string> GetUploadSessionAsync(ContaOnedrive conta, string fileName);
-        string GetPermissionsUrl(int state = 0);
-        void DeleteFiles(List<string> paths);
     }
 }
