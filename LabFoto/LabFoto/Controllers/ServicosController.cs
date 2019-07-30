@@ -52,7 +52,7 @@ namespace LabFoto.Controllers
                 Value = t.ID + ""
             });
 
-            return PartialView("PartialViews/_TiposCheckboxesPartialView", response);
+            return PartialView("PartialViews/_TiposDropdown", response);
         }
 
         // GET: Servicos/ServSolicAjax
@@ -70,7 +70,7 @@ namespace LabFoto.Controllers
                 Value = ss.ID + ""
             });
 
-            return PartialView("PartialViews/_ServSolicitadosCbPartialView", response);
+            return PartialView("PartialViews/_ServSolicitadosDropdown", response);
         }
 
         #endregion Ajax
@@ -197,7 +197,7 @@ namespace LabFoto.Controllers
                 PageNum = (int)page
             };
 
-            return PartialView("_ServicosIndexCards", response);
+            return PartialView("PartialViews/_ServicosIndexCards", response);
         }
 
         #endregion Index
@@ -255,7 +255,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
             ViewData["details"] = false;
-            return PartialView("_DetailsPartial", servicos);
+            return PartialView("PartialViews/_DetailsPartial", servicos);
         }
 
         #endregion Details

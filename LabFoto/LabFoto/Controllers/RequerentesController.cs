@@ -107,7 +107,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return PartialView("_DetailsPartial", requerente);
+            return PartialView("PartialViews/_DetailsPartial", requerente);
         }
 
         // GET: Requerentes/Details/5
