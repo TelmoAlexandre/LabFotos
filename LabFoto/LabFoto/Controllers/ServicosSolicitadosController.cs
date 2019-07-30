@@ -56,6 +56,11 @@ namespace LabFoto.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nome")] ServicoSolicitado servicoSolicitado)
         {
+            if (String.IsNullOrEmpty(servicoSolicitado.Nome))
+            {
+                ModelState.AddModelError("Nome", "É necessário preencher o nome.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(servicoSolicitado);

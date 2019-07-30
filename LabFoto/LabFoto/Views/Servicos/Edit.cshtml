@@ -37,13 +37,13 @@
                 <label>Tipo de serviço:</label>
                 <div class="fluid field mb-1" id="tiposCheckboxes">
                 </div>
-                <div class="ui mini basic blue button" onclick="showModal('modalNovoTipo')"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Tipo</span></div>
+                <div class="ui mini basic blue button" onclick="loadAjaxForm('divFormNovoTipo', 'modalNovoTipo', siteUrl + '/Tipos/Create')"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Tipo</span></div>
             </div>
             <div class="eight wide field">
                 <label>Serviços Solicitados:</label>
                 <div class="fluid field mb-1" id="servSolicCheckboxes">
                 </div>
-                <div class="ui mini basic blue button" onclick="showModal('modalNovoServSolic')"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Serviço Solicitado</span></div>
+                <div class="ui mini basic blue button" onclick="loadAjaxForm('divFormNovoServSolic', 'modalNovoServSolic', siteUrl + '/ServicosSolicitados/Create')"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Serviço Solicitado</span></div>
             </div>
         </div>
         <div class="field">
@@ -99,45 +99,11 @@
 </div>
 
 <div class="ui modal basic mini fluidCorners" id="modalNovoTipo">
-    <div class="content" id="divFormNovoTipo">
-        <div class="ui raised segment fluidCorners">
-            <a class="ui blue ribbon label mb-3">Novo Tipo</a>
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="ui form">
-                <div class="field">
-                    <label asp-for="Tipo.Nome"></label>
-                    <input asp-for="Tipo.Nome" placeholder="Tipo" />
-                    <span asp-validation-for="Tipo.Nome" class="text-danger"></span>
-                </div>
-                <div class="fields">
-                    <div class="eight wide field"><button class="ui button primary fluid" onclick="createTipoOnServicosEdit('@Model.Servico.ID')">Adicionar</button></div>
-                    <div class="eight wide field"><span class="ui button fluid" onclick="hideModal()">Cancelar</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="content" id="divFormNovoTipo"></div>
 </div>
 
 <div class="ui modal basic mini fluidCorners" id="modalNovoServSolic">
-    <div class="content" id="divFormNovoServSolic">
-        <div class="ui raised segment fluidCorners">
-            <a class="ui blue ribbon label mb-3">Novo Tipo</a>
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="ui form">
-                <div class="field">
-                    <label asp-for="ServicoSolicitado.Nome"></label>
-                    <input asp-for="ServicoSolicitado.Nome" placeholder="Serviço Solicitado" />
-                    <span asp-validation-for="ServicoSolicitado.Nome" class="text-danger"></span>
-                </div>
-                <div class="fields">
-                    <div class="eight wide field"><button class="ui button fluid primary" onclick="createServSolicOnServicosEdit('@Model.Servico.ID')">Adicionar</button></div>
-                    <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="content" id="divFormNovoServSolic"></div>
 </div>
 
 <div class="ui basic mini modal" id="confirmarSubmit">

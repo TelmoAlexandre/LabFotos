@@ -47,25 +47,27 @@ namespace LabFoto.Controllers
             // Caso exista id, preenher as checkboxes de acordo com a galeria em questão
             // Quando existe id é porque se trata do editar, logo essa galeria pode ter metadados selecionados
             // nesse caso queremos preencher a dropdown com os metadados da relação
-            if (!String.IsNullOrEmpty(id))
+            if (!String.IsNullOrEmpty(metadados))
+            {
+                string[] array = metadados.Split(",");
+
+                // Neste caso foi adicionado um novo metadado por Ajax
+                // Quando não é fornecido um id, preenche de acordo com os metadados selecionados pelo utilizador
+                // para não perder essa informação quando é adiciona um novo metadado
+                response = meta.Select(mt => new SelectListItem()
+                {
+                    Selected = (array.Where(m => Int32.Parse(m) == mt.ID).Count() != 0),
+                    Text = mt.Nome,
+                    Value = mt.ID.ToString()
+                });
+            }
+            else
             {
                 response = meta.Select(mt => new SelectListItem()
                 {
                     // Verificar se o metadado em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
                     // da lista Galerias_Metadados. Caso exista, retorna verdade pois esse encontra-se selecionado
                     Selected = (_context.Galerias_Metadados.Where(gmt => gmt.GaleriaFK.Equals(id)).Where(gmt => gmt.MetadadoFK == mt.ID).Count() != 0),
-                    Text = mt.Nome,
-                    Value = mt.ID.ToString()
-                });
-            }
-            else 
-            {
-                // Neste caso foi adicionado um novo metadado por Ajax
-                // Qunado não é fornecido um id, preenche de acordo com os metadados selecionados pelo utilizador
-                // para não perder essa informação quando é adiciona um novo metadado
-                response = meta.Select(mt => new SelectListItem()
-                {
-                    Selected = metadados.Contains(mt.ID.ToString()),
                     Text = mt.Nome,
                     Value = mt.ID.ToString()
                 });
@@ -567,10 +569,13 @@ namespace LabFoto.Controllers
 
                     if (!String.IsNullOrEmpty(metadados)) // Caso existam metadados a serem adicionados
                     {
+                        string[] array = metadados.Split(","); // Partir os metadados num array
+
                         #region Remover os metadados que não foram selecionados nas checkboxes
                         foreach (var galeria_metadado in allMetadados)
                         {
-                            if (!metadados.Contains(galeria_metadado.MetadadoFK.ToString()))
+                            // Removar caso este não se encontre dentro da string metadados
+                            if (array.Where(m => Int32.Parse(m) == galeria_metadado.MetadadoFK).Count() == 0)
                             {
                                 _context.Remove(galeria_metadado);
                             }
@@ -578,8 +583,6 @@ namespace LabFoto.Controllers
                         #endregion
 
                         #region Relacionar novos metadados que foram selecionados nas checkboxes
-
-                        string[] array = metadados.Split(","); // Partir os metadados num array
 
                         foreach (string metadadosId in array)
                         {

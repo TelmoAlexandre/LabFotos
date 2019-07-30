@@ -36,13 +36,13 @@
                 <label>Tipo de serviço:</label>
                 <div class="fluid field mb-1" id="tiposCheckboxes">
                 </div>
-                <div class="ui mini basic blue button" id="btnModalNovoTipo"><i class="plus icon"></i><span class="ml-1">Novo Tipo</span></div>
+                <div class="ui mini basic blue button" id="btnModalNovoTipo" onclick="loadAjaxForm('divFormNovoTipo', 'modalNovoTipo', siteUrl + '/Tipos/Create')"><i class="plus icon"></i><span class="ml-1">Novo Tipo</span></div>
             </div>
             <div class="eight wide field">
                 <label>Serviços Solicitados:</label>
                 <div class="fluid field mb-1" id="servSolicCheckboxes">
                 </div>
-                <div class="ui mini basic blue button" id="btnModalNovoServSolic"><i class="plus icon"></i><span class="ml-1">Novo Serviço Solicitado</span></div>
+                <div class="ui mini basic blue button" id="btnModalNovoServSolic" onclick="loadAjaxForm('divFormNovoServSolic', 'modalNovoServSolic', siteUrl + '/ServicosSolicitados/Create')"><i class="plus icon"></i><span class="ml-1">Novo Serviço Solicitado</span></div>
             </div>
         </div>
         <div class="field">
@@ -58,22 +58,22 @@
             </div>
             <div class="four wide field">
                 <label asp-for="Servico.DataEntrega"></label>
-                <input asp-for="Servico.DataEntrega"/>
+                <input asp-for="Servico.DataEntrega" />
                 <span asp-validation-for="Servico.DataEntrega" class="text-danger"></span>
             </div>
             <div class="three wide field">
                 <label asp-for="Servico.HorasEstudio"></label>
-                <input asp-for="Servico.HorasEstudio"/>
+                <input asp-for="Servico.HorasEstudio" />
                 <span asp-validation-for="Servico.HorasEstudio" class="text-danger"></span>
             </div>
             <div class="three wide field">
                 <label asp-for="Servico.HorasPosProducao"></label>
-                <input asp-for="Servico.HorasPosProducao"/>
+                <input asp-for="Servico.HorasPosProducao" />
                 <span asp-validation-for="Servico.HorasPosProducao" class="text-danger"></span>
             </div>
             <div class="three wide field">
                 <label asp-for="Servico.Total"></label>
-                <input asp-for="Servico.Total"/>
+                <input asp-for="Servico.Total" />
                 <span asp-validation-for="Servico.Total" class="text-danger"></span>
             </div>
         </div>
@@ -83,18 +83,6 @@
         </div>
     </div>
 </form>
-
-<div class="ui modal basic small fluidCorners" id="modalNovoRequerente" >
-    <div class="content" id="newRequerenteForm"></div>
-</div>
-
-<div class="ui modal basic mini fluidCorners" id="modalNovoTipo">
-    <div class="content" id="divFormNovoTipo"></div>
-</div>
-
-<div class="ui modal basic mini fluidCorners" id="modalNovoServSolic">
-    <div class="content" id="divFormNovoServSolic">    </div>
-</div>
 
 <div class="ui basic mini modal" id="confirmarSubmit">
     <div class="content">
@@ -126,6 +114,18 @@
             Sim
         </a>
     </div>
+</div>
+
+<div class="ui modal basic small fluidCorners" id="modalNovoRequerente">
+    <div class="content" id="newRequerenteForm"></div>
+</div>
+
+<div class="ui modal basic mini fluidCorners" id="modalNovoTipo">
+    <div class="content" id="divFormNovoTipo"></div>
+</div>
+
+<div class="ui modal basic mini fluidCorners" id="modalNovoServSolic">
+    <div class="content" id="divFormNovoServSolic"></div>
 </div>
 
 @section Scripts {

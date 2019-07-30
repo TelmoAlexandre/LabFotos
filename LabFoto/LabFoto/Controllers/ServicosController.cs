@@ -39,36 +39,85 @@ namespace LabFoto.Controllers
         }
 
         // GET: Servicos/TiposAjax
-        public IActionResult TiposAjax(string id)
+        /// <summary>
+        /// Devolve a dropdown dos tipos preenchida.
+        /// </summary>
+        /// <param name="id">ID do serviço em questão.</param>
+        /// <param name="tipos">Tipos já selecionados pelo utilizador.</param>
+        /// <returns>PartialView com o HTML da dropdown.</returns>
+        public IActionResult TiposAjax(string id, string tipos)
         {
             ServicosCreateViewModel response = new ServicosCreateViewModel();
-            response.TiposList = _context.Tipos.OrderBy(t => t.Nome).Select(t => new SelectListItem()
-            {
-                // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor da lista servicos_tipos
-                // Caso exista, retorna verdade
-                // Caso não exista id, retorna todos a falso
-                Selected = (!String.IsNullOrEmpty(id)) ? (_context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(id)).Where(st => st.TipoFK == t.ID).Count() != 0) : false,
-                Text = t.Nome,
-                Value = t.ID + ""
-            });
+            var allTipos = _context.Tipos.OrderBy(t => t.Nome); // Todos os tipos ordernados
 
+            // Caso exista id, preenher as checkboxes de acordo com o serviço em questão
+            // Quando existe id é porque se trata do editar, logo esse serviço pode ter tipos selecionados
+            // nesse caso queremos preencher a dropdown com os tipos da relação
+            if (!String.IsNullOrEmpty(tipos))
+            {
+                string[] array = tipos.Split(",");
+
+                // Neste caso foi adicionado um novo tipo por Ajax
+                // Quando não é fornecido um id, preenche de acordo com os tipos selecionados pelo utilizador
+                // para não perder essa informação quando é adiciona um novo tipo
+                response.TiposList = allTipos.Select(t => new SelectListItem()
+                {
+                    Selected = (array.Where(serv => Int32.Parse(serv) == t.ID).Count() != 0),
+                    Text = t.Nome,
+                    Value = t.ID.ToString()
+                });
+            }
+            else
+            {
+                response.TiposList = allTipos.Select(t => new SelectListItem()
+                {
+                    // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
+                    // da lista Servicos_Tipos. Caso exista, retorna verdade pois esse encontra-se selecionado
+                    Selected = (_context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(id) && st.TipoFK == t.ID).Count() != 0),
+                    Text = t.Nome,
+                    Value = t.ID.ToString()
+                });
+            }
+            
             return PartialView("PartialViews/_TiposDropdown", response);
         }
 
         // GET: Servicos/ServSolicAjax
-        public IActionResult ServSolicAjax(string id)
+        public IActionResult ServSolicAjax(string id, string servSolic)
         {
             ServicosCreateViewModel response = new ServicosCreateViewModel() { };
-            response.ServSolicitados = _context.ServicosSolicitados.OrderBy(ss => ss.Nome).Select(ss => new SelectListItem()
+            var allServSolic = _context.ServicosSolicitados.OrderBy(t => t.Nome); // Todos os serviços solicitados ordernados
+            
+
+            // Caso exista id, preenher as checkboxes de acordo com o serviço em questão
+            // Quando existe id é porque se trata do editar, logo esse serviço pode ter serviços solicitados selecionados
+            // nesse caso queremos preencher a dropdown com os serviços solicitados da relação
+            if (!String.IsNullOrEmpty(servSolic))
             {
-                // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
-                // da lista servicos_servicosSolicitados
-                // Caso exista, retorna verdade
-                // Caso não exista id, retorna todos a falso
-                Selected = (!String.IsNullOrEmpty(id)) ? (_context.Servicos_ServicosSolicitados.Where(sss => sss.ServicoFK.Equals(id)).Where(sss => sss.ServicoSolicitadoFK == ss.ID).Count() != 0) : false,
-                Text = ss.Nome,
-                Value = ss.ID + ""
-            });
+                string[] array = servSolic.Split(",");
+
+                // Neste caso foi adicionado um novo serviço solicitado por Ajax
+                // Quando não é fornecido um id, preenche de acordo com os serviços solicitados selecionados pelo utilizador
+                // para não perder essa informação quando é adiciona um novo serviço solicitado
+                response.ServSolicitados = allServSolic.Select(ss => new SelectListItem()
+                {
+                    //Selected = servSolic.Contains(ss.ID.ToString()),
+                    Selected = (array.Where(serv => Int32.Parse(serv) == ss.ID).Count() != 0),
+                    Text = ss.Nome,
+                    Value = ss.ID.ToString()
+                });
+            }
+            else
+            {
+                response.ServSolicitados = allServSolic.Select(ss => new SelectListItem()
+                {
+                    // Verificar se o serviço solicitado em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
+                    // da lista Servicos_ServicosSolicitados. Caso exista, retorna verdade pois esse encontra-se selecionado
+                    Selected = (_context.Servicos_ServicosSolicitados.Where(sss => sss.ServicoFK.Equals(id) && sss.ServicoSolicitadoFK == ss.ID).Count() != 0),
+                    Text = ss.Nome,
+                    Value = ss.ID.ToString()
+                });
+            }
 
             return PartialView("PartialViews/_ServSolicitadosDropdown", response);
         }
@@ -477,7 +526,8 @@ namespace LabFoto.Controllers
                         array = Tipos.Split(","); // Partir os tipos num array
                         foreach (Servico_Tipo servTipo in allServTipos) // Remover os tipos que não foram selecionados nas checkboxes
                         {
-                            if (!Tipos.Contains(servTipo.TipoFK.ToString()))
+                            // Removar caso este não se encontre dentro da string Tipos
+                            if (array.Where(t => Int32.Parse(t) == servTipo.TipoFK).Count() == 0)
                             {
                                 _context.Servicos_Tipos.Remove(servTipo);
                             }
@@ -511,12 +561,13 @@ namespace LabFoto.Controllers
                     List<Servico_ServicoSolicitado> allServSSolic = await _context.Servicos_ServicosSolicitados.Where(st => st.ServicoFK.Equals(servico.ID)).ToListAsync();
 
                     // Tratamento Servicos Solicitados
-                    if (ServSolicitados.Length != 0)
+                    if (!String.IsNullOrEmpty(ServSolicitados))
                     {
                         array = ServSolicitados.Split(","); // Partir os servicos solicitados num array
                         foreach (Servico_ServicoSolicitado servSSolicit in allServSSolic) // Remover os Serviços solicitados que não foram selecionados nas checkboxes
                         {
-                            if (!ServSolicitados.Contains(servSSolicit.ServicoSolicitadoFK.ToString()))
+                            // Removar caso este não se encontre dentro da string ServSolicitados
+                            if (array.Where(t => Int32.Parse(t) == servSSolicit.ServicoSolicitadoFK).Count() == 0)
                             {
                                 _context.Servicos_ServicosSolicitados.Remove(servSSolicit);
                             }
@@ -558,7 +609,7 @@ namespace LabFoto.Controllers
                     {
                         foreach (string dataStr in datasExecucaoArray)
                         {
-                            if (!dataStr.Equals(""))
+                            if (!String.IsNullOrEmpty(dataStr))
                             {
                                 // Separar o ano, mes e dia
                                 string[] dataArray = dataStr.Split('-');
@@ -583,17 +634,17 @@ namespace LabFoto.Controllers
                                         );
                                         await _context.SaveChangesAsync();
                                     }
-                                    else // Casoi não exista, criar uma nova data na tabela das DatasExecucao e associar essa à relação
+                                    else // Caso não exista, criar uma nova data na tabela das DatasExecucao e associar essa à relação
                                     {
-                                        // Adicionar a nova data
-                                        _context.DataExecucao.Add(new DataExecucao
+                                        var newDate = new DataExecucao
                                         {
                                             Data = data
-                                        });
-                                        await _context.SaveChangesAsync();
+                                        };
 
-                                        // Pesquisar a data acaba de inserir para que esta possa ser associada na tabela intermédia 'Servicos_DatasExecucao'
-                                        DataExecucao newDate = await _context.DataExecucao.Where(d => d.Data == data).FirstOrDefaultAsync();
+                                        // Adicionar a nova data
+                                        _context.DataExecucao.Add(newDate);
+
+                                        await _context.SaveChangesAsync();
 
                                         _context.Servicos_DatasExecucao.Add(
                                             new Servico_DataExecucao()

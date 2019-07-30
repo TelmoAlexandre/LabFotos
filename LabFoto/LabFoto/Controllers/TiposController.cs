@@ -46,7 +46,7 @@ namespace LabFoto.Controllers
         // GET: Tipos/Create
         public IActionResult Create()
         {
-            return PartialView("_TiposCreateForm", new Tipo());
+            return PartialView("PartialViews/_CreateForm", new Tipo());
         }
 
         // POST: Tipos/Create
@@ -56,13 +56,18 @@ namespace LabFoto.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nome")] Tipo tipo)
         {
+            if (String.IsNullOrEmpty(tipo.Nome))
+            {
+                ModelState.AddModelError("Nome", "É necessário preencher o nome.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(tipo);
                 await _context.SaveChangesAsync();
                 return Json(new { success = true });
             }
-            return PartialView("_TiposCreateForm",tipo);
+            return PartialView("PartialViews/_CreateForm", tipo);
         }
 
         // GET: Tipos/Edit/5

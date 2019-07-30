@@ -46,6 +46,7 @@ function initModalEvents() {
         // Adicionar um loading
         $(`#${divFormId}`).html(getLoadingBarHtml);
         $(`#${modalId}`).modal({
+            closable: false,
             transition: 'fade up'
         }).modal("show");
         $(`#${divFormId}`).load(`${href}`); // Carregar html para o elemento        
@@ -98,39 +99,9 @@ function initModalEvents() {
         );
     });
 
-
-    // Modal do novo tipo com fetch do formulário em Ajax
-    $("#btnModalNovoTipo").click(function (e) {
-        e.preventDefault();
-        // Loading equanto dá fetch ao formulário
-        loadAjaxForm(
-            'divFormNovoTipo',
-            'modalNovoTipo',
-            siteUrl + '/Tipos/Create'
-        );
-    });
-    // Modal do novo tipo com fetch do formulário em Ajax
-    $("#btnModalNovoServSolic").click(function (e) {
-        e.preventDefault();
-        // Loading equanto dá fetch ao formulário
-        loadAjaxForm(
-            'divFormNovoServSolic',
-            'modalNovoServSolic',
-            siteUrl + '/ServicosSolicitados/Create'
-        );
-    });
-
     // Resposta do POST do formulário do novo requerente nos serviços
     novoRequerente = (resp) =>
         handleControllerResponse(resp, 'requerentesDropbox', 'modalNovoRequerente', siteUrl + '/Servicos/RequerentesAjax');
-
-    // Resposta do POST do formulário do novo tipo nos serviços
-    novoTipo = (resp) =>
-        handleControllerResponse(resp, 'tiposCheckboxes', 'modalNovoTipo', siteUrl + '/Servicos/TiposAjax');
-
-    // Resposta do POST do formulário do novo serviço solicitado nos serviços
-    novoServSolic = (resp) =>
-        handleControllerResponse(resp, 'servSolicCheckboxes', 'modalNovoServSolic', siteUrl + '/Servicos/ServSolicAjax');
 }
 
 flipCard = (shapeId, transition) => {
@@ -179,68 +150,6 @@ servicoRequerenteDetails = (divModalDetails, requerenteId) => {
     $(`#${divModalDetails}`).html(getLoadingBarHtml);
     $(`#${divModalDetails}`).load(siteUrl + `/Requerentes/DetailsAjax/${requerenteId}`, function () {
         $('[data-toggle="tooltip"]').tooltip();
-    });
-};
-
-createTipoOnServicosEdit = (idServico) => {
-    $.ajax({
-        type: "POST",
-        url: siteUrl + "/Tipos/Create",
-        data: {
-            "Tipo.Nome": $("#Tipo_Nome").val(),
-            "__RequestVerificationToken": $("#modalNovoTipo input[name='__RequestVerificationToken']").val(),
-            "X-Requested-With": "XMLHttpRequest"
-        },
-        success: function (resp) {
-            if (resp.success) {
-                $(`#tiposCheckboxes`).load(siteUrl + `/Servicos/TiposAjax/${idServico}`, function () {
-                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-                });
-                $(`#modalNovoTipo`).modal('hide');
-                $("#Tipo_Nome").val(null); // Limpa o campo do formulário
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'success',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: 'Adicionado com sucesso.',
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
-            }
-        }
-    });
-};
-
-createServSolicOnServicosEdit = (idServico) => {
-
-    $.ajax({
-        type: "POST",
-        url: siteUrl + "/ServicosSolicitados/Create",
-        data: {
-            "ServicoSolicitado.Nome": $("#ServicoSolicitado_Nome").val(),
-            "__RequestVerificationToken": $("#divFormNovoServSolic input[name='__RequestVerificationToken']").val(),
-            "X-Requested-With": "XMLHttpRequest",
-            "fields": $("#divFormNovoServSolic input[name='ServSolicitados']").val()
-        },
-        success: function (resp) {
-            if (resp.success) {
-                $(`#servSolicCheckboxes`).load(siteUrl + `/Servicos/ServSolicAjax/${idServico}`, function () {
-                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-                });
-                $(`#modalNovoServSolic`).modal('hide'); // Esconder o modal
-                $("#ServicoSolicitado_Nome").val(null); // Limpa o campo do formulário
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'success',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: 'Adicionado com sucesso.',
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
-            }
-        }
     });
 };
 
@@ -314,6 +223,110 @@ requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, r
     });
 };
 
+createTipo = () => {
+    $("#btnAddTipo").addClass("loading");
+
+    $.ajax({
+        type: "POST",
+        url: siteUrl + "/Tipos/Create",
+        data: {
+            "Tipo.Nome": $("#modalNovoTipo #Nome").val(),
+            "__RequestVerificationToken": $("#modalNovoTipo input[name='__RequestVerificationToken']").val(),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        success: function (resp) {
+            if (resp.success) {
+                // Recolher os tipos selecionados
+                var tipos = $("#tiposCheckboxes input[name='Tipos']").val();
+
+                $(`#tiposCheckboxes`).load(siteUrl + `/Servicos/TiposAjax?tipos=${tipos}`, function () {
+
+                    $("#btnAddTipo").removeClass("loading");
+                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+
+                    // Notificação 'Noty'
+                    new Noty({
+                        type: 'success',
+                        layout: 'bottomRight',
+                        theme: 'bootstrap-v4',
+                        text: 'Adicionado com sucesso.',
+                        timeout: 4000,
+                        progressBar: true
+                    }).show();
+                    $(`#modalNovoTipo`).modal('hide');
+                });
+            } else {
+                $("#btnAddTipo").removeClass("loading");
+                $(`#divFormNovoTipo`).html(resp); // Mostra o formulário com os erros do modelState
+            }
+        },
+        error: function () {
+            // Notificação 'Noty'
+            new Noty({
+                type: 'error',
+                layout: 'bottomRight',
+                theme: 'bootstrap-v4',
+                text: 'Erro ao adicionar.',
+                timeout: 4000,
+                progressBar: true
+            }).show();
+            $(`#modalNovoTipo`).modal('hide');
+        }
+    });
+};
+
+createServSolic = () => {
+    $("#btnAddServSolic").addClass("loading");
+
+    $.ajax({
+        type: "POST",
+        url: siteUrl + "/ServicosSolicitados/Create",
+        data: {
+            "ServicoSolicitado.Nome": $("#divFormNovoServSolic #Nome").val(),
+            "__RequestVerificationToken": $("#divFormNovoServSolic input[name='__RequestVerificationToken']").val(),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        success: function (resp) {
+            if (resp.success) {
+                // Recolher os tipos selecionados
+                var servSolic = $("#servSolicCheckboxes input[name='ServSolicitados']").val();
+
+                $(`#servSolicCheckboxes`).load(siteUrl + `/Servicos/ServSolicAjax?servSolic=${servSolic}`, function () {
+
+                    $("#btnAddServSolic").removeClass("loading");
+                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+
+                    // Notificação 'Noty'
+                    new Noty({
+                        type: 'success',
+                        layout: 'bottomRight',
+                        theme: 'bootstrap-v4',
+                        text: 'Adicionado com sucesso.',
+                        timeout: 4000,
+                        progressBar: true
+                    }).show();
+                    $(`#modalNovoServSolic`).modal('hide'); // Esconder o modal
+                });
+            } else {
+                $("#btnAddServSolic").removeClass("loading");
+                $(`#divFormNovoServSolic`).html(resp); // Mostra o formulário com os erros do modelState
+            }
+        },
+        error: function () {
+            // Notificação 'Noty'
+            new Noty({
+                type: 'error',
+                layout: 'bottomRight',
+                theme: 'bootstrap-v4',
+                text: 'Erro ao adicionar.',
+                timeout: 4000,
+                progressBar: true
+            }).show();
+            $(`#modalNovoServSolic`).modal('hide');
+        }
+    });
+};
+
 createMetadado = () => {
     $("#btnMetadadoAdicionar").addClass("loading");
 
@@ -331,6 +344,8 @@ createMetadado = () => {
                 var metadados = $("#metadadosCB input[name='metadados']").val();
 
                 $(`#metadadosCB`).load(siteUrl + `/Galerias/MetadadosDropdown?metadados=${metadados}`, function () {
+
+                    $("#btnMetadadoAdicionar").removeClass("loading");
                     $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
 
                     // Notificação 'Noty'
@@ -342,10 +357,12 @@ createMetadado = () => {
                         timeout: 4000,
                         progressBar: true
                     }).show();
+                    $(`#modalNovoMetadado`).modal('hide');
                 });
                 
             } else {
-                $(`#newMetadadoForm`).html(resp);
+                $("#btnMetadadoAdicionar").removeClass("loading");
+                $(`#newMetadadoForm`).html(resp); // Mostra o formulário com os erros do modelState
             }
         },
         error: function () {
@@ -358,9 +375,8 @@ createMetadado = () => {
                 timeout: 4000,
                 progressBar: true
             }).show();
+            $(`#modalNovoMetadado`).modal('hide');
         }
-    }).done(function () {
-        $(`#modalNovoMetadado`).modal('hide');
     });
 };
 

@@ -57,6 +57,11 @@ namespace LabFoto.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nome")] Metadado metadado)
         {
+            if (String.IsNullOrEmpty(metadado.Nome))
+            {
+                ModelState.AddModelError("Nome","É necessário preencher o nome.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(metadado);
