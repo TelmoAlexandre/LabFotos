@@ -21,11 +21,13 @@ namespace LabFoto.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
+        private readonly IEmailAPI _emai;
 
-        public GaleriasController(ApplicationDbContext context, IOnedriveAPI onedrive)
+        public GaleriasController(ApplicationDbContext context, IOnedriveAPI onedrive, IEmailAPI email)
         {
             _context = context;
             _onedrive = onedrive;
+            _emai = email;
         }
 
         #region Ajax
@@ -438,7 +440,9 @@ namespace LabFoto.Controllers
 
             if (ModelState.IsValid)
             {
-                // Associar os metadados à galeria
+                galeria.ServicoFK = servicoID;
+
+                #region Associar os metadados à galeria
                 if (!String.IsNullOrEmpty(metadados)) // Caso existam metadados a serem adicionados
                 {
                     string[] array = metadados.Split(","); // Partir os tipos num array
@@ -455,8 +459,8 @@ namespace LabFoto.Controllers
                         metadadosList.Add(gm);
                     }
                     galeria.Galerias_Metadados = metadadosList;
-                }
-                galeria.ServicoFK = servicoID;
+                } 
+                #endregion
 
                 _context.Add(galeria);
                 await _context.SaveChangesAsync();
@@ -516,39 +520,53 @@ namespace LabFoto.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,DataDeCriacao")] Galeria galeria, string servicoID, string metadados)
         {
+            string feedback = "Galeria editada com sucesso.";
+
             if (!id.Equals(galeria.ID))
             {
                 return NotFound();
             }
 
+            #region Avaliar integridade do servicoID selecionado
             // Certificar que é selecionado um servico
             if (String.IsNullOrEmpty(servicoID))
             {
                 ModelState.AddModelError("Galeria.ServicoFK", "É necessário escolher um serviço.");
             }
+            else
+            {
+                if (await _context.Servicos.FindAsync(servicoID) == null) // Certificar que o serviço existe
+                {
+                    ModelState.AddModelError("Galeria.ServicoFK", "O serviço selecionado não existe.");
+                }
+            } 
+            #endregion
 
             if (ModelState.IsValid)
             {
+                #region Associar os metadados à galeria
+
+                // Todas as relações metadados-galeria que existem
                 try
                 {
-                    galeria.ServicoFK = servicoID;
-
                     List<Galeria_Metadado> allMetadados = await _context.Galerias_Metadados.Where(g => g.GaleriaFK.Equals(galeria.ID)).ToListAsync();
 
-                    // Associar os metadados à galeria
                     if (!String.IsNullOrEmpty(metadados)) // Caso existam metadados a serem adicionados
                     {
-                        string[] array = metadados.Split(","); // Partir os metadados num array
-
-                        foreach(var galeria_metadado in allMetadados) // Remover os metadados que não foram selecionados nas checkboxes
+                        #region Remover os metadados que não foram selecionados nas checkboxes
+                        foreach (var galeria_metadado in allMetadados)
                         {
                             if (!metadados.Contains(galeria_metadado.MetadadoFK.ToString()))
                             {
                                 _context.Remove(galeria_metadado);
                             }
                         }
+                        #endregion
 
-                        // Relacionar novos metadados que foram selecionados nas checkboxes
+                        #region Relacionar novos metadados que foram selecionados nas checkboxes
+
+                        string[] array = metadados.Split(","); // Partir os metadados num array
+
                         foreach (string metadadosId in array)
                         {
                             int intId = Int32.Parse(metadadosId);
@@ -563,20 +581,36 @@ namespace LabFoto.Controllers
                                 });
                             }
                         }
+                        #endregion
                     }
-                    else
+                    else // Caso não tenham sido selecionados metadados
                     {
-                        // Caso não exista metadados na galeria, apagar todos os que existem na bd
-                        foreach(var galeria_metadado in allMetadados)
+                        #region Apagar todas as relações entre os metadados e a galeria
+
+                        foreach (var galeria_metadado in allMetadados)
                         {
                             _context.Remove(galeria_metadado);
                         }
+                        #endregion
                     }
+                }
+                catch (Exception e)
+                {
+                    _emai.NotifyError("Erro ao associar metadados à galeria.", "GaleriasController", "Edit - POST", e.Message);
+                    feedback = "Ocorreu um erro ao associar os metadados à galeria.";
+                }
+
+                #endregion
+
+                #region Update da BD
+                try
+                {
+                    galeria.ServicoFK = servicoID; // Associar o serviço à galeria
 
                     _context.Update(galeria);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!GaleriaExists(galeria.ID))
                     {
@@ -584,11 +618,13 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        throw;
+                        _emai.NotifyError("Erro ao guardar informação na base de dados.", "GaleriasController", "Edit - POST", e.Message);
+                        feedback = "Ocorreu um erro ao editar a galeria.";
                     }
-                }
+                } 
+                #endregion
 
-                TempData["Feedback"] = "Galeria editada com sucesso.";
+                TempData["Feedback"] = feedback;
                 return RedirectToAction(nameof(Details), new { id = galeria.ID});
             }
 

@@ -51,12 +51,12 @@ namespace LabFoto.Controllers
         }
 
         // GET: Metadados/Create
-        public IActionResult CreateOnGaleriaEdit(string galeriaId)
+        public IActionResult CreateOnGaleriaEdit(string id)
         {
             return PartialView("PartialViews/_CreateFormForGaleriaEdit", new MetadadoEditFormViewModel
             {
                 Metadado = new Metadado(),
-                GaleriaId = galeriaId
+                GaleriaId = id
             });
         }
 
