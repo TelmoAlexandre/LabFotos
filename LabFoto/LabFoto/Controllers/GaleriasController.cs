@@ -33,7 +33,12 @@ namespace LabFoto.Controllers
         #region Ajax
 
         // GET: Galerias/MetadadosDropdown
-        // O id recebido é o Id da galeria
+        /// <summary>
+        /// Devolve a dropdown dos metadados preenchida.
+        /// </summary>
+        /// <param name="id">ID da galeria em questão.</param>
+        /// <param name="metadados">Metadados já selecionados pelo utilizador.</param>
+        /// <returns>PartialView com o HTML da dropdown.</returns>
         public IActionResult MetadadosDropdown(string id, string metadados)
         {
             IEnumerable<SelectListItem> response;
@@ -70,6 +75,10 @@ namespace LabFoto.Controllers
         }
 
         // GET: Galerias/ServicosDropdown
+        /// <summary>
+        /// Dropdown com todos os serviços.
+        /// </summary>
+        /// <returns>PartialView com o HTML da dropdown</returns>
         public IActionResult ServicosDropdown()
         {
             // Todos os serviços numa SelectList
