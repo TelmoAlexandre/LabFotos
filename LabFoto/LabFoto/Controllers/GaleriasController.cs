@@ -34,36 +34,39 @@ namespace LabFoto.Controllers
 
         // GET: Galerias/MetadadosDropdown
         // O id recebido é o Id da galeria
-        public IActionResult MetadadosDropdown(string id)
+        public IActionResult MetadadosDropdown(string id, string metadados)
         {
             IEnumerable<SelectListItem> response;
-
             var meta = _context.Metadados.OrderBy(m => m.Nome); // Todos os metadados ordernados
 
             // Caso exista id, preenher as checkboxes de acordo com a galeria em questão
+            // Quando existe id é porque se trata do editar, logo essa galeria pode ter metadados selecionados
+            // nesse caso queremos preencher a dropdown com os metadados da relação
             if (!String.IsNullOrEmpty(id))
             {
                 response = meta.Select(mt => new SelectListItem()
                 {
                     // Verificar se o metadado em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
-                    // da lista Galerias_Metadados
-                    // Caso exista, retorna verdade
+                    // da lista Galerias_Metadados. Caso exista, retorna verdade pois esse encontra-se selecionado
                     Selected = (_context.Galerias_Metadados.Where(gmt => gmt.GaleriaFK.Equals(id)).Where(gmt => gmt.MetadadoFK == mt.ID).Count() != 0),
                     Text = mt.Nome,
-                    Value = mt.ID + ""
+                    Value = mt.ID.ToString()
                 });
             }
-            else
+            else 
             {
+                // Neste caso foi adicionado um novo metadado por Ajax
+                // Qunado não é fornecido um id, preenche de acordo com os metadados selecionados pelo utilizador
+                // para não perder essa informação quando é adiciona um novo metadado
                 response = meta.Select(mt => new SelectListItem()
                 {
-                    Selected = false,
+                    Selected = metadados.Contains(mt.ID.ToString()),
                     Text = mt.Nome,
-                    Value = mt.ID + ""
+                    Value = mt.ID.ToString()
                 });
             }
 
-            return PartialView("PartialViews/_MetadadosCBPartialView", response);
+            return PartialView("PartialViews/_MetadadosDropdown", response);
         }
 
         // GET: Galerias/ServicosDropdown

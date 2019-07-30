@@ -47,11 +47,7 @@ namespace LabFoto.Controllers
         // GET: Metadados/Create
         public IActionResult Create(string id)
         {
-            return PartialView("PartialViews/_CreateForm", new MetadadoEditFormViewModel
-            {
-                Metadado = new Metadado(),
-                GaleriaId = id
-            });
+            return PartialView("PartialViews/_CreateForm", new Metadado());
         }
 
         // POST: Metadados/Create
@@ -59,7 +55,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Nome")] Metadado metadado, string galeriaId)
+        public async Task<IActionResult> Create([Bind("ID,Nome")] Metadado metadado)
         {
             if (ModelState.IsValid)
             {
@@ -68,11 +64,7 @@ namespace LabFoto.Controllers
                 return Json(new { success = true });
             }
 
-            return PartialView("PartialViews/_CreateForm", new MetadadoEditFormViewModel
-            {
-                Metadado = metadado,
-                GaleriaId = galeriaId
-            });
+            return PartialView("PartialViews/_CreateForm", metadado);
         }
 
         // GET: Metadados/Edit/5

@@ -12,7 +12,7 @@
 
         <div class="field">
             <label asp-for="Galeria.Nome"></label>
-            <input asp-for="Galeria.Nome"/>
+            <input asp-for="Galeria.Nome" />
             <span asp-validation-for="Galeria.Nome" class="text-danger"></span>
         </div>
 
@@ -24,7 +24,7 @@
             </div>
             <div class="six wide field">
                 <label asp-for="Galeria.DataDeCriacao"></label>
-                <input asp-for="Galeria.DataDeCriacao" value="@DateTime.Now.ToString("yyyy-MM-dd")"/>
+                <input asp-for="Galeria.DataDeCriacao" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                 <span asp-validation-for="Galeria.DataDeCriacao" class="text-danger"></span>
             </div>
         </div>
@@ -43,6 +43,7 @@
     </div>
 </form>
 
+<!-- #region Modais -->
 <div class="ui basic mini modal" id="confirmarSubmit">
     <div class="content">
         <p>Tem a certeza que pretende criar a Galeria?</p>
@@ -78,6 +79,7 @@
 <div class="ui modal basic mini fluidCorners" id="modalNovoMetadado">
     <div class="content" id="newMetadadoForm"></div>
 </div>
+<!-- #endregion -->
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

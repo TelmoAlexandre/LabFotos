@@ -25,7 +25,7 @@
             </div>
             <div class="six wide field">
                 <label asp-for="Galeria.DataDeCriacao"></label>
-                <input asp-for="Galeria.DataDeCriacao"/>
+                <input asp-for="Galeria.DataDeCriacao" />
                 <span asp-validation-for="Galeria.DataDeCriacao" class="text-danger"></span>
             </div>
         </div>
@@ -43,6 +43,8 @@
         <div class="ui button" onclick="modalCancel('modalCancel')"><span>Cancelar</span></div>
     </div>
 </form>
+
+<!-- #region Modais -->
 
 <div class="ui basic mini modal" id="confirmarSubmit">
     <div class="content">
@@ -77,9 +79,10 @@
 </div>
 
 <div class="ui modal basic mini fluidCorners" id="modalNovoMetadado">
-    <div class="content" id="newMetadadoForm">
-    </div>
+    <div class="content" id="newMetadadoForm"></div>
 </div>
+
+<!-- #endregion -->
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
