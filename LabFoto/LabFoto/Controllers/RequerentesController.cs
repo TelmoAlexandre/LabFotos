@@ -68,7 +68,7 @@ namespace LabFoto.Controllers
             };
 
 
-            return PartialView("_IndexCardsPartialView", response);
+            return PartialView("PartialViews/_IndexCardsPartialView", response);
         }
         #endregion Index
 
@@ -126,7 +126,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return PartialView("_RequerenteDetailsIndexPartial", requerente);
+            return PartialView("PartialViews/_RequerenteDetailsIndexPartial", requerente);
         } 
         
         // GET: Requerentes/Details/5
@@ -145,7 +145,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return PartialView("_RequerenteDetailsPartial", requerente);
+            return PartialView("PartialViews/_RequerenteDetailsPartial", requerente);
         }
 
         #endregion Details
@@ -160,7 +160,7 @@ namespace LabFoto.Controllers
 
         public IActionResult CreateFormAjax()
         {
-            return PartialView("_RequerentesCreateForm", new Requerente());
+            return PartialView("PartialViews/_RequerentesCreateForm", new Requerente());
         }
 
         // POST: Requerentes/Create
@@ -176,7 +176,7 @@ namespace LabFoto.Controllers
                 await _context.SaveChangesAsync();
                 return Json(new { success = true, Id = requerente.ID });
             }
-            return PartialView("_RequerentesCreateForm", requerente);
+            return PartialView("PartialViews/_RequerentesCreateForm", requerente);
         }
 
         #endregion Create
@@ -195,7 +195,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            return PartialView("_EditCardPartialViewIndex", requerente);
+            return PartialView("PartialViews/_EditCardPartialViewIndex", requerente);
         }
 
         // POST: Requerentes/Edit/5
@@ -230,7 +230,7 @@ namespace LabFoto.Controllers
                     }
                 }
             }
-            return PartialView("_EditCardPartialViewIndex", requerente);
+            return PartialView("PartialViews/_EditCardPartialViewIndex", requerente);
         }
 
         // GET: Requerentes/Edit/5
@@ -246,7 +246,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            return PartialView("_EditCardPartialViewDetails", requerente);
+            return PartialView("PartialViews/_EditCardPartialViewDetails", requerente);
         }
 
         // POST: Requerentes/Edit/5
@@ -281,7 +281,7 @@ namespace LabFoto.Controllers
                     }
                 }
             }
-            return PartialView("_EditCardPartialViewDetails", requerente);
+            return PartialView("PartialViews/_EditCardPartialViewDetails", requerente);
         }
 
         #endregion Edit
@@ -318,9 +318,11 @@ namespace LabFoto.Controllers
 
         #endregion Delete
 
+        #region AuxMethods
         private bool RequerentesExists(string id)
         {
             return _context.Requerentes.Any(e => e.ID.Equals(id));
         }
+        #endregion
     }
 }

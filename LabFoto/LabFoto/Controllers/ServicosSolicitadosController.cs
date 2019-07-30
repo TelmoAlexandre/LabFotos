@@ -19,11 +19,16 @@ namespace LabFoto.Controllers
             _context = context;
         }
 
+        #region Index
         // GET: ServicosSolicitados
         public async Task<IActionResult> Index()
         {
             return View(await _context.ServicosSolicitados.ToListAsync());
         }
+
+        #endregion Index
+
+        #region Details
 
         // GET: ServicosSolicitados/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -42,6 +47,10 @@ namespace LabFoto.Controllers
 
             return PartialView("_DetailsPartialView", servicoSolicitado);
         }
+
+        #endregion Details
+
+        #region Create
 
         // GET: ServicosSolicitados/Create
         public IActionResult Create()
@@ -65,6 +74,9 @@ namespace LabFoto.Controllers
             return PartialView("_ServSolicsFormPartialView", servicoSolicitado);
         }
 
+        #endregion Create
+
+        #region Edit
         // GET: ServicosSolicitados/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -116,9 +128,16 @@ namespace LabFoto.Controllers
             return PartialView("_EditPartialView", servicoSolicitado);
         }
 
+        #endregion Edit
+
+        #region AuxMethods
+
         private bool ServicosSolicitadosExists(int id)
         {
             return _context.ServicosSolicitados.Any(e => e.ID == id);
         }
+
+        #endregion
+
     }
 }

@@ -19,11 +19,17 @@ namespace LabFoto.Controllers
             _context = context;
         }
 
+        #region Index
+
         // GET: Tipos
         public async Task<IActionResult> Index()
         {
             return View(await _context.Tipos.ToListAsync());
         }
+
+        #endregion Index
+
+        #region Details
 
         // GET: Tipos/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -42,6 +48,10 @@ namespace LabFoto.Controllers
 
             return PartialView("_DetailsPartialView", tipos);
         }
+
+        #endregion Details
+
+        #region Create
 
         // GET: Tipos/Create
         public IActionResult Create()
@@ -62,8 +72,12 @@ namespace LabFoto.Controllers
                 await _context.SaveChangesAsync();
                 return Json(new { success = true });
             }
-            return PartialView("_TiposCreateForm",tipo);
+            return PartialView("_TiposCreateForm", tipo);
         }
+
+        #endregion Create
+
+        #region Edit
 
         // GET: Tipos/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -118,9 +132,15 @@ namespace LabFoto.Controllers
             return PartialView("_EditPartialView", tipo);
         }
 
+        #endregion Edit
+
+        #region AuxMethods
+
         private bool TipoExists(int id)
         {
             return _context.Tipos.Any(e => e.ID == id);
         }
+
+        #endregion
     }
 }
