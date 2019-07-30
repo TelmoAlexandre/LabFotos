@@ -89,13 +89,18 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_ServicosDropdownPartialView", servicos);
         }
 
-        public async Task<IActionResult> InitialGaleria()
+        public async Task<IActionResult> InitialGaleria(string servicoId)
         {
-            var galerias = _context.Galerias.Include(g => g.Fotografias).Select(g => g);
+            var galerias = _context.Galerias.Include(g => g.Fotografias).Include(g => g.Servico).Select(g => g);
+
+            if (!String.IsNullOrEmpty(servicoId))
+            {
+                galerias = galerias.Where(g => g.ServicoFK.Equals(servicoId));
+            }
 
             int totalGalerias = galerias.Count();
 
-            galerias = galerias.Include(g => g.Servico)
+            galerias = galerias
                 .OrderByDescending(g => g.DataDeCriacao)
                 .Take(8)
                 .Include(g => g.Fotografias)
@@ -137,7 +142,9 @@ namespace LabFoto.Controllers
                 ViewData["Feedback"] = TempData["Feedback"];
             }
 
-            return View();
+            return View(new GaleriasOfServiceViewModel {
+                ServicoID = serv
+            });
         }
 
         // POST: Servicos/IndexFilter

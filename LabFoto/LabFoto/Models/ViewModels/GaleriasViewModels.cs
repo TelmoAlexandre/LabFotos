@@ -25,4 +25,8 @@ namespace LabFoto.Models.ViewModels
         public SelectList Servicos { get; set; }
         public Metadado Metadado { get; set; }
     }
+    public class GaleriasOfServiceViewModel
+    {
+        public string ServicoID { get; set; }
+    }
 }
