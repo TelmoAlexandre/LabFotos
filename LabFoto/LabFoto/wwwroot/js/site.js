@@ -42,7 +42,7 @@ function init() {
 }
 
 function initModalEvents() {
-    servicoFormsLoadAjax = (divFormId, modalId, href) => {
+    loadAjaxForm = (divFormId, modalId, href) => {
         // Adicionar um loading
         $(`#${divFormId}`).html(getLoadingBarHtml);
         $(`#${modalId}`).modal({
@@ -91,7 +91,7 @@ function initModalEvents() {
         e.preventDefault();
 
         // Loading equanto dá fetch ao formulário
-        servicoFormsLoadAjax(
+        loadAjaxForm(
             'newRequerenteForm',
             'modalNovoRequerente',
             siteUrl + '/Requerentes/CreateFormAjax'
@@ -103,7 +103,7 @@ function initModalEvents() {
     $("#btnModalNovoTipo").click(function (e) {
         e.preventDefault();
         // Loading equanto dá fetch ao formulário
-        servicoFormsLoadAjax(
+        loadAjaxForm(
             'divFormNovoTipo',
             'modalNovoTipo',
             siteUrl + '/Tipos/Create'
@@ -113,7 +113,7 @@ function initModalEvents() {
     $("#btnModalNovoServSolic").click(function (e) {
         e.preventDefault();
         // Loading equanto dá fetch ao formulário
-        servicoFormsLoadAjax(
+        loadAjaxForm(
             'divFormNovoServSolic',
             'modalNovoServSolic',
             siteUrl + '/ServicosSolicitados/Create'
@@ -125,7 +125,7 @@ function initModalEvents() {
         e.preventDefault();
 
         // Loading equanto dá fetch ao formulário
-        servicoFormsLoadAjax(
+        loadAjaxForm(
             'newMetadadoForm',
             'modalNovoMetadado',
             siteUrl + '/Metadados/Create'
@@ -261,39 +261,6 @@ createServSolicOnServicosEdit = (idServico) => {
     });
 };
 
-createMetadadoOnGaleriasEdit = (idGaleria) => {
-    $.ajax({
-        type: "POST",
-        url: siteUrl + "/Metadados/Create",
-        data: {
-            "Metadado.Nome": $("#Metadado_Nome").val(),
-            "galeriaId": $("#galeriaId").val(),
-            "__RequestVerificationToken": $("#modalNovoMetadado input[name='__RequestVerificationToken']").val(),
-            "X-Requested-With": "XMLHttpRequest"
-        },
-        success: function (resp) {
-            if (resp.success) {
-                $(`#metadadosCB`).load(siteUrl + `/Galerias/MetadadosDropdown/${idGaleria}`, function () {
-                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-                });
-                $(`#modalNovoMetadado`).modal('hide');
-                $(`#newMetadadoForm`).load(siteUrl + `/Metadados/CreateOnGaleriaEdit/${idGaleria}` );
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'success',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: 'Adicionado com sucesso.',
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
-            } else {
-                $(`#newMetadadoForm`).html(resp);
-            }
-        }
-    });
-};
-
 requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, requerenteId) => {
     e.preventDefault(); // Não deixar o form submeter
 
@@ -359,6 +326,39 @@ requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, r
                     timeout: 4000,
                     progressBar: true
                 }).show();
+            }
+        }
+    });
+};
+
+createMetadado = (idGaleria) => {
+    $.ajax({
+        type: "POST",
+        url: siteUrl + "/Metadados/Create",
+        data: {
+            "Metadado.Nome": $("#Metadado_Nome").val(),
+            "galeriaId": $("#galeriaId").val(),
+            "__RequestVerificationToken": $("#modalNovoMetadado input[name='__RequestVerificationToken']").val(),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        success: function (resp) {
+            if (resp.success) {
+                $(`#metadadosCB`).load(siteUrl + `/Galerias/MetadadosDropdown/${idGaleria}`, function () {
+                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+                });
+                $(`#modalNovoMetadado`).modal('hide');
+
+                // Notificação 'Noty'
+                new Noty({
+                    type: 'success',
+                    layout: 'bottomRight',
+                    theme: 'bootstrap-v4',
+                    text: 'Adicionado com sucesso.',
+                    timeout: 4000,
+                    progressBar: true
+                }).show();
+            } else {
+                $(`#newMetadadoForm`).html(resp);
             }
         }
     });

@@ -38,10 +38,12 @@ namespace LabFoto.Controllers
         {
             IEnumerable<SelectListItem> response;
 
+            var meta = _context.Metadados.OrderBy(m => m.Nome); // Todos os metadados ordernados
+
             // Caso exista id, preenher as checkboxes de acordo com a galeria em questão
             if (!String.IsNullOrEmpty(id))
             {
-                response = _context.Metadados.Select(mt => new SelectListItem()
+                response = meta.Select(mt => new SelectListItem()
                 {
                     // Verificar se o metadado em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor 
                     // da lista Galerias_Metadados
@@ -53,7 +55,7 @@ namespace LabFoto.Controllers
             }
             else
             {
-                response = _context.Metadados.Select(mt => new SelectListItem()
+                response = meta.Select(mt => new SelectListItem()
                 {
                     Selected = false,
                     Text = mt.Nome,

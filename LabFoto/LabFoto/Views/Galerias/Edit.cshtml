@@ -33,7 +33,9 @@
         <div class="field">
             <label asp-for="Galeria.Galerias_Metadados"></label>
             <div class="field" id="metadadosCB"></div>
-            <div class="ui tiny basic blue button mt-0" onclick="showModal('modalNovoMetadado')"><i class="plus icon"></i><span class="ml-2">Novo Metadado</span></div>
+            <div class="ui tiny basic blue button mt-0" onclick="loadAjaxForm('newMetadadoForm', 'modalNovoMetadado', siteUrl + '/Metadados/Create/@Model.Galeria.ID')">
+                <i class="plus icon"></i><span class="ml-2">Novo Metadado</span>
+            </div>
         </div>
     </div>
     <div class="mt-3">
@@ -76,24 +78,6 @@
 
 <div class="ui modal basic mini fluidCorners" id="modalNovoMetadado">
     <div class="content" id="newMetadadoForm">
-        <div class="ui raised segment fluidCorners">
-            <a class="ui blue ribbon label mb-3">Novo Metadado</a>
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" name="galeriaId" value="@Model.Galeria.ID" id="galeriaId"/>
-
-            <div class="ui form">
-                <div class="field">
-                    <label asp-for="Metadado.Nome"></label>
-                    <input asp-for="Metadado.Nome" placeholder="Metadado" />
-                    <span asp-validation-for="Metadado.Nome" class="text-danger"></span>
-                </div>
-                <div class="fields">
-                    <div class="eight wide field"><button class="ui button fluid primary" onclick="createMetadadoOnGaleriasEdit('@Model.Galeria.ID')">Adicionar</button></div>
-                    <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

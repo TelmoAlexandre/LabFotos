@@ -32,7 +32,9 @@
         <div class="field">
             <label asp-for="Galeria.Galerias_Metadados"></label>
             <div class="field mb-1" id="metadadosCB"></div>
-            <div class="ui tiny basic blue button mt-0" id="btnModalNovoMetadado"><i class="plus icon"></i><span class="ml-2">Novo Metadado</span></div>
+            <div class="ui tiny basic blue button mt-0" onclick="loadAjaxForm('newMetadadoForm', 'modalNovoMetadado', siteUrl + '/Metadados/Create')">
+                <i class="plus icon"></i><span class="ml-2">Novo Metadado</span>
+            </div>
         </div>
     </div>
     <div class="mt-3">
