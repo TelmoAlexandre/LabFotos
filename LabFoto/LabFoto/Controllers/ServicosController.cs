@@ -35,7 +35,7 @@ namespace LabFoto.Controllers
             {
                 RequerentesList = new SelectList(requerentes, "ID", "Nome", lastRequrente.ID)
             };
-            return PartialView("_RequerentesDropbox", response);
+            return PartialView("PartialViews/_RequerentesDropdown", response);
         }
 
         // GET: Servicos/TiposAjax
