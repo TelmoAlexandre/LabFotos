@@ -81,7 +81,6 @@ namespace LabFoto.Controllers
                 PageNum = search.Page
             };
 
-
             return PartialView("PartialViews/_IndexCardsPartialView", response);
         }
         #endregion Index

@@ -1,8 +1,5 @@
 ﻿@model LabFoto.Models.Tables.Requerente
 
-@using Microsoft.Extensions.Options;
-@inject IOptions<AppSettings> Settings
-
 @{
     ViewData["Title"] = "Detalhes";
 }
@@ -20,22 +17,30 @@
     </div>
 </div>
 
-<div class="h5 ml-2">Serviços</div>
-<div class="ui grid">
-    <div class="four wide column">
-        <div class="ui vertical fluid tabular menu">
-            @foreach (var ser in Model.Servicos)
-            {
-                <a class="item" id="list_nome" onclick="requerenteServicoDetails(`div_segment`, `@ser.ID`)" data-toggle="list" role="tab" aria-controls="home" href="#list-segment">@ser.Nome</a>
-            }
+@if (Model.Servicos.Count() != 0)
+{
+    <div class="h5 ml-2 mb-2 font-weight-bold">Serviços</div>
+    <div class="ui grid">
+        <div class="four wide column">
+            <div class="ui vertical fluid tabular menu">
+                @foreach (var ser in Model.Servicos)
+                {
+                    <a class="item" id="list_nome" onclick="requerenteServicoDetails(`div_segment`, `@ser.ID`)" data-toggle="list" role="tab" aria-controls="home" href="#list-segment">@ser.Nome</a>
+                }
+            </div>
+        </div>
+        <div class="twelve wide stretched column">
+            <div id="list-segment" role="tabpanel" aria-labelledby="list_nome">
+                <div id="div_segment"></div>
+            </div>
         </div>
     </div>
-    <div class="twelve wide stretched column">
-        <div class="ui segment" id="list-segment" role="tabpanel" aria-labelledby="list_nome">
-            <div id="div_segment"></div>
-        </div>
-    </div>
-</div>
+}
+else
+{
+    <div class="h5 ml-2 font-weight-bold">Não tem serviços.</div>
+}
+
 
 
 <div class="ui card" id="loadingServico" hidden>
@@ -93,9 +98,20 @@
 
 @section scripts
 {
-    <script>
+    @{ /* Caso o requerente tenha serviços, mostrar o primeiro por defeito */ }
+    @if (Model.Servicos.Count() != 0)
+    {
+        <script>
+            $(document).ready(function ()
+            {
+                requerenteServicoDetails(`div_segment`, `@Model.Servicos.FirstOrDefault().ID`);
+            });
+        </script>
+    }
 
-        editarRequerenteDetails = (divEdicao, divRequerente, idRequerente) => {
+    <script>
+        editarRequerenteDetails = (divEdicao, divRequerente, idRequerente) =>
+        {
             flipCard(`${divRequerente}`, 'flip back');
             // $(`#${divRequerente}`).shape('flip back');
             requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditDetails/${idRequerente}`);
@@ -103,7 +119,8 @@
 
         // Detalhes do serviço com o id que recebe por parametro
         // e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
-        requerenteServicoDetails = (divId, servicoId) => {
+        requerenteServicoDetails = (divId, servicoId) =>
+        {
             $(`#${divId}`).html($(`#loadingServico`));
             $(`#loadingServico`).removeAttr('hidden');
             $(`#${divId}`).load(siteUrl + `/Servicos/DetailsAjax/${servicoId}`);
