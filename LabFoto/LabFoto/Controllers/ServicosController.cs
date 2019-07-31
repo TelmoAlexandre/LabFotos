@@ -10,6 +10,7 @@ using LabFoto.Models.Tables;
 using LabFoto.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using LabFoto.APIs;
 
 namespace LabFoto.Controllers
 {
@@ -17,6 +18,7 @@ namespace LabFoto.Controllers
     public class ServicosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly int _serPP = 10;
 
         public ServicosController(ApplicationDbContext context)
         {
@@ -136,6 +138,9 @@ namespace LabFoto.Controllers
                 ViewData["Feedback"] = TempData["Feedback"];
             }
 
+            // Recolher os serviços por página do cookie
+            int servPP = CookieAPI.GetAsInt32(Request, "ServicosPerPage") ?? _serPP;
+
             var servicos = _context.Servicos.Include(s => s.Requerente)
                 .Include(s => s.Servicos_Tipos).ThenInclude(st => st.Tipo)
                 .Include(s => s.Servicos_ServicosSolicitados).ThenInclude(sss => sss.ServicoSolicitado)
@@ -144,11 +149,13 @@ namespace LabFoto.Controllers
 
             ServicosIndexViewModel response = new ServicosIndexViewModel
             {
-                Servicos = await servicos.Take(1).ToListAsync(),
+                Servicos = await servicos.Take(servPP).ToListAsync(),
                 FirstPage = true,
-                LastPage = (servicos.Count() <= 1),
+                LastPage = (servicos.Count() <= servPP),
                 PageNum = 1
             };
+
+            ViewData["servPP"] = servPP;
 
             return View(response);
         }
@@ -156,12 +163,21 @@ namespace LabFoto.Controllers
         // POST: Servicos/IndexFilter
         [HttpPost]
         public async Task<IActionResult> IndexFilter(string nomeSearch, DateTime? dataSearchMin, DateTime? dataSearchMax, string requerenteSearch,
-            string obraSearch, IFormCollection form, string ordem, int? page, int? servicosPerPage)
+            string obraSearch, IFormCollection form, string ordem, int page = 1, int servicosPerPage = 10)
 
         {
-            if (page == null) page = 1;
-            if (servicosPerPage == null) servicosPerPage = 1;
-            int skipNum = ((int)page - 1) * (int)servicosPerPage;
+            int skipNum = (page - 1) * servicosPerPage;
+
+            // Recolher os serviços por página do cookie
+            int servPP = CookieAPI.GetAsInt32(Request, "ServicosPerPage") ?? _serPP;
+
+            // Caso o utilizador tenha alterado os serviços por página, alterar a variável global e guardar
+            // o novo  valor no cookie
+            if (servicosPerPage != servPP)
+            {
+                servPP = servicosPerPage;
+                CookieAPI.Set(Response, "ServicosPerPage", servPP.ToString());
+            }
 
             // Query de todos os serviços
             IQueryable<Servico> servicos = _context.Servicos.Where(s => s.Hide == false);
@@ -240,10 +256,10 @@ namespace LabFoto.Controllers
 
             ServicosIndexViewModel response = new ServicosIndexViewModel
             {
-                Servicos = await servicos.Take((int)servicosPerPage).ToListAsync(),
+                Servicos = await servicos.Take(servPP).ToListAsync(),
                 FirstPage = (page == 1),
-                LastPage = (servicos.Count() <= (int)servicosPerPage),
-                PageNum = (int)page
+                LastPage = (servicos.Count() <= servPP),
+                PageNum = page
             };
 
             return PartialView("PartialViews/_ServicosIndexCards", response);

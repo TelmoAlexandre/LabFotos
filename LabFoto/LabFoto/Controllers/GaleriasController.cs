@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using LabFoto.Models;
 using Microsoft.Extensions.Options;
+using LabFoto.APIs;
 
 namespace LabFoto.Controllers
 {
@@ -22,6 +23,7 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
         private readonly IEmailAPI _emai;
+        private readonly int _galPP = 8;
 
         public GaleriasController(ApplicationDbContext context, IOnedriveAPI onedrive, IEmailAPI email)
         {
@@ -92,6 +94,9 @@ namespace LabFoto.Controllers
         public async Task<IActionResult> InitialGaleria(string servicoId)
         {
             var galerias = _context.Galerias.Include(g => g.Fotografias).Include(g => g.Servico).Select(g => g);
+            
+            // Recolher as galerias por página do cookie
+            int galPP = CookieAPI.GetAsInt32(Request, "GaleriasPerPage") ?? _galPP;
 
             if (!String.IsNullOrEmpty(servicoId))
             {
@@ -102,7 +107,7 @@ namespace LabFoto.Controllers
 
             galerias = galerias
                 .OrderByDescending(g => g.DataDeCriacao)
-                .Take(8)
+                .Take(galPP)
                 .Include(g => g.Fotografias)
                 .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado);
 
@@ -122,7 +127,7 @@ namespace LabFoto.Controllers
             {
                 Galerias = await galerias.ToListAsync(),
                 FirstPage = true,
-                LastPage = (totalGalerias <= 8),
+                LastPage = (totalGalerias <= galPP),
                 PageNum = 1
             };
 
@@ -142,6 +147,11 @@ namespace LabFoto.Controllers
                 ViewData["Feedback"] = TempData["Feedback"];
             }
 
+            // Recolher as galerias por página do cookie
+            int galPP = CookieAPI.GetAsInt32(Request, "GaleriasPerPage") ?? _galPP;
+
+            ViewData["galPP"] = galPP;
+
             return View(new GaleriasOfServiceViewModel {
                 ServicoID = serv
             });
@@ -154,6 +164,17 @@ namespace LabFoto.Controllers
 
         {
             int skipNum = ((int)page - 1) * galeriasPerPage;
+
+            // Recolher os serviços por página do cookie
+            int galPP = CookieAPI.GetAsInt32(Request, "GaleriasPerPage") ?? _galPP;
+
+            // Caso o utilizador tenha alterado os serviços por página, alterar a variável global e guardar
+            // o novo  valor no cookie
+            if (galeriasPerPage != galPP)
+            {
+                galPP = galeriasPerPage;
+                CookieAPI.Set(Response, "GaleriasPerPage", galPP.ToString());
+            }
 
             // Query de todos os serviços
             IQueryable<Galeria> galerias = _context.Galerias.Select(g => g);
@@ -214,7 +235,7 @@ namespace LabFoto.Controllers
                 .Skip(skipNum);
 
             int totalGalerias = galerias.Count();
-            galerias = galerias.Take(galeriasPerPage);
+            galerias = galerias.Take(galPP);
 
             // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
             List<Fotografia> photos = await galerias.Include(g => g.Fotografias).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
@@ -232,7 +253,7 @@ namespace LabFoto.Controllers
             {
                 Galerias = await galerias.ToListAsync(),
                 FirstPage = (page == 1),
-                LastPage = (totalGalerias <= galeriasPerPage),
+                LastPage = (totalGalerias <= galPP),
                 PageNum = page
             };
 

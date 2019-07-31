@@ -9,6 +9,7 @@ using LabFoto.Data;
 using LabFoto.Models.Tables;
 using Microsoft.AspNetCore.Authorization;
 using LabFoto.Models.ViewModels;
+using LabFoto.APIs;
 
 namespace LabFoto.Controllers
 {
@@ -16,6 +17,7 @@ namespace LabFoto.Controllers
     public class RequerentesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly int _rPP = 9;
 
         public RequerentesController(ApplicationDbContext context)
         {
@@ -29,25 +31,37 @@ namespace LabFoto.Controllers
             var requerentes = _context.Requerentes.Include(r => r.Servicos)
                 .OrderBy(r => r.Nome);
 
+            // Recolher as galerias por página do cookie
+            int rPP = CookieAPI.GetAsInt32(Request, "RequerentesPerPage") ?? _rPP;
+
+            ViewData["rPP"] = rPP;
 
             RequerentesViewModels response = new RequerentesViewModels
             {
-                Requerentes = await requerentes.Take(2).ToListAsync(),
+                Requerentes = await requerentes.Take(rPP).ToListAsync(),
                 FirstPage = true,
-                LastPage = (requerentes.Count() <= 2),
+                LastPage = (requerentes.Count() <= rPP),
                 PageNum = 1
             };
-
 
             return View(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> IndexFilter(string nomeSearch, int? requerentesPerPage, int? pageReq) {
-
-            if (pageReq == null) pageReq = 1;
-            if (requerentesPerPage == null) requerentesPerPage = 2;
+        public async Task<IActionResult> IndexFilter(string nomeSearch, int requerentesPerPage = 9, int pageReq = 1)
+        {
             int skipNum = ((int)pageReq - 1) * (int)requerentesPerPage;
+
+            // Recolher os serviços por página do cookie
+            int rPP = CookieAPI.GetAsInt32(Request, "RequerentesPerPage") ?? _rPP;
+
+            // Caso o utilizador tenha alterado os serviços por página, alterar a variável global e guardar
+            // o novo  valor no cookie
+            if (requerentesPerPage != rPP)
+            {
+                rPP = requerentesPerPage;
+                CookieAPI.Set(Response, "RequerentesPerPage", rPP.ToString());
+            }
 
             // Query de todos os requerentes
             IQueryable<Requerente> requerentes = _context.Requerentes.AsQueryable().OrderBy(r => r.Nome);
@@ -61,10 +75,10 @@ namespace LabFoto.Controllers
 
             RequerentesViewModels response = new RequerentesViewModels
             {
-                Requerentes = await requerentes.Take((int)requerentesPerPage).ToListAsync(),
+                Requerentes = await requerentes.Take(rPP).ToListAsync(),
                 FirstPage = (pageReq == 1),
-                LastPage = (requerentes.Count() <= requerentesPerPage),
-                PageNum = (int)pageReq
+                LastPage = (requerentes.Count() <= rPP),
+                PageNum = pageReq
             };
 
 

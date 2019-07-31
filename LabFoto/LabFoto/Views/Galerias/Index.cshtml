@@ -113,10 +113,10 @@
                 <div class="ui inline dropdown">
                     <input type="hidden" name="galeriasPerPage" onchange="submitSearchForm()" />
                     <span>Ver </span>
-                    <span class="text" onchange="servicosPerPageRefresh">8</span>
+                    <span class="text" onchange="servicosPerPageRefresh">@ViewData["galPP"]</span>
                     <i class="dropdown icon"></i>
                     <div class="menu">
-                        <div class="active item" data-text="8" data-value="8">8</div>
+                        <div class="item" data-text="8" data-value="8">8</div>
                         <div class="item" data-text="16" data-value="16">16</div>
                         <div class="item" data-text="32" data-value="32">32</div>
                     </div>
