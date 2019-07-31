@@ -161,20 +161,19 @@ namespace LabFoto.Controllers
 
         // POST: Servicos/IndexFilter
         [HttpPost]
-        public async Task<IActionResult> IndexFilter(string nomeSearch, DateTime? dataSearchMin, DateTime? dataSearchMax, string servicoID,
-            string metadados, string ordem, int page = 1, int galeriasPerPage = 8)
+        public async Task<IActionResult> IndexFilter([Bind("NomeSearch,DateMin,DateMax,ServicoID,Metadados,Ordem,Page,GaleriasPerPage")] GaleriasSearchViewModel search)
 
         {
-            int skipNum = ((int)page - 1) * galeriasPerPage;
+            int skipNum = (search.Page - 1) * search.GaleriasPerPage;
 
             // Recolher os serviços por página do cookie
             int galPP = CookieAPI.GetAsInt32(Request, "GaleriasPerPage") ?? _galPP;
 
             // Caso o utilizador tenha alterado os serviços por página, alterar a variável global e guardar
             // o novo  valor no cookie
-            if (galeriasPerPage != galPP)
+            if (search.GaleriasPerPage != galPP)
             {
-                galPP = galeriasPerPage;
+                galPP = search.GaleriasPerPage;
                 CookieAPI.Set(Response, "GaleriasPerPage", galPP.ToString());
             }
 
@@ -182,38 +181,38 @@ namespace LabFoto.Controllers
             IQueryable<Galeria> galerias = _context.Galerias.Select(g => g);
 
             // Caso exista pesquisa por nome
-            if (!String.IsNullOrEmpty(nomeSearch))
+            if (!String.IsNullOrEmpty(search.NomeSearch))
             {
-                galerias = galerias.Where(s => s.Nome.Contains(nomeSearch));
+                galerias = galerias.Where(s => s.Nome.Contains(search.NomeSearch));
             }
             // Caso exista pesquisa por servico
-            if (!String.IsNullOrEmpty(servicoID))
+            if (!String.IsNullOrEmpty(search.ServicoID))
             {
-                galerias = galerias.Where(g => g.ServicoFK.Equals(servicoID));
+                galerias = galerias.Where(g => g.ServicoFK.Equals(search.ServicoID));
             }
             // Caso exista pesquisa por data min
-            if (dataSearchMin != null)
+            if (search.DateMin != null)
             {
-                galerias = galerias.Where(s => s.DataDeCriacao >= dataSearchMin);
+                galerias = galerias.Where(s => s.DataDeCriacao >= search.DateMin);
             }
             // Caso exista pesquisa por data max
-            if (dataSearchMax != null)
+            if (search.DateMax != null)
             {
-                galerias = galerias.Where(s => s.DataDeCriacao <= dataSearchMax);
+                galerias = galerias.Where(s => s.DataDeCriacao <= search.DateMax);
             }
             // Caso exista metadados
-            if (!String.IsNullOrEmpty(metadados))
+            if (!String.IsNullOrEmpty(search.Metadados))
             {
-                foreach (string metaID in metadados.Split(","))
+                foreach (string metaID in search.Metadados.Split(","))
                 {
                     var galeriasList = _context.Galerias_Metadados.Where(st => st.MetadadoFK == Int32.Parse(metaID)).Select(st => st.GaleriaFK).ToList();
                     galerias = galerias.Where(s => galeriasList.Contains(s.ID));
                 }
             }
 
-            if (!String.IsNullOrEmpty(ordem))
+            if (!String.IsNullOrEmpty(search.Ordem))
             {
-                switch (ordem)
+                switch (search.Ordem)
                 {
                     case "data":
                         galerias = galerias.OrderByDescending(s => s.DataDeCriacao);
@@ -254,9 +253,9 @@ namespace LabFoto.Controllers
             GaleriasIndexViewModel response = new GaleriasIndexViewModel
             {
                 Galerias = await galerias.ToListAsync(),
-                FirstPage = (page == 1),
+                FirstPage = (search.Page == 1),
                 LastPage = (totalGalerias <= galPP),
-                PageNum = page
+                PageNum = search.Page
             };
 
             return PartialView("PartialViews/_GaleriasIndexCardsPartialView", response);

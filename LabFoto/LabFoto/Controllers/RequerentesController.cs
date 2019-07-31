@@ -48,27 +48,27 @@ namespace LabFoto.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> IndexFilter(string nomeSearch, int requerentesPerPage = 9, int pageReq = 1)
+        public async Task<IActionResult> IndexFilter([Bind("NomeSearch,Page,RequerentesPerPage")] RequerentesSearchViewModel search)
         {
-            int skipNum = ((int)pageReq - 1) * (int)requerentesPerPage;
+            int skipNum = (search.Page - 1) * search.RequerentesPerPage;
 
             // Recolher os serviços por página do cookie
             int rPP = CookieAPI.GetAsInt32(Request, "RequerentesPerPage") ?? _rPP;
 
             // Caso o utilizador tenha alterado os serviços por página, alterar a variável global e guardar
             // o novo  valor no cookie
-            if (requerentesPerPage != rPP)
+            if (search.RequerentesPerPage != rPP)
             {
-                rPP = requerentesPerPage;
+                rPP = search.RequerentesPerPage;
                 CookieAPI.Set(Response, "RequerentesPerPage", rPP.ToString());
             }
 
             // Query de todos os requerentes
             IQueryable<Requerente> requerentes = _context.Requerentes.AsQueryable().OrderBy(r => r.Nome);
 
-            if (!String.IsNullOrEmpty(nomeSearch))
+            if (!String.IsNullOrEmpty(search.NomeSearch))
             {
-                requerentes = requerentes.Where(r => r.Nome.Contains(nomeSearch)).OrderBy(r => r.Nome);
+                requerentes = requerentes.Where(r => r.Nome.Contains(search.NomeSearch)).OrderBy(r => r.Nome);
             }
 
             requerentes = requerentes.Include(r => r.Servicos).Skip(skipNum);
@@ -76,9 +76,9 @@ namespace LabFoto.Controllers
             RequerentesViewModels response = new RequerentesViewModels
             {
                 Requerentes = await requerentes.Take(rPP).ToListAsync(),
-                FirstPage = (pageReq == 1),
+                FirstPage = (search.Page == 1),
                 LastPage = (requerentes.Count() <= rPP),
-                PageNum = pageReq
+                PageNum = search.Page
             };
 
 

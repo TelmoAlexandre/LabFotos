@@ -16,7 +16,7 @@
             <div class="fields">
                 <div class="six wide field">
                     <div class="ui transparent left icon input large">
-                        <input type="search" id="nomeSearch" placeholder="Nome do requerente..." name="nomeSearch">
+                        <input type="search" id="NomeSearch" placeholder="Nome do requerente..." name="nomeSearch">
                         <i class="search icon"></i>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
     </div>
     <div class="content ml-2 mb-4" style="padding-top:10px;">
         <div class="ui inline dropdown">
-            <input type="hidden" name="requerentesPerPage" onchange="requerentesSubmitSearchForm()" />
+            <input type="hidden" name="RequerentesPerPage" onchange="requerentesSubmitSearchForm()" />
             <span>Ver </span>
             <span class="text" onchange="requerentesPerPageRefresh">@ViewData["rPP"]</span>
             <i class="dropdown icon"></i>
@@ -48,7 +48,7 @@
         <span> por página</span>
     </div>
 
-    <input type="number" name="pageReq" id="pageReqNum" hidden />
+    <input type="number" name="Page" id="pageReqNum" hidden />
 </form>
 
 <div id="cardsRequerentes">

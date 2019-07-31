@@ -25,4 +25,22 @@ namespace LabFoto.Models.ViewModels
         public Servico Servico { get; set; }
 
     }
+    public class ServicosSearchViewModel
+    {
+        public ServicosSearchViewModel()
+        {
+            Page = 1;
+            ServicosPerPage = 10;
+        }
+        public string NomeSearch { get; set; }
+        public DateTime? DateMin { get; set; }
+        public DateTime? DateMax { get; set; }
+        public string Requerente { get; set; }
+        public string Obra { get; set; }
+        public string Tipos { get; set; }
+        public string ServSolicitados { get; set; }
+        public string Ordem { get; set; }
+        public int Page { get; set; }
+        public int ServicosPerPage { get; set; }
+    }
 }

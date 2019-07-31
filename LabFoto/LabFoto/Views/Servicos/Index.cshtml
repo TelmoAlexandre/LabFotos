@@ -20,7 +20,7 @@
             <div class="fields">
                 <div class=" eight wide field">
                     <div class="ui transparent left icon input large">
-                        <input type="search" id="nomeSearch" placeholder="Nome do serviço..." name="nomeSearch">
+                        <input type="search" id="NomeSearch" placeholder="Nome do serviço..." name="nomeSearch">
                         <i class="search icon"></i>
                     </div>
                 </div>
@@ -41,13 +41,13 @@
                 <div class="fields">
                     <div class="eight wide field">
                         <div class="ui transparent left icon input">
-                            <input type="search" id="requerenteSearch" placeholder="Requerente..." name="requerenteSearch">
+                            <input type="search" id="requerenteSearch" placeholder="Requerente..." name="Requerente">
                             <i class="user outline icon"></i>
                         </div>
                     </div>
                     <div class="eight wide field">
                         <div class="ui transparent left icon input">
-                            <input type="search" id="obraSearch" placeholder="Indentificação/Obra..." name="obraSearch">
+                            <input type="search" id="obraSearch" placeholder="Indentificação/Obra..." name="Obra">
                             <i class="pencil alternate icon"></i>
                         </div>
                     </div>
@@ -79,14 +79,14 @@
                         <small class="form-text text-muted  ">
                             Desde
                         </small>
-                        <input type="date" class="searchServicoDate" name="dataSearchMin"
+                        <input type="date" class="searchServicoDate" name="DateMin"
                                onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
                     </div>
                     <div class="eight wide field">
                         <small class="form-text text-muted">
                             Até
                         </small>
-                        <input type="date" id="dataSearchMax" name="dataSearchMax"
+                        <input type="date" id="dataSearchMax" name="DateMax"
                                onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
                     </div>
                 </div>
@@ -117,7 +117,7 @@
             <div class="content" style="padding-top:10px;">
                 <span>Ordenar por </span>
                 <div class="ui inline dropdown">
-                    <input type="hidden" name="ordem" onchange="submitSearchForm()" />
+                    <input type="hidden" name="Ordem" onchange="submitSearchForm()" />
                     <span class="text">data de criação</span>
                     <i class="dropdown icon"></i>
                     <div class="menu">
@@ -130,7 +130,7 @@
         <div class="col-md-2">
             <div class="content" style="padding-top:10px;">
                 <div class="ui inline dropdown">
-                    <input type="hidden" name="servicosPerPage" onchange="submitSearchForm()" />
+                    <input type="hidden" name="ServicosPerPage" onchange="submitSearchForm()" />
                     <span>Ver </span>
                     <span class="text" onchange="servicosPerPageRefresh">@ViewData["servPP"]</span>
                     <i class="dropdown icon"></i>

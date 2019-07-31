@@ -29,4 +29,20 @@ namespace LabFoto.Models.ViewModels
     {
         public string ServicoID { get; set; }
     }
+    public class GaleriasSearchViewModel
+    {
+        public GaleriasSearchViewModel()
+        {
+            Page = 1;
+            GaleriasPerPage = 8;
+        }
+        public string NomeSearch { get; set; }
+        public DateTime? DateMin { get; set; }
+        public DateTime? DateMax { get; set; }
+        public string ServicoID { get; set; }
+        public string Metadados { get; set; }
+        public string Ordem { get; set; }
+        public int Page { get; set; }
+        public int GaleriasPerPage { get; set; }
+    }
 }

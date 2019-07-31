@@ -162,75 +162,72 @@ namespace LabFoto.Controllers
 
         // POST: Servicos/IndexFilter
         [HttpPost]
-        public async Task<IActionResult> IndexFilter(string nomeSearch, DateTime? dataSearchMin, DateTime? dataSearchMax, string requerenteSearch,
-            string obraSearch, IFormCollection form, string ordem, int page = 1, int servicosPerPage = 10)
+        public async Task<IActionResult> IndexFilter([Bind("NomeSearch,DateMin,DateMax,Requerente,Obra,Tipos,ServSolicitados,Ordem,Page,ServicosPerPage")] ServicosSearchViewModel search)
 
         {
-            int skipNum = (page - 1) * servicosPerPage;
+            int skipNum = (search.Page - 1) * search.ServicosPerPage;
 
             // Recolher os serviços por página do cookie
             int servPP = CookieAPI.GetAsInt32(Request, "ServicosPerPage") ?? _serPP;
 
             // Caso o utilizador tenha alterado os serviços por página, alterar a variável global e guardar
             // o novo  valor no cookie
-            if (servicosPerPage != servPP)
+            if (search.ServicosPerPage != servPP)
             {
-                servPP = servicosPerPage;
+                servPP = search.ServicosPerPage;
                 CookieAPI.Set(Response, "ServicosPerPage", servPP.ToString());
             }
 
             // Query de todos os serviços
             IQueryable<Servico> servicos = _context.Servicos.Where(s => s.Hide == false);
-            string tipos = form["Tipos"];
-            string servSolic = form["ServSolicitados"];
 
             // Caso exista pesquisa por nome
-            if (!String.IsNullOrEmpty(nomeSearch))
+            if (!String.IsNullOrEmpty(search.NomeSearch))
             {
-                servicos = servicos.Where(s => s.Nome.Contains(nomeSearch));
+                servicos = servicos.Where(s => s.Nome.Contains(search.NomeSearch));
             }
             // Caso exista pesquisa por Requerente
-            if (!String.IsNullOrEmpty(requerenteSearch))
+            if (!String.IsNullOrEmpty(search.Requerente))
             {
-                servicos = servicos.Where(s => s.Requerente.Nome.Contains(requerenteSearch));
+                servicos = servicos.Where(s => s.Requerente.Nome.Contains(search.Requerente));
             }
             // Caso exista pesquisa por identificação/obra
-            if (!String.IsNullOrEmpty(obraSearch))
+            if (!String.IsNullOrEmpty(search.Obra))
             {
-                servicos = servicos.Where(s => s.IdentificacaoObra.Contains(obraSearch));
+                servicos = servicos.Where(s => s.IdentificacaoObra.Contains(search.Obra));
             }
             // Caso exista pesquisa por data min
-            if (dataSearchMin != null)
+            if (search.DateMin != null)
             {
-                servicos = servicos.Where(s => s.DataDeCriacao >= dataSearchMin);
+                servicos = servicos.Where(s => s.DataDeCriacao >= search.DateMin);
             }
             // Caso exista pesquisa por data max
-            if (dataSearchMax != null)
+            if (search.DateMax != null)
             {
-                servicos = servicos.Where(s => s.DataDeCriacao <= dataSearchMax);
+                servicos = servicos.Where(s => s.DataDeCriacao <= search.DateMax);
             }
             // Caso exista tipos
-            if (!String.IsNullOrEmpty(tipos))
+            if (!String.IsNullOrEmpty(search.Tipos))
             {
-                foreach (string tipoID in tipos.Split(","))
+                foreach (string tipoID in search.Tipos.Split(","))
                 {
                     var serTipo = _context.Servicos_Tipos.Where(st => st.TipoFK == Int32.Parse(tipoID)).Select(st => st.ServicoFK).ToList();
                     servicos = servicos.Where(s => serTipo.Contains(s.ID));
                 }
             }
             // Caso exista tipos
-            if (!String.IsNullOrEmpty(servSolic))
+            if (!String.IsNullOrEmpty(search.ServSolicitados))
             {
-                foreach (string servSolicID in servSolic.Split(","))
+                foreach (string servSolicID in search.ServSolicitados.Split(","))
                 {
                     var serSerSolic = _context.Servicos_ServicosSolicitados.Where(st => st.ServicoSolicitadoFK == Int32.Parse(servSolicID)).Select(st => st.ServicoFK).ToList();
                     servicos = servicos.Where(s => serSerSolic.Contains(s.ID));
                 }
             }
 
-            if (!String.IsNullOrEmpty(ordem))
+            if (!String.IsNullOrEmpty(search.Ordem))
             {
-                switch (ordem)
+                switch (search.Ordem)
                 {
                     case "data":
                         servicos = servicos.OrderByDescending(s => s.DataDeCriacao);
@@ -257,9 +254,9 @@ namespace LabFoto.Controllers
             ServicosIndexViewModel response = new ServicosIndexViewModel
             {
                 Servicos = await servicos.Take(servPP).ToListAsync(),
-                FirstPage = (page == 1),
+                FirstPage = (search.Page == 1),
                 LastPage = (servicos.Count() <= servPP),
-                PageNum = page
+                PageNum = search.Page
             };
 
             return PartialView("PartialViews/_ServicosIndexCards", response);

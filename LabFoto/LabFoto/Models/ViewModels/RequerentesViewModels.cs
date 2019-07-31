@@ -13,6 +13,15 @@ namespace LabFoto.Models.ViewModels
         public bool LastPage { get; set; }
         public int PageNum { get; set; }
     }
-
-
+    public class RequerentesSearchViewModel
+    {
+        public RequerentesSearchViewModel()
+        {
+            Page = 1;
+            RequerentesPerPage = 9;
+        }
+        public string NomeSearch { get; set; }
+        public int Page { get; set; }
+        public int RequerentesPerPage { get; set; }
+    }
 }
