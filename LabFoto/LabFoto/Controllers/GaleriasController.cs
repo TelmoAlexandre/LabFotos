@@ -512,7 +512,7 @@ namespace LabFoto.Controllers
 
         #region Edit
         // GET: Galerias/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string id, string returnUrl)
         {
             if (String.IsNullOrEmpty(id))
             {
@@ -532,6 +532,8 @@ namespace LabFoto.Controllers
                 Galeria = galeria,
                 Servicos = servicos
             };
+
+            ViewData["ReturnUrl"] = returnUrl;
 
             return View(response);
         }

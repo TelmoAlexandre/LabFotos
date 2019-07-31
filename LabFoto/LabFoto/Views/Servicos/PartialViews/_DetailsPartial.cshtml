@@ -17,10 +17,10 @@
                         }
                         else
                         {
-                            <a asp-controller="Servicos" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+                            <a asp-controller="Servicos" asp-action="Details" asp-route-id="@Model.ID"class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
                         }
                     }
-                    <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                    <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="Details/@Model.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
                     <a class="btn btn-light float-right" asp-controller="Galerias" asp-action="Index" asp-route-serv="@Model.ID" data-toggle="tooltip" title="Ver Galerias"><i class="far fa-images"></i></a>
                 </h5>
             </form>

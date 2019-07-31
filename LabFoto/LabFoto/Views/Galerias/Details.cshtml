@@ -13,7 +13,7 @@
         <div class="ui grid">
             <div class="eight wide column">
                 <p class="ui blue ribbon label mb-3">Galeria</p>
-                <a asp-action="Edit" asp-route-id="@Model.ID" class="ml-2 ui basic mini button">
+                <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="Details/@Model.ID" class="ml-2 ui basic mini button">
                     <i class="edit icon"></i> Editar
                 </a>
                 <dl class="row mb-0">

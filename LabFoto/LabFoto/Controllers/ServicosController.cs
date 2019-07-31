@@ -453,7 +453,7 @@ namespace LabFoto.Controllers
         #region Edit
 
         // GET: Servicos/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string id, string returnUrl)
         {
             if (String.IsNullOrEmpty(id))
             {
@@ -493,6 +493,9 @@ namespace LabFoto.Controllers
                     Value = s.ID + ""
                 })
             };
+
+            ViewData["ReturnUrl"] = returnUrl;
+
             return View(response);
         }
 
