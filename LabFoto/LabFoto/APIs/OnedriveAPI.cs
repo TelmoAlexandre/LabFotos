@@ -24,7 +24,8 @@ namespace LabFoto.Onedrive
         ContaOnedrive GetAccountToUpload(long fileSize);
         Task<string> GetUploadSessionAsync(ContaOnedrive conta, string fileName);
         string GetPermissionsUrl(int state = 0);
-        void DeleteFiles(List<string> paths);
+        Task<bool> DeleteFiles(List<Fotografia> photos);
+        void DeleteFilesFromServerDisk(List<string> paths);
     } 
     #endregion
 
@@ -592,12 +593,64 @@ namespace LabFoto.Onedrive
 
         #endregion Upload
 
-        #region DeleteFiles
+        #region Delete
+
+        /// <summary>
+        /// Apaga ficheiros na onedrive e em seguida da base de dados.
+        /// </summary>
+        /// <param name="photos">Lista de fotografias a serem apagadas.</param>
+        /// <returns>Verdade caso tenha sucesso, falso caso falhe.</returns>
+        public async Task<bool> DeleteFiles(List<Fotografia> photos)
+        {
+            try
+            {
+                foreach (Fotografia photo in photos)
+                {
+                    #region Refrescar token
+                    // Verificar se o token está válido
+                    await RefreshTokenAsync(photo.ContaOnedrive, 3400);
+                    #endregion
+                    
+                    #region Preparar pedido HTTP
+                    string driveId = photo.ContaOnedrive.DriveId;
+                    string url = "https://graph.microsoft.com/v1.0/me/" +
+                    "drives/" + driveId +
+                    "/items/" + photo.ItemId;
+
+                    var request = new HttpRequestMessage(HttpMethod.Delete, url);
+                    request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
+                    #endregion
+
+                    // Fazer o pedido e obter resposta
+                    var response = await _client.SendAsync(request);
+
+                    #region Tratar resposta
+                    // Caso retorne OK 2xx
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Este pedido nunca retorna json de resposta
+                        // Remove ficheiro da base de dados
+                        _context.Remove(photo);
+                    }
+                    #endregion
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _emailAPI.NotifyError("Erro ao apagar ficheiros na onedrive.", "OnedriveAPI", "DeleteFiles", e.Message);
+                return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Corre uma Thread que apaga todos os fiheiros passados no array de caminhos.
         /// </summary>
         /// <param name="paths">string[] - Todos os caminhos dos ficheiros a apagar.</param>
-        public void DeleteFiles(List<string> paths)
+        public void DeleteFilesFromServerDisk(List<string> paths)
         {
             foreach (var path in paths)
             {

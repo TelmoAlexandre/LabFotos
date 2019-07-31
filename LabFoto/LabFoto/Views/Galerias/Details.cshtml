@@ -70,33 +70,17 @@
     </div>
 </form>
 
-<button onclick="downloadSelected()" class="ui button">download</button>
+<button onclick="deletePhotos()" id="btnDelete" class="ui button" disabled>Apagar Fotografias</button>
 <button onclick="selectAllCB()" class="ui button">Selecionar todas</button>
 <button onclick="clearCB()" class="ui button">Remover todas</button>
 
 <div id="thumbnails" class="mt-4">
-    @if (Model.Fotografias.Count() == 0)
-    {
-        <div class="my-gallery" id="my-gallery" itemscope>
-            <div class="ui six doubling stackable mt-2" id="photosContainer">
-                <div class="ui placeholder tiny segment">
-                    <div class="ui icon header">
-                        <i class="images outline icon" style="height: auto;"></i>
-                        Não existem fotografias.
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="my-gallery" id="my-gallery" itemscope>
-            <div class="ui six doubling stackable cards mt-2" id="photosContainer">
-            </div>
-        </div>
-    }
+    <div class="my-gallery" id="my-gallery" itemscope>
+        <div class="ui six doubling stackable cards mt-2" id="photosContainer"></div>
+    </div>
 </div>
 
+<!-- #region Photoswipe -->
 @{
     /*
         Modal utilizado na biblioteca PhotoSwipe
@@ -163,26 +147,134 @@
 
 </div>
 
+<!-- #endregion -->
+
 @section scripts
 {
     <script>
-        var loader = `<div class="ui active centered indeterminate text inline loader unselectable" style="margin-top:40px;" id="loader">A carregar...</div>`;
         var fileBar = `<div class="ui green active progress mb-0" id="fileBar" style="display:none;"><div class="bar"><div class="progress"></div></div></div>`;
         var totalBar = `<div class="ui indicating progress" data-value="0" id="totalBar" style="display:none;"><div class="bar"><div class="progress"></div></div><div class="label">A processar...</div></div>`;
+        var placeHolder = `<div class="ui six doubling stackable mt-2" id="photosContainer"><div class="ui placeholder tiny segment"><div class="ui icon header"><i class="images outline icon" style="height: auto;"></i>Não existem fotografias.</div></div></div>`;
 
-        var urls = [];
+        var photos = [];
+        
+        function pushToPhotos(newPhoto)
+        {
+            // Caso o url exista no array, retira-lo
+            if (photos.includes(newPhoto)) {
+                let newArray = [];
+                photos.forEach((photo) => {
+                    if (photo !== newPhoto) {
+                        newArray.push(photo);
+                    }
+                });
+                photos = newArray;
+            } else {
+                photos.push(newPhoto);
+            }
 
-        function getPhotos(page) {
+            // Desabilitar os botões caso não existam fotos selecionadas
+            $("#btnDelete").attr("disabled", (photos.length === 0)? true : false);
+        }
+
+        function deletePhotos()
+        {
+            if (photos.length > 0)
+            {
+                $("#btnDelete").addClass("loading").attr("disabled", true);
+
+                $.ajax({
+                    type: "POST",
+                    url: siteUrl + "/Galerias/DeleteFiles",
+                    data: {
+                        "photosIds": photos,
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    success: function (resp)
+                    {
+                        $("#btnDelete").removeClass("loading");
+
+                        if (resp.success)
+                        {
+                            // Notificação 'Noty'
+                            new Noty({
+                                type: 'success',
+                                layout: 'bottomRight',
+                                theme: 'bootstrap-v4',
+                                text: 'Apagado com sucesso.',
+                                timeout: 4000,
+                                progressBar: true
+                            }).show();
+
+                            $("#photosContainer").html("");
+                            getPhotos(1);
+                        }
+                        else
+                        {
+                            // Notificação 'Noty'
+                            new Noty({
+                                type: 'error',
+                                layout: 'bottomRight',
+                                theme: 'bootstrap-v4',
+                                text: 'Erro ao apagar.',
+                                timeout: 4000,
+                                progressBar: true
+                            }).show();
+                        }
+
+                        // Reset da variável
+                        photos = [];
+                    },
+                    error: function ()
+                    {
+                        $("#btnDelete").removeClass("loading").attr("disabled", false);
+
+                        // Notificação 'Noty'
+                        new Noty({
+                            type: 'error',
+                            layout: 'bottomRight',
+                            theme: 'bootstrap-v4',
+                            text: 'Erro ao apagar.',
+                            timeout: 4000,
+                            progressBar: true
+                        }).show();
+                    }
+                });
+            }
+            else
+            {
+                // Notificação 'Noty'
+                new Noty({
+                    type: 'warning',
+                    layout: 'bottomRight',
+                    theme: 'bootstrap-v4',
+                    text: 'Não existem fotografias selecionadas.',
+                    timeout: 4000,
+                    progressBar: true
+                }).show();
+            }
+        }
+
+        function getPhotos(page)
+        {
             $("#thumbnails").append(loader);
             $.ajax({
                 type: "GET",
                 url: siteUrl + "/Galerias/Thumbnails/@Model.ID?page="+page,
                 success: function (resp) {
-                    if (resp.noMorePhotos == null) {
+                    if (resp.noMorePhotos == null)
+                    {
                         $("#photosContainer").append(resp);
                         $('.ui.checkbox').checkbox();
                         page++;
                         getPhotos(page);
+                    }
+                    else
+                    {
+                        if (isEmpty("#photosContainer"))
+                        {
+                            $("#my-gallery").html(placeHolder);
+                        }
                     }
                     $("#loader").remove(); // Remove a barra de loading
                 },
@@ -199,16 +291,22 @@
             });
         }
 
-        $(document).ready(function () {
-            // Caso existam fotografias na galeria, pedi-las
-            @if (Model.Fotografias.Count() != 0) {
-                @: getPhotos(1);
-            }
+        function isEmpty(node)
+        {
+            return ($(`${node}`).children().length === 0);
+        }
+
+        $(document).ready(function ()
+        {
+            // Pedir fotografias
+            getPhotos(1);
+
             // Iniciar a galeria do PhotoSwipe
             initPhotoSwipeFromDOM('.my-gallery');
         });
 
-        document.getElementById('uploader').onsubmit = function (e) {
+        document.getElementById('uploader').onsubmit = function (e)
+        {
             e.preventDefault();
 
             var files = document.getElementById('fileInput').files;
@@ -229,7 +327,8 @@
             }
         }
 
-        document.getElementById('btnFinishUpload').onclick = function (e) {
+        document.getElementById('btnFinishUpload').onclick = function (e)
+        {
             e.preventDefault();
 
             // Esconder as barras de progresso, preparar os botões para um novo upload
@@ -242,7 +341,8 @@
                 .removeClass("disabled");
         }
 
-        function upload(files, i) {
+        function upload(files, i)
+        {
             $.ajax({
                 type: "GET",
                 url: siteUrl + `/Galerias/UploadSession?size=${files[i].size}&name=${files[i].name}`,
@@ -276,8 +376,8 @@
             });
         }
 
-        function uploadFile(files, i, json) {
-
+        function uploadFile(files, i, json)
+        {
             // Recolher o tamanho de cada fragmento do appsettings.json
             var fragmentSize = @AppSettings.Value.UploadFragmentSizeInMB;
 
@@ -332,7 +432,8 @@
             };
         }
 
-        function informServerOfImage(resp, contaId) {
+        function informServerOfImage(resp, contaId)
+        {
             $.ajax({
                 url: siteUrl + "/Galerias/RegisterFile",
                 type: "POST",
@@ -363,7 +464,8 @@
             });
         }
 
-        function uploadCompleted() {
+        function uploadCompleted()
+        {
 
             // Notificação 'Noty'
             new Noty({
@@ -388,12 +490,14 @@
                 .removeClass("disabled loading");
         }
 
-        function updateSelectedFiles() {
-                var count = document.getElementById('fileInput').files.length;
-                $("#fileCount").html((count!=0)? ` - ${count} Selecionada(s)` : "");
+        function updateSelectedFiles()
+        {
+            var count = document.getElementById('fileInput').files.length;
+            $("#fileCount").html((count!=0)? ` - ${count} Selecionada(s)` : "");
         }
 
-        function initProgressBars(total) {
+        function initProgressBars(total)
+        {
             // Dar reset às progress bars
             $("#progressBarsContainer").html(fileBar + "<br />" + totalBar);
 
@@ -413,7 +517,8 @@
             );
         }
 
-        function updateFileBar(percent) {
+        function updateFileBar(percent)
+        {
             $('#fileBar')
                 .progress({
                     percent: percent,
@@ -425,37 +530,26 @@
             );
         }
 
-        function updateTotalBar() {
+        function updateTotalBar()
+        {
             $('#totalBar')
                 .progress('increment')
             ;
         }
 
-        function clearCB() {
+        function clearCB()
+        {
             $(".ui.toggle.checkbox.checked").click();
     }
 
-        function selectAllCB() {
+        function selectAllCB()
+        {
             clearCB();
              $(".ui.toggle.checkbox").click();
         }
 
-        function pushToURLs(newUrl) {
-            // Caso o url exista no array, retira-lo
-            if (urls.includes(newUrl)) {
-                let newArray = [];
-                urls.forEach((url) => {
-                    if (url !== newUrl) {
-                        newArray.push(url);
-                    }
-                });
-                urls = newArray;
-            } else {
-                urls.push(newUrl);
-            }
-        }
-
-        function download(url) {
+        function download(url)
+        {
             var link = document.createElement("a");
             link.download = name;
             link.href = url;
@@ -466,7 +560,8 @@
             delete link;
         }
 
-        function downloadSelected() {
+        function downloadSelected()
+        {
             let links = urls;
             clearCB();
             if (links.length != 0) {
@@ -488,10 +583,9 @@
                 });
             }
         }
-
     </script>
-    
-@{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+
+    @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
     @if (ViewData["Feedback"] != null)
     {
         <script>

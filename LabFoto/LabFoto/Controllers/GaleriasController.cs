@@ -364,7 +364,7 @@ namespace LabFoto.Controllers
             }
 
             #region Apagar os ficheiros temporários
-            _onedrive.DeleteFiles(filePaths); // Apagar todos os ficheiros temporário do servidor 
+            _onedrive.DeleteFilesFromServerDisk(filePaths); // Apagar todos os ficheiros temporário do servidor 
             #endregion
 
             return RedirectToAction("Details", new { id = galeriaId });
@@ -667,6 +667,22 @@ namespace LabFoto.Controllers
         #endregion
 
         #region Delete
+        [HttpPost]
+        public async Task<IActionResult> DeleteFiles(string[] photosIds)
+        {
+            List<Fotografia> photos = await _context.Fotografias.Where(f => (photosIds.Where(a => Int32.Parse(a) == f.ID).Count() != 0)).Include(f => f.ContaOnedrive).ToListAsync();
+
+            if(photos.Count() > 0)
+            {
+                if (await _onedrive.DeleteFiles(photos))
+                {
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
         // GET: Galerias/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
