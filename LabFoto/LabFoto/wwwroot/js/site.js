@@ -37,6 +37,18 @@ jQuery(document).ready(function ($) {
     $('.ui.accordion').accordion();
 });
 
+function notifyUser(type, text)
+{
+    new Noty({
+        type: type,
+        layout: 'bottomRight',
+        theme: 'bootstrap-v4',
+        text: text,
+        timeout: 4000,
+        progressBar: true
+    }).show();
+}
+
 function init() {
     initModalEvents();
 }
@@ -69,15 +81,8 @@ function initModalEvents() {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
             $(`#${modalId}`).modal('hide');
-            // Notificação 'Noty'
-            new Noty({
-                type: 'success',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: 'Adicionado com sucesso.',
-                timeout: 4000,
-                progressBar: true
-            }).show();
+
+            notifyUser('success', 'Adicionado com sucesso.');
         }
     };
 
@@ -174,15 +179,8 @@ requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, req
                 $(`#${divDetailsId}`).load(siteUrl + `/Requerentes/DetailsIndexAjax/${requerenteId}`, function () {
                     $('[data-toggle="tooltip"]').tooltip();
                 });
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'success',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: 'Guardado com sucesso.',
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
+
+                notifyUser('success', 'Guardado com sucesso.');
             }
         }
     });
@@ -209,15 +207,8 @@ requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, r
                 $(`#${divDetailsId}`).load(siteUrl + `/Requerentes/DetailsIndexAjaxDetails/${requerenteId}`, function () {
                     $('[data-toggle="tooltip"]').tooltip();
                 });
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'success',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: 'Guardado com sucesso.',
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
+
+                notifyUser('success', 'Guardado com sucesso.');
             }
         }
     });
@@ -244,15 +235,8 @@ createTipo = () => {
                     $("#btnAddTipo").removeClass("loading");
                     $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
 
-                    // Notificação 'Noty'
-                    new Noty({
-                        type: 'success',
-                        layout: 'bottomRight',
-                        theme: 'bootstrap-v4',
-                        text: 'Adicionado com sucesso.',
-                        timeout: 4000,
-                        progressBar: true
-                    }).show();
+                    notifyUser('success', 'Adicionado com sucesso.');
+
                     $(`#modalNovoTipo`).modal('hide');
                 });
             } else {
@@ -260,16 +244,9 @@ createTipo = () => {
                 $(`#divFormNovoTipo`).html(resp); // Mostra o formulário com os erros do modelState
             }
         },
-        error: function () {
-            // Notificação 'Noty'
-            new Noty({
-                type: 'error',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: 'Erro ao adicionar.',
-                timeout: 4000,
-                progressBar: true
-            }).show();
+        error: function ()
+        {
+            notifyUser('error', 'Erro ao adicionar.');
             $(`#modalNovoTipo`).modal('hide');
         }
     });
@@ -296,15 +273,8 @@ createServSolic = () => {
                     $("#btnAddServSolic").removeClass("loading");
                     $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
 
-                    // Notificação 'Noty'
-                    new Noty({
-                        type: 'success',
-                        layout: 'bottomRight',
-                        theme: 'bootstrap-v4',
-                        text: 'Adicionado com sucesso.',
-                        timeout: 4000,
-                        progressBar: true
-                    }).show();
+                    notifyUser('success', 'Adicionado com sucesso.');
+
                     $(`#modalNovoServSolic`).modal('hide'); // Esconder o modal
                 });
             } else {
@@ -312,16 +282,10 @@ createServSolic = () => {
                 $(`#divFormNovoServSolic`).html(resp); // Mostra o formulário com os erros do modelState
             }
         },
-        error: function () {
-            // Notificação 'Noty'
-            new Noty({
-                type: 'error',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: 'Erro ao adicionar.',
-                timeout: 4000,
-                progressBar: true
-            }).show();
+        error: function ()
+        {
+            notifyUser('error', 'Erro ao adicionar.');
+
             $(`#modalNovoServSolic`).modal('hide');
         }
     });
@@ -333,48 +297,36 @@ createMetadado = () => {
     $.ajax({
         type: "POST",
         url: siteUrl + "/Metadados/Create",
-        data: {
+        data:
+        {
             "Metadado.Nome": $("#newMetadadoForm #Nome").val(),
             "__RequestVerificationToken": $("#modalNovoMetadado input[name='__RequestVerificationToken']").val(),
             "X-Requested-With": "XMLHttpRequest"
         },
-        success: function (resp) {
+        success: function (resp) 
+        {
             if (resp.success) {
                 // Recolher os metadados selecionados
                 var metadados = $("#metadadosCB input[name='metadados']").val();
 
-                $(`#metadadosCB`).load(siteUrl + `/Galerias/MetadadosDropdown?metadados=${metadados}`, function () {
-
+                $(`#metadadosCB`).load(siteUrl + `/Galerias/MetadadosDropdown?metadados=${metadados}`, function () 
+                {
                     $("#btnMetadadoAdicionar").removeClass("loading");
                     $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-
-                    // Notificação 'Noty'
-                    new Noty({
-                        type: 'success',
-                        layout: 'bottomRight',
-                        theme: 'bootstrap-v4',
-                        text: 'Adicionado com sucesso.',
-                        timeout: 4000,
-                        progressBar: true
-                    }).show();
                     $(`#modalNovoMetadado`).modal('hide');
+                    notifyUser('success', 'Adicionado com sucesso.');
                 });
                 
-            } else {
+            }
+            else 
+            {
                 $("#btnMetadadoAdicionar").removeClass("loading");
                 $(`#newMetadadoForm`).html(resp); // Mostra o formulário com os erros do modelState
             }
         },
-        error: function () {
-            // Notificação 'Noty'
-            new Noty({
-                type: 'error',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: 'Erro ao adicionar.',
-                timeout: 4000,
-                progressBar: true
-            }).show();
+        error: function ()
+        {
+            notifyUser('error', 'Erro ao adicionar.');
             $(`#modalNovoMetadado`).modal('hide');
         }
     });
@@ -425,8 +377,8 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
         success: function (resp) {
             $(`#editFormTiposIndex_${id} .saveButton`).removeClass('loading'); // Remove o loading no botão guardar
 
-            if (resp.success) { // Caso seja editado com sucesso
-
+            if (resp.success) // Caso seja editado com sucesso
+            { 
                 // Carregar o details pois este foi alterado.
                 $(`#indexDetails_${id}`).load(siteUrl + `/${controllerName}/Details/${id}`, function () {
 
@@ -435,36 +387,21 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
                     $(`#indexDetails_${id}`).slideToggle();
                 });
 
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'success',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: 'Editado com sucesso.',
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
-
-            } else { // Caso o modelState falhe
+                notifyUser('success', 'Editado com sucesso.');
+            }
+            else
+            { // Caso o modelState falhe
 
                 $(`#indexEdit_${id}`).html(resp);
             }
         },
-        error: function () {
-
+        error: function () 
+        {
             // Esconder o edit e mostrar o details
             $(`#indexEdit_${id}`).hide();
             $(`#indexDetails_${id}`).fadeIn();
 
-            // Notificação 'Noty'
-            new Noty({
-                type: 'error',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: 'Ocorreu um erro na edição.',
-                timeout: 4000,
-                progressBar: true
-            }).show();
+            notifyUser('error', 'Ocorreu um erro na edição.');
         }
     });
 };

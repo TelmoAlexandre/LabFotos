@@ -196,30 +196,13 @@
 
                         if (resp.success)
                         {
-                            // Notificação 'Noty'
-                            new Noty({
-                                type: 'success',
-                                layout: 'bottomRight',
-                                theme: 'bootstrap-v4',
-                                text: 'Apagado com sucesso.',
-                                timeout: 4000,
-                                progressBar: true
-                            }).show();
-
+                            notifyUser('success', 'Apagado com sucesso.');
                             $("#photosContainer").html("");
                             getPhotos(1);
                         }
                         else
                         {
-                            // Notificação 'Noty'
-                            new Noty({
-                                type: 'error',
-                                layout: 'bottomRight',
-                                theme: 'bootstrap-v4',
-                                text: 'Erro ao apagar.',
-                                timeout: 4000,
-                                progressBar: true
-                            }).show();
+                            notifyUser('error', 'Erro ao apagar.');
                         }
 
                         // Reset da variável
@@ -228,30 +211,13 @@
                     error: function ()
                     {
                         $("#btnDelete").removeClass("loading").attr("disabled", false);
-
-                        // Notificação 'Noty'
-                        new Noty({
-                            type: 'error',
-                            layout: 'bottomRight',
-                            theme: 'bootstrap-v4',
-                            text: 'Erro ao apagar.',
-                            timeout: 4000,
-                            progressBar: true
-                        }).show();
+                        notifyUser('error', 'Erro ao apagar.');
                     }
                 });
             }
             else
             {
-                // Notificação 'Noty'
-                new Noty({
-                    type: 'warning',
-                    layout: 'bottomRight',
-                    theme: 'bootstrap-v4',
-                    text: 'Não existem fotografias selecionadas.',
-                    timeout: 4000,
-                    progressBar: true
-                }).show();
+                notifyUser('warning', 'Não existem fotografias selecionadas.');
             }
         }
 
@@ -346,32 +312,21 @@
             $.ajax({
                 type: "GET",
                 url: siteUrl + `/Galerias/UploadSession?size=${files[i].size}&name=${files[i].name}`,
-                success: function (resp) {
-                    if (resp.success) {
+                success: function (resp) 
+                {
+                    if (resp.success) 
+                    {
                         // Visto que foi recebido um url de upload, fazer o upload do ficheiro.
                         uploadFile(files, i, resp);
-                    } else {
-                        // Notificação 'Noty'
-                        new Noty({
-                            type: 'error',
-                            layout: 'bottomRight',
-                            theme: 'bootstrap-v4',
-                            text: resp.error,
-                            timeout: 4000,
-                            progressBar: true
-                        }).show();
+                    }
+                    else
+                    {
+                        notifyUser('error', resp.error);
                     }
                 },
-                error: function () {
-                    // Notificação 'Noty'
-                    new Noty({
-                        type: 'error',
-                        layout: 'bottomRight',
-                        theme: 'bootstrap-v4',
-                        text: "Ocorreu um erro ao contactar o servidor.",
-                        timeout: 4000,
-                        progressBar: true
-                    }).show();
+                error: function ()
+                {
+                    notifyUser('error', 'Ocorreu um erro ao contactar o servidor.');
                 }
             });
         }
@@ -466,16 +421,7 @@
 
         function uploadCompleted()
         {
-
-            // Notificação 'Noty'
-            new Noty({
-                type: 'success',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: "Fotografia(s) adicionada(s) com sucesso!",
-                timeout: 4000,
-                progressBar: true
-            }).show();
+            notifyUser('success', 'Fotografia(s) adicionada(s) com sucesso!.');
 
             // Remover os ficheiros carregados do inputFile
             var fileInput = $("#fileInput");
@@ -589,17 +535,10 @@
     @if (ViewData["Feedback"] != null)
     {
         <script>
-        document.addEventListener('DOMContentLoaded', function(){
-            // Notificação 'Noty'
-            new Noty({
-                type: 'success',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: '@ViewData["Feedback"]',
-                timeout: 4000,
-                progressBar: true
-            }).show();
-        }, false);
+            document.addEventListener('DOMContentLoaded', function ()
+            {
+                notifyUser('success', '@ViewData["Feedback"]');
+            }, false);
         </script>
     }
 }

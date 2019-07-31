@@ -55,16 +55,9 @@
 @if (ViewData["Feedback"] != null)
 {
     <script>
-        document.addEventListener('DOMContentLoaded', function(){
-            // Notificação 'Noty'
-            new Noty({
-                type: '@ViewData["Type"]',
-                layout: 'bottomRight',
-                theme: 'bootstrap-v4',
-                text: '@ViewData["Feedback"]',
-                timeout: 4000,
-                progressBar: true
-            }).show();
+        document.addEventListener('DOMContentLoaded', function ()
+        {
+            notifyUser('@ViewData["Type"]', '@ViewData["Feedback"]');
         }, false);
     </script>
 }
