@@ -204,7 +204,7 @@ namespace LabFoto.Controllers
 
         #region Edit
         // GET: ContaOnedrives/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string returnUrl)
         {
             if (id == null)
             {
@@ -216,6 +216,8 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["ReturnUrl"] = returnUrl;
             return View(contaOnedrive);
         }
 

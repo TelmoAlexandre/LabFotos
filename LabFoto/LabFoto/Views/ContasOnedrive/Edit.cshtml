@@ -1,16 +1,16 @@
 ﻿@model LabFoto.Models.Tables.ContaOnedrive
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar";
 }
 
-<h1>Edit</h1>
+<h1>Editar</h1>
 
-<h4>ContaOnedrive</h4>
+<h4>Conta Onedrive</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" id="contaOnedriveEditForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
@@ -23,14 +23,42 @@
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="mt-5">
+    <div class="ui primary button" onclick="confirmForm('contaOnedriveEditForm')"><i class="save icon"></i><span class="ml-2">Guardar</span></div>
+    <div class="ui button" onclick="modalCancel('modalCancel')"><span>Cancelar</span></div>
 </div>
 
+<div class="ui basic mini modal" id="confirmarSubmit">
+    <div class="content">
+        <p>Tem a certeza que pretende editar a conta Onedrive?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
+<div class="ui basic mini modal" id="modalCancel">
+    <div class="content">
+        <p>Tem a certeza que pretende cancelar?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <a class="ui green ok inverted button" href="~/ContasOnedrive/@ViewData["ReturnUrl"]">
+            <i class="checkmark icon"></i>
+            Sim
+        </a>
+    </div>
+</div>
