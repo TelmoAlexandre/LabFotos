@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using LabFoto.Data;
 using LabFoto.Models.Tables;
 using LabFoto.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LabFoto.Controllers
 {
+    [Authorize]
     public class MetadadosController : Controller
     {
         private readonly ApplicationDbContext _context;

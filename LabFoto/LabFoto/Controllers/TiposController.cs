@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LabFoto.Data;
 using LabFoto.Models.Tables;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LabFoto.Controllers
 {
+    [Authorize]
     public class TiposController : Controller
     {
         private readonly ApplicationDbContext _context;

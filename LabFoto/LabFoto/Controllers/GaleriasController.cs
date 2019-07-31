@@ -15,9 +15,11 @@ using System.IO;
 using LabFoto.Models;
 using Microsoft.Extensions.Options;
 using LabFoto.APIs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LabFoto.Controllers
 {
+    [Authorize]
     public class GaleriasController : Controller
     {
         private readonly ApplicationDbContext _context;
