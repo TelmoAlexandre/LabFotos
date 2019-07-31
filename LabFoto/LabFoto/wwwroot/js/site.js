@@ -382,7 +382,7 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
         url: siteUrl + `/${controllerName}/Edit/${id}`,
         data: data,
         success: function (resp) {
-            $(`#editFormTiposIndex_${id} .saveButton`).removeClass('loading'); // Remove o loading no botão guardar
+            $(`#editFormIndex_${id} .saveButton`).removeClass('loading'); // Remove o loading no botão guardar
 
             if (resp.success) // Caso seja editado com sucesso
             { 

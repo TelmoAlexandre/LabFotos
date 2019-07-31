@@ -43,7 +43,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return View(metadado);
+            return PartialView("PartialViews/_DetailsPartialView", metadado);
         }
 
         // GET: Metadados/Create
@@ -87,7 +87,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            return View(metadado);
+            return PartialView("PartialViews/_EditPartialView", metadado);
         }
 
         // POST: Metadados/Edit/5
@@ -101,13 +101,13 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(metadado);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -120,9 +120,8 @@ namespace LabFoto.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(metadado);
+            return PartialView("PartialViews/_EditPartialView", metadado);
         }
 
         // GET: Metadados/Delete/5
