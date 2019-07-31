@@ -11,6 +11,7 @@ using LabFoto.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using LabFoto.APIs;
+using LabFoto.Onedrive;
 
 namespace LabFoto.Controllers
 {
@@ -19,10 +20,12 @@ namespace LabFoto.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly int _serPP = 10;
+        private readonly IEmailAPI _email;
 
-        public ServicosController(ApplicationDbContext context)
+        public ServicosController(ApplicationDbContext context, IEmailAPI email)
         {
             _context = context;
+            _email = email;
         }
 
         #region Ajax
@@ -531,173 +534,102 @@ namespace LabFoto.Controllers
             {
                 try
                 {
-                    string[] array;
-
-                    // Todos os tipos associados a este serviço
-                    List<Servico_Tipo> allServTipos = await _context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(servico.ID)).ToListAsync();
-
-                    // Tratamento Tipos
-                    if (!String.IsNullOrEmpty(Tipos)) // Caso existam tipos a serem adicionados
+                    #region Associar Tipos
+                    try
                     {
-                        array = Tipos.Split(","); // Partir os tipos num array
-                        foreach (Servico_Tipo servTipo in allServTipos) // Remover os tipos que não foram selecionados nas checkboxes
-                        {
-                            // Removar caso este não se encontre dentro da string Tipos
-                            if (array.Where(t => Int32.Parse(t) == servTipo.TipoFK).Count() == 0)
-                            {
-                                _context.Servicos_Tipos.Remove(servTipo);
-                            }
-                        }
-                        // Relacionar novos que foram selecionados nas checkboxes
-                        foreach (string tipoId in array)
-                        {
-                            int intId = Int32.Parse(tipoId);
+                        var tiposToRemove = await _context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(servico.ID)).ToArrayAsync();
+                        _context.RemoveRange(tiposToRemove);
 
-                            // Caso não exista relação entre o serviço e o tipo, cria uma
-                            if (allServTipos.Where(st => st.TipoFK == intId).ToList().Count == 0)
+                        if (!String.IsNullOrEmpty(Tipos)) // Caso existam tipos a serem adicionados
+                        {
+                            var tiposToAdd = Tipos.Split(",").Select(t => new Servico_Tipo
                             {
-                                _context.Servicos_Tipos.Add(new Servico_Tipo
-                                {
-                                    ServicoFK = servico.ID,
-                                    TipoFK = intId
-                                });
-                            }
+                                ServicoFK = servico.ID,
+                                TipoFK = Int32.Parse(t)
+                            }).ToArray();
+                            await _context.AddRangeAsync(tiposToAdd);
                         }
+
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (Exception e)
                     {
-                        // Caso não seja selecionado nenhum tipo, são retirados todos os tipos associados ao serviço
-                        foreach (Servico_Tipo servTipo in allServTipos)
-                        {
-                            _context.Servicos_Tipos.Remove(servTipo);
-                        }
+                        _email.NotifyError("Erro ao associar tipos ao serviço.", "ServicosController", "Edit - POST", e.Message);
                     }
+                    #endregion
 
-                    // Todos os Servicos Solicitados associados a este serviço
-                    List<Servico_ServicoSolicitado> allServSSolic = await _context.Servicos_ServicosSolicitados.Where(st => st.ServicoFK.Equals(servico.ID)).ToListAsync();
-
-                    // Tratamento Servicos Solicitados
-                    if (!String.IsNullOrEmpty(ServSolicitados))
+                    #region Associar ServSolic
+                    try
                     {
-                        array = ServSolicitados.Split(","); // Partir os servicos solicitados num array
-                        foreach (Servico_ServicoSolicitado servSSolicit in allServSSolic) // Remover os Serviços solicitados que não foram selecionados nas checkboxes
-                        {
-                            // Removar caso este não se encontre dentro da string ServSolicitados
-                            if (array.Where(t => Int32.Parse(t) == servSSolicit.ServicoSolicitadoFK).Count() == 0)
-                            {
-                                _context.Servicos_ServicosSolicitados.Remove(servSSolicit);
-                            }
-                        }
-                        // Relacionar novos que foram selecionados nas checkboxes
-                        foreach (string servSolicId in array)
-                        {
-                            int intId = Int32.Parse(servSolicId);
+                        var servSolicToRemove = await _context.Servicos_ServicosSolicitados.Where(sst => sst.ServicoFK.Equals(servico.ID)).ToArrayAsync();
+                        _context.RemoveRange(servSolicToRemove);
 
-                            // Caso não exista relação entre o serviço e o tipo, cria uma
-                            if (allServSSolic.Where(st => st.ServicoSolicitadoFK == intId).ToList().Count == 0)
+                        if (!String.IsNullOrEmpty(ServSolicitados)) // Caso existam serviços solicitados a serem adicionados
+                        {
+                            var servSolicToAdd = ServSolicitados.Split(",").Select(ss => new Servico_ServicoSolicitado
                             {
-                                _context.Servicos_ServicosSolicitados.Add(new Servico_ServicoSolicitado
-                                {
-                                    ServicoFK = servico.ID,
-                                    ServicoSolicitadoFK = intId
-                                });
-                            }
+                                ServicoFK = servico.ID,
+                                ServicoSolicitadoFK = Int32.Parse(ss)
+                            }).ToArray();
+                            await _context.AddRangeAsync(servSolicToAdd);
                         }
+
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (Exception e)
                     {
-                        // Caso não seja selecionado nenhum tipo, são retirados todos os tipos associados ao serviço
-                        foreach (Servico_ServicoSolicitado servSSolicit in allServSSolic)
-                        {
-                            _context.Servicos_ServicosSolicitados.Remove(servSSolicit);
-                        }
+                        _email.NotifyError("Erro ao associar serviços solicitados ao serviço.", "ServicosController", "Edit - POST", e.Message);
                     }
-
-                    _context.Update(servico);
-                    await _context.SaveChangesAsync();
+                    #endregion
 
                     #region TratamentoDatasExecucao
-
-                    string[] datasExecucaoArray = datasExecucao?.Split(',');
-                    IQueryable<Servico_DataExecucao> datasExecList = _context.Servicos_DatasExecucao.Include(sde => sde.DataExecucao).Where(st => st.ServicoFK == servico.ID);
-
-                    if (datasExecucaoArray != null)
+                    try
                     {
-                        foreach (string dataStr in datasExecucaoArray)
+                        var datasToRemove = _context.Servicos_DatasExecucao.Where(sd => sd.ServicoFK.Equals(servico.ID)).ToArray();
+                        _context.RemoveRange(datasToRemove);
+
+                        if (!String.IsNullOrEmpty(datasExecucao))
                         {
-                            if (!String.IsNullOrEmpty(dataStr))
+                            foreach (string dataStr in datasExecucao.Split(','))
                             {
-                                // Separar o ano, mes e dia
-                                string[] dataArray = dataStr.Split('-');
-                                // Criar novo objeto data
-                                DateTime data = new DateTime(Int32.Parse(dataArray[0]), Int32.Parse(dataArray[1]), Int32.Parse(dataArray[2]));
-                                var existsInRelationship = await _context.Servicos_DatasExecucao.Where(sde => sde.DataExecucao.Data == data).FirstOrDefaultAsync();
-                                if (existsInRelationship == null)
+                                if (!String.IsNullOrEmpty(dataStr)) // Certificar que a string não está vazia
                                 {
-                                    // Caso não exista essa data na relação, então procurar se essa data já existe
-                                    // na tabela das datas de execução. Caso exista, não há necessidade de criar outra data igual
-                                    var existsInDatasExecucao = await _context.DataExecucao.Where(d => d.Data == data).FirstOrDefaultAsync();
-
-                                    // Caso exista, associar essa data já existente
-                                    if (existsInDatasExecucao != null)
+                                    // Separar o ano, mes e dia
+                                    string[] dataArray = dataStr.Split('-');
+                                    DataExecucao date = new DataExecucao
                                     {
-                                        _context.Servicos_DatasExecucao.Add(
-                                            new Servico_DataExecucao()
-                                            {
-                                                ServicoFK = servico.ID,
-                                                DataExecucaoFK = existsInDatasExecucao.ID
-                                            }
-                                        );
-                                        await _context.SaveChangesAsync();
-                                    }
-                                    else // Caso não exista, criar uma nova data na tabela das DatasExecucao e associar essa à relação
+                                        Data = new DateTime(Int32.Parse(dataArray[0]), Int32.Parse(dataArray[1]), Int32.Parse(dataArray[2]))
+                                    };
+                                    // Criar nova data de execução
+                                    _context.Add(date);
+                                    await _context.SaveChangesAsync();
+
+                                    // Adicionar relação da nova data com o servico
+                                    await _context.AddAsync(new Servico_DataExecucao
                                     {
-                                        var newDate = new DataExecucao
-                                        {
-                                            Data = data
-                                        };
-
-                                        // Adicionar a nova data
-                                        _context.DataExecucao.Add(newDate);
-
-                                        await _context.SaveChangesAsync();
-
-                                        _context.Servicos_DatasExecucao.Add(
-                                            new Servico_DataExecucao()
-                                            {
-                                                ServicoFK = servico.ID,
-                                                DataExecucaoFK = newDate.ID
-                                            }
-                                        );
-                                        await _context.SaveChangesAsync();
-                                    }
+                                        DataExecucaoFK = date.ID,
+                                        ServicoFK = servico.ID
+                                    });
+                                    await _context.SaveChangesAsync();
                                 }
                             }
                         }
                     }
-
-                    // Remoção das Datas de execuca
-                    foreach (Servico_DataExecucao sde in datasExecList)
+                    catch (Exception e)
                     {
-                        // Certificar que pelo menos 1 serviço solicitado é selecionado no formulário
-                        if (datasExecucaoArray != null)
-                        {
-                            if (sde.DataExecucao != null)
-                            {
-                                if (!ExistsInStringArray(datasExecucaoArray, string.Format("{0:yyyy-MM-dd}", sde.DataExecucao.Data)))
-                                    _context.Servicos_DatasExecucao.Remove(sde);
-                            }
-                        }
-                        else
-                        {
-                            // Caso servsArray seja null, significa que nenhuma data de exeucao foi selecionada, então serão todas retiradas do serviço
-                            _context.Servicos_DatasExecucao.Remove(sde);
-                        }
+                        _email.NotifyError("Erro ao adicionar datas de execução de um serviço.", "ServicosController", "Edit - POST", e.Message);
                     }
-
                     #endregion TratamentoDatasExecucao
 
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Update(servico);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception e)
+                    {
+                        _email.NotifyError("Erro ao editar um serviço.", "ServicosController", "Edit - POST", e.Message);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {

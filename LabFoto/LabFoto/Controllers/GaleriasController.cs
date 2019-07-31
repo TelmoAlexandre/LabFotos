@@ -24,14 +24,14 @@ namespace LabFoto.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
-        private readonly IEmailAPI _emai;
+        private readonly IEmailAPI _email;
         private readonly int _galPP = 8;
 
         public GaleriasController(ApplicationDbContext context, IOnedriveAPI onedrive, IEmailAPI email)
         {
             _context = context;
             _onedrive = onedrive;
-            _emai = email;
+            _email = email;
         }
 
         #region Ajax
@@ -592,62 +592,28 @@ namespace LabFoto.Controllers
             if (ModelState.IsValid)
             {
                 #region Associar os metadados à galeria
-
-                // Todas as relações metadados-galeria que existem
                 try
                 {
-                    List<Galeria_Metadado> allMetadados = await _context.Galerias_Metadados.Where(g => g.GaleriaFK.Equals(galeria.ID)).ToListAsync();
+                    var removeList = await _context.Galerias_Metadados.Where(gm => gm.GaleriaFK.Equals(galeria.ID)).ToArrayAsync();
+                    _context.RemoveRange(removeList);
 
-                    if (!String.IsNullOrEmpty(metadados)) // Caso existam metadados a serem adicionados
+                    if (!String.IsNullOrEmpty(metadados)) // Se houver metadados para relacionar
                     {
-                        string[] array = metadados.Split(","); // Partir os metadados num array
-
-                        #region Remover os metadados que não foram selecionados nas checkboxes
-                        foreach (var galeria_metadado in allMetadados)
+                        var addList = metadados.Split(",").Select(m => new Galeria_Metadado
                         {
-                            // Removar caso este não se encontre dentro da string metadados
-                            if (array.Where(m => Int32.Parse(m) == galeria_metadado.MetadadoFK).Count() == 0)
-                            {
-                                _context.Remove(galeria_metadado);
-                            }
-                        }
-                        #endregion
-
-                        #region Relacionar novos metadados que foram selecionados nas checkboxes
-
-                        foreach (string metadadosId in array)
-                        {
-                            int intId = Int32.Parse(metadadosId);
-
-                            // Caso não exista relação entre o serviço e o tipo, cria uma
-                            if (allMetadados.Where(st => st.MetadadoFK == intId).ToList().Count == 0)
-                            {
-                                _context.Galerias_Metadados.Add(new Galeria_Metadado
-                                {
-                                    GaleriaFK = galeria.ID,
-                                    MetadadoFK = intId
-                                });
-                            }
-                        }
-                        #endregion
+                            GaleriaFK = galeria.ID,
+                            MetadadoFK = Int32.Parse(m)
+                        }).ToArray();
+                        await _context.AddRangeAsync(addList);
                     }
-                    else // Caso não tenham sido selecionados metadados
-                    {
-                        #region Apagar todas as relações entre os metadados e a galeria
 
-                        foreach (var galeria_metadado in allMetadados)
-                        {
-                            _context.Remove(galeria_metadado);
-                        }
-                        #endregion
-                    }
+                    await _context.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
-                    _emai.NotifyError("Erro ao associar metadados à galeria.", "GaleriasController", "Edit - POST", e.Message);
+                    _email.NotifyError("Erro ao associar metadados à galeria.", "GaleriasController", "Edit - POST", e.Message);
                     feedback = "Ocorreu um erro ao associar os metadados à galeria.";
                 }
-
                 #endregion
 
                 #region Update da BD
@@ -666,7 +632,7 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        _emai.NotifyError("Erro ao guardar informação na base de dados.", "GaleriasController", "Edit - POST", e.Message);
+                        _email.NotifyError("Erro ao guardar informação na base de dados.", "GaleriasController", "Edit - POST", e.Message);
                         feedback = "Ocorreu um erro ao editar a galeria.";
                     }
                 } 

@@ -307,7 +307,7 @@ createMetadado = () => {
         {
             if (resp.success) {
                 // Recolher os metadados selecionados
-                var metadados = $("#metadadosCB input[name='metadados']").val();
+                var metadados = $("#metadadosCB input[name='Metadados']").val();
 
                 $(`#metadadosCB`).load(siteUrl + `/Galerias/MetadadosDropdown?metadados=${metadados}`, function () 
                 {
