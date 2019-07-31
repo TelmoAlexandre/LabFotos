@@ -64,11 +64,14 @@ function initModalEvents() {
         $(`#${divFormId}`).load(`${href}`); // Carregar html para o elemento        
     };
 
-    requerenteFormsLoadAjax = (divFormId, href) => {
+    requerenteFormsLoadAjax = (divFormId, href, idRequerente) =>
+    {
         // Adicionar um loading
         $(`#${divFormId}`).html(getLoadingBarHtml);
         $(`#${divFormId}`).load(`${href}`, function () {
             $('[data-toggle="tooltip"]').tooltip();
+
+            toggleDivs(`#divDetails_${idRequerente}`, `#divEdit_${idRequerente}`);
         }); // Carregar html para o elemento        
     };
 
@@ -109,8 +112,10 @@ function initModalEvents() {
         handleControllerResponse(resp, 'requerentesDropbox', 'modalNovoRequerente', siteUrl + '/Servicos/RequerentesAjax');
 }
 
-flipCard = (shapeId, transition) => {
-    $(`#${shapeId}`).shape(`${transition}`);
+toggleDivs = (div1, div2) => 
+{
+    $(`${div1}`).toggle();
+    $(`${div2}`).toggle();
 };
 
 hideModal = () => {
@@ -158,7 +163,7 @@ servicoRequerenteDetails = (divModalDetails, requerenteId) => {
     });
 };
 
-requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, requerenteId) => {
+requerenteEditFormSubmitIndex = (e, divDetailsId, formEditId, requerenteId) => {
     e.preventDefault(); // Não deixar o form submeter
 
     $.ajax({
@@ -175,9 +180,10 @@ requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, req
         success: function (resp) {
             if (resp.success) {
                 $(`#${divDetailsId}`).html(getLoadingBarHtml);
-                $(`#${divRequerente}`).shape('flip over');
                 $(`#${divDetailsId}`).load(siteUrl + `/Requerentes/DetailsIndexAjax/${requerenteId}`, function () {
                     $('[data-toggle="tooltip"]').tooltip();
+
+                    toggleDivs(`#divDetails_${requerenteId}`, `#divEdit_${requerenteId}`);
                 });
 
                 notifyUser('success', 'Guardado com sucesso.');
@@ -186,7 +192,7 @@ requerenteEditFormSubmitIndex = (e, divRequerente, divDetailsId, formEditId, req
     });
 };
 
-requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, requerenteId) => {
+requerenteEditFormSubmitDetails = (e, divDetailsId, formEditId, requerenteId) => {
     e.preventDefault(); // Não deixar o form submeter
 
     $.ajax({
@@ -203,9 +209,10 @@ requerenteEditFormSubmitDetails = (e, divRequerente, divDetailsId, formEditId, r
         success: function (resp) {
             if (resp.success) {
                 $(`#${divDetailsId}`).html(getLoadingBarHtml);
-                $(`#${divRequerente}`).shape('flip over');
                 $(`#${divDetailsId}`).load(siteUrl + `/Requerentes/DetailsIndexAjaxDetails/${requerenteId}`, function () {
                     $('[data-toggle="tooltip"]').tooltip();
+
+                    toggleDivs(`#divDetails_${requerenteId}`, `#divEdit_${requerenteId}`);
                 });
 
                 notifyUser('success', 'Guardado com sucesso.');

@@ -13,17 +13,14 @@
     <div class=" row">
         @foreach (var requerente in Model.Requerentes)
         {
-        <div class="ui people shape mr-2 mb-2" id="div_@requerente.ID">
-            <div class="sides">
-                <div class="side active requerenteSide" id="divDetails_@requerente.ID">
+            <div class="ui mr-3 mb-3" id="div_@requerente.ID">
+                <div class="requerenteSide" id="divDetails_@requerente.ID">
                     <partial name="PartialViews/_RequerenteDetailsIndexPartial" model="requerente">
                 </div>
-                <div class="side requerenteSide" id="divEdit_@requerente.ID">
+                <div class="requerenteSide" id="divEdit_@requerente.ID" style="display:none;">
 
                 </div>
             </div>
-        </div>
-
         }
     </div>
 

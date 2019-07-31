@@ -18,7 +18,7 @@ namespace LabFoto.Models.ViewModels
         public RequerentesSearchViewModel()
         {
             Page = 1;
-            RequerentesPerPage = 9;
+            RequerentesPerPage = 8;
         }
         public string NomeSearch { get; set; }
         public int Page { get; set; }

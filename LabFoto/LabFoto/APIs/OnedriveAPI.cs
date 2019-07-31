@@ -327,7 +327,6 @@ namespace LabFoto.Onedrive
         /// <summary>
         /// Retorna o url onde será necessário dar permissões à aplicação.
         /// </summary>
-        /// <param name="_redirectUrl">Url para onde será redirecionado o utilizar após ceder permissões.</param>
         /// <param name="state">Um valor que será retornado da API da Microsoft. Este será utilizado para identificar
         /// o ID da conta quando o cliente retorna à aplicaçã0</param>
         /// <returns></returns>

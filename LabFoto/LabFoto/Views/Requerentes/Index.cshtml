@@ -40,8 +40,8 @@
             <span class="text" onchange="requerentesPerPageRefresh">@ViewData["rPP"]</span>
             <i class="dropdown icon"></i>
             <div class="menu">
-                <div class="item" data-text="9" data-value="9">9</div>
-                <div class="item" data-text="18" data-value="18">18</div>
+                <div class="item" data-text="8" data-value="8">8</div>
+                <div class="item" data-text="16" data-value="16">16</div>
                 <div class="item" data-text="32" data-value="32">32</div>
             </div>
         </div>
@@ -81,13 +81,9 @@
         };
     });
 
-    editarRequerenteIndex = (divEdit, divRequerente, idRequerente) => {
-
-        $(`#${divEdit}`).load(siteUrl + `/Requerentes/EditIndex/${idRequerente}`, function () {
-            $('[data-toggle="tooltip"]').tooltip();
-            $(`#${divRequerente}`).shape('flip back');
-        });
-        //requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditIndex/${idRequerente}`);
+    editarRequerenteIndex = (divEdit, idRequerente) => 
+    {
+        requerenteFormsLoadAjax(`${divEdit}`, siteUrl + `/Requerentes/EditIndex/${idRequerente}`, idRequerente);
     };
 
 </script>

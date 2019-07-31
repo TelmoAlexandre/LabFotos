@@ -5,15 +5,11 @@
 }
 <div class="row">
     <div class="col-md-5"></div>
-    <div class="ui people shape" id="div_@Model.ID">
-        <div class="sides">
-            <div class="side active requerenteSide" id="divDetails_@Model.ID">
-                <partial name="PartialViews/_RequerenteDetailsPartial" model="Model" />
-            </div>
-            <div class="side requerenteSide" id="divEdit_@Model.ID">
+    <div class="requerenteSide" id="divDetails_@Model.ID">
+        <partial name="PartialViews/_RequerenteDetailsPartial" model="Model" />
+    </div>
+    <div class="requerenteSide" id="divEdit_@Model.ID" style="display:none;">
 
-            </div>
-        </div>
     </div>
 </div>
 
@@ -110,11 +106,9 @@ else
     }
 
     <script>
-        editarRequerenteDetails = (divEdicao, divRequerente, idRequerente) =>
+        editarRequerenteDetails = (divEdicao, idRequerente) =>
         {
-            flipCard(`${divRequerente}`, 'flip back');
-            // $(`#${divRequerente}`).shape('flip back');
-            requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditDetails/${idRequerente}`);
+            requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditDetails/${idRequerente}`, idRequerente);
         };
 
         // Detalhes do serviço com o id que recebe por parametro

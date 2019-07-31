@@ -1,7 +1,7 @@
 ﻿@model LabFoto.Models.Tables.Requerente
 
 <form asp-controller="Requerentes" asp-action="Edit"
-      onsubmit="requerenteEditFormSubmitDetails(event, `div_@Model.ID` , `divDetails_@Model.ID`, `requerenteEditForm_@Model.ID`, `@Model.ID`)"
+      onsubmit="requerenteEditFormSubmitDetails(event, `divDetails_@Model.ID`, `requerenteEditForm_@Model.ID`, `@Model.ID`)"
       id="requerenteEditForm_@Model.ID">
     <div class="ui card">
         <div class="card requerenteSide">
@@ -31,7 +31,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="item">
+                    <div class="item mb-2">
                         <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Responsavel)</p>
                         <div class="content">
                             <div class="ui transparent left icon fluid input">
@@ -45,7 +45,7 @@
                         <i class="save outline icon"></i>
                     </span>
                     <span class="btn float-right pointer" data-toggle="tooltip" title="Voltar"
-                          onclick="flipCard(`div_@Model.ID`, `flip over`)">
+                          onclick="toggleDivs(`#divEdit_@Model.ID`, `#divDetails_@Model.ID`)">
                         <i class="undo icon"></i>
                     </span>
                 </div>
