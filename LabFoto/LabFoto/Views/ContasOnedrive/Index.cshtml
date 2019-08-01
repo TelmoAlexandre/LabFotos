@@ -21,11 +21,23 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            if ((Int64.Parse(item.Quota_Remaining) / 1024 / 1024 / 1024) <= 50)
+        @{
+            foreach (var item in Model)
             {
-                <tr class="negative">
+                long remaining = Int64.Parse(item.Quota_Remaining) / 1024 / 1024 / 1024;
+                string cls = "";
+
+                if (remaining <= 50)
+                {
+                    cls = "negative";
+                }
+                else if (remaining <= 150)
+                {
+                    cls = "warning";
+                }
+
+                <tr class="@cls">
+
                     <td>
                         @Html.DisplayFor(modelItem => item.Username)
                     </td>
@@ -34,7 +46,7 @@
 
                     </td>
                     <td>
-                        @(Int64.Parse(item.Quota_Remaining) / 1024 / 1024 / 1024) GB
+                        @remaining GB
                     </td>
                     <td>
                         @(Int64.Parse(item.Quota_Used) / 1024 / 1024 / 1024) GB
@@ -45,53 +57,8 @@
                     </td>
                 </tr>
             }
-            else if ((Int64.Parse(item.Quota_Remaining) / 1024 / 1024 / 1024) <= 150)
-            {
-                <tr class="warning">
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Username)
-                    </td>
-                    <td>
-                        @(Int64.Parse(item.Quota_Total) / 1024 / 1024 / 1024) GB
-
-                    </td>
-                    <td>
-                        @(Int64.Parse(item.Quota_Remaining) / 1024 / 1024 / 1024) GB
-                    </td>
-                    <td>
-                        @(Int64.Parse(item.Quota_Used) / 1024 / 1024 / 1024) GB
-                    </td>
-                    <td style="width:40px !important">
-                        <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@item.ID" class="ml-1 btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                        <a asp-controller="ContasOnedrive" asp-action="Details" asp-route-id="@item.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
-                    </td>
-                </tr>
-            }
-            else
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Username)
-                    </td>
-                    <td>
-                        @(Int64.Parse(item.Quota_Total) / 1024 / 1024 / 1024) GB
-
-                    </td>
-                    <td>
-                        @(Int64.Parse(item.Quota_Remaining) / 1024 / 1024 / 1024) GB
-                    </td>
-                    <td>
-                        @(Int64.Parse(item.Quota_Used) / 1024 / 1024 / 1024) GB
-                    </td>
-                    <td style="width:40px !important">
-                        <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@item.ID" class="ml-1 btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                        <a asp-controller="ContasOnedrive" asp-action="Details" asp-route-id="@item.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
-                    </td>
-                </tr>
-
-            }
-
         }
+
     </tbody>
 </table>
 
