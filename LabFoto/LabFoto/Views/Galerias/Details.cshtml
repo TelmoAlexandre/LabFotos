@@ -295,8 +295,17 @@
                         if (resp.success)
                         {
                             notifyUser('success', 'Apagado com sucesso.');
-                            $("#photosContainer").html("");
-                            getPhotos(1);
+
+                            // Quando apagadas com sucesso, remove-las do DOM
+                            toSend.forEach(p =>
+                            {
+                                $(`#photoCard_${p}`).remove();
+                            });
+
+                            if (isEmpty("#photosContainer")) // Caso não exitam fotografias na galeria
+                            {
+                                $("#my-gallery").html(placeHolder); // Mostra um placeholder
+                            }
                         }
                         else
                         {

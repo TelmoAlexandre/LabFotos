@@ -4,7 +4,7 @@
     int i = Model.Index; // Usando para definir index nas fotos. Para saber qualquer a foto clicada (no PhotoSwipe)
     foreach (var foto in Model.Fotos)
     {
-        <div class="card remove-card-border">
+        <div class="card remove-card-border" id="photoCard_@foto.ID">
             <div class="content p-1">
                 <div class="header" style="font-size:0.8rem;">
                     @foto.Nome
@@ -19,13 +19,13 @@
                     <figcaption itemprop="caption description" hidden>@foto.Nome</figcaption>
                 </figure>
             </div>
-            <div class="ui small icon buttons">
-                <button class="ui button basic btnCB border-bottom" onclick="pushToPhotos('@foto.ID')" id="cb_@foto.ID">
+            <div class="ui small icon buttons border-top">
+                <button class="ui button basic btnCB border-bottom border-left" onclick="pushToPhotos('@foto.ID')" id="cb_@foto.ID">
                     <i class="check circle outline icon"></i>
                 </button>
                 <button class="ui basic button border border-top-0" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i></button>
 
-                <div class="ui basic button border-bottom btnOptions">
+                <div class="ui basic button border-bottom border-right btnOptions">
                     <i class="cog icon"></i>
                 </div>
                 <div class="ui fluid popup bottom left transition hidden">
