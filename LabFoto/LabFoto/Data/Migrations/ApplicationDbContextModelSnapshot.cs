@@ -29,7 +29,8 @@ namespace LabFoto.Migrations
 
                     b.Property<string>("DriveId");
 
-                    b.Property<string>("Password");
+                    b.Property<string>("Password")
+                        .IsRequired();
 
                     b.Property<string>("Quota_Remaining");
 
@@ -41,7 +42,8 @@ namespace LabFoto.Migrations
 
                     b.Property<DateTime>("TokenDate");
 
-                    b.Property<string>("Username");
+                    b.Property<string>("Username")
+                        .IsRequired();
 
                     b.HasKey("ID");
 
@@ -279,6 +281,8 @@ namespace LabFoto.Migrations
 
                     b.Property<DateTime>("DataDeCriacao");
 
+                    b.Property<int?>("FotoCapa");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(255);
@@ -373,7 +377,8 @@ namespace LabFoto.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Nome");
+                    b.Property<string>("Nome")
+                        .IsRequired();
 
                     b.HasKey("ID");
 
@@ -976,7 +981,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                            ConcurrencyStamp = "e4714d58-9dba-4ac7-b493-74501b444f35",
+                            ConcurrencyStamp = "3682490c-3db2-4e66-978c-cdd8babebd94",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -1153,13 +1158,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e9544fcb-577d-422f-ad21-9ed4f2a15775",
+                            ConcurrencyStamp = "de58853e-05ca-4b79-ae27-00507c4c5cfe",
                             Email = "admin1@admin1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@ADMIN1.COM",
                             NormalizedUserName = "ADMIN1@ADMIN1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFQmCqJ/FsQWbvdxhI5UBIdUNAUfF7cjThnLNzlv0/rtslPlqUZ6QGxoDw00WcappA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEADaJbugnUFdqlWOUG0o1NFlQsF9VWHtdlLuU+pc9/44p2UTxiRM5y/k4n7zwYg2LA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -1170,13 +1175,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1b5ad237-f6e2-44e6-ae37-bf08de1f6654",
+                            ConcurrencyStamp = "32bd5c7a-3cd5-4441-92a1-f0938a8e2b72",
                             Email = "user1@user1.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@USER1.COM",
                             NormalizedUserName = "USER1@USER1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKp7kBVfKwJqVX/ASXKC2Zlz/MqVJsjI49uZr+KrUOFnAkRPKWvlrjcdBrtjcYbuzg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJZAPXWDwF3LWypq5zraoUUsmOqetNMsBKxH3buGgo3LAlLhqji325HSTykdW1GZmg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

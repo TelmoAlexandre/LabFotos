@@ -55,8 +55,8 @@ namespace LabFoto.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Username = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true),
+                    Username = table.Column<string>(nullable: false),
+                    Password = table.Column<string>(nullable: false),
                     DriveId = table.Column<string>(nullable: true),
                     AccessToken = table.Column<string>(nullable: true),
                     RefreshToken = table.Column<string>(nullable: true),
@@ -89,7 +89,7 @@ namespace LabFoto.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: true)
+                    Nome = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -277,6 +277,7 @@ namespace LabFoto.Migrations
                     ID = table.Column<string>(nullable: false),
                     Nome = table.Column<string>(maxLength: 255, nullable: false),
                     DataDeCriacao = table.Column<DateTime>(nullable: false),
+                    FotoCapa = table.Column<int>(nullable: true),
                     ServicoFK = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -430,15 +431,15 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "e4714d58-9dba-4ac7-b493-74501b444f35", "Admin", "ADMIN" });
+                values: new object[] { "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1", "3682490c-3db2-4e66-978c-cdd8babebd94", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Nome" },
                 values: new object[,]
                 {
-                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "e9544fcb-577d-422f-ad21-9ed4f2a15775", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEFQmCqJ/FsQWbvdxhI5UBIdUNAUfF7cjThnLNzlv0/rtslPlqUZ6QGxoDw00WcappA==", null, false, "", false, "admin1@admin1.com", "Admin1" },
-                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "1b5ad237-f6e2-44e6-ae37-bf08de1f6654", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEKp7kBVfKwJqVX/ASXKC2Zlz/MqVJsjI49uZr+KrUOFnAkRPKWvlrjcdBrtjcYbuzg==", null, false, "", false, "user1@user1.com", "User1" }
+                    { "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7", 0, "de58853e-05ca-4b79-ae27-00507c4c5cfe", "Utilizador", "admin1@admin1.com", false, false, null, "ADMIN1@ADMIN1.COM", "ADMIN1@ADMIN1.COM", "AQAAAAEAACcQAAAAEADaJbugnUFdqlWOUG0o1NFlQsF9VWHtdlLuU+pc9/44p2UTxiRM5y/k4n7zwYg2LA==", null, false, "", false, "admin1@admin1.com", "Admin1" },
+                    { "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1", 0, "32bd5c7a-3cd5-4441-92a1-f0938a8e2b72", "Utilizador", "user1@user1.com", false, false, null, "USER1@USER1.COM", "USER1@USER1.COM", "AQAAAAEAACcQAAAAEJZAPXWDwF3LWypq5zraoUUsmOqetNMsBKxH3buGgo3LAlLhqji325HSTykdW1GZmg==", null, false, "", false, "user1@user1.com", "User1" }
                 });
 
             migrationBuilder.InsertData(
@@ -536,13 +537,13 @@ namespace LabFoto.Migrations
 
             migrationBuilder.InsertData(
                 table: "Galerias",
-                columns: new[] { "ID", "DataDeCriacao", "Nome", "ServicoFK" },
+                columns: new[] { "ID", "DataDeCriacao", "FotoCapa", "Nome", "ServicoFK" },
                 values: new object[,]
                 {
-                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", new DateTime(2019, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria2", "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", new DateTime(2018, 2, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria3", "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2018, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria4", "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
-                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "Galeria1", "aca4875a-721e-4cfc-827d-d48c7050b543" }
+                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", new DateTime(2019, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria2", "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", new DateTime(2018, 2, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria3", "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2018, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria4", "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria1", "aca4875a-721e-4cfc-827d-d48c7050b543" }
                 });
 
             migrationBuilder.InsertData(

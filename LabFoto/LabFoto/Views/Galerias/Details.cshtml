@@ -74,7 +74,7 @@
     <div class="ui small basic icon buttons float-right">
         <button class="ui button" onclick="selectAllCB()"><i class="check circle icon"></i></button>
         <button class="ui button" onclick="clearCB()"><i class="check circle outline icon"></i></button>
-        <button class="ui button" onclick="confirmDelete(null)" id="btnDelete" disabled><i class="trash alternate outline icon"></i></button>
+        <button class="ui button" onclick="confirmationModal('delete', deletePhotos, null)" id="btnDelete" disabled><i class="trash alternate outline icon"></i></button>
     </div>
     <br />
     <div id="thumbnails" class="mt-4">
@@ -84,9 +84,9 @@
     </div>
 </div>
 
-<div class="ui basic mini modal" id="confirmDelete">
+<div class="ui basic mini modal" id="confirmationModal">
     <div class="content">
-        <p>Tem a certeza que pretende eliminar esta(s) fotografia(s)?</p>
+        <p></p>
     </div>
     <div class="actions">
         <div class="ui red basic cancel inverted button">
@@ -187,6 +187,38 @@
             initPhotoSwipeFromDOM('.my-gallery');
         });
 
+        function defineCoverPhoto(id)
+        {
+            $('.btnOptions').popup('hide');
+            $.ajax({
+                    type: "POST",
+                    url: siteUrl + "/Galerias/DefineCover",
+                    data: {
+                        "id": '@Model.ID',
+                        'fotoId': id,
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    success: function (resp)
+                    {
+                        if (resp.success)
+                        {
+                            notifyUser('success', 'Capa definida com sucesso.');
+                        }
+                        else
+                        {
+                            notifyUser('error', 'Erro ao definir capa.');
+                        }
+
+                        // Reset da variável
+                        photos = [];
+                    },
+                    error: function ()
+                    {
+                        notifyUser('error', 'Erro ao definir capa.');
+                    }
+                });
+        }
+
         function pushToPhotos(newPhotoId)
         {
             // Caso o url exista no array, retira-lo
@@ -209,17 +241,27 @@
             $("#btnDelete").attr("disabled", (photos.length === 0)? true : false);
         }
 
-        function confirmDelete(id)
+        function confirmationModal(type, callback, callbackParam)
         {
             $('.btnOptions').popup('hide');
-            $("#confirmDelete").modal({
+            var txt = '';
+
+            switch (type)
+            {
+                case 'delete': txt = "Tem a certeza que pretende eliminar esta(s) fotografia(s)?"; break;
+                case 'cover': txt = "Tem a certeza que pretende definir esta fotografia como capa?"; break;
+                default: txt = "Tem a certeza que pretende eliminar esta(s) fotografia(s)?"; break;
+            }
+
+            $("#confirmationModal p").html(txt);
+            $("#confirmationModal").modal({
                 closable: false,
                 onDeny: function () {
                     $("#confirmDelete").modal('hide');
                 },
                 onApprove: function ()
                 {
-                    deletePhotos(id);
+                    callback(callbackParam);
                 },
                 transition: 'scale'
             }).modal('show');

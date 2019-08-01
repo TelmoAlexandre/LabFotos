@@ -16,13 +16,23 @@ else
             <div class="card">
                 <div class="image unselectable">
                     <a asp-action="Details" asp-route-id="@galeria.ID">
-                        @if (galeria.Fotografias.FirstOrDefault() != null)
-                        {
-                            <img src="@galeria.Fotografias.FirstOrDefault().Thumbnail_Medium" class="medium-thumbnails" />
-                        }
-                        else
-                        {
-                            <img src="~/images/default.png" class="medium-thumbnails">
+                        @{
+                            if (galeria.Fotografias.Count() != 0)
+                            {
+                                var cover = galeria.Fotografias.FirstOrDefault(); // Por defeito é a primeira foto da galeria
+
+                                // Se tiver sido escolhida foto de capa, então escolher essa
+                                if (galeria.FotoCapa != null)
+                                {
+                                    cover = galeria.Fotografias.Where(f => f.ID == galeria.FotoCapa).FirstOrDefault();
+                                }
+
+                                <img src="@cover.Thumbnail_Medium" class="medium-thumbnails" />
+                            }
+                            else
+                            {
+                                <img src="~/images/default.png" class="medium-thumbnails">
+                            }
                         }
                     </a>
                 </div>

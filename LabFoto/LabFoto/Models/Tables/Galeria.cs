@@ -16,6 +16,7 @@ namespace LabFoto.Models.Tables
 
         [Required(ErrorMessage = "É necessário preencher a data de criação"), DataType(DataType.Date), Display(Name = "Data de Criação")]
         public DateTime DataDeCriacao { get; set; }
+        public int? FotoCapa { get; set; }
 
         //Chave Forasteira para Servico
         [ForeignKey("Servico")]

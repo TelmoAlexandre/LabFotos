@@ -136,6 +136,39 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_GaleriasIndexCardsPartialView", response);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DefineCover(string id, int? fotoId)
+        {
+            if (!String.IsNullOrEmpty(id) && fotoId != null)
+            {
+                var galeria = await _context.Galerias.Include(g => g.Fotografias).Where(g => g.ID.Equals(id)).FirstOrDefaultAsync();
+
+                // Caso a galeria exista
+                if (galeria != null)
+                {
+                    // Caso essa galeria tenha a fotografia em questão
+                    var foto = galeria.Fotografias.Where(f => f.ID == fotoId).FirstOrDefault();
+                    if (foto != null)
+                    {
+                        galeria.FotoCapa = foto.ID;
+                    }
+                }
+
+                try
+                {
+                    _context.Update(galeria);
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true });
+                }
+                catch (Exception e)
+                {
+                    _email.NotifyError("Erro ao associar metadados à galeria.", "GaleriasController", "Edit - POST", e.Message);
+                }
+            }
+            
+            return Json(new { success = false });
+        }
+
         #endregion Ajax
 
         #region Index
