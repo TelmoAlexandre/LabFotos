@@ -24,7 +24,7 @@ else
                                 // Se tiver sido escolhida foto de capa, então escolher essa
                                 if (galeria.FotoCapa != null)
                                 {
-                                    cover = galeria.Fotografias.Where(f => f.ID == galeria.FotoCapa).FirstOrDefault();
+                                    cover = galeria.Fotografias.Where(f => f.ID == galeria.FotoCapa).FirstOrDefault() ?? cover;
                                 }
 
                                 <img src="@cover.Thumbnail_Medium" class="medium-thumbnails" />
