@@ -101,6 +101,7 @@ else
             $(document).ready(function ()
             {
                 requerenteServicoDetails(`div_segment`, `@Model.Servicos.FirstOrDefault().ID`);
+                $('.ui.vertical.fluid.tabular.menu a:first-child').addClass('active');
             });
         </script>
     }
@@ -111,13 +112,19 @@ else
             requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditDetails/${idRequerente}`, idRequerente);
         };
 
+    
+
         // Detalhes do serviço com o id que recebe por parametro
         // e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
         requerenteServicoDetails = (divId, servicoId) =>
         {
-            $(`#${divId}`).html($(`#loadingServico`));
-            $(`#loadingServico`).removeAttr('hidden');
-            $(`#${divId}`).load(siteUrl + `/Servicos/DetailsAjax/${servicoId}`);
+            // garantir que o serviço que já está carregado não seja carregado novamente
+            if ($(`#heading_${servicoId}`).length == 0) {
+                $(`#${divId}`).html($(`#loadingServico`));
+                $(`#loadingServico`).removeAttr('hidden');
+                $(`#${divId}`).load(siteUrl + `/Servicos/DetailsAjax/${servicoId}`);
+            }
+
         };
 
     </script>
