@@ -34,7 +34,7 @@
     {
         <header>
 
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow pb-0 mb-3 unselectable">
 
                 <div class="container">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><i class="fas fa-camera-retro"></i> LabFotos</a>
@@ -46,32 +46,35 @@
                     <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                         <partial name="_LoginPartial" />
                         <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Servicos" asp-action="Index">Serviços</a>
+                            <li class="nav-item dropdown">
+                                <a class="dropbtn nav-link text-dark" asp-area="" asp-controller="Servicos" asp-action="Index">Serviços</a>
+                                <div class="dropdown-content">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Tipos" asp-action="Index">Tipos de Serviço</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ServicosSolicitados" asp-action="Index">Serviços Solicitados</a>
+                                </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Requerentes" asp-action="Index">Requerentes</a>
+                            <li class="nav-item dropdown">
+                                <a class="dropbtn nav-link text-dark" asp-area="" asp-controller="Requerentes" asp-action="Index">Requerentes</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Tipos" asp-action="Index">Tipos</a>
+                            <li class="nav-item dropdown">
+                                <a class="dropbtn nav-link text-dark" style="pointer-events: none;"> Administração</a>
+                                <div class="dropdown-content">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ContasOnedrive" asp-action="Index">Contas Onedrive</a>
+                                </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="ServicosSolicitados" asp-action="Index">Serviços Solicitados</a>
+                            <li class="nav-item dropdown">
+                                <a class="dropbtn nav-link text-dark" asp-area="" asp-controller="Galerias" asp-action="Index">Galerias</a>
+                                <div class="dropdown-content">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Metadados" asp-action="Index">Metadados</a>
+                                </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="ContasOnedrive" asp-action="Index">Contas Onedrive</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Galerias" asp-action="Index">Galerias</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Metadados" asp-action="Index">Metadados</a>
-                            </li>
+
                         </ul>
                     </div>
                 </div>
-            </nav>
+                </nav>
         </header>
+
 
         <div class="container">
             <main role="main" class="pb-3">
