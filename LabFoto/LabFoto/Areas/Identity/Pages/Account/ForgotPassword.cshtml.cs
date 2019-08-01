@@ -28,7 +28,7 @@ namespace LabFoto.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "É necessário preencher o email.")]
             [EmailAddress]
             public string Email { get; set; }
         }
