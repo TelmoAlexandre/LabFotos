@@ -56,9 +56,6 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Tipos" asp-action="Index">Tipos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Metadados" asp-action="Index">Metadados</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="ServicosSolicitados" asp-action="Index">Serviços Solicitados</a>
                             </li>
                             <li class="nav-item">
@@ -68,7 +65,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Galerias" asp-action="Index">Galerias</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Metadados" asp-action="Index">Metadados</a>
                             </li>
                         </ul>
                     </div>
@@ -86,14 +83,14 @@
     else
     {
         <div style="height:200px"></div>
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-            <partial name="_CookieConsentPartial" />
-        </div>
-
     }
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+        <partial name="_CookieConsentPartial" />
+    </div>
 
     <script>
         // Recolher o url do site do appsettings.json

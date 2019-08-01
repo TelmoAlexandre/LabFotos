@@ -3,29 +3,75 @@
 @{
     ViewData["Title"] = "Index";
 }
-<div class="ui text container">
-    <h1 class="mt-5 mb-5">Metadados</h1>
-</div>
 
-<div class="ui text container">
-    <div class="ui vertically divided grid">
-        @foreach (var tipo in Model)
-        {
-            <div class="row">
+<h1 class="mt-5">Metadados</h1>
 
-                <div class="sixteen wide column mb-0 mt-0" id="indexDetails_@tipo.ID">
-                    <div class="ui basic segment pb-0 pt-0">
-                        <i class="paperclip icon pt-2"></i>
-                        <span class="font-weight-bolder">@tipo.Nome</span>
-                        <div class="ui button float-right" onclick="showEditIndex(@tipo.ID, 'Metadados')">
-                            Editar <i class="right chevron icon"></i>
-                        </div>
+<div id="searchForm">
+    @Html.AntiForgeryToken()
+    <div class="ui segment padded pb-1">
+        <div class="ui form" id="searchParams">
+            <div class="fields">
+                <div class="six wide field">
+                    <div class="ui transparent left icon input large">
+                        <input id="inputNome" placeholder="Nome do metadado..." name="Nome">
+                        <i class="search icon"></i>
                     </div>
                 </div>
-
-                <div class="sixteen wide column mb-0 mt-0" id="indexEdit_@tipo.ID" style="display:none;"></div>
-
+                <div class="ten wide field">
+                    <div class="ui button blue mini" onclick="submitTiposSearchForm()" tabindex="0">
+                        <i class="search icon"></i>
+                        Pesquisar
+                    </div>
+                    <div class="ui button inverted red mini" onclick="clearSearch()" tabindex="0">
+                        <i class="eraser icon"></i>
+                        Limpar pesquisa
+                    </div>
+                </div>
             </div>
-        }
+        </div>
     </div>
 </div>
+
+<div class="ui vertically divided grid pl-3 mt-2" id="indexMetadados">
+    <partial name="PartialViews/_IndexCards" model="Model" />
+</div>
+
+@section scripts
+{
+    <script>
+        clearSearch = () =>
+        {
+            $(`#inputNome`).val("");
+            submitTiposSearchForm();
+        };
+
+        $(".input").on('keyup', function (e)
+        {
+            if (e.keyCode == 13)
+            {
+                submitTiposSearchForm();
+            }
+        });
+
+        function submitTiposSearchForm()
+        {
+            $.ajax({
+                url: siteUrl + "/Metadados/IndexFilter",
+                type: "POST",
+                data: {
+                    "Nome": $("#searchForm #inputNome").val(),
+                    "__RequestVerificationToken": $("#searchForm input[name='__RequestVerificationToken']").val(),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                success: function (resp)
+                {
+                    $("#indexMetadados").html(resp);
+                },
+                error: function ()
+                {
+                    notifyUser('error', 'Erro ao pesquisar.');
+                }
+            });
+        }
+    </script>
+}

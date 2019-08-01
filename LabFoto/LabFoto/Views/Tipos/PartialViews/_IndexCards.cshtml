@@ -1,0 +1,29 @@
+﻿@model IEnumerable<LabFoto.Models.Tables.Tipo>
+
+@{
+    if (Model.Count() != 0)
+    {
+        foreach (var tipo in Model)
+        {
+            <div class="row">
+                <div class="sixteen wide column mb-0 mt-0" id="indexDetails_@tipo.ID">
+                    <div class="ui basic segment pb-0 pt-0">
+                        <i class="paperclip icon pt-2"></i>
+                        <span class="font-weight-bolder">@tipo.Nome</span>
+                        <div class="ui button float-right" onclick="showEditIndex(@tipo.ID, 'Tipos')">
+                            Editar <i class="right chevron icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sixteen wide column mb-0 mt-0" id="indexEdit_@tipo.ID" style="display:none;"></div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="my-lg-5 d-flex justify-content-center">
+            <p class="font-weight-bolder">Não foram encontrados Tipos.</p>
+        </div>
+    }
+}

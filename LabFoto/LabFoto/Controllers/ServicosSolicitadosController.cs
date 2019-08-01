@@ -28,6 +28,20 @@ namespace LabFoto.Controllers
             return View(await _context.ServicosSolicitados.ToListAsync());
         }
 
+        [HttpPost]
+        // POST ServicosSolicitados/IndexFilter
+        public async Task<IActionResult> IndexFilter(string Nome)
+        {
+            var servSolic = _context.ServicosSolicitados.Select(s => s);
+
+            if (!String.IsNullOrEmpty(Nome))
+            {
+                servSolic = servSolic.Where(s => s.Nome.Contains(Nome));
+            }
+
+            return PartialView("PartialViews/_IndexCards", await servSolic.ToListAsync());
+        }
+
         #endregion Index
 
         #region Details
@@ -47,7 +61,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return PartialView("_DetailsPartialView", servicoSolicitado);
+            return PartialView("PartialViews/_Details", servicoSolicitado);
         }
 
         #endregion Details
@@ -57,7 +71,7 @@ namespace LabFoto.Controllers
         // GET: ServicosSolicitados/Create
         public IActionResult Create()
         {
-            return PartialView("_ServSolicsFormPartialView", new ServicoSolicitado());
+            return PartialView("PartialViews/_CreateForm", new ServicoSolicitado());
         }
 
         // POST: ServicosSolicitados/Create
@@ -78,7 +92,7 @@ namespace LabFoto.Controllers
                 await _context.SaveChangesAsync();
                 return Json(new { success = true });
             }
-            return PartialView("_ServSolicsFormPartialView", servicoSolicitado);
+            return PartialView("PartialViews/_CreateForm", servicoSolicitado);
         }
 
         #endregion Create
@@ -97,7 +111,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            return PartialView("_EditPartialView", servicosSolicitado);
+            return PartialView("PartialViews/_Edit", servicosSolicitado);
         }
 
         // POST: ServicosSolicitados/Edit/5
@@ -132,7 +146,7 @@ namespace LabFoto.Controllers
                     }
                 }
             }
-            return PartialView("_EditPartialView", servicoSolicitado);
+            return PartialView("PartialViews/_Edit", servicoSolicitado);
         }
 
         #endregion Edit

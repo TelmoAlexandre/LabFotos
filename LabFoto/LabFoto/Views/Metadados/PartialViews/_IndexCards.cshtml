@@ -1,0 +1,31 @@
+﻿@model IEnumerable<LabFoto.Models.Tables.Metadado>
+
+@{
+    if (Model.Count() != 0)
+    {
+
+        @foreach (var metadado in Model)
+        {
+            <div class="row">
+
+                <div class="sixteen wide column mb-0 mt-0" id="indexDetails_@metadado.ID">
+                    <div class="ui basic segment pb-0 pt-0">
+                        <i class="paperclip icon pt-2"></i>
+                        <span class="font-weight-bolder">@metadado.Nome</span>
+                        <div class="ui button float-right" onclick="showEditIndex(@metadado.ID, 'Metadados')">
+                            Editar <i class="right chevron icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sixteen wide column mb-0 mt-0" id="indexEdit_@metadado.ID" style="display:none;"></div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="my-lg-5 d-flex justify-content-center">
+            <p class="font-weight-bolder">Não foram encontrados Metadados.</p>
+        </div>
+    }
+}

@@ -28,6 +28,20 @@ namespace LabFoto.Controllers
             return View(await _context.Metadados.ToListAsync());
         }
 
+        [HttpPost]
+        // POST: Tipos/IndexFilter
+        public async Task<IActionResult> IndexFilter(string Nome)
+        {
+            var metadados = _context.Metadados.Select(m => m);
+
+            if (!String.IsNullOrEmpty(Nome))
+            {
+                metadados = metadados.Where(m => m.Nome.Contains(Nome));
+            }
+
+            return PartialView("PartialViews/_IndexCards", await metadados.ToListAsync());
+        }
+
         // GET: Metadados/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -43,7 +57,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return PartialView("PartialViews/_DetailsPartialView", metadado);
+            return PartialView("PartialViews/_Details", metadado);
         }
 
         // GET: Metadados/Create
@@ -87,7 +101,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            return PartialView("PartialViews/_EditPartialView", metadado);
+            return PartialView("PartialViews/_Edit", metadado);
         }
 
         // POST: Metadados/Edit/5
@@ -121,7 +135,7 @@ namespace LabFoto.Controllers
                     }
                 }
             }
-            return PartialView("PartialViews/_EditPartialView", metadado);
+            return PartialView("PartialViews/_Edit", metadado);
         }
 
         // GET: Metadados/Delete/5

@@ -29,6 +29,20 @@ namespace LabFoto.Controllers
             return View(await _context.Tipos.ToListAsync());
         }
 
+        [HttpPost]
+        // POST: Tipos/IndexFilter
+        public async Task<IActionResult> IndexFilter(string Nome)
+        {
+            var tipos = _context.Tipos.Select(t=>t);
+
+            if (!String.IsNullOrEmpty(Nome))
+            {
+                tipos = tipos.Where(t=>t.Nome.Contains(Nome));
+            }
+
+            return PartialView("PartialViews/_IndexCards", await tipos.ToListAsync());
+        }
+
         #endregion Index
 
         #region Details
@@ -48,7 +62,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return PartialView("_DetailsPartialView", tipos);
+            return PartialView("PartialViews/_Details", tipos);
         }
 
         #endregion Details
@@ -100,7 +114,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return PartialView("_EditPartialView", tipo);
+            return PartialView("PartialViews/_Edit", tipo);
         }
 
         // POST: Tipos/Edit/5
@@ -136,7 +150,7 @@ namespace LabFoto.Controllers
                 }
             }
 
-            return PartialView("_EditPartialView", tipo);
+            return PartialView("PartialViews/_Edit", tipo);
         }
 
         #endregion Edit
