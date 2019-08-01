@@ -19,12 +19,33 @@
                     <figcaption itemprop="caption description" hidden>@foto.Nome</figcaption>
                 </figure>
             </div>
-            <div class="ui small basic icon buttons">
-                <button class="ui button" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i></button>
-                <button class="ui button"><i class="sliders horizontal icon"></i></button>
-            </div>
-            <div class="ui toggle checkbox" onclick="pushToPhotos('@foto.ID')">
-                <input type="checkbox" tabindex="0" class="hidden">
+            <div class="ui small icon buttons">
+                <button class="ui button basic btnCB border-bottom" onclick="pushToPhotos('@foto.ID')" id="cb_@foto.ID">
+                    <i class="check circle outline icon"></i>
+                </button>
+                <button class="ui basic button border border-top-0" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i></button>
+
+                <div class="ui basic button border-bottom">
+                    <div class="btnOptions">
+                        <i class="cog icon"></i>
+                    </div>
+                    <div class="ui fluid popup bottom left transition hidden">
+                        <div class="ui relaxed divided list link">
+                            <a class="item small mb-1">
+                                <i class="image outline icon"></i>
+                                <div class="content">
+                                    <div class="header">Definir como capa</div>
+                                </div>
+                            </a>
+                            <a class="item small pt-2" onclick="confirmDelete('@foto.ID')">
+                                <i class="trash alternate outline icon"></i>
+                                <div class="content">
+                                    <div class="header">Remover</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

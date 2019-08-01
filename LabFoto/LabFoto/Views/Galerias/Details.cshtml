@@ -9,7 +9,7 @@
 
 
 <form id="uploader">
-    <div class="mb-4 ui attached segment">
+    <div class="mb-2 ui attached segment">
         <div class="ui grid">
             <div class="eight wide column">
                 <p class="ui blue ribbon label mb-3">Galeria</p>
@@ -70,13 +70,33 @@
     </div>
 </form>
 
-<button onclick="deletePhotos()" id="btnDelete" class="ui button" disabled>Apagar Fotografias</button>
-<button onclick="selectAllCB()" class="ui button">Selecionar todas</button>
-<button onclick="clearCB()" class="ui button">Remover todas</button>
+<div class="mt-4">
+    <div class="ui small basic icon buttons float-right">
+        <button class="ui button" onclick="selectAllCB()"><i class="check circle icon"></i></button>
+        <button class="ui button" onclick="clearCB()"><i class="check circle outline icon"></i></button>
+        <button class="ui button" onclick="confirmDelete(null)" id="btnDelete" disabled><i class="trash alternate outline icon"></i></button>
+    </div>
+    <br />
+    <div id="thumbnails" class="mt-4">
+        <div class="my-gallery" id="my-gallery" itemscope>
+            <div class="ui six doubling stackable cards mt-2" id="photosContainer"></div>
+        </div>
+    </div>
+</div>
 
-<div id="thumbnails" class="mt-4">
-    <div class="my-gallery" id="my-gallery" itemscope>
-        <div class="ui six doubling stackable cards mt-2" id="photosContainer"></div>
+<div class="ui basic mini modal" id="confirmDelete">
+    <div class="content">
+        <p>Tem a certeza que pretende eliminar esta(s) fotografia(s)?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button" onclick="">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
     </div>
 </div>
 
@@ -157,29 +177,65 @@
         var placeHolder = `<div class="ui six doubling stackable mt-2" id="photosContainer"><div class="ui placeholder tiny segment"><div class="ui icon header"><i class="images outline icon" style="height: auto;"></i>Não existem fotografias.</div></div></div>`;
 
         var photos = [];
-        
-        function pushToPhotos(newPhoto)
+
+        $(document).ready(function ()
+        {
+            // Começar a pedir fotografias
+            getPhotos(1);
+
+            // Iniciar a galeria do PhotoSwipe
+            initPhotoSwipeFromDOM('.my-gallery');
+        });
+
+        function pushToPhotos(newPhotoId)
         {
             // Caso o url exista no array, retira-lo
-            if (photos.includes(newPhoto)) {
+            if (photos.includes(newPhotoId)) {
                 let newArray = [];
                 photos.forEach((photo) => {
-                    if (photo !== newPhoto) {
+                    if (photo !== newPhotoId) {
                         newArray.push(photo);
                     }
                 });
                 photos = newArray;
             } else {
-                photos.push(newPhoto);
+                photos.push(newPhotoId);
             }
 
+            // Alterar o botão check para refletir que a foto [está/não está] selecionada
+            $(`#cb_${newPhotoId}`).toggleClass("blue")
+                .children("i").toggleClass("outline blue");
             // Desabilitar os botões caso não existam fotos selecionadas
             $("#btnDelete").attr("disabled", (photos.length === 0)? true : false);
         }
 
-        function deletePhotos()
+        function confirmDelete(id)
         {
-            if (photos.length > 0)
+            $('.btnOptions').popup('hide');
+            $("#confirmDelete").modal({
+                closable: false,
+                onDeny: function () {
+                    $("#confirmDelete").modal('hide');
+                },
+                onApprove: function ()
+                {
+                    deletePhotos(id);
+                },
+                transition: 'scale'
+            }).modal('show');
+        }
+
+        function deletePhotos(id)
+        {
+            var toSend = [];
+
+            // Se houver parametros, envia-os, senão envia o array photos
+            if (id !== null)
+                toSend.push(id);
+            else
+                toSend = photos;
+
+            if (toSend.length > 0)
             {
                 $("#btnDelete").addClass("loading").attr("disabled", true);
 
@@ -187,7 +243,7 @@
                     type: "POST",
                     url: siteUrl + "/Galerias/DeleteFiles",
                     data: {
-                        "photosIds": photos,
+                        "photosIds": toSend,
                         "X-Requested-With": "XMLHttpRequest"
                     },
                     success: function (resp)
@@ -228,18 +284,19 @@
                 type: "GET",
                 url: siteUrl + "/Galerias/Thumbnails/@Model.ID?page="+page,
                 success: function (resp) {
-                    if (resp.noMorePhotos == null)
+                    if (resp.noMorePhotos == null) // Enquanto houver mais fotografias a serem carregadas
                     {
                         $("#photosContainer").append(resp);
-                        $('.ui.checkbox').checkbox();
+                        activatePopups();
+                        // Pedir mais fotografias ao servidor
                         page++;
                         getPhotos(page);
                     }
                     else
                     {
-                        if (isEmpty("#photosContainer"))
+                        if (isEmpty("#photosContainer")) // Caso não exitam fotografias na galeria
                         {
-                            $("#my-gallery").html(placeHolder);
+                            $("#my-gallery").html(placeHolder); // Mostra um placeholder
                         }
                     }
                     $("#loader").remove(); // Remove a barra de loading
@@ -261,15 +318,6 @@
         {
             return ($(`${node}`).children().length === 0);
         }
-
-        $(document).ready(function ()
-        {
-            // Pedir fotografias
-            getPhotos(1);
-
-            // Iniciar a galeria do PhotoSwipe
-            initPhotoSwipeFromDOM('.my-gallery');
-        });
 
         document.getElementById('uploader').onsubmit = function (e)
         {
@@ -307,14 +355,30 @@
                 .removeClass("disabled");
         }
 
+        function activatePopups()
+        {
+            $('.btnOptions')
+                .popup({
+                    hoverable  : true,
+                    on: 'click',
+                    setFluidWidth: false,
+                    position   : 'bottom left',
+                    delay: {
+                        show: 300,
+                        hide: 800
+                    }
+                })
+            ;
+        }
+
         function upload(files, i)
         {
             $.ajax({
                 type: "GET",
                 url: siteUrl + `/Galerias/UploadSession?size=${files[i].size}&name=${files[i].name}`,
-                success: function (resp) 
+                success: function (resp)
                 {
-                    if (resp.success) 
+                    if (resp.success)
                     {
                         // Visto que foi recebido um url de upload, fazer o upload do ficheiro.
                         uploadFile(files, i, resp);
@@ -405,6 +469,7 @@
                     if ($("#photosContainer").hasClass("cards"))
                     {
                         $("#photosContainer").append(resp);
+                        activatePopups();
                     }
                     else
                     {
@@ -485,13 +550,13 @@
 
         function clearCB()
         {
-            $(".ui.toggle.checkbox.checked").click();
+            $(".btnCB.blue").click();
     }
 
         function selectAllCB()
         {
             clearCB();
-             $(".ui.toggle.checkbox").click();
+             $(".btnCB").click();
         }
 
         function download(url)
