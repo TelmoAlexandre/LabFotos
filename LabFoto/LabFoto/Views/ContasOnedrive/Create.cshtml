@@ -1,5 +1,4 @@
-﻿@model LabFoto.Models.Tables.ContaOnedrive
-
+﻿@model LabFoto.Models.ViewModels.ContaOnedriveCreateViewModel
 @{
     ViewData["Title"] = "Adicionar conta";
 }
@@ -10,15 +9,16 @@
     <div class="col-md-4">
         <form asp-action="Create" id="contaOnedriveCreateForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Code" type="hidden">
             <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
+                <label asp-for="ContaOnedrive.Username" class="control-label"></label>
+                <input asp-for="ContaOnedrive.Username" name="Username" class="form-control" />
+                <span asp-validation-for="ContaOnedrive.Username" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+                <label asp-for="ContaOnedrive.Password" class="control-label"></label>
+                <input asp-for="ContaOnedrive.Password" name="Password" class="form-control" />
+                <span asp-validation-for="ContaOnedrive.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <div class="ui primary button" onclick="confirmForm('contaOnedriveCreateForm')"><i class="plus icon"></i><span class="ml-2">Adicionar conta</span></div>   

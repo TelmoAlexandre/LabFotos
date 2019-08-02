@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using LabFoto.Onedrive;
 using Microsoft.Extensions.Options;
 using LabFoto.Models;
+using LabFoto.Models.ViewModels;
 
 namespace LabFoto.Controllers
 {
@@ -65,10 +66,20 @@ namespace LabFoto.Controllers
         #endregion
 
         #region Create
-        // GET: ContaOnedrives/Create
-        public IActionResult Create()
+
+        public ActionResult PermissionUrl()
         {
-            return View();
+            return Redirect(_onedrive.GetPermissionsUrl());
+        }
+
+        // GET: ContaOnedrives/Create
+        public IActionResult Create(string code)
+        {
+            return View(new ContaOnedriveCreateViewModel
+            {
+                ContaOnedrive = new ContaOnedrive(),
+                Code = code
+            });
         }
 
         // POST: ContaOnedrives/Create
@@ -76,31 +87,30 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Username,Password")] ContaOnedrive contaOnedrive)
+        public async Task<IActionResult> Create([Bind("ID,Username,Password")] ContaOnedrive ContaOnedrive, string Code)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(contaOnedrive);
+                _context.Add(ContaOnedrive);
                 await _context.SaveChangesAsync();
-                return Redirect(_onedrive.GetPermissionsUrl(contaOnedrive.ID));
+                return RedirectToAction(nameof(InitAccount), new { Code, id = ContaOnedrive.ID });
             }
-            return View(contaOnedrive);
+            return View(new ContaOnedriveCreateViewModel
+            {
+                ContaOnedrive = ContaOnedrive,
+                Code = Code
+            });
         }
         #endregion
 
         #region InitAccount
         // GET: ContaOnedrives/InitAccount
-        public async Task<IActionResult> InitAccount(string code, int state)
+        public async Task<IActionResult> InitAccount(string Code, int id)
         {
             // Define se a operação foi executada com sucesso
             bool success = true;
 
-            // Encontrar a conta a ser atualizada
-            ContaOnedrive conta = await _context.ContasOnedrive.FindAsync(state);
-            if (conta == null)
-            {
-                NotFound();
-            }
+            ContaOnedrive conta = await _context.ContasOnedrive.FindAsync(id);
 
             string access_token = "";
 
@@ -108,7 +118,7 @@ namespace LabFoto.Controllers
             try
             {
                 // Faz o pedido HTTP.GET para pedir o token utilizando o codigo das permissões
-                JObject tokenResponse = await _onedrive.GetInitialTokenAsync(code);
+                JObject tokenResponse = await _onedrive.GetInitialTokenAsync(Code);
 
                 // Recolher os tokens
                 access_token = (string)tokenResponse["access_token"];
@@ -182,7 +192,7 @@ namespace LabFoto.Controllers
                     TempData["Feedback"] = "Ocorreu um erro ao criar a conta.";
                     TempData["Type"] = "error";
                 }
-            } 
+            }
             #endregion
 
             if (success)
@@ -197,7 +207,7 @@ namespace LabFoto.Controllers
                 _context.ContasOnedrive.Remove(conta);
                 await _context.SaveChangesAsync();
             }
-            
+
             return RedirectToAction(nameof(Index));
         }
         #endregion
