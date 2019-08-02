@@ -27,7 +27,7 @@
                         @Html.DisplayNameFor(model => model.DataDeCriacao)
                     </dt>
                     <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.DataDeCriacao)
+                        @String.Format("{0:yyyy/MM/dd}", Model.DataDeCriacao)
                     </dd>
                     <dt class="col-sm-4">
                         @Html.DisplayNameFor(model => model.Servico)

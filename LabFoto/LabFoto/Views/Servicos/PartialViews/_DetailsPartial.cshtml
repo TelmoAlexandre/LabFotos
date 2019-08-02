@@ -29,17 +29,17 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="dataCriacao">
-                            <span>Criado</span> <span class="float-right font-weight-bold">@Html.DisplayFor(modelItem => Model.DataDeCriacao)</span>
+                            <span>Criado</span> <span class="float-right font-weight-bold">@String.Format("{0:yyyy/MM/dd}", Model.DataDeCriacao)</span>
                         </div>
                         <div class="dataEntrega">
                             <span>Entregue</span>
                             @if (Model.DataEntrega != null)
                             {
-                                <span class="float-right font-weight-bold">@Html.DisplayFor(modelItem => Model.DataEntrega)</span>
+                        <span class="float-right font-weight-bold">@String.Format("{0:yyyy/MM/dd}", Model.DataEntrega)</span>
                             }
                             else
                             {
-                                <span class="float-right font-weight-bold">--/--/----</span>
+                                <span class="float-right font-weight-bold">----/--/--</span>
                             }
                         </div>
                         <div class="requerente">
@@ -95,7 +95,7 @@
                         <p>
                             @foreach (var data in Model.Servicos_DataExecucao)
                             {
-                                <span class="mr-4">@Html.DisplayFor(modelItem => data.DataExecucao.Data)</span>
+                            <span class="mr-4">@String.Format("{0:yyyy/MM/dd}", data.DataExecucao.Data)</span>
                             }
                         </p>
                     </div>

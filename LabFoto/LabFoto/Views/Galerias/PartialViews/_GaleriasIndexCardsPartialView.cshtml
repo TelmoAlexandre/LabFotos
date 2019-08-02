@@ -43,7 +43,7 @@ else
                         </a>
                     </div>
                     <div class="meta">
-                        <span style="font-size: 0.8rem;">@Html.DisplayFor(modelItem => galeria.DataDeCriacao)</span><br />
+                        <span style="font-size: 0.8rem;">@String.Format("{0:yyyy/MM/dd}", galeria.DataDeCriacao)</span><br />
                     </div>
                     <div class="meta mt-1">
                         @foreach (var meta in galeria.Galerias_Metadados)

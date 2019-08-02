@@ -22,7 +22,7 @@
                         <a class="btn btn-light float-right" asp-controller="Galerias" asp-action="Index" asp-route-serv="@servico.ID" data-toggle="tooltip" title="Ver Galerias"><i class="far fa-images"></i></a>
                         @if (servico.DataEntrega != null)
                         {
-                            <span class="btn font-weight-bold float-right">Entregue a @Html.DisplayFor(modelItem => servico.DataEntrega)</span>
+                            <span class="btn font-weight-bold float-right">Entregue a @String.Format("{0:yyyy/MM/dd}", servico.DataEntrega)</span>
                         }
                     </h5>
                 </div>
@@ -33,17 +33,17 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="dataCriacao">
-                                        <span>Criado</span> <span class="float-right font-weight-bold">@Html.DisplayFor(modelItem => servico.DataDeCriacao)</span>
+                                        <span>Criado</span> <span class="float-right font-weight-bold">@String.Format("{0:yyyy/MM/dd}", servico.DataDeCriacao)</span>
                                     </div>
                                     <div class="dataEntrega">
                                         <span>Entregue</span>
                                         @if (servico.DataEntrega != null)
                                         {
-                                            <span class="float-right font-weight-bold">@Html.DisplayFor(modelItem => servico.DataEntrega)</span>
+                                    <span class="float-right font-weight-bold">@String.Format("{0:yyyy/MM/dd}", servico.DataEntrega)</span>
                                         }
                                         else
                                         {
-                                            <span class="float-right font-weight-bold">--/--/----</span>
+                                            <span class="float-right font-weight-bold">----/--/--</span>
                                         }
                                     </div>
                                     <div class="requerente">
@@ -99,7 +99,7 @@
                                     <p>
                                         @foreach (var data in servico.Servicos_DataExecucao)
                                         {
-                                            <span class="mr-4">@Html.DisplayFor(modelItem => data.DataExecucao.Data)</span>
+                                            <span class="mr-4">@String.Format("{0:yyyy/MM/dd}", data.DataExecucao.Data)</span>
                                         }
                                     </p>
                                 </div>
