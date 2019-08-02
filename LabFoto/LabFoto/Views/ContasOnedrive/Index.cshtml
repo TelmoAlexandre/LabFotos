@@ -6,75 +6,73 @@
 
 <h1>Contas Onedrive</h1>
 
-<a class="ui blue mini button" asp-action="Create">
+<a class="ui blue mini button mb-2" asp-action="PermissionUrl">
     <i class="fas fa-plus"></i> <span class="ml-1">Adicionar conta</span>
 </a>
 
-<div class="ui segment">
-    <div class="ui grid">
-        <div class="ui four wide column text-center">
-            Username
-        </div>
-        <div class="ui ten wide column text-center">
-            Armazenamento usado
-        </div>        
-        <div class="ui two wide column text-center">
-            
-        </div>
-    </div>
-</div>
 @{
-    foreach (var item in Model)
+    foreach (var conta in Model)
     {
+        long total = 0, remaining = 0;
+        double usedPercent = 0.0, used = 0.0;
 
-        int total = (int)(Int64.Parse(item.Quota_Total) / 1024 / 1024 );
-        double used = (double)(Int64.Parse(item.Quota_Used) / 1024 / 1024);
-        int remaining = (int)(Int64.Parse(item.Quota_Remaining) / 1024 / 1024 / 1024);
-        double usedPercent = (used * 100) / ((double)total);
-        string cor = "";
+        if (!String.IsNullOrEmpty(conta.Quota_Total)) { total = (int)(Int64.Parse(conta.Quota_Total) / 1024 / 1024); }
+        if (!String.IsNullOrEmpty(conta.Quota_Used)) { used = (int)(Int64.Parse(conta.Quota_Used) / 1024 / 1024); }
+        if (!String.IsNullOrEmpty(conta.Quota_Remaining)) { remaining = (int)(Int64.Parse(conta.Quota_Remaining) / 1024 / 1024); }
+
+        usedPercent = (used * 100) / ((double)total);
+
+        string color = "";
 
         if (remaining <= 50)
         {
-            cor = "red";
+            color = "red";
         }
         else if (remaining <= 150)
         {
-            cor = "yellow";
+            color = "yellow";
         }
-        else {
-            cor = "green";
-       }
+        else
+        {
+            color = "green";
+        }
 
-        <div class=" ui @cor segment mb-0">
+        <div class="ui @color raised segment mb-4 pt-4">
             <div class="ui grid">
-                <div class="ui four wide column text-center">
-                    @Html.DisplayFor(modelItem => item.Username)
+                <div class="ui three wide column text-center">
+                    @Html.DisplayFor(modelItem => conta.Username)
                 </div>
-                <div class="ui ten wide column">
-                    <div class="progressBar ui @cor inverted progress " data-percent="@Math.Round(usedPercent)" data-total="100" >
-                        <div class="bar">
-                            <div class="progress"></div>
+                <div class="ui eleven wide column pb-2">
+                    @if (total != 0)
+                    {
+                        <div class="ui @color progress" id="progressBar" data-percent="@Math.Round(usedPercent)" data-total="100">
+                            <div class="bar">
+                                <div class="progress"></div>
+                            </div>
+                            <div class="label text-dark" style="font-size: 15px !important;">@Math.Round(used / 1024, 2) GB de  @(total / 1024) GB</div>
                         </div>
-                        <div class="label text-dark">@Math.Round(used /1024, 2) GB de  @(total / 1024) GB</div>
-                    </div>
-                </div>
-                <div class="ui two wide column">
-                    <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@item.ID" class="ml-1 btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                    <a asp-controller="ContasOnedrive" asp-action="Details" asp-route-id="@item.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+                    }
+                    else
+                    {
+                        <h4 class="font-weight-bold">
+                            Erro na conta
+                        </h4>
+                    }
 
+                </div>
+                <div class="ui two wide column" style="padding-top: 10px !important;">
+                    <div class="ui icon buttons" style="margin-left: 6px !important;">
+                        <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@conta.ID" class="ui button basic float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                        <a asp-controller="ContasOnedrive" asp-action="Details" asp-route-id="@conta.ID" class="ui button basic float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
     }
 }
-@section scripts{
-    <script>
-        $(document).ready(function () {
-            $('.progressBar').progress();
-            $('.progressBar').removeClass('progressBar');
-        });
 
-    </script>
+@section scripts
+{
     @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
     @if (ViewData["Feedback"] != null)
     {
@@ -84,4 +82,5 @@
                 notifyUser('@ViewData["Type"]', '@ViewData["Feedback"]');
             }, false);
         </script>
-    }}
+    }
+}
