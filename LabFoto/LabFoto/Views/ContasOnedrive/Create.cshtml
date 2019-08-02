@@ -2,31 +2,30 @@
 @{
     ViewData["Title"] = "Adicionar conta";
 }
-
-<h1>Conta Onedrive</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+        <h1>Conta Onedrive</h1>
+        <hr />
+    <div class="ui form">
         <form asp-action="Create" id="contaOnedriveCreateForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input asp-for="Code" type="hidden">
-            <div class="form-group">
-                <label asp-for="ContaOnedrive.Username" class="control-label"></label>
-                <input asp-for="ContaOnedrive.Username" name="Username" class="form-control" />
-                <span asp-validation-for="ContaOnedrive.Username" class="text-danger"></span>
+            <div class="fields">
+                <div class="eight wide field">
+                    <label asp-for="ContaOnedrive.Username" class="control-label"></label>
+                    <input asp-for="ContaOnedrive.Username" name="Username" class="form-control" />
+                    <span asp-validation-for="ContaOnedrive.Username" class="text-danger"></span>
+                </div>
+                <div class="eight wide field">
+                    <label asp-for="ContaOnedrive.Password" class="control-label"></label>
+                    <input asp-for="ContaOnedrive.Password" name="Password" class="form-control" />
+                    <span asp-validation-for="ContaOnedrive.Password" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="ContaOnedrive.Password" class="control-label"></label>
-                <input asp-for="ContaOnedrive.Password" name="Password" class="form-control" />
-                <span asp-validation-for="ContaOnedrive.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            <div class="mt-3">
                 <div class="ui primary button" onclick="confirmForm('contaOnedriveCreateForm')"><i class="plus icon"></i><span class="ml-2">Adicionar conta</span></div>   
                 <div class="ui button" onclick="modalCancel('modalCancel')"><span>Cancelar</span></div>
             </div>
         </form>
     </div>
-</div>
 
 <div class="ui basic mini modal" id="confirmarSubmit">
     <div class="content">

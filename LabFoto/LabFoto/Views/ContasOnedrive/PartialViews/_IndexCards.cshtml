@@ -37,7 +37,7 @@
                     <div class="ui eleven wide column pb-2">
                         @if (total != 0)
                         {
-                            <div class="progressBar ui @color progress" data-percent="@Math.Round(usedPercent)" data-total="100">
+                            <div class="progressBarUpdate ui @color progress active" data-percent="@Math.Round(usedPercent)">
                                 <div class="bar">
                                     <div class="progress"></div>
                                 </div>
@@ -61,6 +61,7 @@
                 </div>
             </div>
         }
+        
     }
     else
     {

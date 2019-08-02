@@ -1,80 +1,79 @@
 ﻿@model IEnumerable<LabFoto.Models.Tables.ContaOnedrive>
 
-@{
+    @{
     ViewData["Title"] = "Index";
-}
+    }
 
-<h1>Contas Onedrive</h1>
+    <h1>Contas Onedrive</h1>
 
-<div id="searchForm">
-    @Html.AntiForgeryToken()
-    <div class="ui segment padded pb-1">
-        <div class="ui form" id="searchParams">
-            <div class="fields">
-                <div class="six wide field">
-                    <div class="ui transparent left icon input large">
-                        <input id="inputUsername" placeholder="Username da conta..." name="Username">
-                        <i class="search icon"></i>
+    <div id="searchForm">
+        @Html.AntiForgeryToken()
+        <div class="ui segment padded pb-1">
+            <div class="ui form" id="searchParams">
+                <div class="fields">
+                    <div class="six wide field">
+                        <div class="ui transparent left icon input large">
+                            <input id="inputUsername" placeholder="Username da conta..." name="Username">
+                            <i class="search icon"></i>
+                        </div>
                     </div>
-                </div>
-                <div class="ten wide field">
-                    <div class="ui button blue mini" onclick="submitContasSearchForm()" tabindex="0">
-                        <i class="search icon"></i>
-                        Pesquisar
-                    </div>
-                    <div class="ui button inverted red mini" onclick="clearSearch()" tabindex="0">
-                        <i class="eraser icon"></i>
-                        Limpar pesquisa
+                    <div class="ten wide field">
+                        <div class="ui button blue mini" onclick="submitContasSearchForm()" tabindex="0">
+                            <i class="search icon"></i>
+                            Pesquisar
+                        </div>
+                        <div class="ui button inverted red mini" onclick="clearSearch()" tabindex="0">
+                            <i class="eraser icon"></i>
+                            Limpar pesquisa
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<a class="ui blue mini button mt-3 mb-3" asp-action="PermissionUrl">
-    <i class="fas fa-plus"></i> <span class="ml-1">Adicionar conta</span>
-</a>
+    <a class="ui blue mini button mt-3 mb-3" asp-action="PermissionUrl">
+        <i class="fas fa-plus"></i> <span class="ml-1">Adicionar conta</span>
+    </a>
 
-<div id="contasCards">
-    <partial name="PartialViews/_IndexCards" model="@Model" />
-</div>
+    <div id="contasCards">
+        <partial name="PartialViews/_IndexCards" model="@Model" />
+    </div>
 
-@section scripts
-{
+    @section scripts
+    {
     @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
     @if (ViewData["Feedback"] != null)
     {
-        <script>
+    <script>
             document.addEventListener('DOMContentLoaded', function ()
             {
                 notifyUser('@ViewData["Type"]', '@ViewData["Feedback"]');
             }, false);
-        </script>
+    </script>
     }
 
     <script>
         $(document).ready(function () {
-            $('.progressBar').progress();
-            $('.progressBar').removeClass('progressBar');
+            $('.progressBarUpdate').progress({
+                onActive: function () {
+                    $('.progressBarUpdate').removeClass('active');
+                }
+            });
         });
 
-        clearSearch = () =>
-        {
+        clearSearch = () => {
             $(`#inputUsername`).val("");
             submitContasSearchForm();
         };
 
-        $(".input").on('keyup', function (e)
-        {
-            if (e.keyCode == 13)
-            {
+        $(".input").on('keyup', function (e) {
+            if (e.keyCode == 13) {
                 submitContasSearchForm();
             }
         });
 
-        function submitContasSearchForm()
-        {
+        function submitContasSearchForm() {
             $.ajax({
                 url: siteUrl + "/ContasOnedrive/IndexFilter",
                 type: "POST",
@@ -83,15 +82,15 @@
                     "__RequestVerificationToken": $("#searchForm input[name='__RequestVerificationToken']").val(),
                     "X-Requested-With": "XMLHttpRequest"
                 },
-                success: function (resp)
-                {
+                success: function (resp) {
                     $("#contasCards").html(resp);
+                    $('.progressBarUpdate').progress();
+                    $('.progressBarUpdate').removeClass('active');
                 },
-                error: function ()
-                {
+                error: function () {
                     notifyUser('error', 'Erro ao pesquisar.');
                 }
             });
         }
     </script>
-}
+    }
