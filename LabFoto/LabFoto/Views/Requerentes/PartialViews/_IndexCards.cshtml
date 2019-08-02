@@ -4,18 +4,18 @@
 <div class="container">
     @if (Model.Requerentes.Count() == 0)
     {
-    <div class="my-lg-5 d-flex justify-content-center">
-        <p class="font-weight-bolder">Não foram encontrados requerentes.</p>
-    </div>
+        <div class="my-lg-5 d-flex justify-content-center">
+            <p class="font-weight-bolder">Não foram encontrados requerentes.</p>
+        </div>
     }
     else
     {
-    <div class=" row">
+    <div class="ui four cards doubling stackable">
         @foreach (var requerente in Model.Requerentes)
         {
-            <div class="ui mr-3 mb-3" id="div_@requerente.ID">
+            <div class="ui card column p-2" id="div_@requerente.ID">
                 <div class="requerenteSide" id="divDetails_@requerente.ID">
-                    <partial name="PartialViews/_RequerenteDetailsIndexPartial" model="requerente">
+                    <partial name="PartialViews/_Details" model="requerente">
                 </div>
                 <div class="requerenteSide" id="divEdit_@requerente.ID" style="display:none;">
 

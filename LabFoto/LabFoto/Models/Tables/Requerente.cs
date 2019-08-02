@@ -13,13 +13,13 @@ namespace LabFoto.Models.Tables
         [Key]
         public string ID { get; set; }
 
-        [Required(ErrorMessage = "É necessário introduzir o nome do requerente.")]
+        [Required(ErrorMessage = "Obrigatório.")]
         public string Nome { get; set; }
         
-        [Display(Name ="Telemóvel"), StringLength(12), RegularExpression("^[0-9]*$", ErrorMessage = "Intruduza até 12 digitos para um contacto telefónico.")]
+        [Display(Name ="Contacto"), StringLength(12), RegularExpression("^[0-9]*$", ErrorMessage = "Até 12 digitos.")]
         public string Telemovel { get; set; }
 
-        [Required(ErrorMessage = "É necessário introduzir o endereço de e-mail.")]
+        [Required(ErrorMessage = "Obrigatório.")]
         public string Email { get; set; }
 
         [Display(Name = "Responsável")]

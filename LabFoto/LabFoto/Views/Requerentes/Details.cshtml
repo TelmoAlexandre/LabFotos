@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-md-5"></div>
     <div class="requerenteSide" id="divDetails_@Model.ID">
-        <partial name="PartialViews/_RequerenteDetailsPartial" model="Model" />
+        <partial name="PartialViews/_details" model="Model" />
     </div>
     <div class="requerenteSide" id="divEdit_@Model.ID" style="display:none;">
 
@@ -107,13 +107,6 @@ else
     }
 
     <script>
-        editarRequerenteDetails = (divEdicao, idRequerente) =>
-        {
-            requerenteFormsLoadAjax(`${divEdicao}`, siteUrl + `/Requerentes/EditDetails/${idRequerente}`, idRequerente);
-        };
-
-    
-
         // Detalhes do serviço com o id que recebe por parametro
         // e envia para o div com o id que recebe por parametro uma partialView com os detalhes do serviço
         requerenteServicoDetails = (divId, servicoId) =>

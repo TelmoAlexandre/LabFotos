@@ -1,0 +1,78 @@
+﻿@model LabFoto.Models.Tables.Requerente
+
+@{
+    // Saber se deve mostrar o botão de details do requerente. No Index faz sentido, no details não pois ja nos encontramos na pagina
+    bool detailsLink = (bool?)ViewData["detailsLink"] ?? false;
+}
+
+<form asp-controller="Requerentes" asp-action="Edit"
+      onsubmit="editRequerente(event, `divDetails_@Model.ID`, `requerenteEditForm_@Model.ID`, `@Model.ID`, '@detailsLink')"
+      id="requerenteEditForm_@Model.ID">
+
+    <div class="card-body p-3 requerenteSide">
+        <div class="ui transparent left icon fluid input">
+            <input asp-for="@Model.Nome" placeholder="Nome.." class="font-weight-bold pl-0" style="font-size:20px;">
+            <i class="edit outline icon"></i>
+        </div>
+        <span asp-validation-for="@Model.Nome" class="text-danger small"></span>
+
+        <hr />
+        <div class="ui large list mb-2">
+            <div class="item">
+                <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Email)</p>
+                <div class="content">
+                    <div class="ui transparent left icon fluid input">
+                        <input type="text" asp-for="@Model.Email" placeholder="Email..">
+                        <i class="mail icon"></i>
+                    </div>
+                    <span asp-validation-for="@Model.Email" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="item">
+                <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Telemovel)</p>
+                <div class="content ">
+                    <div class="ui transparent left icon fluid input">
+                        <input type="text" asp-for="@Model.Telemovel" placeholder="Telemóvel...">
+                        <i class="phone icon"></i>
+                    </div>
+                    <span asp-validation-for="@Model.Telemovel" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="item mb-2">
+                <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Responsavel)</p>
+                <div class="content">
+                    <div class="ui transparent left icon fluid input">
+                        <input type="text" asp-for="@Model.Responsavel" placeholder="Responsável...">
+                        <i class="user icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui icon buttons float-right mb-0">
+                <span class="ui button basic pointer" data-toggle="tooltip" title="Voltar"
+                      onclick="toggleDivs(`#divEdit_@Model.ID`, `#divDetails_@Model.ID`)">
+                    <i class="undo icon"></i>
+                </span>
+                <span class="ui button basic pointer" id="btnSave_@Model.ID" data-toggle="tooltip" title="Guardar"
+                      onclick="confirmForm(`requerenteEditForm_@Model.ID`)">
+                    <i class="save outline icon"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="ui basic mini modal" id="confirmarSubmit">
+    <div class="content">
+        <p>Tem a certeza que pretende editar o requerente?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>

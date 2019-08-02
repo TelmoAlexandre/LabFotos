@@ -11,7 +11,7 @@ jQuery(document).ready(function ($) {
         <div class="ui active centered inline large loader"></div>
     `;
 
-    // Expandir Search Servicos
+    // Expandir Search
     $("#expandSearchOptions").click(function () {
         $("#searchOptions").slideToggle();
         $("#expandSearchSymbol").toggle();
@@ -62,17 +62,6 @@ function initModalEvents() {
             transition: 'fade up'
         }).modal("show");
         $(`#${divFormId}`).load(`${href}`); // Carregar html para o elemento        
-    };
-
-    requerenteFormsLoadAjax = (divFormId, href, idRequerente) =>
-    {
-        // Adicionar um loading
-        $(`#${divFormId}`).html(getLoadingBarHtml);
-        $(`#${divFormId}`).load(`${href}`, function () {
-            $('[data-toggle="tooltip"]').tooltip();
-
-            toggleDivs(`#divDetails_${idRequerente}`, `#divEdit_${idRequerente}`);
-        }); // Carregar html para o elemento        
     };
 
     handleControllerResponse = (resp, divId, modalId, href) => {
@@ -132,7 +121,7 @@ deleteElement = (id) => {
 
 // Modais de confirmação
 
-confirmForm = (formId, divCardId) => {
+confirmForm = (formId) => {
     $("#confirmarSubmit").modal({
         closable: false,
         onDeny: function () {
@@ -158,46 +147,37 @@ modalCancel = (id) => {
 servicoRequerenteDetails = (divModalDetails, requerenteId) => {
     $(`#${divModalDetails}`).modal('show');
     $(`#${divModalDetails}`).html(getLoadingBarHtml);
-    $(`#${divModalDetails}`).load(siteUrl + `/Requerentes/DetailsAjax/${requerenteId}`, function () {
+    $(`#${divModalDetails}`).load(siteUrl + `/Requerentes/DetailsAjax/${requerenteId}?inServicos=true`, function () {
         $('[data-toggle="tooltip"]').tooltip();
     });
 };
 
-requerenteEditFormSubmitIndex = (e, divDetailsId, formEditId, requerenteId) => {
-    e.preventDefault(); // Não deixar o form submeter
-
-    $.ajax({
-        type: "POST",
-        url: siteUrl + `/Requerentes/EditIndex/${requerenteId}`,
-        data: {
-            "Nome": $(`#${formEditId} #Nome`).val(),
-            "Email": $(`#${formEditId} #Email`).val(),
-            "Telemovel": $(`#${formEditId} #Telemovel`).val(),
-            "Responsavel": $(`#${formEditId} #Responsavel`).val(),
-            "__RequestVerificationToken": $(`#${formEditId} input[name='__RequestVerificationToken']`).val(),
-            "X-Requested-With": "XMLHttpRequest"
-        },
-        success: function (resp) {
-            if (resp.success) {
-                $(`#${divDetailsId}`).html(getLoadingBarHtml);
-                $(`#${divDetailsId}`).load(siteUrl + `/Requerentes/DetailsIndexAjax/${requerenteId}`, function () {
-                    $('[data-toggle="tooltip"]').tooltip();
-
-                    toggleDivs(`#divDetails_${requerenteId}`, `#divEdit_${requerenteId}`);
-                });
-
-                notifyUser('success', 'Guardado com sucesso.');
-            }
-        }
-    });
+loadRequerenteEditForm = (divEdicao, idRequerente, details) =>
+{
+    requerenteFormsLoadAjax(divEdicao, siteUrl + `/Requerentes/Edit/${idRequerente}?details=${details}`, idRequerente);
 };
 
-requerenteEditFormSubmitDetails = (e, divDetailsId, formEditId, requerenteId) => {
+requerenteFormsLoadAjax = (divFormId, href, requerenteId) =>
+{
+    // Adicionar um loading
+    $(`#btnEdit_${requerenteId}`).addClass("loading");
+    $(`#${divFormId}`).load(`${href}`, function ()
+    {
+        $('[data-toggle="tooltip"]').tooltip();
+        $(`#btnEdit_${requerenteId}`).removeClass("loading");
+
+        toggleDivs(`#divDetails_${requerenteId}`, `#divEdit_${requerenteId}`);
+    }); // Carregar html para o elemento        
+};
+
+editRequerente = (e, divDetailsId, formEditId, requerenteId, detailsBool) => {
     e.preventDefault(); // Não deixar o form submeter
+
+    $(`#btnSave_${requerenteId}`).addClass("loading");
 
     $.ajax({
         type: "POST",
-        url: siteUrl + `/Requerentes/EditDetails/${requerenteId}`,
+        url: siteUrl + `/Requerentes/Edit/${requerenteId}`,
         data: {
             "Nome": $(`#${formEditId} #Nome`).val(),
             "Email": $(`#${formEditId} #Email`).val(),
@@ -207,16 +187,23 @@ requerenteEditFormSubmitDetails = (e, divDetailsId, formEditId, requerenteId) =>
             "X-Requested-With": "XMLHttpRequest"
         },
         success: function (resp) {
-            if (resp.success) {
+            if (resp.success)
+            {
                 $(`#${divDetailsId}`).html(getLoadingBarHtml);
-                $(`#${divDetailsId}`).load(siteUrl + `/Requerentes/DetailsIndexAjaxDetails/${requerenteId}`, function () {
+                $(`#${divDetailsId}`).load(siteUrl + `/Requerentes/DetailsAjax/${requerenteId}?detailsLink=${detailsBool}`, function ()
+                {
                     $('[data-toggle="tooltip"]').tooltip();
-
                     toggleDivs(`#divDetails_${requerenteId}`, `#divEdit_${requerenteId}`);
                 });
 
                 notifyUser('success', 'Guardado com sucesso.');
             }
+            else
+            {
+                // Caso exista modelState erros mostra-los
+                $(`#divEdit_${requerenteId}`).html(resp);
+            }
+            $(`#btnSave_${requerenteId}`).removeClass("loading");
         }
     });
 };

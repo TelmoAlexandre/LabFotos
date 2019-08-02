@@ -1,0 +1,48 @@
+﻿@model LabFoto.Models.Tables.Requerente
+
+@{
+    // Variáveis que ditam que botões são mostrados
+    bool detailsLink = (bool?)ViewData["detailsLink"] ?? true;
+    bool inServicos = (bool?)ViewData["inServicos"] ?? false;
+}
+
+<div class="card-body p-3">
+    <h3 class="card-title font-weight-bold"><a href="/Requerentes/Details/@Model.ID" class="plainTextLink">@Model.Nome</a></h3>
+    <hr />
+    <div class="ui large list mb-2">
+        <div class="item mb-1">
+            <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Email)</p>
+            <i class="mail icon"></i>
+            <div class="content">
+                <a class="ml-1" href="mailto:@Model.Email">@Model.Email</a>
+            </div>
+        </div>
+        <div class="item mb-1">
+            <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Telemovel)</p>
+            <i class="phone icon"></i>
+            <div class="content">
+                @Model.Telemovel
+            </div>
+        </div>
+        <div class="item">
+            <p class="mb-1" style="font-size:small">@Html.DisplayNameFor(model => Model.Responsavel)</p>
+            <p>
+                <i class="user icon"></i>
+                <span class="content ml-1">
+                    @Model.Responsavel
+                </span>
+            </p>
+        </div>
+    </div>
+    <div class="ui icon buttons float-right mb-2">
+        @if (!inServicos)
+        {
+            <a class="ui button basic" id="btnEdit_@Model.ID" onclick="loadRequerenteEditForm(`divEdit_@Model.ID`, '@Model.ID', '@detailsLink','@inServicos')" data-toggle="tooltip" title="Editar"><i class="edit outline icon"></i></a>
+        }
+        @if (detailsLink)
+        {
+            <a class="ui button basic" href="/Requerentes/Details/@Model.ID" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+        }
+    </div>
+</div>
+

@@ -81,7 +81,7 @@ namespace LabFoto.Controllers
                 PageNum = search.Page
             };
 
-            return PartialView("PartialViews/_IndexCardsPartialView", response);
+            return PartialView("PartialViews/_IndexCards", response);
         }
         #endregion Index
 
@@ -102,29 +102,13 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
+            ViewData["detailsLink"] = false;
+
             return View(requerentes);
         }
 
         // GET: Requerentes/Details/5
-        public async Task<IActionResult> DetailsAjax(string id)
-        {
-            if (String.IsNullOrEmpty(id))
-            {
-                return NotFound();
-            }
-
-            var requerente = await _context.Requerentes.Include(r => r.Servicos)
-                .FirstOrDefaultAsync(m => m.ID.Equals(id));
-            if (requerente == null)
-            {
-                return NotFound();
-            }
-
-            return PartialView("PartialViews/_DetailsPartial", requerente);
-        }
-
-        // GET: Requerentes/Details/5
-        public async Task<IActionResult> DetailsIndexAjax(string id)
+        public async Task<IActionResult> DetailsAjax(string id, bool detailsLink = true, bool inServicos = false)
         {
 
             if (String.IsNullOrEmpty(id))
@@ -139,26 +123,10 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            return PartialView("PartialViews/_RequerenteDetailsIndexPartial", requerente);
-        } 
-        
-        // GET: Requerentes/Details/5
-        public async Task<IActionResult> DetailsIndexAjaxDetails(string id)
-        {
-            
-            if (String.IsNullOrEmpty(id))
-            {
-                return NotFound();
-            }
+            ViewData["detailsLink"] = detailsLink;
+            ViewData["inServicos"] = inServicos;
 
-            var requerente = await _context.Requerentes.Include(r => r.Servicos)
-                .FirstOrDefaultAsync(m => m.ID.Equals(id));
-            if (requerente == null)
-            {
-                return NotFound();
-            }
-
-            return PartialView("PartialViews/_RequerenteDetailsPartial", requerente);
+            return PartialView("PartialViews/_Details", requerente);
         }
 
         #endregion Details
@@ -173,7 +141,7 @@ namespace LabFoto.Controllers
 
         public IActionResult CreateFormAjax()
         {
-            return PartialView("PartialViews/_RequerentesCreateForm", new Requerente());
+            return PartialView("PartialViews/_CreateForm", new Requerente());
         }
 
         // POST: Requerentes/Create
@@ -189,65 +157,15 @@ namespace LabFoto.Controllers
                 await _context.SaveChangesAsync();
                 return Json(new { success = true, Id = requerente.ID });
             }
-            return PartialView("PartialViews/_RequerentesCreateForm", requerente);
+            return PartialView("PartialViews/_CreateForm", requerente);
         }
 
         #endregion Create
 
         #region Edit
-        // GET: Requerentes/Edit/5
-        public async Task<IActionResult> EditIndex(string id)
-        {
-            if (String.IsNullOrEmpty(id))
-            {
-                return NotFound();
-            }
-
-            var requerente = await _context.Requerentes.FindAsync(id);
-            if (requerente == null)
-            {
-                return NotFound();
-            }
-            return PartialView("PartialViews/_EditCardPartialViewIndex", requerente);
-        }
-
-        // POST: Requerentes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditIndex(string id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
-        {
-            if (!id.Equals(requerente.ID))
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(requerente);
-                    await _context.SaveChangesAsync();
-                    return Json(new { success = true });
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RequerentesExists(requerente.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-            return PartialView("PartialViews/_EditCardPartialViewIndex", requerente);
-        }
 
         // GET: Requerentes/Edit/5
-        public async Task<IActionResult> EditDetails(string id)
+        public async Task<IActionResult> Edit(string id, bool detailsLink = true)
         {
             if (id == null)
             {
@@ -259,7 +177,10 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            return PartialView("PartialViews/_EditCardPartialViewDetails", requerente);
+
+            ViewData["detailsLink"] = detailsLink;
+
+            return PartialView("PartialViews/_EditForm", requerente);
         }
 
         // POST: Requerentes/Edit/5
@@ -267,7 +188,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditDetails(string id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
+        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
         {
             if (!id.Equals(requerente.ID))
             {
@@ -294,7 +215,8 @@ namespace LabFoto.Controllers
                     }
                 }
             }
-            return PartialView("PartialViews/_EditCardPartialViewDetails", requerente);
+
+            return PartialView("PartialViews/_EditForm", requerente);
         }
 
         #endregion Edit
