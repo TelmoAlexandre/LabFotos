@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="ten wide field">
-                    <div class="ui button blue mini" onclick="submitTiposSearchForm()" tabindex="0">
+                    <div class="ui button blue mini" onclick="submitMetadadossSearchForm()" tabindex="0">
                         <i class="search icon"></i>
                         Pesquisar
                     </div>
@@ -42,18 +42,18 @@
         clearSearch = () =>
         {
             $(`#inputNome`).val("");
-            submitTiposSearchForm();
+            submitMetadadossSearchForm();
         };
 
         $(".input").on('keyup', function (e)
         {
             if (e.keyCode == 13)
             {
-                submitTiposSearchForm();
+                submitMetadadossSearchForm();
             }
         });
 
-        function submitTiposSearchForm()
+        function submitMetadadossSearchForm()
         {
             $.ajax({
                 url: siteUrl + "/Metadados/IndexFilter",

@@ -43,6 +43,21 @@ namespace LabFoto.Controllers
 
             return View(await _context.ContasOnedrive.ToListAsync());
         }
+
+        [HttpPost]
+        // POST: ContaOnedrives/IndexFilter
+        public async Task<IActionResult> IndexFilter(string Username)
+        {
+            var contas = _context.ContasOnedrive.Select(c => c);
+
+            if (!String.IsNullOrEmpty(Username))
+            {
+                contas = contas.Where(c => c.Username.Contains(Username));
+            }
+
+            return PartialView("PartialViews/_IndexCards", await contas.ToListAsync());
+        }
+
         #endregion
 
         #region Details

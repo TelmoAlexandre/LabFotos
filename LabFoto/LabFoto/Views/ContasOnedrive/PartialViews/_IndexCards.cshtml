@@ -1,0 +1,71 @@
+﻿@model IEnumerable<LabFoto.Models.Tables.ContaOnedrive>
+
+@{
+    if (Model.Count() != 0)
+    {
+        foreach (var conta in Model)
+        {
+            long total = 0, remaining = 0;
+            double usedPercent = 0.0, used = 0.0;
+
+            if (!String.IsNullOrEmpty(conta.Quota_Total)) { total = (int)(Int64.Parse(conta.Quota_Total) / 1024 / 1024); }
+            if (!String.IsNullOrEmpty(conta.Quota_Used)) { used = (int)(Int64.Parse(conta.Quota_Used) / 1024 / 1024); }
+            if (!String.IsNullOrEmpty(conta.Quota_Remaining)) { remaining = (int)(Int64.Parse(conta.Quota_Remaining) / 1024 / 1024); }
+
+            usedPercent = (used * 100) / ((double)total);
+
+            string color = "";
+
+            if (remaining <= 50)
+            {
+                color = "red";
+            }
+            else if (remaining <= 150)
+            {
+                color = "yellow";
+            }
+            else
+            {
+                color = "green";
+            }
+
+            <div class="ui @color raised segment mb-4 pt-4">
+                <div class="ui grid">
+                    <div class="ui three wide column text-center">
+                        @Html.DisplayFor(modelItem => conta.Username)
+                    </div>
+                    <div class="ui eleven wide column pb-2">
+                        @if (total != 0)
+                        {
+                            <div class="ui @color progress" id="progressBar" data-percent="@Math.Round(usedPercent)" data-total="100">
+                                <div class="bar">
+                                    <div class="progress"></div>
+                                </div>
+                                <div class="label text-dark" style="font-size: 15px !important;">@Math.Round(used / 1024, 2) GB de  @(total / 1024) GB</div>
+                            </div>
+                        }
+                        else
+                        {
+                            <h4 class="font-weight-bold">
+                                Erro na conta
+                            </h4>
+                        }
+
+                    </div>
+                    <div class="ui two wide column" style="padding-top: 10px !important;">
+                        <div class="ui icon buttons" style="margin-left: 6px !important;">
+                            <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@conta.ID" class="ui button basic float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                            <a asp-controller="ContasOnedrive" asp-action="Details" asp-route-id="@conta.ID" class="ui button basic float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="my-lg-5 d-flex justify-content-center">
+            <p class="font-weight-bolder">Não foram encontradas contas.</p>
+        </div>
+    }
+}
