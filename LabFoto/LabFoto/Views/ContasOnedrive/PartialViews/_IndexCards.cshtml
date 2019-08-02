@@ -16,11 +16,11 @@
 
             string color = "";
 
-            if (remaining <= 50)
+            if ((remaining/1024) <= 50)
             {
                 color = "red";
             }
-            else if (remaining <= 150)
+            else if ((remaining/1024) <= 150)
             {
                 color = "yellow";
             }
@@ -37,7 +37,7 @@
                     <div class="ui eleven wide column pb-2">
                         @if (total != 0)
                         {
-                            <div class="ui @color progress" id="progressBar" data-percent="@Math.Round(usedPercent)" data-total="100">
+                            <div class="progressBar ui @color progress" data-percent="@Math.Round(usedPercent)" data-total="100">
                                 <div class="bar">
                                     <div class="progress"></div>
                                 </div>

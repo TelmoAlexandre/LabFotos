@@ -4,67 +4,78 @@
     ViewData["Title"] = "Detalhes";
 }
 
+@{
+    long total = 0, remaining = 0;
+    double usedPercent = 0.0, used = 0.0;
 
-<table class="ui celled table mt-5">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Username)</th>
-            <th class="no-" style="width:10px !important">@Html.DisplayNameFor(model => model.Password)</th>
-            <th>@Html.DisplayNameFor(model => model.Quota_Total)</th>
-            <th>@Html.DisplayNameFor(model => model.Quota_Remaining)</th>
-            <th>@Html.DisplayNameFor(model => model.Quota_Used)</th>
-            <th class="no-" style="width:10px !important"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if ((Int64.Parse(Model.Quota_Remaining) / 1024 / 1024 / 1024) <= 50)
-        {
-            <tr class="warning">
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Username)
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Password)
-                </td>
-                <td>
-                    @(Int64.Parse(Model.Quota_Total) / 1024 / 1024 / 1024) GB
-                </td>
-                <td>
-                    @(Int64.Parse(Model.Quota_Remaining) / 1024 / 1024 / 1024) GB
-                </td>
-                <td>
-                    @(Int64.Parse(Model.Quota_Used) / 1024 / 1024 / 1024) GB
-                </td>
-                <td style="width:10px !important">
-                    <a asp-controller="ContasOnedrive" asp-route-returnUrl="Details/@Model.ID" asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-            </tr>
-        }
-        else
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Username)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Password)
-                </td>
-                <td>
-                    @(Int64.Parse(Model.Quota_Total) / 1024 / 1024 / 1024) GB
-                </td>
-                <td>
-                    @(Int64.Parse(Model.Quota_Remaining) / 1024 / 1024 / 1024) GB
-                </td>
-                <td>
-                    @(Int64.Parse(Model.Quota_Used) / 1024 / 1024 / 1024) GB
-                </td>
-                <td style="width:10px !important">
-                    <a asp-controller="ContasOnedrive" asp-route-returnUrl="Details/@Model.ID" asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                </td>
-            </tr>
+    if (!String.IsNullOrEmpty(Model.Quota_Total)) { total = (Int64.Parse(Model.Quota_Total) / 1024 / 1024);}
+    if (!String.IsNullOrEmpty(Model.Quota_Used)) { used = (Int64.Parse(Model.Quota_Used) / 1024 / 1024);}
+    if (!String.IsNullOrEmpty(Model.Quota_Remaining)) { remaining = (Int64.Parse(Model.Quota_Remaining) / 1024 / 1024);}
 
-        }
+    usedPercent = (used * 100) / total;
 
-    </tbody>
-</table>
+    string color = "";
+
+    //se o que está disponivel é inferior ou igual a 50 GB
+    if ((remaining / 1024) <= 50)
+    {
+        color = "red";
+    }
+    //se o que está disponivel é inferior ou igual a 150 GB
+    else if ((remaining / 1024) <= 150)
+    {
+        color = "yellow";
+    }
+    else
+    {
+        color = "green";
+    }
+}
+    <div class="ui @color raised segment mb-4 pt-4">
+        <div class="ui grid">
+
+            <div class="ui three wide column text-center">
+                @Html.DisplayFor(modelItem => Model.Username)
+            </div>
+
+            <div class="ui three wide column text-center">
+                @Html.DisplayFor(modelItem => Model.Password)
+            </div>
+
+            <div class="ui nine wide column pb-2">
+                @if (total != 0)
+                {
+                    <div class="ui @color progress" id="progressBar" data-percent="@Math.Round(usedPercent)" data-total="100">
+                        <div class="bar">
+                            <div class="progress"></div>
+                        </div>
+                        <div class="label text-dark" style="font-size: 15px !important;">@Math.Round(used / 1024, 2) GB de  @(total / 1024) GB</div>
+                    </div>
+                }
+                else
+                {
+                    <h4 class="font-weight-bold">
+                        Erro na conta
+                    </h4>
+                }
+
+            </div>
+            <div class="ui one wide column" style="padding-top: 10px !important;">
+                <div class="ui icon buttons" style="margin-left: 6px !important;">
+                    <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@Model.ID" class="ui button basic float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#progressBar').progress();
+        });
+    </script>
+
+}
 
 @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
 @if (ViewData["Feedback"] != null)

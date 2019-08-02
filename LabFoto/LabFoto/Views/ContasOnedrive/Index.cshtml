@@ -54,6 +54,11 @@
     }
 
     <script>
+        $(document).ready(function () {
+            $('.progressBar').progress();
+            $('.progressBar').removeClass('progressBar');
+        });
+
         clearSearch = () =>
         {
             $(`#inputUsername`).val("");
