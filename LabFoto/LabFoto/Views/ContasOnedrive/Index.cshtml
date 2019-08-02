@@ -10,65 +10,78 @@
     <i class="fas fa-plus"></i> <span class="ml-1">Adicionar conta</span>
 </a>
 
-<table class="ui celled table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Username)</th>
-            <th>@Html.DisplayNameFor(model => model.Quota_Total)</th>
-            <th>@Html.DisplayNameFor(model => model.Quota_Remaining)</th>
-            <th>@Html.DisplayNameFor(model => model.Quota_Used)</th>
-            <th style="width:115px !important"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @{
-            foreach (var item in Model)
-            {
-                long remaining = Int64.Parse(item.Quota_Remaining) / 1024 / 1024 / 1024;
-                string cls = "";
+<div class="ui segment">
+    <div class="ui grid">
+        <div class="ui four wide column text-center">
+            Username
+        </div>
+        <div class="ui ten wide column text-center">
+            Armazenamento usado
+        </div>        
+        <div class="ui two wide column text-center">
+            
+        </div>
+    </div>
+</div>
+@{
+    foreach (var item in Model)
+    {
 
-                if (remaining <= 50)
-                {
-                    cls = "negative";
-                }
-                else if (remaining <= 150)
-                {
-                    cls = "warning";
-                }
+        int total = (int)(Int64.Parse(item.Quota_Total) / 1024 / 1024 );
+        double used = (double)(Int64.Parse(item.Quota_Used) / 1024 / 1024);
+        int remaining = (int)(Int64.Parse(item.Quota_Remaining) / 1024 / 1024 / 1024);
+        double usedPercent = (used * 100) / ((double)total);
+        string cor = "";
 
-                <tr class="@cls">
-
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Username)
-                    </td>
-                    <td>
-                        @(Int64.Parse(item.Quota_Total) / 1024 / 1024 / 1024) GB
-
-                    </td>
-                    <td>
-                        @remaining GB
-                    </td>
-                    <td>
-                        @(Int64.Parse(item.Quota_Used) / 1024 / 1024 / 1024) GB
-                    </td>
-                    <td style="width:40px !important">
-                        <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@item.ID" class="ml-1 btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                        <a asp-controller="ContasOnedrive" asp-action="Details" asp-route-id="@item.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
-                    </td>
-                </tr>
-            }
-        }
-
-    </tbody>
-</table>
-
-@{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
-@if (ViewData["Feedback"] != null)
-{
-    <script>
-        document.addEventListener('DOMContentLoaded', function ()
+        if (remaining <= 50)
         {
-            notifyUser('@ViewData["Type"]', '@ViewData["Feedback"]');
-        }, false);
-    </script>
+            cor = "red";
+        }
+        else if (remaining <= 150)
+        {
+            cor = "yellow";
+        }
+        else {
+            cor = "green";
+       }
+
+        <div class=" ui @cor segment mb-0">
+            <div class="ui grid">
+                <div class="ui four wide column text-center">
+                    @Html.DisplayFor(modelItem => item.Username)
+                </div>
+                <div class="ui ten wide column">
+                    <div class="progressBar ui @cor inverted progress " data-percent="@Math.Round(usedPercent)" data-total="100" >
+                        <div class="bar">
+                            <div class="progress"></div>
+                        </div>
+                        <div class="label text-dark">@Math.Round(used /1024, 2) GB de  @(total / 1024) GB usado</div>
+                    </div>
+                </div>
+                <div class="ui two wide column">
+                    <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@item.ID" class="ml-1 btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                    <a asp-controller="ContasOnedrive" asp-action="Details" asp-route-id="@item.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+
+                </div>
+            </div>
+        </div>
+    }
 }
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.progressBar').progress();
+            $('.progressBar').removeClass('progressBar');
+        });
+
+    </script>
+    @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+    @if (ViewData["Feedback"] != null)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function ()
+            {
+                notifyUser('@ViewData["Type"]', '@ViewData["Feedback"]');
+            }, false);
+        </script>
+    }}
