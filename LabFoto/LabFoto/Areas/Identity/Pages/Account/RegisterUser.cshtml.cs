@@ -131,6 +131,13 @@ namespace LabFoto.Areas.Identity.Pages.Account
                 }
             }
 
+            Roles = _context.Roles.Select(r => new SelectListItem
+            {
+                Text = r.Name,
+                Value = r.Name,
+                Selected = false
+            }).ToList();
+
             // If we got this far, something failed, redisplay form
             return Page();
         }
