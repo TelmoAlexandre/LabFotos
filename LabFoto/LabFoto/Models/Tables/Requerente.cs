@@ -18,7 +18,8 @@ namespace LabFoto.Models.Tables
         
         [Display(Name ="Contacto"), StringLength(12), RegularExpression("^[0-9]*$", ErrorMessage = "Até 12 digitos.")]
         public string Telemovel { get; set; }
-
+        
+        [EmailAddress]
         [Required(ErrorMessage = "Obrigatório.")]
         public string Email { get; set; }
 

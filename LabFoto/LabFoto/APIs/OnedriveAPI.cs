@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LabFoto.Onedrive
+namespace LabFoto.APIs
 {
     #region Interface
     public interface IOnedriveAPI

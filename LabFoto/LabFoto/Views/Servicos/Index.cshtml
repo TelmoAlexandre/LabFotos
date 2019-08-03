@@ -232,10 +232,12 @@
     @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
     @if (ViewData["Feedback"] != null)
     {
+        string type = "success";
+        if (ViewData["Type"] != null) { type = (string)ViewData["Type"]; }
         <script>
             document.addEventListener('DOMContentLoaded', function ()
             {
-                notifyUser('success', '@ViewData["Feedback"]');
+                notifyUser('@type', '@ViewData["Feedback"]');
             }, false);
         </script>
     }

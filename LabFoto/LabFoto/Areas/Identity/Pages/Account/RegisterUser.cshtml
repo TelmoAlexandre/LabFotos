@@ -1,0 +1,102 @@
+﻿@page
+@model RegisterUserModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Criar Utilizador</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post" id="userForm">
+            <div class="ui form">
+                <h4>Criar um novo utilizador.</h4>
+                <hr />
+                <div class="field">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" class="form-control" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.Password"></label>
+                    <input asp-for="Input.Password" class="form-control" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.ConfirmPassword"></label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                @{
+                    if (Model.IsAdmin)
+                    {
+                        <div class="field">
+                            <label asp-for="Input.Role"></label>
+                            <select asp-for="Input.Role" asp-items="Model.Roles" class="ui search dropdown">
+                            </select>
+                        </div>
+                    }
+                }
+                <span class="ui button primary" onclick="confirmationModal()">Criar</span>
+                <span onclick="modalCancel('modalCancel')" class="ui button cancel">Cancelar</span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui basic mini modal" id="confirmationModal">
+    <div class="content">
+        <p>Tem a certeza que pretende criar o Utilizador?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button" onclick="">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
+<div class="ui basic mini modal" id="modalCancel">
+    <div class="content">
+        <p>Tem a certeza que pretende cancelar?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <a class="ui green inverted button" asp-page-handler="Cancel" asp-route-returnUrl="@Model.ReturnUrl">
+            <i class="checkmark icon"></i>
+            Sim
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function ()
+        {
+            $(".dropdown").dropdown();
+        });
+
+        function confirmationModal()
+        {
+            $("#confirmationModal").modal({
+                closable: false,
+                onDeny: function () {
+                    $("#confirmationModal").modal('hide');
+                },
+                onApprove: function ()
+                {
+                    $("#userForm").submit();
+                },
+                transition: 'scale'
+            }).modal('show');
+        }
+    </script>
+}

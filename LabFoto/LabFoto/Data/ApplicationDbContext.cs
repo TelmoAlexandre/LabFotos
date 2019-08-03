@@ -67,59 +67,16 @@ namespace LabFoto.Data
                 .WithMany(s => s.Galerias_Metadados)
                 .HasForeignKey(st => st.MetadadoFK);
 
-            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
-            {
-                Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                Name = "Admin",
-                NormalizedName = "Admin".ToUpper()
-            });
-
-            var hasher = new PasswordHasher<IdentityUser>();
-
-            modelBuilder.Entity<Utilizador>().HasData(
-                new Utilizador
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole
                 {
-                    Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
-                    UserName = "admin1@admin1.com",
-                    NormalizedUserName = "admin1@admin1.com".ToUpper(),
-                    Email = "admin1@admin1.com",
-                    NormalizedEmail = "admin1@admin1.com".ToUpper(),
-                    EmailConfirmed = false,
-                    AccessFailedCount = 0,
-                    PhoneNumberConfirmed = false,
-                    TwoFactorEnabled = false,
-                    PasswordHash = hasher.HashPassword(null, "123Qwe!"),
-                    SecurityStamp = string.Empty,
-                    Nome = "Admin1"
-                }, 
-                new Utilizador
-                    {
-                        Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
-                        UserName = "user1@user1.com",
-                        NormalizedUserName = "user1@user1.com".ToUpper(),
-                        Email = "user1@user1.com",
-                        NormalizedEmail = "user1@user1.com".ToUpper(),
-                        EmailConfirmed = false,
-                        AccessFailedCount = 0,
-                        PhoneNumberConfirmed = false,
-                        TwoFactorEnabled = false,
-                        PasswordHash = hasher.HashPassword(null, "123Qwe!"),
-                        SecurityStamp = string.Empty,
-                        Nome = "User1"
-                    }
-
-            );
-
-            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
-                new IdentityUserRole<string>
+                    Name = "Admin",
+                    NormalizedName = "Admin".ToUpper()
+                },
+                new IdentityRole
                 {
-                    RoleId = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                    UserId = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7"
-                }, 
-                new IdentityUserRole<string>
-                {
-                    RoleId = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                    UserId = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1"
+                    Name = "Lab",
+                    NormalizedName = "Lab".ToUpper()
                 }
             );
 
@@ -826,8 +783,6 @@ namespace LabFoto.Data
                 }
             );
         }
-
-        public DbSet<Utilizador> Utilizador { get; set; }
 
         public DbSet<DataExecucao> DataExecucao { get; set; }
 

@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
-namespace LabFoto.Onedrive
+namespace LabFoto.APIs
 {
     public class EmailAPI : IEmailAPI
     {
@@ -66,6 +66,42 @@ namespace LabFoto.Onedrive
         }
 
         /// <summary>
+        /// Envia um email a um destinatário à escolha.
+        /// </summary>
+        /// <param name="destination">Destinatário.</param>
+        /// <param name="subject">Assunto do email.</param>
+        /// <param name="body">Corpo do email. HTML aceite.</param>
+        public void Send(string destination, string subject, string body)
+        {
+            try
+            {
+                using (var client = new SmtpClient(_emailSmtp))
+                {
+                    client.Port = 587;
+                    client.Credentials = new NetworkCredential(_email, _emailPassword);
+                    client.EnableSsl = true;
+
+                    using (var message = new MailMessage())
+                    {
+                        message.From = new MailAddress(_email, _emailNome);
+                        message.To.Add(new MailAddress(destination));
+                        //message.CC.Add(new MailAddress("cc@email.com", "CC Name"));
+                        //message.Bcc.Add(new MailAddress("bcc@email.com", "BCC Name"));
+                        message.Subject = subject;
+                        message.Body = body;
+                        message.IsBodyHtml = true;
+
+                        client.Send(message);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Notifica os administradores de um erro na aplicação.
         /// </summary>
         /// <param name="subject">Assunto do email.</param>
@@ -91,6 +127,7 @@ namespace LabFoto.Onedrive
     public interface IEmailAPI
     {
         void Send(string[] destinations, string subject, string body);
+        void Send(string destinations, string subject, string body);
         void NotifyError(string title, string classFile, string method, string details);
     }
 }

@@ -11,7 +11,6 @@ using LabFoto.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using LabFoto.APIs;
-using LabFoto.Onedrive;
 
 namespace LabFoto.Controllers
 {
@@ -139,6 +138,7 @@ namespace LabFoto.Controllers
             if (TempData["Feedback"] != null)
             {
                 ViewData["Feedback"] = TempData["Feedback"];
+                ViewData["Type"] = TempData["Type"] ?? "success";
             }
 
             // Recolher os serviços por página do cookie

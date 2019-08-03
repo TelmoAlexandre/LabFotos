@@ -8,13 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using LabFoto.Data;
 using LabFoto.Models.Tables;
 using System.Net.Http;
-using LabFoto.Onedrive;
+using LabFoto.APIs;
 using LabFoto.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using LabFoto.Models;
 using Microsoft.Extensions.Options;
-using LabFoto.APIs;
 using Microsoft.AspNetCore.Authorization;
 
 namespace LabFoto.Controllers

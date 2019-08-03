@@ -10,14 +10,14 @@ using LabFoto.Models.Tables;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
-using LabFoto.Onedrive;
+using LabFoto.APIs;
 using Microsoft.Extensions.Options;
 using LabFoto.Models;
 using LabFoto.Models.ViewModels;
 
 namespace LabFoto.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ContasOnedriveController : Controller
     {
         private readonly ApplicationDbContext _context;

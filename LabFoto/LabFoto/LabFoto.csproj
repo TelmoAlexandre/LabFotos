@@ -45,6 +45,14 @@
     <Compile Remove="Data\Migrations\20190719151814_Initial.Designer.cs" />
     <Compile Remove="Data\Migrations\20190729094657_Initial.cs" />
     <Compile Remove="Data\Migrations\20190729094657_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190801113941_Initial.cs" />
+    <Compile Remove="Data\Migrations\20190801113941_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190803081709_Initial.cs" />
+    <Compile Remove="Data\Migrations\20190803081709_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190803082015_Initial.cs" />
+    <Compile Remove="Data\Migrations\20190803082015_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190803092041_Initial.cs" />
+    <Compile Remove="Data\Migrations\20190803092041_Initial.Designer.cs" />
   </ItemGroup>
 
 
@@ -58,6 +66,9 @@
 
 
   <ItemGroup>
+    <Content Update="Areas\Identity\Pages\Account\Register.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="Views\ContasOnedrive\Create.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
