@@ -16,11 +16,11 @@
 
             string color = "";
 
-            if ((remaining/1024) <= 50)
+            if ((remaining / 1024) <= 50)
             {
                 color = "red";
             }
-            else if ((remaining/1024) <= 150)
+            else if ((remaining / 1024) <= 150)
             {
                 color = "yellow";
             }
@@ -34,6 +34,13 @@
                     <div class="ui three wide column text-center">
                         @Html.DisplayFor(modelItem => conta.Username)
                     </div>
+
+                    @*<div class="ui three wide column text-center pt-0">
+                        <div class="ui segment pointer" onclick="mostrarPW(@conta.ID, `@conta.Password`)">
+                            <p id="pw_@conta.ID">Mostrar password</p>
+                        </div>
+                    </div>*@
+
                     <div class="ui eleven wide column pb-2">
                         @if (total != 0)
                         {
@@ -61,7 +68,7 @@
                 </div>
             </div>
         }
-        
+
     }
     else
     {

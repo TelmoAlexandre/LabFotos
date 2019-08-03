@@ -54,6 +54,7 @@
     }
 
     <script>
+
         $(document).ready(function () {
             $('.progressBarUpdate').progress({
                 onActive: function () {
@@ -61,6 +62,16 @@
                 }
             });
         });
+
+        //mostrarPW = (id, password) => {
+        //    var passwordContent = document.getElementById(`pw_${id}`);
+        //    if (passwordContent.innerHTML == 'Mostrar password') {
+        //        passwordContent.innerHTML = password;
+        //    }
+        //    else {
+        //        passwordContent.innerHTML = "Mostrar password";
+        //    }
+        //};
 
         clearSearch = () => {
             $(`#inputUsername`).val("");
@@ -84,8 +95,11 @@
                 },
                 success: function (resp) {
                     $("#contasCards").html(resp);
-                    $('.progressBarUpdate').progress();
-                    $('.progressBarUpdate').removeClass('active');
+                    $('.progressBarUpdate').progress({
+                        onActive: function () {
+                            $('.progressBarUpdate').removeClass('active');
+                        }
+                    });
                 },
                 error: function () {
                     notifyUser('error', 'Erro ao pesquisar.');
