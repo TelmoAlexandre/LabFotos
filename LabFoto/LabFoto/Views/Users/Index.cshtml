@@ -41,9 +41,25 @@
     <partial name="PartialViews/_IndexUsers" model="@Model" />
 </div>
 
-<div class="ui basic mini modal" id="confirmationModal">
+<div class="ui basic mini modal" id="confirmationDeleteModal">
     <div class="content">
-        <p>Tem a certeza que pretende eliminar o Utilizador?</p>
+        <p>Tem a certeza que pretende eliminar o utilizador?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
+<div class="ui basic mini modal" id="confirmationBlockModal">
+    <div class="content">
+        <p></p>
     </div>
     <div class="actions">
         <div class="ui red basic cancel inverted button">
@@ -106,12 +122,71 @@
             });
         }
 
-        function confirmDelete(id)
+        function confirmBlock(id, locked)
         {
-            $("#confirmationModal").modal({
+            console.log(locked);
+            if (locked)
+            {
+                $("#confirmationBlockModal p").html("Tem a certeza que pretende bloquear o utilizador?");
+            }
+            else
+            {
+                $("#confirmationBlockModal p").html("Tem a certeza que pretende desbloquear o utilizador?");
+            }
+            
+            $("#confirmationBlockModal").modal({
                 closable: false,
                 onDeny: function () {
-                    $("#confirmationModal").modal('hide');
+                    $("#confirmationBlockModal").modal('hide');
+                },
+                onApprove: function ()
+                {
+                    blockUser(id, locked);
+                },
+                transition: 'scale'
+            }).modal('show');
+        }
+
+        function blockUser(id, locked)
+        {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Block","Users")",
+                data: {
+                    "id": id,
+                    "locked": locked
+                },
+                success: function (resp)
+                {
+                    if (resp.success)
+                    {
+                        window.location.href = "@Url.Action("Index", "Users")";
+                    }
+                    else
+                    {
+                        if (resp.denied)
+                        {
+                            notifyUser("error", "Não tem privilégios suficientes.");
+                        }
+                        else
+                        {
+                            notifyUser("error", "Erro ao bloquer o utilizador.");
+                        }
+                    }
+                },
+                error: function ()
+                {
+                    notifyUser("error", "Erro ao bloquer o utilizador.");
+                }
+            });
+        }
+
+        function confirmDelete(id)
+        {
+            $("#confirmationDeleteModal").modal({
+                closable: false,
+                onDeny: function () {
+                    $("#confirmationDeleteModal").modal('hide');
                 },
                 onApprove: function ()
                 {
@@ -139,7 +214,7 @@
                     {
                         if (resp.denied)
                         {
-                            notifyUser("error", "Este utilizador não pode ser eliminado");
+                            notifyUser("error", "Não tem privilégios suficientes.");
                         }
                         else
                         {
@@ -153,6 +228,5 @@
                 }
             });
         }
-
     </script>
 }

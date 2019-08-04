@@ -7,6 +7,7 @@ using LabFoto.APIs;
 using LabFoto.Data;
 using LabFoto.Models;
 using LabFoto.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Options;
 
 namespace LabFoto.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -40,7 +42,7 @@ namespace LabFoto.Controllers
         }
 
         #region Index
-        public IActionResult Index()
+        public async Task<ActionResult> Index()
         {
             // Fornecer feedback ao cliente caso este exista.
             // Este feedback é fornecido na view a partir de uma notificação 'Noty'
@@ -50,16 +52,26 @@ namespace LabFoto.Controllers
                 ViewData["Type"] = TempData["Type"];
             }
 
-            var response = new UsersIndexViewModel
-            {
-                Users = _context.Users.Select(u => u).ToList(),
-                AdminEmail = _appSettings.Email
+            var users = _context.Users.Select(u => u).ToList();
+            UsersIndexViewModel response = new UsersIndexViewModel() {
+                AdminEmail = _appSettings.Email,
+                Users = new List<UserWithRoleViewModel>()
             };
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                response.Users.Add(new UserWithRoleViewModel
+                {
+                    User = user,
+                    Roles = roles.ToList()
+                });
+            }
 
             return View(response);
         }
 
-        public IActionResult IndexFilter(string Username)
+        public async Task<IActionResult> IndexFilter(string Username)
         {
             var users = _context.Users.Select(u => u);
 
@@ -68,11 +80,22 @@ namespace LabFoto.Controllers
                 users = users.Where(u => u.UserName.Contains(Username));
             }
 
-            var response = new UsersIndexViewModel
+            var usersList = users.ToList();
+            UsersIndexViewModel response = new UsersIndexViewModel()
             {
-                Users = users.ToList(),
-                AdminEmail = _appSettings.Email
+                AdminEmail = _appSettings.Email,
+                Users = new List<UserWithRoleViewModel>()
             };
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                response.Users.Add(new UserWithRoleViewModel
+                {
+                    User = user,
+                    Roles = roles.ToList()
+                });
+            }
 
             return PartialView("PartialViews/_IndexUsers", response);
         }
@@ -199,11 +222,79 @@ namespace LabFoto.Controllers
             TempData["Feedback"] = "Email confirmado com sucesso.";
             TempData["Type"] = "success";
             return RedirectToAction("Index");
+        }
+        #endregion
+
+        #region Bloquear conta
+        public async Task<IActionResult> Block(string id, bool locked)
+        {
+            IdentityUser user = null;
+
+            try
+            {
+                user = await _context.Users.FindAsync(id);
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation("Erro ao encontrar o utilizador. Erro:" + e.Message);
+                return Json(new { success = false });
+            }
+
+            // Não deixa bloquer a conta principal da aplicação
+            if (user.UserName.Equals(_appSettings.Email))
+            {
+                return Json(new { success = false, denied = true });
+            }
+
+            try
+            {
+                if (User.IsInRole("Lab") && await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return Json(new { success = false, denied = true });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false });
+            }
+
+            try
+            {
+                if (locked)
+                {
+                    user.LockoutEnd = new DateTimeOffset(new DateTime(2999, 1, 1));
+                }
+                else
+                {
+                    user.LockoutEnd = null;
+                }
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+
+                // Feeback ao utilizador - Vai ser redirecionado para o Index
+                TempData["Type"] = "success";
+                if (locked)
+                {
+                    TempData["Feedback"] = "Utilizador bloqueado com sucesso.";
+                }
+                else
+                {
+                    TempData["Feedback"] = "Utilizador desbloqueado com sucesso.";
+                }
+
+                return Json(new { success = true });
+            }
+            catch (Exception)
+            {
+            }
+
+            return Json(new { success = false });
         } 
         #endregion
 
         #region Delete
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             IdentityUser user = null;

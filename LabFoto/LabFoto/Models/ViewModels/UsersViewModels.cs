@@ -7,8 +7,13 @@ namespace LabFoto.Models.ViewModels
 {
     public class UsersIndexViewModel
     {
-        public IEnumerable<IdentityUser> Users { get; set; }
+        public List<UserWithRoleViewModel> Users { get; set; }
         public string AdminEmail { get; set; }
+    }
+    public class UserWithRoleViewModel
+    {
+        public IdentityUser User { get; set; }
+        public List<string> Roles { get; set; }
     }
     public class UsersCreateViewModel
     {

@@ -1,51 +1,70 @@
 ﻿@model LabFoto.Models.ViewModels.UsersIndexViewModel
 
-
 @{
     if (Model.Users.Count() != 0)
     {
-        foreach (var user in Model.Users)
+        foreach (var userModel in Model.Users)
         {
+            bool lockedOut = (userModel.User.LockoutEnd != null);
+            string lockOpenClass = "", lockClass = "";
+
+            if (lockedOut)
+            {
+                lockClass = "disabled";
+            }
+            else
+            {
+                lockOpenClass = "disabled";
+            }
+
             <div class="ui raised segment mt-2 mb-3">
                 <div class="ui grid stackable">
                     <div class="row">
-                        <div class="ui three wide column left floated ml-2 mt-1" style="padding-bottom: 0px !important; height:40px !important;">
+                        <div class="ui four wide column left floated ml-2 mt-1" style="padding-bottom: 0px !important; height:40px !important;">
                             <div class="ml-1 mt-2">
-                                <span class="font-weight-bold">@user.UserName</span>
+                                <span class="font-weight-bold">@userModel.User.UserName</span>
+                            </div>
+                        </div>
+                        <div class="ui three wide column left floated ml-2 mt-1" style="padding-bottom: 0px !important;">
+                            <div class="ml-1 mt-2">
+                                <span>
+                                    @foreach (var role in userModel.Roles)
+                                    {
+                                        <span class="font-weight-bold"><i class="user blue icon"></i> @role</span>
+                                    }
+                                </span>
                             </div>
                         </div>
                         <div class="ui five wide column left floated ml-2 mt-1" style="padding-bottom: 0px !important;">
                             <div class="ml-1 mt-2">
                                 <span>
-                                    @if (!@user.EmailConfirmed)
+                                    @if (lockedOut)
                                     {
-                                        <i class="x icon red icon"></i>
-                                        <span class="font-weight-bold text-danger">Email Não Confirmado</span>
-                                    }
-                                    else
-                                    {
-                                        <i class="check green circle icon"></i>
-                                        <span class="font-weight-bold text-success">Email Confirmado</span>
+                                        <i class="ban red icon"></i>
+                                        <span class="font-weight-bold text-danger">Bloqueado</span>
                                     }
                                 </span>
                             </div>
                         </div>
-                        <div class="ui six wide column right floated mt-1">
+                        <div class="ui three wide column right floated mt-1">
                             @{
-                                // Não mostrar a opção de eli
-                                if (!user.Email.Equals(Model.AdminEmail) && !user.Email.Equals(User.Identity.Name))
+                                // Não mostrar a opção de eliminar o admin principal ou a propria conta
+                                // Apenas administradores podem eliminar contas
+                                if (!userModel.User.Email.Equals(Model.AdminEmail) && !userModel.User.Email.Equals(User.Identity.Name))
                                 {
-
                                     <div class="ui small icon basic buttons right floated">
-                                        <div class="ui button">
+                                        <div class="ui button @lockOpenClass" onclick="confirmBlock('@userModel.User.Id', false)">
                                             <i class="lock open icon"></i>
                                         </div>
-                                        <div class="ui button">
+                                        <div class="ui button @lockClass" onclick="confirmBlock('@userModel.User.Id', true)">
                                             <i class="lock icon"></i>
                                         </div>
-                                        <div onclick="confirmDelete('@user.Id')" class="ui button">
-                                            <i class="trash alternate outline icon"></i>
-                                        </div>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <div onclick="confirmDelete('@userModel.User.Id')" class="ui button">
+                                                <i class="trash alternate outline icon"></i>
+                                            </div>
+                                        }
                                     </div>
                                 }
                             }
