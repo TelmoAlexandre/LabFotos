@@ -78,6 +78,7 @@ namespace LabFoto.Controllers
         }
         #endregion
 
+        #region Create
         public IActionResult Create()
         {
             var callbackUrl = Url.Page("/Identity/Account/ConfirmEmail");
@@ -98,7 +99,7 @@ namespace LabFoto.Controllers
             return View(response);
         }
 
-        #region Create
+        
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Email,Password,ConfirmPassword,Role")] UserCreateViewModel user)
         {
@@ -166,6 +167,7 @@ namespace LabFoto.Controllers
         }
         #endregion
 
+        #region Confirmar Email
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)
@@ -197,7 +199,8 @@ namespace LabFoto.Controllers
             TempData["Feedback"] = "Email confirmado com sucesso.";
             TempData["Type"] = "success";
             return RedirectToAction("Index");
-        }
+        } 
+        #endregion
 
         #region Delete
         [HttpPost]

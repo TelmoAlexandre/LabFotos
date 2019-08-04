@@ -19,27 +19,28 @@ namespace LabFoto.Areas.Identity.Pages.Account
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> OnGetAsync(string userId, string code)
+        public IActionResult OnGetAsync(string userId, string code)
         {
-            if (userId == null || code == null)
-            {
-                return RedirectToPage("/Index");
-            }
+            return NotFound();
+            //if (userId == null || code == null)
+            //{
+            //    return RedirectToPage("/Index");
+            //}
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("Não foi possível encontrar a sua conta.");
-            }
+            //var user = await _userManager.FindByIdAsync(userId);
+            //if (user == null)
+            //{
+            //    return NotFound("Não foi possível encontrar a sua conta.");
+            //}
 
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            if (!result.Succeeded)
-            {
-                throw new InvalidOperationException("Erro ao confirmar o seu E-mail.");
-            }
+            //var result = await _userManager.ConfirmEmailAsync(user, code);
+            //if (!result.Succeeded)
+            //{
+            //    throw new InvalidOperationException("Erro ao confirmar o seu E-mail.");
+            //}
 
-            TempData["Feedback"] = "Email confirmado com sucesso.";
-            return LocalRedirect("/Servicos");
+            //TempData["Feedback"] = "Email confirmado com sucesso.";
+            //return LocalRedirect("/Servicos");
         }
     }
 }

@@ -115,11 +115,10 @@ namespace LabFoto.Areas.Identity.Pages.Account.Manage
             var userId = await _userManager.GetUserIdAsync(user);
             var email = await _userManager.GetEmailAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new { userId = userId, code = code },
-                protocol: Request.Scheme);
+
+            var callbackUrl = Url.Action("ConfirmEmail", "Users",
+                            values: new { userId = user.Id, code = code },
+                            protocol: Request.Scheme);
 
             _email.Send(
                 email,
