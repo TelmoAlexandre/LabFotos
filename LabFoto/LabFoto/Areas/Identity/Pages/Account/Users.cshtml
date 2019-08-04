@@ -1,0 +1,106 @@
+﻿@page
+@model LabFoto.Areas.Identity.Pages.Account.UsersModel
+@{
+    ViewData["Title"] = "Utilizadores";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<form asp-page-handler="Search" id="searchForm">
+    <div class="ui segment padded pb-1">
+        <div class="ui form" id="searchParams">
+            <div class="fields">
+                <div class="six wide field">
+                    <div class="ui transparent left icon input large">
+                        <input id="inputUsername" placeholder="E-mail do utilizador..." name="Username">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+                <div class="ten wide field">
+                    <button type="submit" class="ui button blue mini" tabindex="0">
+                        <i class="search icon"></i>
+                        Pesquisar
+                    </button>
+                    <div class="ui button inverted red mini" onclick="clearSearch()" tabindex="0">
+                        <i class="eraser icon"></i>
+                        Limpar pesquisa
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<a class="ui blue mini button mt-3 mb-2" asp-area="Identity" asp-page="/Account/RegisterUser">
+    <i class="fas fa-plus"></i> <span class="ml-1">Novo Utilizador</span>
+</a>
+
+@{
+    foreach (var user in Model.Users)
+    {
+        <div class="ui raised segment mt-2 mb-3">
+            <div class="ui grid stackable">
+                <div class="row">
+                    <div class="ui three wide column left floated ml-2" style="padding-bottom: 0px !important;">
+                        <div class="ml-1 mt-2">
+                            <span class="font-weight-bold">@user.UserName</span>
+                        </div>
+                    </div>
+                    <div class="ui five wide column left floated ml-2" style="padding-bottom: 0px !important;">
+                        <div class="ml-1 mt-2">
+                            <span>
+                                @if (!@user.EmailConfirmed)
+                                {
+                                    <i class="x icon red icon"></i>
+                                    <span class="font-weight-bold text-danger">Email Não Confirmado</span>
+                                }
+                                else
+                                {
+                                    <i class="check green circle icon"></i>
+                                    <span class="font-weight-bold text-success">Email Confirmado</span>
+                                }
+                            </span>
+                        </div>
+                    </div>
+                    <div class="ui six wide column right floated">
+                        <div class="ui small icon basic buttons right floated">
+                            <div class="ui button">
+                                <i class="lock open icon"></i>
+                            </div>
+                            <div class="ui button">
+                                <i class="lock icon"></i>
+                            </div>
+                            <div class="ui button">
+                                <i class="trash alternate outline icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section scripts
+{
+    @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+    @if (ViewData["Feedback"] != null)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function ()
+            {
+                notifyUser('@ViewData["Type"]', '@ViewData["Feedback"]');
+            }, false);
+        </script>
+    }
+
+    <script>
+        clearSearch = () =>
+        {
+            $(`#inputUsername`).val("");
+            $(`#searchForm`).submit();
+        };
+
+    </script>
+}
