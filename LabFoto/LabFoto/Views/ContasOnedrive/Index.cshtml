@@ -40,8 +40,23 @@
     <partial name="PartialViews/_IndexCards" model="@Model" />
 </div>
 
+<div class="ui basic mini modal" id="confirmationModal">
+    <div class="content">
+        <p>Tem a certeza que pretende eliminar a conta Onedrive?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
 @section scripts
-{
+    {
     @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
     @if (ViewData["Feedback"] != null)
     {
@@ -55,42 +70,95 @@
 
     <script>
 
-        $(document).ready(function ()
-        {
+        $(document).ready(function () {
             $('.progressBarUpdate').progress({
-                onActive: function ()
-                {
+                onActive: function () {
                     $('.progressBarUpdate').removeClass('active');
                 }
             });
+            $('[data-toggle="tooltip"]').tooltip();
         });
 
-        //mostrarPW = (id, password) => {
-        //    var passwordContent = document.getElementById(`pw_${id}`);
-        //    if (passwordContent.innerHTML == 'Mostrar password') {
-        //        passwordContent.innerHTML = password;
-        //    }
-        //    else {
-        //        passwordContent.innerHTML = "Mostrar password";
-        //    }
-        //};
+        function confirmDelete(id) {
+            $("#confirmationModal").modal({
+                closable: false,
+                onDeny: function () {
+                    $("#confirmationModal").modal('hide');
+                },
+                onApprove: function () {
+                    deleteConta(id);
+                },
+                transition: 'scale'
+            }).modal('show');
+        }
 
-        clearSearch = () =>
+        function deleteConta(id)
         {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Delete", "ContasOnedrive")",
+                data: {
+                    "id": id
+                },
+                success: function (resp)
+                {
+                    if (resp.success)
+                    {
+                        window.location.href = "@Url.Action("Index", "ContasOnedrive", new { feedback = "UserDelete" })";
+                    }
+                    else
+                    {
+                        if (resp.hasPhotos)
+                        {
+                            notifyUser("error", "Esta conta Onedrive não pode ser eliminada porque tem fotografias associadas.");
+                        }
+                        else
+                        {
+                            notifyUser("error", "Erro ao eliminar a conta Onedrive.");
+                        }
+                    }
+                },
+                error: function ()
+                {
+                    notifyUser("error", "Erro ao eliminar a conta Onedrive.");
+                }
+            });
+        }
+
+    mostrarPW = (id, password) => {
+
+            var passwordContent = $(`#pw_${id}`)[0];
+            var passwordBtn = $(`#btn_${id}`)[0];
+
+            if (passwordContent.innerHTML == "******") {
+
+                passwordContent.innerHTML = password;
+                passwordBtn.children[0].className = `eye slash icon`;
+                passwordBtn.dataset.originalTitle = "Esconder Password";
+
+            }
+            else {
+
+                passwordContent.innerHTML = "******";
+                passwordBtn.children[0].className = `eye icon`;
+                passwordBtn.dataset.originalTitle = "Ver Password";
+
+            }
+        };
+
+        clearSearch = () => {
             $(`#inputUsername`).val("");
             submitContasSearchForm();
         };
 
-        $(".input").on('keyup', function (e)
-        {
-            if (e.keyCode == 13)
-            {
+
+        $(".input").on('keyup', function (e) {
+            if (e.keyCode == 13) {
                 submitContasSearchForm();
             }
         });
 
-        function submitContasSearchForm()
-        {
+        function submitContasSearchForm() {
             $.ajax({
                 url: siteUrl + "/ContasOnedrive/IndexFilter",
                 type: "POST",
@@ -99,18 +167,16 @@
                     "__RequestVerificationToken": $("#searchForm input[name='__RequestVerificationToken']").val(),
                     "X-Requested-With": "XMLHttpRequest"
                 },
-                success: function (resp)
-                {
+                success: function (resp) {
                     $("#contasCards").html(resp);
                     $('.progressBarUpdate').progress({
-                        onActive: function ()
-                        {
+                        onActive: function () {
                             $('.progressBarUpdate').removeClass('active');
                         }
                     });
+                    $('[data-toggle="tooltip"]').tooltip();
                 },
-                error: function ()
-                {
+                error: function () {
                     notifyUser('error', 'Erro ao pesquisar.');
                 }
             });

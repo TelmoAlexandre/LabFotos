@@ -28,5 +28,6 @@ namespace LabFoto.Models.Tables
 
         [Display(Name = "Quota usada")]
         public string Quota_Used { get; set; }
+        public virtual ICollection<Fotografia> Fotografias { get; set; }
     }
 }

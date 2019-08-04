@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190804162707_Initial")]
+    [Migration("20190804200111_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -982,15 +982,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "cccfb965-37c6-446b-b88c-66f30bc87439",
-                            ConcurrencyStamp = "510e588d-9f20-4807-a7ba-d7926a9e29fb",
+                            Id = "1c5f6afe-e578-4264-b543-a7e92d61fae7",
+                            ConcurrencyStamp = "d4523a73-d0fb-4b9d-a1b5-01fb1b02e38c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3efdb913-107c-4387-9955-03e51e0ebd2f",
-                            ConcurrencyStamp = "7136bb99-601d-41c1-a6c9-2c19684604eb",
+                            Id = "7263c567-ad5f-4cf9-8c1b-d04887222685",
+                            ConcurrencyStamp = "c3cefe2e-09cf-4824-819c-0df0ca1a9f30",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });
@@ -1140,7 +1140,7 @@ namespace LabFoto.Migrations
             modelBuilder.Entity("LabFoto.Models.Tables.Fotografia", b =>
                 {
                     b.HasOne("LabFoto.Models.Tables.ContaOnedrive", "ContaOnedrive")
-                        .WithMany()
+                        .WithMany("Fotografias")
                         .HasForeignKey("ContaOnedriveFK")
                         .OnDelete(DeleteBehavior.Cascade);
 

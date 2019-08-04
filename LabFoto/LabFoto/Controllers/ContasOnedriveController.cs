@@ -14,6 +14,7 @@ using LabFoto.APIs;
 using Microsoft.Extensions.Options;
 using LabFoto.Models;
 using LabFoto.Models.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace LabFoto.Controllers
 {
@@ -22,11 +23,13 @@ namespace LabFoto.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
+        private readonly ILogger<ContasOnedriveController> _logger;
 
-        public ContasOnedriveController(ApplicationDbContext context, IOnedriveAPI onedrive)
+        public ContasOnedriveController(ApplicationDbContext context, IOnedriveAPI onedrive, ILogger<ContasOnedriveController> logger)
         {
             _context = context;
             _onedrive = onedrive;
+            _logger = logger;
         }
 
         #region Index
@@ -299,6 +302,47 @@ namespace LabFoto.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(contaOnedrive);
+        }
+        #endregion
+
+        #region Delete
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            ContaOnedrive contaOnedrive = new ContaOnedrive();
+            try
+            {
+                contaOnedrive = await _context.ContasOnedrive.Include(c => c.Fotografias).Where(c => c.ID == id).FirstOrDefaultAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation("Erro ao encontrar a conta Onedrive. Erro:" + e.Message);
+                return Json(new { success = false });
+            }
+
+            if (contaOnedrive.Fotografias.Count() == 0)
+            {
+                try
+                {
+                    _context.Remove(contaOnedrive);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation("Conta Onedrive removido.");
+                }
+                catch (Exception e)
+                {
+                    _logger.LogInformation("Erro ao eliminar conta Onedrive. Erro:" + e.Message);
+                    return Json(new { success = false });
+                }
+
+                // Feeback ao utilizador - Vai ser redirecionado para o Index
+                TempData["Feedback"] = "Conta Onedrive eliminada com sucesso.";
+                TempData["Type"] = "success";
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false , hasPhotos = true} );
+
         }
         #endregion
 
