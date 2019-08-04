@@ -30,39 +30,43 @@
             }
 
             <div class="ui @color raised segment mb-4 pt-4">
-                <div class="ui grid">
-                    <div class="ui three wide column text-center">
-                        @Html.DisplayFor(modelItem => conta.Username)
-                    </div>
-
-                    @*<div class="ui three wide column text-center pt-0">
-                        <div class="ui segment pointer" onclick="mostrarPW(@conta.ID, `@conta.Password`)">
-                            <p id="pw_@conta.ID">Mostrar password</p>
+                <div class="ui grid stackable">
+                    <div class="row pb-2">
+                        <div class="ui four wide column text-center floated" style="padding-top: 12px !important;">
+                            <span class="font-weight-bold ml-2"> @Html.DisplayFor(modelItem => conta.Username)</span>
                         </div>
-                    </div>*@
 
-                    <div class="ui eleven wide column pb-2">
-                        @if (total != 0)
-                        {
-                            <div class="progressBarUpdate ui @color progress active" data-percent="@Math.Round(usedPercent)">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label text-dark" style="font-size: 15px !important;">@Math.Round(used / 1024, 2) GB de  @(total / 1024) GB</div>
+                        @*<div class="ui three wide column text-center pt-0">
+                            <div class="ui segment pointer" onclick="mostrarPW(@conta.ID, `@conta.Password`)">
+                                <p id="pw_@conta.ID">Mostrar password</p>
                             </div>
-                        }
-                        else
-                        {
-                            <h4 class="font-weight-bold">
-                                Erro na conta
-                            </h4>
-                        }
+                        </div>*@
 
-                    </div>
-                    <div class="ui two wide column" style="padding-top: 10px !important;">
-                        <div class="ui icon buttons" style="margin-left: 6px !important;">
-                            <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@conta.ID" class="ui button basic float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                            <a asp-controller="ContasOnedrive" asp-action="Details" asp-route-id="@conta.ID" class="ui button basic float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+                        <div class="ui nine wide column pb-2 pt-2 left floated">
+                            @if (total != 0)
+                            {
+                                <div class="progressBarUpdate ui progress active" data-percent="@Math.Round(usedPercent)">
+                                    <div class="bar" style="background-color:@color !important;">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label text-dark" style="font-size: 15px !important;">@Math.Round(used / 1024, 2) GB de  @(total / 1024) GB</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <h4 class="font-weight-bold">
+                                    Erro na conta
+                                </h4>
+                            }
+
+                        </div>
+                        <div class="ui three wide column right floated">
+                            <div class="ui icon basic buttons right floated" style="margin-left: 6px !important;">
+                                <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@conta.ID" class="ui button float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                                <div class="ui button">
+                                    <i class="trash alternate outline icon"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
