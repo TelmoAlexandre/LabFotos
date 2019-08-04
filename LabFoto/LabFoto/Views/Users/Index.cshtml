@@ -87,6 +87,11 @@
     }
 
     <script>
+        $(document).ready(function ()
+        {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
         clearSearch = () =>
         {
             $(`#inputUsername`).val("");
@@ -114,6 +119,7 @@
                 success: function (resp)
                 {
                     $("#usersList").html(resp);
+                    $('[data-toggle="tooltip"]').tooltip();
                 },
                 error: function ()
                 {

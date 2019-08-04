@@ -180,6 +180,7 @@
                 $("#searchServSolicCB").html($("#servSolicBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
+            $('[data-toggle="tooltip"]').tooltip();
         });
 
         $(".input").on('keyup', function (e) {
@@ -222,7 +223,9 @@
             expandedAccordion = false;
         });
 
-        resetAccordionCollapse = (resp) => {
+        resetAccordionCollapse = () =>
+        {
+            $('[data-toggle="tooltip"]').tooltip();
             if (expandedAccordion) {
                 $(".accordionBody").addClass("show");
             }

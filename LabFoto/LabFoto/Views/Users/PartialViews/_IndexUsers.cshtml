@@ -53,15 +53,15 @@
                                 if (!userModel.User.Email.Equals(Model.AdminEmail) && !userModel.User.Email.Equals(User.Identity.Name))
                                 {
                                     <div class="ui small icon basic buttons right floated">
-                                        <div class="ui button @lockOpenClass" onclick="confirmBlock('@userModel.User.Id', false)">
+                                        <div class="ui button @lockOpenClass" onclick="confirmBlock('@userModel.User.Id', false)" data-toggle="tooltip" data-title="Desbloquear conta">
                                             <i class="lock open icon"></i>
                                         </div>
-                                        <div class="ui button @lockClass" onclick="confirmBlock('@userModel.User.Id', true)">
+                                        <div class="ui button @lockClass" onclick="confirmBlock('@userModel.User.Id', true)" data-toggle="tooltip" data-title="Bloquear conta">
                                             <i class="lock icon"></i>
                                         </div>
                                         @if (User.IsInRole("Admin"))
                                         {
-                                            <div onclick="confirmDelete('@userModel.User.Id')" class="ui button">
+                                            <div onclick="confirmDelete('@userModel.User.Id')" class="ui button"  data-toggle="tooltip" data-title="Eliminar conta">
                                                 <i class="trash alternate outline icon"></i>
                                             </div>
                                         }
@@ -81,5 +81,3 @@
         </div>
     }
 }
-
-
