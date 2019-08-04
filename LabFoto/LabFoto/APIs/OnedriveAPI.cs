@@ -486,6 +486,11 @@ namespace LabFoto.APIs
         /// <returns>Url da sessão</returns>
         public async Task<string> GetUploadSessionAsync(ContaOnedrive conta, string fileName)
         {
+            #region Refrescar token
+            // Verificar se o token está válido
+            await RefreshTokenAsync(conta, 1800);
+            #endregion
+
             #region Preparar pedido HTTP
             string url = "https://graph.microsoft.com/v1.0/me/drives/" + conta.DriveId + "/root:/" + fileName + ":/createUploadSession";
             var request = new HttpRequestMessage(HttpMethod.Post, url);
