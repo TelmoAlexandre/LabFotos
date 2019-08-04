@@ -52,21 +52,10 @@ namespace LabFoto.Controllers
                 ViewData["Type"] = TempData["Type"];
             }
 
-            var users = _context.Users.Select(u => u).ToList();
-            UsersIndexViewModel response = new UsersIndexViewModel() {
-                AdminEmail = _appSettings.Email,
-                Users = new List<UserWithRoleViewModel>()
-            };
+            // Todos os utilizadores
+            List<IdentityUser> users = _context.Users.Select(u => u).ToList(); ;
 
-            foreach (var user in users)
-            {
-                var roles = await _userManager.GetRolesAsync(user);
-                response.Users.Add(new UserWithRoleViewModel
-                {
-                    User = user,
-                    Roles = roles.ToList()
-                });
-            }
+            var response = await PrepareIndexResponse(users);
 
             return View(response);
         }
@@ -80,24 +69,53 @@ namespace LabFoto.Controllers
                 users = users.Where(u => u.UserName.Contains(Username));
             }
 
-            var usersList = users.ToList();
+            var response = await PrepareIndexResponse(users.ToList());
+
+            return PartialView("PartialViews/_IndexUsers", response);
+        }
+
+        /// <summary>
+        /// Determina quais o utilizadores que seram mostrados ao user, dependendo do seu Role.
+        /// </summary>
+        /// <param name="users">Lista dos utilizadores a serem filtrados</param>
+        /// <returns>UsersIndexViewModel</returns>
+        private async Task<UsersIndexViewModel> PrepareIndexResponse(List<IdentityUser> users)
+        {
             UsersIndexViewModel response = new UsersIndexViewModel()
             {
                 AdminEmail = _appSettings.Email,
                 Users = new List<UserWithRoleViewModel>()
             };
 
+            // Prencher os utilizadores e os seus roles
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                response.Users.Add(new UserWithRoleViewModel
+
+                // Caso o utilizador seja admin, são mostrados todos os utilizadores
+                if (User.IsInRole("Admin"))
                 {
-                    User = user,
-                    Roles = roles.ToList()
-                });
+                    response.Users.Add(new UserWithRoleViewModel
+                    {
+                        User = user,
+                        Roles = roles.ToList()
+                    });
+                }
+                else
+                {
+                    // Caso o utilizador não seja admin, não mostrar os administradores
+                    if (!roles.Contains("Admin"))
+                    {
+                        response.Users.Add(new UserWithRoleViewModel
+                        {
+                            User = user,
+                            Roles = roles.ToList()
+                        });
+                    }
+                }
             }
 
-            return PartialView("PartialViews/_IndexUsers", response);
+            return response;
         }
         #endregion
 
