@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190803094635_Initial")]
+    [Migration("20190804162707_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -982,15 +982,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e5aedab8-263e-47b9-88a1-f79125857912",
-                            ConcurrencyStamp = "5dac32d4-7cb6-46c8-9ca0-483771eb148f",
+                            Id = "cccfb965-37c6-446b-b88c-66f30bc87439",
+                            ConcurrencyStamp = "510e588d-9f20-4807-a7ba-d7926a9e29fb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e180f2a0-c1f7-4e38-930c-196591945e61",
-                            ConcurrencyStamp = "79d22873-26d5-420c-8e76-06f69f92aaaa",
+                            Id = "3efdb913-107c-4387-9955-03e51e0ebd2f",
+                            ConcurrencyStamp = "7136bb99-601d-41c1-a6c9-2c19684604eb",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });

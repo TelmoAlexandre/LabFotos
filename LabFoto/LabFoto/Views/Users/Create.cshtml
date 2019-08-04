@@ -1,5 +1,5 @@
-﻿@page
-@model RegisterUserModel
+﻿@model  LabFoto.Models.ViewModels.UsersCreateViewModel
+
 @{
     ViewData["Title"] = "Register";
 }
@@ -8,31 +8,31 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post" id="userForm">
+        <form asp-action="Create" method="post" id="userForm">
             <div class="ui form">
                 <h4>Criar um novo utilizador.</h4>
                 <hr />
                 <div class="field">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    <label asp-for="User.Email"></label>
+                    <input asp-for="User.Email" class="form-control" />
+                    <span asp-validation-for="User.Email" class="text-danger"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    <label asp-for="User.Password"></label>
+                    <input asp-for="User.Password" class="form-control" />
+                    <span asp-validation-for="User.Password" class="text-danger"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="Input.ConfirmPassword"></label>
-                    <input asp-for="Input.ConfirmPassword" class="form-control" />
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    <label asp-for="User.ConfirmPassword"></label>
+                    <input asp-for="User.ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="User.ConfirmPassword" class="text-danger"></span>
                 </div>
                 @{
                     if (Model.IsAdmin)
                     {
                         <div class="field">
-                            <label asp-for="Input.Role"></label>
-                            <select asp-for="Input.Role" asp-items="Model.Roles" class="ui search dropdown">
+                            <label asp-for="User.Role"></label>
+                            <select asp-for="User.Role" asp-items="Model.Roles" class="ui search dropdown">
                             </select>
                         </div>
                     }
@@ -69,7 +69,7 @@
             <i class="remove icon"></i>
             Não
         </div>
-        <a class="ui green inverted button" asp-page-handler="Cancel" asp-route-returnUrl="@Model.ReturnUrl">
+        <a class="ui green inverted button" asp-action="Index">
             <i class="checkmark icon"></i>
             Sim
         </a>

@@ -61,9 +61,9 @@
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="dropbtn nav-link text-dark" asp-area="Identity" asp-page="/Account/Users">Utilizadores <i class="caret down icon"></i></a>
+                                <a class="dropbtn nav-link text-dark" asp-controller="Users" asp-action="Index">Utilizadores <i class="caret down icon"></i></a>
                                 <div class="dropdown-content">
-                                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/RegisterUser">Criar utilizador</a>
+                                    <a class="nav-link text-dark" asp-controller="Users" asp-action="Create">Criar utilizador</a>
                                 </div>
                             </li>
                             @if (User.IsInRole("Admin"))

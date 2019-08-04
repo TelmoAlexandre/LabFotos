@@ -14,10 +14,10 @@ namespace LabFoto.Models
             {
                 IdentityUser user = new IdentityUser
                 {
-                    UserName = "admin1@admin1.com",
-                    NormalizedUserName = "admin1@admin1.com".ToUpper(),
-                    Email = "admin1@admin1.com",
-                    NormalizedEmail = "admin1@admin1.com".ToUpper(),
+                    UserName = "labfotoipt@gmail.com",
+                    NormalizedUserName = "labfotoipt@gmail.com".ToUpper(),
+                    Email = "labfotoipt@gmail.com",
+                    NormalizedEmail = "labfotoipt@gmail.com".ToUpper(),
                     EmailConfirmed = true,
                     AccessFailedCount = 0,
                     PhoneNumberConfirmed = false,
