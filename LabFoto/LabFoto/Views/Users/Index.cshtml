@@ -41,7 +41,7 @@
     <partial name="PartialViews/_IndexUsers" model="@Model" />
 </div>
 
-@* Apenas mostra os modais de manutenção de conta aos utilizadores *@
+@* Apenas mostra os modais de manutenção de conta aos admins *@
 @if (User.IsInRole("Admin"))
 {
     <div class="ui basic mini modal" id="confirmationDeleteModal">
@@ -137,7 +137,7 @@
         }
     </script>
 
-    @* Apenas mostra os scripts de manutenção de conta aos utilizadores *@
+    @* Apenas mostra os scripts de manutenção de conta aos admins *@
     @if (User.IsInRole("Admin"))
     {
         <script>
