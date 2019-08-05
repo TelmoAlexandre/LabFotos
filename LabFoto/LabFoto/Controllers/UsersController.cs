@@ -320,6 +320,8 @@ namespace LabFoto.Controllers
         #endregion
 
         #region Bloquear conta
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Block(string id, bool locked)
         {
@@ -369,6 +371,7 @@ namespace LabFoto.Controllers
 
         #region Delete
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
