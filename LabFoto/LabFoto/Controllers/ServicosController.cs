@@ -712,7 +712,7 @@ namespace LabFoto.Controllers
                 // Apenas deixa apagar o serviço caso este não tenha galerias associadas
                 if (servico != null && servico.Galerias.Count() == 0)
                 {
-                    _context.Servicos.Remove(servico);
+                    _context.Remove(servico);
                     await _context.SaveChangesAsync();
                 }
                 else

@@ -154,7 +154,7 @@ servicoRequerenteDetails = (divModalDetails, requerenteId) => {
 
 loadRequerenteEditForm = (divEdicao, idRequerente, details) =>
 {
-    requerenteFormsLoadAjax(divEdicao, siteUrl + `/Requerentes/Edit/${idRequerente}?details=${details}`, idRequerente);
+    requerenteFormsLoadAjax(divEdicao, siteUrl + `/Requerentes/Edit/${idRequerente}?detailsLink=${details}`, idRequerente);
 };
 
 requerenteFormsLoadAjax = (divFormId, href, requerenteId) =>

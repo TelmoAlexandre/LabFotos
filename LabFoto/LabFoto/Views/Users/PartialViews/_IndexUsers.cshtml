@@ -6,7 +6,7 @@
         foreach (var userModel in Model.Users)
         {
             bool lockedOut = (userModel.User.LockoutEnd != null);
-            string segmentColor = "green";
+            string segmentColor = "";
             if (lockedOut) { segmentColor = "red"; }
 
             <div class="ui raised @segmentColor segment mt-2 mb-3">

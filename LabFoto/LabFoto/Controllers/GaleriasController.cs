@@ -15,6 +15,7 @@ using System.IO;
 using LabFoto.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace LabFoto.Controllers
 {
@@ -24,13 +25,18 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
         private readonly IEmailAPI _email;
+        private readonly ILogger<GaleriasController> _logger;
         private readonly int _galPP = 8;
 
-        public GaleriasController(ApplicationDbContext context, IOnedriveAPI onedrive, IEmailAPI email)
+        public GaleriasController(ApplicationDbContext context, 
+            IOnedriveAPI onedrive, 
+            IEmailAPI email,
+            ILogger<GaleriasController> logger)
         {
             _context = context;
             _onedrive = onedrive;
             _email = email;
+            _logger = logger;
         }
 
         #region Ajax
@@ -136,6 +142,7 @@ namespace LabFoto.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DefineCover(string id, int? fotoId)
         {
             if (!String.IsNullOrEmpty(id) && fotoId != null)
@@ -453,6 +460,7 @@ namespace LabFoto.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterFile(string galeriaId, string fileOnedriveId, string fileOnedriveName, int contaId)
         {
             #region Adicionar foto à Bd
@@ -707,6 +715,7 @@ namespace LabFoto.Controllers
 
         #region Delete
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteFiles(string[] photosIds)
         {
             List<Fotografia> photos = await _context.Fotografias.Where(f => (photosIds.Where(a => Int32.Parse(a) == f.ID).Count() != 0)).Include(f => f.ContaOnedrive).ToListAsync();
@@ -722,34 +731,44 @@ namespace LabFoto.Controllers
             return Json(new { success = false });
         }
 
-        // GET: Galerias/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var galeria = await _context.Galerias
-                .Include(g => g.Servico)
-                .FirstOrDefaultAsync(m => m.ID.Equals(id));
-            if (galeria == null)
-            {
-                return NotFound();
-            }
-
-            return View(galeria);
-        } 
-
         // POST: Galerias/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var galeria = await _context.Galerias.FindAsync(id);
-            _context.Galerias.Remove(galeria);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            Galeria galeria = null;
+            try
+            {
+                galeria = await _context.Galerias.Include(s => s.Fotografias).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao encontrar a galeria. Message: {e.Message}");
+                return Json(new { success = false });
+            }
+
+            try
+            {
+                // Não deixa apagar a galeria se esta tiver fotografias
+                if (galeria != null && galeria.Fotografias.Count() == 0)
+                {
+                    _context.Remove(galeria);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return Json(new { success = false, hasFotos = true });
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao eliminar a galeria. Message: {e.Message}");
+                return Json(new { success = false });
+            }
+
+            // Feeback ao utilizador - Vai ser redirecionado para o Index
+            TempData["Feedback"] = "Galeria removida com sucesso.";
+            return Json(new { success = true });
         }
         #endregion
 

@@ -144,6 +144,7 @@ namespace LabFoto.Controllers
 
         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Email,Password,ConfirmPassword,Role")] UserCreateViewModel user)
         {
             string role = "Lab";
@@ -237,6 +238,7 @@ namespace LabFoto.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeRole(string userId, string role)
         {
             IdentityUser user = await _context.Users.FindAsync(userId);
