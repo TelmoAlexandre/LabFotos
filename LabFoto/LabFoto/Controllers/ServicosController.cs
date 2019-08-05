@@ -410,9 +410,15 @@ namespace LabFoto.Controllers
 
                     #endregion Tratamento-Muitos-Para-Muitos
 
+                    // Não deixar as horas ficarem null
+                    servico.HorasEstudio = servico.HorasEstudio ?? 0;
+                    servico.HorasPosProducao = servico.HorasPosProducao ?? 0;
+                    servico.Total = servico.Total ?? 0;
+
                     _context.Add(servico);
                     await _context.SaveChangesAsync();
 
+                    #region Datas de execução
                     if (datasExec != null)
                     {
                         foreach (string dataStr in datasExec.Split(','))
@@ -443,7 +449,8 @@ namespace LabFoto.Controllers
                                 await _context.SaveChangesAsync();
                             }
                         }
-                    }
+                    } 
+                    #endregion
 
                     TempData["Feedback"] = "Serviço criado com sucesso.";
                     return RedirectToAction(nameof(Details), new { id = servico.ID});
@@ -501,23 +508,7 @@ namespace LabFoto.Controllers
             ServicosCreateViewModel response = new ServicosCreateViewModel
             {
                 Servico = servico,
-                RequerentesList = new SelectList(_context.Requerentes.OrderBy(r => r.Nome), "ID", "Nome", servico.RequerenteFK),
-                TiposList = _context.Tipos.OrderBy(t => t.Nome).Select(t => new SelectListItem()
-                {
-                    // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor da lista servicos_tipos
-                    // Caso exista, retorna verdade
-                    Selected = (sevicos_tipos.Where(st => st.TipoFK == t.ID).Count() != 0),
-                    Text = t.Nome,
-                    Value = t.ID + ""
-                }),
-                ServSolicitados = _context.ServicosSolicitados.OrderBy(ss => ss.Nome).Select(s => new SelectListItem()
-                {
-                    // Verificar se o tipo em que nos encontramos em cada instancia do select (select percorre todos), coincide com algum valor da lista servicos_servicosSolicitados
-                    // Caso exista, retorna verdade
-                    Selected = (sevicosSolicitados.Where(st => st.ServicoSolicitadoFK == s.ID).Count() != 0),
-                    Text = s.Nome,
-                    Value = s.ID + ""
-                })
+                RequerentesList = new SelectList(_context.Requerentes.OrderBy(r => r.Nome), "ID", "Nome", servico.RequerenteFK)
             };
 
             ViewData["ReturnUrl"] = returnUrl;
@@ -633,6 +624,11 @@ namespace LabFoto.Controllers
 
                     try
                     {
+                        // Não deixar as horas ficarem null
+                        servico.HorasEstudio = servico.HorasEstudio ?? 0;
+                        servico.HorasPosProducao = servico.HorasPosProducao ?? 0;
+                        servico.Total = servico.Total ?? 0;
+
                         _context.Update(servico);
                         await _context.SaveChangesAsync();
                     }

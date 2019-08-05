@@ -40,7 +40,7 @@
                                         <span>Entregue</span>
                                         @if (servico.DataEntrega != null)
                                         {
-                                    <span class="float-right font-weight-bold">@String.Format("{0:yyyy/MM/dd}", servico.DataEntrega)</span>
+                                            <span class="float-right font-weight-bold">@String.Format("{0:yyyy/MM/dd}", servico.DataEntrega)</span>
                                         }
                                         else
                                         {
@@ -69,44 +69,63 @@
                         </div>
                         <div class="card-text mt-3">
                             <div class="row">
-                                <div class="col-md-6 mt-3">
-                                    <div class="tipoServico">
-                                        <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Servicos_Tipos)</span>
-                                        <p>
-                                            @foreach (var tipo in servico.Servicos_Tipos)
-                                            {
-                                                <span class="mr-4">@tipo.Tipo.Nome</span>
-                                            }
-                                        </p>
+                                @{
+                                    int tipos = servico.Servicos_Tipos.Count();
+                                    int servSolic = servico.Servicos_ServicosSolicitados.Count();
+                                }
+                                @if (tipos != 0 || servSolic != 0)
+                                {
+                                    <div class="col-md-6 mt-3">
+                                        @if (tipos != 0)
+                                        {
+                                            <div class="tipoServico">
+                                                <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Servicos_Tipos)</span>
+                                                <p>
+                                                    @foreach (var tipo in servico.Servicos_Tipos)
+                                                    {
+                                                        <span class="mr-4">@tipo.Tipo.Nome</span>
+                                                    }
+                                                </p>
+                                            </div>
+                                        }
                                     </div>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <div class="servicoSolicitado">
-                                        <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Servicos_ServicosSolicitados)</span>
-                                        <p>
-                                            @foreach (var ss in servico.Servicos_ServicosSolicitados)
-                                            {
-                                                <span class="mr-4">@ss.ServicoSolicitado.Nome</span>
-                                            }
-                                        </p>
+                                    <div class="col-md-6 mt-3">
+                                        @if (servSolic != 0)
+                                        {
+                                            <div class="servicoSolicitado">
+                                                <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Servicos_ServicosSolicitados)</span>
+                                                <p>
+                                                    @foreach (var ss in servico.Servicos_ServicosSolicitados)
+                                                    {
+                                                        <span class="mr-4">@ss.ServicoSolicitado.Nome</span>
+                                                    }
+                                                </p>
+                                            </div>
+                                        }
                                     </div>
-                                </div>
+                                }
                                 <div class="col-md-6 mt-3">
                                     <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.IdentificacaoObra): </span>
                                     <p>@Html.DisplayFor(modelItem => servico.IdentificacaoObra)</p>
                                 </div>
                                 <div class="col-md-6 mt-3">
-                                    <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Servicos_DataExecucao): </span>
-                                    <p>
-                                        @foreach (var data in servico.Servicos_DataExecucao)
-                                        {
-                                            <span class="mr-4">@String.Format("{0:yyyy/MM/dd}", data.DataExecucao.Data)</span>
-                                        }
-                                    </p>
+                                    @if (servico.Servicos_DataExecucao.Count() != 0)
+                                    {
+                                        <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Servicos_DataExecucao): </span>
+                                        <p>
+                                            @foreach (var data in servico.Servicos_DataExecucao)
+                                            {
+                                                <span class="mr-4">@String.Format("{0:yyyy/MM/dd}", data.DataExecucao.Data)</span>
+                                            }
+                                        </p>
+                                    }
                                 </div>
                                 <div class="col-md-12 mt-3">
-                                    <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Observacoes): </span>
-                                    <p>@Html.DisplayFor(modelItem => servico.Observacoes)</p>
+                                    @if (!String.IsNullOrEmpty(servico.Observacoes))
+                                    {
+                                        <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Observacoes): </span>
+                                        <p>@Html.DisplayFor(modelItem => servico.Observacoes)</p>
+                                    }
                                 </div>
                             </div>
                         </div>

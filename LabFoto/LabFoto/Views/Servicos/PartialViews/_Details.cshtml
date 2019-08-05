@@ -35,13 +35,13 @@
                         <div class="dataEntrega">
                             <span>Entregue</span>
                             @if (Model.DataEntrega != null)
-                            {
+            {
                         <span class="float-right font-weight-bold">@String.Format("{0:yyyy/MM/dd}", Model.DataEntrega)</span>
-                            }
-                            else
-                            {
+            }
+            else
+            {
                                 <span class="float-right font-weight-bold">----/--/--</span>
-                            }
+            }
                         </div>
                         <div class="requerente">
                             <span>Requerente</span> <span class="float-right font-weight-bold pointer btn-link" style="text-decoration:none;" onclick="servicoRequerenteDetails('modalDetailsRequerente', '@Model.Requerente.ID')">@Model.Requerente.Nome</span>
@@ -65,44 +65,63 @@
             </div>
             <div class="card-text mt-3">
                 <div class="row">
-                    <div class="col-md-6 mt-3">
-                        <div class="tipoServico">
-                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.Servicos_Tipos)</span>
-                            <p>
-                                @foreach (var tipo in Model.Servicos_Tipos)
-                                {
-                                    <span class="mr-4">@tipo.Tipo.Nome</span>
-                                }
-                            </p>
+                    @{
+                        int tipos = Model.Servicos_Tipos.Count();
+                        int servSolic = Model.Servicos_ServicosSolicitados.Count();
+                    }
+                    @if (tipos != 0 || servSolic != 0)
+                    {
+                        <div class="col-md-6 mt-3">
+                            @if (tipos != 0)
+                            {
+                                <div class="tipoServico">
+                                    <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.Servicos_Tipos)</span>
+                                    <p>
+                                        @foreach (var tipo in Model.Servicos_Tipos)
+                                        {
+                                            <span class="mr-4">@tipo.Tipo.Nome</span>
+                                        }
+                                    </p>
+                                </div>
+                            }
                         </div>
-                    </div>
-                    <div class="col-md-6 mt-3">
-                        <div class="servicoSolicitado">
-                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.Servicos_ServicosSolicitados)</span>
-                            <p>
-                                @foreach (var ss in Model.Servicos_ServicosSolicitados)
-                                {
-                                    <span class="mr-4">@ss.ServicoSolicitado.Nome</span>
-                                }
-                            </p>
+                        <div class="col-md-6 mt-3">
+                            @if (servSolic != 0)
+                            {
+                                <div class="servicoSolicitado">
+                                    <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.Servicos_ServicosSolicitados)</span>
+                                    <p>
+                                        @foreach (var ss in Model.Servicos_ServicosSolicitados)
+                                        {
+                                            <span class="mr-4">@ss.ServicoSolicitado.Nome</span>
+                                        }
+                                    </p>
+                                </div>
+                            }
                         </div>
-                    </div>
+                    }
                     <div class="col-md-6 mt-3">
                         <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.IdentificacaoObra): </span>
                         <p>@Html.DisplayFor(modelItem => Model.IdentificacaoObra)</p>
                     </div>
                     <div class="col-md-6 mt-3">
-                        <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.Servicos_DataExecucao): </span>
-                        <p>
-                            @foreach (var data in Model.Servicos_DataExecucao)
-                            {
-                            <span class="mr-4">@String.Format("{0:yyyy/MM/dd}", data.DataExecucao.Data)</span>
-                            }
-                        </p>
+                        @if (Model.Servicos_DataExecucao.Count() != 0)
+                        {
+                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.Servicos_DataExecucao): </span>
+                            <p>
+                                @foreach (var data in Model.Servicos_DataExecucao)
+                                {
+                                    <span class="mr-4">@String.Format("{0:yyyy/MM/dd}", data.DataExecucao.Data)</span>
+                                }
+                            </p>
+                        }
                     </div>
                     <div class="col-md-12 mt-3">
-                        <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.Observacoes): </span>
-                        <p>@Html.DisplayFor(modelItem => Model.Observacoes)</p>
+                        @if (!String.IsNullOrEmpty(Model.Observacoes))
+                        {
+                            <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.Observacoes): </span>
+                            <p>@Html.DisplayFor(modelItem => Model.Observacoes)</p>
+                        }
                     </div>
                 </div>
             </div>
