@@ -357,6 +357,12 @@ namespace LabFoto.APIs
                     conta.Quota_Remaining = quota_Remaining;
                     conta.Quota_Total = quota_Total;
                     conta.Quota_Used = quota_Used;
+
+                    // Quando a conta só tiver 50 gb, envia email ao admins para notificar
+                    if(Int64.Parse(quota_Remaining) < 53687091200)
+                    {
+                        _emailAPI.Send(_appSettings.AdminEmails, "Conta Onedrive com pouco espaço", $"A conta onedrive {conta.Username} já só tem menos de 50 Gb.");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -530,6 +536,7 @@ namespace LabFoto.APIs
                 if (_context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).Count() == 0)
                 {
                     _logger.LogInformation("Não existem contas Onedrive com espaço.");
+                    _emailAPI.Send(_appSettings.AdminEmails, "Já não existem contas Onedrive com espaço", $"Todas as contas Onedrive estão cheias.");
                     return null;
                 }
 
@@ -544,6 +551,11 @@ namespace LabFoto.APIs
                         if (Int64.Parse(conta.Quota_Remaining) > fileSize)
                         {
                             return conta;
+                        }
+                        else
+                        {
+                            _emailAPI.Send(_appSettings.AdminEmails, "Conta Onedrive com pouco espaço", $"A conta onedrive {conta.Username} já só tem menos de 50 Gb.");
+                            return null;
                         }
                     }
                 }
