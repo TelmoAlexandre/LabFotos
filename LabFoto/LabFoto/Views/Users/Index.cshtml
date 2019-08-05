@@ -41,7 +41,7 @@
     <partial name="PartialViews/_IndexUsers" model="@Model" />
 </div>
 
-@* Apenas mostra os modais de manutenção de conta aos utilizadores *@
+@* Apenas mostra os modais de manutenção de conta aos admins *@
 @if (User.IsInRole("Admin"))
 {
     <div class="ui basic mini modal" id="confirmationDeleteModal">
@@ -137,7 +137,7 @@
         }
     </script>
 
-    @* Apenas mostra os scripts de manutenção de conta aos utilizadores *@
+    @* Apenas mostra os scripts de manutenção de conta aos admins *@
     @if (User.IsInRole("Admin"))
     {
         <script>
@@ -198,7 +198,9 @@
                     url: "@Url.Action("Block","Users")",
                     data: {
                         "id": id,
-                        "locked": locked
+                        "locked": locked,
+                        "__RequestVerificationToken": $(`#searchForm input[name='__RequestVerificationToken']`).val(),
+                        "X-Requested-With": "XMLHttpRequest"
                     },
                     success: function (resp)
                     {
@@ -246,7 +248,9 @@
                     type: "POST",
                     url: "@Url.Action("Delete","Users")",
                     data: {
-                        "id": id
+                        "id": id,
+                        "__RequestVerificationToken": $(`#searchForm input[name='__RequestVerificationToken']`).val(),
+                        "X-Requested-With": "XMLHttpRequest"
                     },
                     success: function (resp)
                     {
