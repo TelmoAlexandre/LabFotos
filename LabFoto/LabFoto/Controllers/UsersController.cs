@@ -124,8 +124,6 @@ namespace LabFoto.Controllers
         #region Create
         public IActionResult Create()
         {
-            var callbackUrl = Url.Page("/Identity/Account/ConfirmEmail");
-
             var roles = _context.Roles.Select(r => new SelectListItem
             {
                 Text = r.Name,
@@ -212,6 +210,7 @@ namespace LabFoto.Controllers
         #endregion
 
         #region Change Role
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeRole(string id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -238,6 +237,7 @@ namespace LabFoto.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeRole(string userId, string role)
         {
@@ -280,10 +280,11 @@ namespace LabFoto.Controllers
             TempData["Feedback"] = "Papel alterado com sucesso.";
             TempData["Type"] = "success";
             return RedirectToAction("Index");
-        } 
+        }
         #endregion
 
         #region Confirmar Email
+        [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)
@@ -319,6 +320,7 @@ namespace LabFoto.Controllers
         #endregion
 
         #region Bloquear conta
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Block(string id, bool locked)
         {
             IdentityUser user = null;
@@ -341,18 +343,6 @@ namespace LabFoto.Controllers
 
             try
             {
-                if (User.IsInRole("Lab") && await _userManager.IsInRoleAsync(user, "Admin"))
-                {
-                    return Json(new { success = false, denied = true });
-                }
-            }
-            catch (Exception)
-            {
-                return Json(new { success = false });
-            }
-
-            try
-            {
                 if (locked)
                 {
                     user.LockoutEnd = new DateTimeOffset(new DateTime(2999, 1, 1));
@@ -366,22 +356,14 @@ namespace LabFoto.Controllers
 
                 // Feeback ao utilizador - Vai ser redirecionado para o Index
                 TempData["Type"] = "success";
-                if (locked)
-                {
-                    TempData["Feedback"] = "Utilizador bloqueado com sucesso.";
-                }
-                else
-                {
-                    TempData["Feedback"] = "Utilizador desbloqueado com sucesso.";
-                }
+                TempData["Feedback"] =  "Utilizador " + ((locked)? "bloqueado" : "desbloqueado") + " com sucesso.";
 
                 return Json(new { success = true });
             }
             catch (Exception)
             {
+                return Json(new { success = false });
             }
-
-            return Json(new { success = false });
         } 
         #endregion
 
@@ -423,7 +405,6 @@ namespace LabFoto.Controllers
             // Feeback ao utilizador - Vai ser redirecionado para o Index
             TempData["Feedback"] = "Utilizador eliminado com sucesso.";
             TempData["Type"] = "success";
-
             return Json(new { success = true });
         } 
         #endregion

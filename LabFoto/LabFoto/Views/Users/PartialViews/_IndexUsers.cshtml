@@ -49,13 +49,12 @@
                             @{
                                 // Não mostrar a opção de eliminar o admin principal ou a propria conta
                                 // Apenas administradores podem eliminar contas
-                                if (!userModel.User.Email.Equals(Model.AdminEmail) && !userModel.User.Email.Equals(User.Identity.Name))
+                                if (!userModel.User.Email.Equals(Model.AdminEmail) && !userModel.User.Email.Equals(User.Identity.Name) && User.IsInRole("Admin"))
                                 {
                                     <div class="ui small icon basic buttons right floated">
                                         <div class="ui button" onclick="changeRole('@userModel.User.Id')" data-toggle="tooltip" data-title="Alterar Papel">
                                             <i class="edit icon"></i>
                                         </div>
-
                                         @if (lockedOut)
                                         {
                                             <div class="ui button" onclick="confirmBlock('@userModel.User.Id', false)" data-toggle="tooltip" data-title="Desbloquear conta">
@@ -68,13 +67,9 @@
                                                 <i class="lock icon"></i>
                                             </div>
                                         }
-
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                            <div onclick="confirmDelete('@userModel.User.Id')" class="ui button" data-toggle="tooltip" data-title="Eliminar conta">
-                                                <i class="trash alternate outline icon"></i>
-                                            </div>
-                                        }
+                                        <div onclick="confirmDelete('@userModel.User.Id')" class="ui button" data-toggle="tooltip" data-title="Eliminar conta">
+                                            <i class="trash alternate outline icon"></i>
+                                        </div>
                                     </div>
                                 }
                             }

@@ -41,41 +41,45 @@
     <partial name="PartialViews/_IndexUsers" model="@Model" />
 </div>
 
-<div class="ui basic mini modal" id="confirmationDeleteModal">
-    <div class="content">
-        <p>Tem a certeza que pretende eliminar o utilizador?</p>
-    </div>
-    <div class="actions">
-        <div class="ui red basic cancel inverted button">
-            <i class="remove icon"></i>
-            Não
+@* Apenas mostra os modais de manutenção de conta aos utilizadores *@
+@if (User.IsInRole("Admin"))
+{
+    <div class="ui basic mini modal" id="confirmationDeleteModal">
+        <div class="content">
+            <p>Tem a certeza que pretende eliminar o utilizador?</p>
         </div>
-        <div class="ui green ok inverted button">
-            <i class="checkmark icon"></i>
-            Sim
+        <div class="actions">
+            <div class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>
+                Não
+            </div>
+            <div class="ui green ok inverted button">
+                <i class="checkmark icon"></i>
+                Sim
+            </div>
         </div>
     </div>
-</div>
 
-<div class="ui basic mini modal" id="confirmationBlockModal">
-    <div class="content">
-        <p></p>
-    </div>
-    <div class="actions">
-        <div class="ui red basic cancel inverted button">
-            <i class="remove icon"></i>
-            Não
+    <div class="ui basic mini modal" id="confirmationBlockModal">
+        <div class="content">
+            <p></p>
         </div>
-        <div class="ui green ok inverted button">
-            <i class="checkmark icon"></i>
-            Sim
+        <div class="actions">
+            <div class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>
+                Não
+            </div>
+            <div class="ui green ok inverted button">
+                <i class="checkmark icon"></i>
+                Sim
+            </div>
         </div>
     </div>
-</div>
 
-<div class="ui modal basic mini fluidCorners" id="modalChangeRole">
-    <div class="content" id="changeRoleForm"></div>
-</div>
+    <div class="ui modal basic mini fluidCorners" id="modalChangeRole">
+        <div class="content" id="changeRoleForm"></div>
+    </div>
+}
 
 @section scripts
 {
@@ -110,31 +114,6 @@
             }
         });
 
-        function changeRole(id)
-        {
-            $.ajax({
-                url: siteUrl + `/Users/ChangeRole/${id}`,
-                type: "GET",
-                success: function (resp)
-                {
-                    if (resp.sucess == null)
-                    {
-                        $("#changeRoleForm").html(resp);
-                        $('.ui.dropdown').dropdown();
-                        $("#modalChangeRole").modal('show');
-                    }
-                    else
-                    {
-                        notifyUser("error", "Erro ao encontrar o utilizador.")
-                    }
-                },
-                error: function ()
-                {
-                    notifyUser('error', 'Erro ao encontrar o utilizador.');
-                }
-            });
-        }
-
         function submitUsersSearchForm()
         {
             $.ajax({
@@ -156,112 +135,143 @@
                 }
             });
         }
-
-        function confirmBlock(id, locked)
-        {
-            console.log(locked);
-            if (locked)
-            {
-                $("#confirmationBlockModal p").html("Tem a certeza que pretende bloquear o utilizador?");
-            }
-            else
-            {
-                $("#confirmationBlockModal p").html("Tem a certeza que pretende desbloquear o utilizador?");
-            }
-            
-            $("#confirmationBlockModal").modal({
-                closable: false,
-                onDeny: function () {
-                    $("#confirmationBlockModal").modal('hide');
-                },
-                onApprove: function ()
-                {
-                    blockUser(id, locked);
-                },
-                transition: 'scale'
-            }).modal('show');
-        }
-
-        function blockUser(id, locked)
-        {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("Block","Users")",
-                data: {
-                    "id": id,
-                    "locked": locked
-                },
-                success: function (resp)
-                {
-                    if (resp.success)
-                    {
-                        window.location.href = "@Url.Action("Index", "Users")";
-                    }
-                    else
-                    {
-                        if (resp.denied)
-                        {
-                            notifyUser("error", "Não tem privilégios suficientes.");
-                        }
-                        else
-                        {
-                            notifyUser("error", "Erro ao bloquer o utilizador.");
-                        }
-                    }
-                },
-                error: function ()
-                {
-                    notifyUser("error", "Erro ao bloquer o utilizador.");
-                }
-            });
-        }
-
-        function confirmDelete(id)
-        {
-            $("#confirmationDeleteModal").modal({
-                closable: false,
-                onDeny: function () {
-                    $("#confirmationDeleteModal").modal('hide');
-                },
-                onApprove: function ()
-                {
-                    deleteUser(id);
-                },
-                transition: 'scale'
-            }).modal('show');
-        }
-
-        function deleteUser(id)
-        {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("Delete","Users")",
-                data: {
-                    "id": id
-                },
-                success: function (resp)
-                {
-                    if (resp.success)
-                    {
-                        window.location.href = "@Url.Action("Index", "Users", new { feedback = "UserDelete" })";
-                    }
-                    else
-                    {
-                        if (resp.denied)
-                        {
-                            notifyUser("error", "Não tem privilégios suficientes.");
-                        }
-                        else
-                        {
-                            notifyUser("error", "Erro ao eliminar o utilizador.");
-                        }
-                    }
-                },
-                error: function ()
-                {
-                    notifyUser("error", "Erro ao eliminar o utilizador.");
-                }
-            });
-        }
     </script>
+
+    @* Apenas mostra os scripts de manutenção de conta aos utilizadores *@
+    @if (User.IsInRole("Admin"))
+    {
+        <script>
+            function changeRole(id)
+            {
+                $.ajax({
+                    url: siteUrl + `/Users/ChangeRole/${id}`,
+                    type: "GET",
+                    success: function (resp)
+                    {
+                        if (resp.sucess == null)
+                        {
+                            $("#changeRoleForm").html(resp);
+                            $('.ui.dropdown').dropdown();
+                            $("#modalChangeRole").modal('show');
+                        }
+                        else
+                        {
+                            notifyUser("error", "Erro ao encontrar o utilizador.")
+                        }
+                    },
+                    error: function ()
+                    {
+                        notifyUser('error', 'Erro ao encontrar o utilizador.');
+                    }
+                });
+            }
+
+            function confirmBlock(id, locked)
+            {
+                console.log(locked);
+                if (locked)
+                {
+                    $("#confirmationBlockModal p").html("Tem a certeza que pretende bloquear o utilizador?");
+                }
+                else
+                {
+                    $("#confirmationBlockModal p").html("Tem a certeza que pretende desbloquear o utilizador?");
+                }
+
+                $("#confirmationBlockModal").modal({
+                    closable: false,
+                    onDeny: function () {
+                        $("#confirmationBlockModal").modal('hide');
+                    },
+                    onApprove: function ()
+                    {
+                        blockUser(id, locked);
+                    },
+                    transition: 'scale'
+                }).modal('show');
+            }
+
+            function blockUser(id, locked)
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Block","Users")",
+                    data: {
+                        "id": id,
+                        "locked": locked
+                    },
+                    success: function (resp)
+                    {
+                        if (resp.success)
+                        {
+                            window.location.href = "@Url.Action("Index", "Users")";
+                        }
+                        else
+                        {
+                            if (resp.denied)
+                            {
+                                notifyUser("error", "Não tem privilégios suficientes.");
+                            }
+                            else
+                            {
+                                notifyUser("error", "Erro ao bloquer o utilizador.");
+                            }
+                        }
+                    },
+                    error: function ()
+                    {
+                        notifyUser("error", "Erro ao bloquer o utilizador.");
+                    }
+                });
+            }
+
+            function confirmDelete(id)
+            {
+                $("#confirmationDeleteModal").modal({
+                    closable: false,
+                    onDeny: function () {
+                        $("#confirmationDeleteModal").modal('hide');
+                    },
+                    onApprove: function ()
+                    {
+                        deleteUser(id);
+                    },
+                    transition: 'scale'
+                }).modal('show');
+            }
+
+            function deleteUser(id)
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Delete","Users")",
+                    data: {
+                        "id": id
+                    },
+                    success: function (resp)
+                    {
+                        if (resp.success)
+                        {
+                            window.location.href = "@Url.Action("Index", "Users", new { feedback = "UserDelete" })";
+                        }
+                        else
+                        {
+                            if (resp.denied)
+                            {
+                                notifyUser("error", "Não tem privilégios suficientes.");
+                            }
+                            else
+                            {
+                                notifyUser("error", "Erro ao eliminar o utilizador.");
+                            }
+                        }
+                    },
+                    error: function ()
+                    {
+                        notifyUser("error", "Erro ao eliminar o utilizador.");
+                    }
+                });
+            }
+        </script>
+    }
 }
