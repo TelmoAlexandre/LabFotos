@@ -13,6 +13,7 @@ namespace LabFoto.Models.Tables
 
         [Required(ErrorMessage = "É necessário preencher o nome.")]
         public string Nome { get; set; }
+        public bool Deletable { get; set; }
 
         //Ligacao 1-N com o PedidosServico_ServicosSolicitados
         public virtual ICollection<Servico_ServicoSolicitado> ServicosSolicitados_Servicos { get; set; }

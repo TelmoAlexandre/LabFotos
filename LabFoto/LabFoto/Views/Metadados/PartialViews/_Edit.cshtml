@@ -8,12 +8,14 @@
             @Html.HiddenFor(model => model.ID)
             <input asp-for="Nome" class="font-weight-bolder" />
             <i class="edit outline icon"></i>
-            <span class="ui button float-right saveButton" onclick="confirmForm('editFormIndex_@Model.ID')">
-                <i class="save outline icon"></i> Guardar
-            </span>
-            <span class="ui button float-right" onclick="cancelEditIndex(@Model.ID)">
-                <i class="x icon icon"></i> Cancelar
-            </span>
+            <div class="ui basic buttons right floated">
+                <span class="ui button float-right saveButton" onclick="confirmForm('editFormIndex_@Model.ID')">
+                    <i class="save outline icon"></i> Guardar
+                </span>
+                <span class="ui button float-right" onclick="cancelEditIndex(@Model.ID)">
+                    <i class="x icon icon"></i> Cancelar
+                </span>
+            </div>
         </div>
         @if (!ViewData.ModelState.IsValid)
         {
