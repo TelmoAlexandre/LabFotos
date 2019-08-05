@@ -6,8 +6,10 @@
         foreach (var userModel in Model.Users)
         {
             bool lockedOut = (userModel.User.LockoutEnd != null);
+            string segmentColor = "green";
+            if (lockedOut) { segmentColor = "red"; }
 
-            <div class="ui raised segment mt-2 mb-3">
+            <div class="ui raised @segmentColor segment mt-2 mb-3">
                 <div class="ui grid stackable">
                     <div class="row">
                         <div class="ui four wide column left floated ml-2 mt-1" style="padding-bottom: 0px !important; height:40px !important;">
@@ -27,11 +29,18 @@
                         </div>
                         <div class="ui five wide column left floated ml-2 mt-1" style="padding-bottom: 0px !important;">
                             <div class="ml-1 mt-2">
-                                <span>
+                                @if (!userModel.User.EmailConfirmed)
+                                {
+                                    <i class="red envelope outline icon" data-toggle="tooltip" data-title="Email não confirmado"></i>
+                                }
+                                else
+                                {
+                                    <i class="green envelope outline icon" data-toggle="tooltip" data-title="Email confirmado"></i>
+                                }
+                                <span class="ml-2">
                                     @if (lockedOut)
                                     {
-                                        <i class="ban red icon"></i>
-                                        <span class="font-weight-bold text-danger">Bloqueado</span>
+                                        <i class="ban red icon" data-toggle="tooltip" data-title="Conta Bloqueada"></i>
                                     }
                                 </span>
                             </div>
