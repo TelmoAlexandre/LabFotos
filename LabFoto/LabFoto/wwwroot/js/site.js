@@ -20,11 +20,18 @@ jQuery(document).ready(function ($) {
 
     // Adicionar novo input para as datas de execução nos formularios dos serviços
     $("#newDataDeExecucaoInput").click(function () {
-        var count = $("#dataDeExecDiv div").length;
+        var id = 0;
+        var last = $("#dataDeExecDiv div:last-child"); // Tenta recolher o ultimo div (child)
+
+        // Caso exista um div, recolher o valor do id e incrementar para o proximo input
+        if (last.length !== 0)
+        {
+            id = last.data("id") + 1;
+        }
         $("#dataDeExecDiv").append(
-            `<div class="form-inline" id="dataExec_${count}">
+            `<div class="form-inline" id="dataExec_${id}" data-id="${id}">
                 <input type="date" name="DataExecucao" class="form-control mb-2 w-75" />
-                <span class="pointer form-check-inline mb-2 ml-2" onclick="deleteElement('dataExec_${count}')">
+                <span class="pointer form-check-inline mb-2 ml-2" onclick="deleteElement('dataExec_${id}')">
                     <i class="far fa-trash-alt ml-1"></i>
                 </span>
             </div>`
