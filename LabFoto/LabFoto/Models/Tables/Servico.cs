@@ -55,6 +55,8 @@ namespace LabFoto.Models.Tables
         [Display(Name = "Datas de execução")]
         public virtual ICollection<Servico_DataExecucao> Servicos_DataExecucao { get; set; }
 
+        public virtual ICollection<Galeria> Galerias { get; set; }
+
         //Chave Forasteira para Requerentes
         [ForeignKey("Requerente")]
         [Display(Name = "Requerente")]

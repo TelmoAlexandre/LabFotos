@@ -15,7 +15,7 @@ namespace LabFoto.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -980,15 +980,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1c5f6afe-e578-4264-b543-a7e92d61fae7",
-                            ConcurrencyStamp = "d4523a73-d0fb-4b9d-a1b5-01fb1b02e38c",
+                            Id = "40871048-b6b9-46b8-9a83-1c9f612ecd4e",
+                            ConcurrencyStamp = "7f233e33-626e-4827-8d92-81721ec453ac",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "7263c567-ad5f-4cf9-8c1b-d04887222685",
-                            ConcurrencyStamp = "c3cefe2e-09cf-4824-819c-0df0ca1a9f30",
+                            Id = "1a14d288-1404-4bdf-a708-8fea41868445",
+                            ConcurrencyStamp = "f854c75b-4555-498d-8165-2348450a253e",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });
@@ -1154,7 +1154,7 @@ namespace LabFoto.Migrations
             modelBuilder.Entity("LabFoto.Models.Tables.Galeria", b =>
                 {
                     b.HasOne("LabFoto.Models.Tables.Servico", "Servico")
-                        .WithMany()
+                        .WithMany("Galerias")
                         .HasForeignKey("ServicoFK");
                 });
 
