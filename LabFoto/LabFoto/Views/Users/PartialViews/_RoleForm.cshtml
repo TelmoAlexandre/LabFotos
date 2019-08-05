@@ -1,0 +1,22 @@
+﻿@model LabFoto.Models.ViewModels.UsersChangeRoleViewModel
+
+<div class="ui raised segment fluidCorners">
+    <a class="ui blue ribbon label mb-3">Alterar Papel</a>
+    <form asp-action="ChangeRole" asp-controller="Users">
+        <input type="hidden" asp-for="User.Id" name="userId"/>
+        <div class="ui form">
+            <div class="field">
+                <label>Utilizador</label>
+                <input value="@Model.User.Email" disabled />
+            </div>
+            <div class="field">
+                <label>Papel</label>
+                <select name="role" asp-items="@Model.Roles" class="ui dropdown"></select>
+            </div>
+        </div>
+        <div class="fields mt-3">
+            <div class="eight wide field"><button type="submit" class="ui fluid primary button">Alterar</button></div>
+            <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
+        </div>
+    </form>
+</div>

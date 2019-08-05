@@ -23,6 +23,11 @@ namespace LabFoto.Models.ViewModels
 
         public bool IsAdmin { get; set; }
     }
+    public class UsersChangeRoleViewModel
+    {
+        public IdentityUser User { get; set; }
+        public IEnumerable<SelectListItem> Roles { get; set; }
+    }
     public class UserCreateViewModel
     {
         [Required(ErrorMessage = "O Email é obrigatório.")]

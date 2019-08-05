@@ -34,11 +34,11 @@
                     <div class="row pb-2">
                         <div class="ui five wide column text-center floated">
                             <div class="ui grid">
-                                <div class="ui ten wide column justify-content-center">
+                                <div class="ui fourteen wide column">
                                     <p class="font-weight-bold ml-2"> @Html.DisplayFor(modelItem => conta.Username)</p>
-                                    <p class="font-weight-bold ml-5 mr-2" data-visivel=true id="pw_@conta.ID">******</p>
+                                    <p class="font-weight-bold mr-2" data-visivel=true id="pw_@conta.ID">******</p>
                                 </div>
-                                <div class="ui six wide column pl-2 pr-0">
+                                <div class="ui two wide column pl-2 pr-0">
                                     <div class="ui icon buttons right floated">
                                         <a class="ui compact icon basic button" id="btn_@conta.ID" data-toggle="tooltip" title="Ver Password" onclick="mostrarPW(@conta.ID, `@conta.Password`)">
                                             <i class="eye icon"></i>

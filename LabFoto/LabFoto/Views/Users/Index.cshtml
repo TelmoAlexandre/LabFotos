@@ -73,6 +73,10 @@
     </div>
 </div>
 
+<div class="ui modal basic mini fluidCorners" id="modalChangeRole">
+    <div class="content" id="changeRoleForm"></div>
+</div>
+
 @section scripts
 {
     @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
@@ -105,6 +109,31 @@
                 submitUsersSearchForm();
             }
         });
+
+        function changeRole(id)
+        {
+            $.ajax({
+                url: siteUrl + `/Users/ChangeRole/${id}`,
+                type: "GET",
+                success: function (resp)
+                {
+                    if (resp.sucess == null)
+                    {
+                        $("#changeRoleForm").html(resp);
+                        $('.ui.dropdown').dropdown();
+                        $("#modalChangeRole").modal('show');
+                    }
+                    else
+                    {
+                        notifyUser("error", "Erro ao encontrar o utilizador.")
+                    }
+                },
+                error: function ()
+                {
+                    notifyUser('error', 'Erro ao encontrar o utilizador.');
+                }
+            });
+        }
 
         function submitUsersSearchForm()
         {

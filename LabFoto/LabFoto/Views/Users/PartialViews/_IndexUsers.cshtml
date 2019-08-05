@@ -6,16 +6,6 @@
         foreach (var userModel in Model.Users)
         {
             bool lockedOut = (userModel.User.LockoutEnd != null);
-            string lockOpenClass = "", lockClass = "";
-
-            if (lockedOut)
-            {
-                lockClass = "disabled";
-            }
-            else
-            {
-                lockOpenClass = "disabled";
-            }
 
             <div class="ui raised segment mt-2 mb-3">
                 <div class="ui grid stackable">
@@ -53,15 +43,26 @@
                                 if (!userModel.User.Email.Equals(Model.AdminEmail) && !userModel.User.Email.Equals(User.Identity.Name))
                                 {
                                     <div class="ui small icon basic buttons right floated">
-                                        <div class="ui button @lockOpenClass" onclick="confirmBlock('@userModel.User.Id', false)" data-toggle="tooltip" data-title="Desbloquear conta">
-                                            <i class="lock open icon"></i>
+                                        <div class="ui button" onclick="changeRole('@userModel.User.Id')" data-toggle="tooltip" data-title="Alterar Papel">
+                                            <i class="edit icon"></i>
                                         </div>
-                                        <div class="ui button @lockClass" onclick="confirmBlock('@userModel.User.Id', true)" data-toggle="tooltip" data-title="Bloquear conta">
-                                            <i class="lock icon"></i>
-                                        </div>
+
+                                        @if (lockedOut)
+                                        {
+                                            <div class="ui button" onclick="confirmBlock('@userModel.User.Id', false)" data-toggle="tooltip" data-title="Desbloquear conta">
+                                                <i class="lock open icon"></i>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="ui button" onclick="confirmBlock('@userModel.User.Id', true)" data-toggle="tooltip" data-title="Bloquear conta">
+                                                <i class="lock icon"></i>
+                                            </div>
+                                        }
+
                                         @if (User.IsInRole("Admin"))
                                         {
-                                            <div onclick="confirmDelete('@userModel.User.Id')" class="ui button"  data-toggle="tooltip" data-title="Eliminar conta">
+                                            <div onclick="confirmDelete('@userModel.User.Id')" class="ui button" data-toggle="tooltip" data-title="Eliminar conta">
                                                 <i class="trash alternate outline icon"></i>
                                             </div>
                                         }

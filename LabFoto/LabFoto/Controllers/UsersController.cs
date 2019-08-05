@@ -19,6 +19,7 @@ namespace LabFoto.Controllers
     [Authorize]
     public class UsersController : Controller
     {
+        #region Constructor
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -39,7 +40,8 @@ namespace LabFoto.Controllers
             _userManager = userManager;
             _appSettings = settings.Value;
             _email = email;
-        }
+        } 
+        #endregion
 
         #region Index
         public async Task<ActionResult> Index()
@@ -206,6 +208,77 @@ namespace LabFoto.Controllers
             // If we got this far, something failed, redisplay form
             return View(response);
         }
+        #endregion
+
+        #region Change Role
+        public async Task<IActionResult> ChangeRole(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user != null)
+            {
+                var roles = _context.Roles.Select(r => new SelectListItem
+                {
+                    Text = r.Name,
+                    Value = r.Name,
+                    Selected = false
+                }).ToList();
+
+                var response = new UsersChangeRoleViewModel()
+                {
+                    Roles = roles,
+                    User = user
+                };
+
+                return PartialView("PartialViews/_RoleForm", response);
+            }
+
+            return Json(new { success = false });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeRole(string userId, string role)
+        {
+            IdentityUser user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                TempData["Feedback"] = "Não foi possível encontrar o Utilizador.";
+                TempData["Type"] = "error";
+                return RedirectToAction("Index");
+            }
+
+            // Verificar se o role existe
+            if (_context.Roles.Where(r => r.Name.Equals(role)).Count() != 0)
+            {
+                try
+                {
+                    // Remove os roles atuais
+                    var userRoles = (await _userManager.GetRolesAsync(user)).ToList();
+                    await _userManager.RemoveFromRolesAsync(user, userRoles);
+
+                    // Adiciona o novo role
+                    await _userManager.AddToRoleAsync(user, role);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Erro ao alterar os roles de um Utilizador. Message: {e.Message}");
+
+                    TempData["Feedback"] = "Erro ao alterar o Papel.";
+                    TempData["Type"] = "error";
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                TempData["Feedback"] = "Este Papel não existe.";
+                TempData["Type"] = "error";
+                return RedirectToAction("Index");
+            }
+
+            TempData["Feedback"] = "Papel alterado com sucesso.";
+            TempData["Type"] = "success";
+            return RedirectToAction("Index");
+        } 
         #endregion
 
         #region Confirmar Email
