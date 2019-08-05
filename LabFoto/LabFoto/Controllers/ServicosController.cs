@@ -144,7 +144,9 @@ namespace LabFoto.Controllers
             // Recolher os serviços por página do cookie
             int servPP = CookieAPI.GetAsInt32(Request, "ServicosPerPage") ?? _serPP;
 
-            var servicos = _context.Servicos.Include(s => s.Requerente)
+            var servicos = _context.Servicos
+                .Include(s => s.Requerente)
+                .Include(s => s.Galerias)
                 .Include(s => s.Servicos_Tipos).ThenInclude(st => st.Tipo)
                 .Include(s => s.Servicos_ServicosSolicitados).ThenInclude(sss => sss.ServicoSolicitado)
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)
@@ -248,7 +250,9 @@ namespace LabFoto.Controllers
                 servicos = servicos.OrderByDescending(s => s.DataDeCriacao);
             }
 
-            servicos = servicos.Include(s => s.Requerente)
+            servicos = servicos
+                .Include(s => s.Requerente)
+                .Include(s => s.Galerias)
                 .Include(s => s.Servicos_Tipos).ThenInclude(st => st.Tipo)
                 .Include(s => s.Servicos_ServicosSolicitados).ThenInclude(sss => sss.ServicoSolicitado)
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)

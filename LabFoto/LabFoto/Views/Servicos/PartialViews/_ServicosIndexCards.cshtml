@@ -17,9 +17,10 @@
                         <span class="btn font-weight-bold collapsed pointer" data-toggle="collapse" data-target="#collapse_@servico.ID" aria-expanded="true" aria-controls="collapse_@servico.ID">
                             @Html.DisplayFor(modelItem => servico.Nome)
                         </span>
+
                         <a asp-controller="Servicos" asp-action="Details" asp-route-id="@servico.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
                         <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@servico.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                        <a class="btn btn-light float-right" asp-controller="Galerias" asp-action="Index" asp-route-serv="@servico.ID" data-toggle="tooltip" title="Ver Galerias"><i class="far fa-images"></i></a>
+                        <a class="btn btn-light float-right" asp-controller="Galerias" asp-action="Index" asp-route-serv="@servico.ID" data-toggle="tooltip" title="Ver Galerias (@servico.Galerias.Count())"><i class="far fa-images"></i></a>
                         @if (servico.DataEntrega != null)
                         {
                             <span class="btn font-weight-bold float-right">Entregue a @String.Format("{0:yyyy/MM/dd}", servico.DataEntrega)</span>
