@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LabFoto.Data;
 using LabFoto.Models.Tables;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace LabFoto.Controllers
 {
@@ -26,6 +27,14 @@ namespace LabFoto.Controllers
         // GET: Tipos
         public async Task<IActionResult> Index()
         {
+            // Fornecer feedback ao cliente caso este exista.
+            // Este feedback é fornecido na view a partir de uma notificação 'Noty'
+            if (TempData["Feedback"] != null)
+            {
+                ViewData["Feedback"] = TempData["Feedback"];
+                ViewData["Type"] = TempData["Type"] ?? "success";
+            }
+
             return View(await _context.Tipos.ToListAsync());
         }
 
@@ -33,11 +42,11 @@ namespace LabFoto.Controllers
         // POST: Tipos/IndexFilter
         public async Task<IActionResult> IndexFilter(string Nome)
         {
-            var tipos = _context.Tipos.Select(t=>t);
+            var tipos = _context.Tipos.Select(t => t);
 
             if (!String.IsNullOrEmpty(Nome))
             {
-                tipos = tipos.Where(t=>t.Nome.Contains(Nome));
+                tipos = tipos.Where(t => t.Nome.Contains(Nome));
             }
 
             return PartialView("PartialViews/_IndexCards", await tipos.ToListAsync());
@@ -89,6 +98,7 @@ namespace LabFoto.Controllers
 
             if (ModelState.IsValid)
             {
+                tipo.Deletable = true;
                 _context.Add(tipo);
                 await _context.SaveChangesAsync();
                 return Json(new { success = true });
@@ -154,6 +164,39 @@ namespace LabFoto.Controllers
         }
 
         #endregion Edit
+
+        #region Delete
+        [HttpPost]
+        public async Task<IActionResult> Delete(int? id) {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tipo = await _context.Tipos.FindAsync(id);
+            if (tipo == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Remove(tipo);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return Json(new { success = false });
+            }
+            // Feeback ao utilizador - Vai ser redirecionado para o Index
+            TempData["Feedback"] = "Tipo eliminado com sucesso.";
+            TempData["Type"] = "success";
+
+            return Json(new { success = true });
+        }
+
+        #endregion Delete
 
         #region AuxMethods
 

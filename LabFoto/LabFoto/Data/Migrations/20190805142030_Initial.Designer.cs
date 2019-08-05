@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190805125031_Initial")]
+    [Migration("20190805142030_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -615,6 +615,8 @@ namespace LabFoto.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Deletable");
+
                     b.Property<string>("Nome")
                         .IsRequired();
 
@@ -626,26 +628,31 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = 1,
+                            Deletable = false,
                             Nome = "Luz Visível"
                         },
                         new
                         {
                             ID = 2,
+                            Deletable = false,
                             Nome = "Luz U.V"
                         },
                         new
                         {
                             ID = 3,
+                            Deletable = false,
                             Nome = "Rasante"
                         },
                         new
                         {
                             ID = 4,
+                            Deletable = false,
                             Nome = "Infra-red"
                         },
                         new
                         {
                             ID = 5,
+                            Deletable = false,
                             Nome = "Luz Trasmitida"
                         });
                 });
@@ -916,6 +923,8 @@ namespace LabFoto.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Deletable");
+
                     b.Property<string>("Nome")
                         .IsRequired();
 
@@ -927,21 +936,25 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = 1,
+                            Deletable = false,
                             Nome = "Académico"
                         },
                         new
                         {
                             ID = 2,
+                            Deletable = false,
                             Nome = "Investigação"
                         },
                         new
                         {
                             ID = 3,
+                            Deletable = false,
                             Nome = "Serviço Exterior"
                         },
                         new
                         {
                             ID = 4,
+                            Deletable = false,
                             Nome = "Pessoal"
                         });
                 });
@@ -972,15 +985,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1a887569-241b-4813-a89b-56dca4b81b71",
-                            ConcurrencyStamp = "c4f8656b-df86-4abf-bb8d-90d7f19882b5",
+                            Id = "d6beecb2-c877-4cc8-8c22-ac46640f889e",
+                            ConcurrencyStamp = "c35144a1-3c49-448d-b2e8-bfb0dddd3a80",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "334877f5-3816-4533-8d22-5e0eab4fa13f",
-                            ConcurrencyStamp = "61b4b4b1-f341-4225-9fc5-1041ae9b95ae",
+                            Id = "ad2381ab-30be-4b53-8dc3-6a362c49f1e8",
+                            ConcurrencyStamp = "9e0a51f5-a9c6-4b35-9b80-c77f271ad72b",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });

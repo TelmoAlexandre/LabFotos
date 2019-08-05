@@ -14,6 +14,8 @@ namespace LabFoto.Models.Tables
         [Required(ErrorMessage = "É necessário preencher o nome.")]
         public string Nome { get; set; }
 
+        public bool Deletable { get; set; }
+
         //Ligacao 1-N com os TiposServico_PedidosServico
         public virtual ICollection<Servico_Tipo> Tipos_Servicos { get; set; }
     }

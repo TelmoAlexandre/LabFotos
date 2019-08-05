@@ -253,22 +253,26 @@ namespace LabFoto.Data
                 new Tipo
                 {
                     ID = 1,
-                    Nome = "Académico"
+                    Nome = "Académico",
+                    Deletable = false
                 },
                 new Tipo
                 {
                     ID = 2,
-                    Nome = "Investigação"
+                    Nome = "Investigação",
+                    Deletable = false
                 },
                 new Tipo
                 {
                     ID = 3,
-                    Nome = "Serviço Exterior"
+                    Nome = "Serviço Exterior",
+                    Deletable = false
                 },
                 new Tipo
                 {
                     ID = 4,
-                    Nome = "Pessoal"
+                    Nome = "Pessoal",
+                    Deletable = false
                 }
             );
 
@@ -324,27 +328,32 @@ namespace LabFoto.Data
                 new ServicoSolicitado
                 {
                     ID = 1,
-                    Nome = "Luz Visível"
+                    Nome = "Luz Visível",
+                    Deletable = false
                 },
                 new ServicoSolicitado
                 {
                     ID = 2,
-                    Nome = "Luz U.V"
+                    Nome = "Luz U.V",
+                    Deletable = false
                 },
                 new ServicoSolicitado
                 {
                     ID = 3,
-                    Nome = "Rasante"
+                    Nome = "Rasante",
+                    Deletable = false
                 },
                 new ServicoSolicitado
                 {
                     ID = 4,
-                    Nome = "Infra-red"
+                    Nome = "Infra-red",
+                    Deletable = false
                 },
                 new ServicoSolicitado
                 {
                     ID = 5,
-                    Nome = "Luz Trasmitida"
+                    Nome = "Luz Trasmitida",
+                    Deletable = false
                 }
             );
 

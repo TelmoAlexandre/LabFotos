@@ -337,7 +337,7 @@ createMetadado = () => {
 
 showEditIndex = (tipoId, controllerName) => {
 
-    $(`#indexDetails_${tipoId} .ui.button`).addClass('loading'); // Mostra loading no butão editar
+    $(`#indexDetails_${tipoId} .ui.button.btnEdit`).addClass('loading'); // Mostra loading no butão editar
 
     // Pede o form. Em caso de sucesso, corre a função
     $(`#indexEdit_${tipoId}`).load(siteUrl + `/${controllerName}/Edit/${tipoId}`, function () {

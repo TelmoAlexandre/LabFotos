@@ -115,7 +115,8 @@ namespace LabFoto.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: false)
+                    Nome = table.Column<string>(nullable: false),
+                    Deletable = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -128,7 +129,8 @@ namespace LabFoto.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: false)
+                    Nome = table.Column<string>(nullable: false),
+                    Deletable = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -430,8 +432,8 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "334877f5-3816-4533-8d22-5e0eab4fa13f", "61b4b4b1-f341-4225-9fc5-1041ae9b95ae", "Lab", "LAB" },
-                    { "1a887569-241b-4813-a89b-56dca4b81b71", "c4f8656b-df86-4abf-bb8d-90d7f19882b5", "Admin", "ADMIN" }
+                    { "ad2381ab-30be-4b53-8dc3-6a362c49f1e8", "9e0a51f5-a9c6-4b35-9b80-c77f271ad72b", "Lab", "LAB" },
+                    { "d6beecb2-c877-4cc8-8c22-ac46640f889e", "c35144a1-3c49-448d-b2e8-bfb0dddd3a80", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -482,25 +484,25 @@ namespace LabFoto.Migrations
 
             migrationBuilder.InsertData(
                 table: "ServicosSolicitados",
-                columns: new[] { "ID", "Nome" },
+                columns: new[] { "ID", "Deletable", "Nome" },
                 values: new object[,]
                 {
-                    { 1, "Luz Visível" },
-                    { 2, "Luz U.V" },
-                    { 4, "Infra-red" },
-                    { 5, "Luz Trasmitida" },
-                    { 3, "Rasante" }
+                    { 1, false, "Luz Visível" },
+                    { 2, false, "Luz U.V" },
+                    { 4, false, "Infra-red" },
+                    { 5, false, "Luz Trasmitida" },
+                    { 3, false, "Rasante" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Tipos",
-                columns: new[] { "ID", "Nome" },
+                columns: new[] { "ID", "Deletable", "Nome" },
                 values: new object[,]
                 {
-                    { 1, "Académico" },
-                    { 2, "Investigação" },
-                    { 3, "Serviço Exterior" },
-                    { 4, "Pessoal" }
+                    { 1, false, "Académico" },
+                    { 2, false, "Investigação" },
+                    { 3, false, "Serviço Exterior" },
+                    { 4, false, "Pessoal" }
                 });
 
             migrationBuilder.InsertData(

@@ -24,7 +24,15 @@ namespace LabFoto.Controllers
         #region Index
         // GET: ServicosSolicitados
         public async Task<IActionResult> Index()
-        {
+        {           
+            // Fornecer feedback ao cliente caso este exista.
+            // Este feedback é fornecido na view a partir de uma notificação 'Noty'
+            if (TempData["Feedback"] != null)
+            {
+                ViewData["Feedback"] = TempData["Feedback"];
+                ViewData["Type"] = TempData["Type"] ?? "success";
+            }
+
             return View(await _context.ServicosSolicitados.ToListAsync());
         }
 
@@ -88,6 +96,7 @@ namespace LabFoto.Controllers
 
             if (ModelState.IsValid)
             {
+                servicoSolicitado.Deletable = true;
                 _context.Add(servicoSolicitado);
                 await _context.SaveChangesAsync();
                 return Json(new { success = true });
@@ -150,6 +159,40 @@ namespace LabFoto.Controllers
         }
 
         #endregion Edit
+
+        #region Delete
+        [HttpPost]
+        public async Task<IActionResult> Delete(int? id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var servicosSolicitado = await _context.ServicosSolicitados.FindAsync(id);
+            if (servicosSolicitado == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Remove(servicosSolicitado);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return Json(new { success = false });
+            }
+            // Feeback ao utilizador - Vai ser redirecionado para o Index
+            TempData["Feedback"] = "Serviço Solicitado eliminado com sucesso.";
+            TempData["Type"] = "success";
+
+            return Json(new { success = true });
+        }
+
+        #endregion Delete
 
         #region AuxMethods
 

@@ -24,7 +24,15 @@ namespace LabFoto.Controllers
 
         // GET: Metadados
         public async Task<IActionResult> Index()
-        {
+        {            
+            // Fornecer feedback ao cliente caso este exista.
+            // Este feedback é fornecido na view a partir de uma notificação 'Noty'
+            if (TempData["Feedback"] != null)
+            {
+                ViewData["Feedback"] = TempData["Feedback"];
+                ViewData["Type"] = TempData["Type"] ?? "success";
+            }
+
             return View(await _context.Metadados.ToListAsync());
         }
 
@@ -138,34 +146,40 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_Edit", metadado);
         }
 
-        // GET: Metadados/Delete/5
+        #region Delete
+        [HttpPost]
         public async Task<IActionResult> Delete(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var metadado = await _context.Metadados
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var metadado = await _context.Metadados.FindAsync(id);
             if (metadado == null)
             {
                 return NotFound();
             }
 
-            return View(metadado);
+            try
+            {
+                _context.Remove(metadado);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return Json(new { success = false });
+            }
+            // Feeback ao utilizador - Vai ser redirecionado para o Index
+            TempData["Feedback"] = "Metadado eliminado com sucesso.";
+            TempData["Type"] = "success";
+
+            return Json(new { success = true });
         }
 
-        // POST: Metadados/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var metadado = await _context.Metadados.FindAsync(id);
-            _context.Metadados.Remove(metadado);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        #endregion Delete
+
 
         private bool MetadadoExists(int id)
         {

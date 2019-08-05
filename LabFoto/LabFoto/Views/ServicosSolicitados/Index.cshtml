@@ -36,25 +36,49 @@
     <partial name="PartialViews/_IndexCards" model="Model" />
 </div>
 
+<div class="ui basic mini modal" id="confirmationModal">
+    <div class="content">
+        <p>Tem a certeza que pretende eliminar o Serviço Solicitado?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
 @section scripts
 {
+
+    @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+    @if (ViewData["Feedback"] != null)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function ()
+            {
+                notifyUser('@ViewData["Type"]', '@ViewData["Feedback"]');
+            }, false);
+        </script>
+    }
+
     <script>
-        clearSearch = () =>
-        {
+        clearSearch = () => {
             $(`#inputNome`).val("");
             submitServSolicSearchForm();
         };
 
-        $(".input").on('keyup', function (e)
-        {
-            if (e.keyCode == 13)
-            {
+        $(".input").on('keyup', function (e) {
+            if (e.keyCode == 13) {
                 submitServSolicSearchForm();
             }
         });
 
-        function submitServSolicSearchForm()
-        {
+        function submitServSolicSearchForm() {
             $.ajax({
                 url: siteUrl + "/ServicosSolicitados/IndexFilter",
                 type: "POST",
@@ -63,15 +87,53 @@
                     "__RequestVerificationToken": $("#searchForm input[name='__RequestVerificationToken']").val(),
                     "X-Requested-With": "XMLHttpRequest"
                 },
-                success: function (resp)
-                {
+                success: function (resp) {
                     $("#indexServSolic").html(resp);
                 },
-                error: function ()
-                {
+                error: function () {
                     notifyUser('error', 'Erro ao pesquisar.');
                 }
             });
+            };
+            function confirmDelete(id) {
+            $("#confirmationModal").modal({
+                closable: false,
+                onDeny: function () {
+                    $("#confirmationModal").modal('hide');
+                },
+                onApprove: function ()
+                {
+                    $(`#indexDetails_${id} .ui.button.btnDelete`).addClass('loading');
+                    deleteServSolicit(id);
+                },
+                transition: 'scale'
+            }).modal('show');
         }
+
+        function deleteServSolicit(id)
+        {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Delete", "ServicosSolicitados")",
+                data: {
+                    "id": id
+                },
+                success: function (resp)
+                {
+                    if (resp.success)
+                    {
+                        window.location.href = "@Url.Action("Index", "ServicosSolicitados")";
+                    }
+                    else
+                    {
+                        notifyUser("error", "Erro ao eliminar o Serviço Solicitado.");
+                    }
+                },
+                error: function ()
+                {
+                    notifyUser("error", "Erro ao eliminar o Serviço Solicitado.");
+                }
+            });
+        };
     </script>
 }
