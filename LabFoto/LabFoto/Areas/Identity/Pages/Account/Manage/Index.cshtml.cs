@@ -40,8 +40,8 @@ namespace LabFoto.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "É necessário preencher o E-mail.")]
+            [EmailAddress(ErrorMessage = "E-mail não é válido.")]
             public string Email { get; set; }
         }
 
@@ -50,7 +50,7 @@ namespace LabFoto.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound("Não foi possível encontrar a conta de utilizador.");
             }
 
             var userName = await _userManager.GetUserNameAsync(user);
@@ -79,7 +79,7 @@ namespace LabFoto.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound("Erro ao encontrar a sua conta não foi encontrada.");
+                return NotFound("Erro, a sua conta não foi encontrada.");
             }
 
             var email = await _userManager.GetEmailAsync(user);

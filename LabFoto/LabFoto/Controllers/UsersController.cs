@@ -303,7 +303,7 @@ namespace LabFoto.Controllers
 
             try
             {
-                await _signInManager.SignInAsync(user, isPersistent: false);
+                await _signInManager.SignInAsync(user, isPersistent: true);
             }
             catch (Exception)
             {

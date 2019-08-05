@@ -39,7 +39,7 @@ namespace LabFoto.Areas.Identity.Pages.Account.Manage
             public string OldPassword { get; set; }
 
             [Required(ErrorMessage = "É necessário preencher a nova password")]
-            [StringLength(100, ErrorMessage = "A {0} tem de ser pelo menos {2} e no máximo {1} caracteres.", MinimumLength = 6)]
+            [StringLength(32, ErrorMessage = "A {0} tem de ser pelo menos {2} e no máximo {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Nova password")]
             public string NewPassword { get; set; }
@@ -55,7 +55,7 @@ namespace LabFoto.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound("Erro ao encontrar a contad de utilizador.");
             }
 
             var hasPassword = await _userManager.HasPasswordAsync(user);
@@ -77,7 +77,7 @@ namespace LabFoto.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound("Erro ao encontrar a contad de utilizador.");
             }
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
@@ -91,8 +91,8 @@ namespace LabFoto.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            _logger.LogInformation("Utilizador alterou a sua password com sucesso.");
+            StatusMessage = "A sua password foi alterada.";
 
             return RedirectToPage();
         }
