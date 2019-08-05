@@ -271,7 +271,7 @@ namespace LabFoto.Controllers
                 PageNum = search.Page
             };
 
-            return PartialView("PartialViews/_ServicosIndexCards", response);
+            return PartialView("PartialViews/_IndexCards", response);
         }
 
         #endregion Index
@@ -331,7 +331,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
             ViewData["details"] = false;
-            return PartialView("PartialViews/_DetailsPartial", servicos);
+            return PartialView("PartialViews/_Details", servicos);
         }
 
         #endregion Details

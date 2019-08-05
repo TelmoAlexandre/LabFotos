@@ -95,7 +95,7 @@ namespace LabFoto.Controllers
             // Todos os serviços numa SelectList
             SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome");
 
-            return PartialView("PartialViews/_ServicosDropdownPartialView", servicos);
+            return PartialView("PartialViews/_ServicosDropdown", servicos);
         }
 
         public async Task<IActionResult> InitialGaleria(string servicoId)
@@ -138,7 +138,7 @@ namespace LabFoto.Controllers
                 PageNum = 1
             };
 
-            return PartialView("PartialViews/_GaleriasIndexCardsPartialView", response);
+            return PartialView("PartialViews/_IndexCards", response);
         }
 
         [HttpPost]
@@ -297,7 +297,7 @@ namespace LabFoto.Controllers
                 PageNum = search.Page
             };
 
-            return PartialView("PartialViews/_GaleriasIndexCardsPartialView", response);
+            return PartialView("PartialViews/_IndexCards", response);
         }
         #endregion
 
@@ -358,7 +358,7 @@ namespace LabFoto.Controllers
                 Index = 0
             };
             
-            return PartialView("PartialViews/_ListPhotosPartialView", response);
+            return PartialView("PartialViews/_ListPhotos", response);
         }
         #endregion
 
@@ -504,7 +504,7 @@ namespace LabFoto.Controllers
                     Index = index
                 };
 
-                return PartialView("PartialViews/_ListPhotosPartialView", response);
+                return PartialView("PartialViews/_ListPhotos", response);
             }
             catch (Exception)
             {
