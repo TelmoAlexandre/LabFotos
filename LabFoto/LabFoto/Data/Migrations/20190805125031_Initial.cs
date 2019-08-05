@@ -254,7 +254,6 @@ namespace LabFoto.Migrations
                     HorasPosProducao = table.Column<float>(nullable: true),
                     DataEntrega = table.Column<DateTime>(nullable: true),
                     Total = table.Column<float>(nullable: true),
-                    Hide = table.Column<bool>(nullable: false),
                     RequerenteFK = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -431,8 +430,8 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1a14d288-1404-4bdf-a708-8fea41868445", "f854c75b-4555-498d-8165-2348450a253e", "Lab", "LAB" },
-                    { "40871048-b6b9-46b8-9a83-1c9f612ecd4e", "7f233e33-626e-4827-8d92-81721ec453ac", "Admin", "ADMIN" }
+                    { "334877f5-3816-4533-8d22-5e0eab4fa13f", "61b4b4b1-f341-4225-9fc5-1041ae9b95ae", "Lab", "LAB" },
+                    { "1a887569-241b-4813-a89b-56dca4b81b71", "c4f8656b-df86-4abf-bb8d-90d7f19882b5", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -506,17 +505,17 @@ namespace LabFoto.Migrations
 
             migrationBuilder.InsertData(
                 table: "Servicos",
-                columns: new[] { "ID", "DataDeCriacao", "DataEntrega", "Hide", "HorasEstudio", "HorasPosProducao", "IdentificacaoObra", "Nome", "Observacoes", "RequerenteFK", "Total" },
+                columns: new[] { "ID", "DataDeCriacao", "DataEntrega", "HorasEstudio", "HorasPosProducao", "IdentificacaoObra", "Nome", "Observacoes", "RequerenteFK", "Total" },
                 values: new object[,]
                 {
-                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2018, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 6, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 2f, 8f, "Tira larga, de tecido ou de madeira, que se dispõe transversalmente como ornato na parte superior de uma cortina.", "Sanefa", "Sanefa degradada na parte superior", "a0f118c8-8e40-4433-a695-e5ca01788331", 40f },
-                    { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", new DateTime(2019, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 4f, 10f, "Vasos/Jarrões a parecem integrados em retábulos,tronos, mesas de altar em várias igrejas em Tomar.", "Vaso talha prata dourada", "", "a0f118c8-8e40-4433-a695-e5ca01788331", 45f },
-                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2017, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2017, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 20f, 43f, "Seis cadeiras em madeira de cerejeira com acabamento em verniz", "Conjunto de Cadeiras", "", "a0f118c8-8e40-4433-a695-e5ca01788331", 125f },
-                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", new DateTime(2019, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 17f, "Plantação de árvores na escola.", "Dia da árvore", "Presença do presidente nas plantações.", "56d513fa-cedd-40d9-bd58-12a7ee3f129c", 65f },
-                    { "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298", new DateTime(2018, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 6f, 2f, "Um cavalo queimado no matadouro", "Estátua do Cavalo queimado", "", "56d513fa-cedd-40d9-bd58-12a7ee3f129c", 0f },
-                    { "916d75a4-c12e-40c4-bf29-7ec1e31696ac", new DateTime(2018, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 3f, 4f, "Festa tradicional da aldeia de Azinhaga", "Festa do Bodo", "Muito bom", "86dafe89-cc9c-4308-ace8-b3ed1f54a346", 0f },
-                    { "aca4875a-721e-4cfc-827d-d48c7050b543", new DateTime(2019, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 0f, 0f, "Fotos da tabanca do Maltez", "Feira do Cavalo, Golegã", "Grande festa, aprovado", "d6e3fca1-c766-4333-8211-f63431b30181", 0f },
-                    { "b399e9c7-957e-4e85-9474-bad2cf8032c4", new DateTime(2019, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, 4f, 2f, "Exposição na galeria de Sintra", "Exposição de Arte contemporânea", "", "916d75a4-c12e-40c4-bf29-7ec1e31696ac", 0f }
+                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2018, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 6, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), 2f, 8f, "Tira larga, de tecido ou de madeira, que se dispõe transversalmente como ornato na parte superior de uma cortina.", "Sanefa", "Sanefa degradada na parte superior", "a0f118c8-8e40-4433-a695-e5ca01788331", 40f },
+                    { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", new DateTime(2019, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 4f, 10f, "Vasos/Jarrões a parecem integrados em retábulos,tronos, mesas de altar em várias igrejas em Tomar.", "Vaso talha prata dourada", "", "a0f118c8-8e40-4433-a695-e5ca01788331", 45f },
+                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2017, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2017, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 20f, 43f, "Seis cadeiras em madeira de cerejeira com acabamento em verniz", "Conjunto de Cadeiras", "", "a0f118c8-8e40-4433-a695-e5ca01788331", 125f },
+                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", new DateTime(2019, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2019, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 6f, 17f, "Plantação de árvores na escola.", "Dia da árvore", "Presença do presidente nas plantações.", "56d513fa-cedd-40d9-bd58-12a7ee3f129c", 65f },
+                    { "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298", new DateTime(2018, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2018, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 6f, 2f, "Um cavalo queimado no matadouro", "Estátua do Cavalo queimado", "", "56d513fa-cedd-40d9-bd58-12a7ee3f129c", 0f },
+                    { "916d75a4-c12e-40c4-bf29-7ec1e31696ac", new DateTime(2018, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 3f, 4f, "Festa tradicional da aldeia de Azinhaga", "Festa do Bodo", "Muito bom", "86dafe89-cc9c-4308-ace8-b3ed1f54a346", 0f },
+                    { "aca4875a-721e-4cfc-827d-d48c7050b543", new DateTime(2019, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 0f, 0f, "Fotos da tabanca do Maltez", "Feira do Cavalo, Golegã", "Grande festa, aprovado", "d6e3fca1-c766-4333-8211-f63431b30181", 0f },
+                    { "b399e9c7-957e-4e85-9474-bad2cf8032c4", new DateTime(2019, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 4f, 2f, "Exposição na galeria de Sintra", "Exposição de Arte contemporânea", "", "916d75a4-c12e-40c4-bf29-7ec1e31696ac", 0f }
                 });
 
             migrationBuilder.InsertData(

@@ -111,7 +111,7 @@ namespace LabFoto.Controllers
             {
                 _context.Add(ContaOnedrive);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(InitAccount), new { Code, id = ContaOnedrive.ID });
+                return RedirectToAction("InitAccount", new { Code, id = ContaOnedrive.ID });
             }
             return View(new ContaOnedriveCreateViewModel
             {
@@ -147,9 +147,10 @@ namespace LabFoto.Controllers
                 conta.RefreshToken = refresh_token;
                 conta.TokenDate = DateTime.Now;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 success = false;
+                _logger.LogError($"Erro ao obter token da conta. Message: {e.Message}");
                 // Feeback ao utilizador - Vai ser redirecionado para o Index
                 TempData["Feedback"] = "Ocorreu obter o token da conta.";
                 TempData["Type"] = "error";
@@ -183,9 +184,10 @@ namespace LabFoto.Controllers
                     conta.Quota_Used = quota_Used;
 
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     success = false;
+                    _logger.LogError($"Erro ao obter informações da conta. Message: {e.Message}");
                     // Feeback ao utilizador - Vai ser redirecionado para o Index
                     TempData["Feedback"] = "Ocorreu um erro ao obter informações da conta.";
                     TempData["Type"] = "error";
@@ -203,9 +205,10 @@ namespace LabFoto.Controllers
                     _context.ContasOnedrive.Update(conta);
                     await _context.SaveChangesAsync();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     success = false;
+                    _logger.LogError($"Erro ao criar a conta. Message: {e.Message}");
                     // Feeback ao utilizador - Vai ser redirecionado para o Index
                     TempData["Feedback"] = "Ocorreu um erro ao criar a conta.";
                     TempData["Type"] = "error";
@@ -226,7 +229,7 @@ namespace LabFoto.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
         #endregion
 
@@ -272,7 +275,7 @@ namespace LabFoto.Controllers
                 // Feeback ao utilizador - Vai ser redirecionado para o Index
                 TempData["Feedback"] = "Não foi possível editar a conta.";
                 TempData["Type"] = "error";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
 
             if (ModelState.IsValid)
@@ -299,7 +302,7 @@ namespace LabFoto.Controllers
                 // Feeback ao utilizador - Vai ser redirecionado para o Index
                 TempData["Feedback"] = "Conta editada com sucesso.";
                 TempData["Type"] = "success";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             return View(contaOnedrive);
         }
@@ -309,24 +312,25 @@ namespace LabFoto.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            ContaOnedrive contaOnedrive = new ContaOnedrive();
+            ContaOnedrive contaOnedrive = null;
             try
             {
                 contaOnedrive = await _context.ContasOnedrive.Include(c => c.Fotografias).Where(c => c.ID == id).FirstOrDefaultAsync();
             }
             catch (Exception e)
             {
-                _logger.LogInformation("Erro ao encontrar a conta Onedrive. Erro:" + e.Message);
+                _logger.LogError("Erro ao encontrar a conta Onedrive. Erro:" + e.Message);
                 return Json(new { success = false });
             }
 
-            if (contaOnedrive.Fotografias.Count() == 0)
+            // Apenas deixar apagar a conta caso não existam fotografias na conta
+            if (contaOnedrive != null && contaOnedrive.Fotografias.Count() == 0)
             {
                 try
                 {
                     _context.Remove(contaOnedrive);
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation("Conta Onedrive removido.");
+                    _logger.LogInformation("Conta Onedrive removida.");
                 }
                 catch (Exception e)
                 {

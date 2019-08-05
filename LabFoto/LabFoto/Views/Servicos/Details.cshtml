@@ -10,6 +10,22 @@
 
 <div class="ui modal superMini fluidCorners" id="modalDetailsRequerente"></div>
 
+<div class="ui basic mini modal" id="confirmationDeleteModal">
+    <div class="content">
+        <p>Tem a certeza que pretende eliminar o serviço?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
 @section scripts
 {
     @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
@@ -22,4 +38,55 @@
             }, false);
         </script>
     }
+    <script>
+
+        function confirmDeleteServico(id){
+            $("#confirmationDeleteModal").modal({
+                closable: false,
+                onDeny: function () {
+                    $("#confirmationDeleteModal").modal('hide');
+                },
+                onApprove: function ()
+                {
+                    deleteServico(id);
+                },
+                transition: 'scale'
+            }).modal('show');
+        }
+
+        function deleteServico(id)
+        {
+            $.ajax({
+                url: "@Url.Action("Delete","Servicos")",
+                type: "POST",
+                data: {
+                    "id": id,
+                    "__RequestVerificationToken": $(`#heading_${id} input[name='__RequestVerificationToken']`).val(),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                success: function (resp)
+                {
+                    if (resp.success)
+                    {
+                        window.location.href = "@Url.Action("Index", "Servicos")";
+                    }
+                    else
+                    {
+                        if (resp.hasGalerias)
+                        {
+                            notifyUser("error", "O serviço não pode ser eliminado porque tem galerias associadas.");
+                        }
+                        else
+                        {
+                            notifyUser("error", "Erro ao eliminar o serviço.");
+                        }
+                    }
+                },
+                error: function ()
+                {
+                    notifyUser("error", "Erro ao eliminar o serviço.");
+                }
+            });
+        }
+    </script>
 }

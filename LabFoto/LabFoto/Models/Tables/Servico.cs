@@ -41,8 +41,6 @@ namespace LabFoto.Models.Tables
 
         public float? Total { get; set; }
 
-        public bool Hide { get; set; }
-
         // Ligacao 1 para N com TiposServicos_PedidosServico
         [Display(Name = "Tipo de serviço")]
         public virtual ICollection<Servico_Tipo> Servicos_Tipos { get; set; }

@@ -117,7 +117,10 @@ else
             if ($(`#heading_${servicoId}`).length == 0) {
                 $(`#${divId}`).html($(`#loadingServico`));
                 $(`#loadingServico`).removeAttr('hidden');
-                $(`#${divId}`).load(siteUrl + `/Servicos/DetailsAjax/${servicoId}`);
+                $(`#${divId}`).load(siteUrl + `/Servicos/DetailsAjax/${servicoId}`, function ()
+                {
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
             }
 
         };

@@ -11,7 +11,8 @@
             {
                 if (ViewData["details"].Equals(true))
                 {
-                    <span value="Delete" onclick="showConfirmationDialog('ServicosDetailsDelete')" class="btn btn-light float-right pointer" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></span>
+                    <span value="Delete" onclick="confirmDeleteServico('@Model.ID')" class="btn btn-light float-right pointer" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></span>
+                    @Html.AntiForgeryToken()
                 }
                 else
                 {
@@ -19,7 +20,7 @@
                 }
             }
             <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="Details/@Model.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-            <a class="btn btn-light float-right" asp-controller="Galerias" asp-action="Index" asp-route-serv="@Model.ID" data-toggle="tooltip" title="Ver Galerias"><i class="far fa-images"></i></a>
+            <a class="btn btn-light float-right" asp-controller="Galerias" asp-action="Index" asp-route-serv="@Model.ID" data-toggle="tooltip" title="Ver Galerias (@Model.Galerias.Count())"><i class="far fa-images"></i></a>
         </h5>
     </div>
 

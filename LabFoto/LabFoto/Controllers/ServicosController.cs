@@ -11,6 +11,7 @@ using LabFoto.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using LabFoto.APIs;
+using Microsoft.Extensions.Logging;
 
 namespace LabFoto.Controllers
 {
@@ -20,11 +21,15 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly int _serPP = 10;
         private readonly IEmailAPI _email;
+        private readonly ILogger<ServicosController> _logger;
 
-        public ServicosController(ApplicationDbContext context, IEmailAPI email)
+        public ServicosController(ApplicationDbContext context, 
+            IEmailAPI email,
+            ILogger<ServicosController> logger)
         {
             _context = context;
             _email = email;
+            _logger = logger;
         }
 
         #region Ajax
@@ -184,7 +189,7 @@ namespace LabFoto.Controllers
             }
 
             // Query de todos os serviços
-            IQueryable<Servico> servicos = _context.Servicos.Where(s => s.Hide == false);
+            IQueryable<Servico> servicos = _context.Servicos;
 
             // Caso exista pesquisa por nome
             if (!String.IsNullOrEmpty(search.NomeSearch))
@@ -283,12 +288,13 @@ namespace LabFoto.Controllers
 
             var servicos = await _context.Servicos
                 .Include(s => s.Requerente)
+                .Include(s => s.Galerias)
                 .Include(s => s.Servicos_Tipos).ThenInclude(st => st.Tipo)
                 .Include(s => s.Servicos_ServicosSolicitados).ThenInclude(sss => sss.ServicoSolicitado)
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)
                 .FirstOrDefaultAsync(m => m.ID.Equals(id));
 
-            if (servicos == null || servicos.Hide)
+            if (servicos == null)
             {
                 return NotFound();
             }
@@ -314,12 +320,13 @@ namespace LabFoto.Controllers
 
             var servicos = await _context.Servicos
                 .Include(s => s.Requerente)
+                .Include(s => s.Galerias)
                 .Include(s => s.Servicos_Tipos).ThenInclude(st => st.Tipo)
                 .Include(s => s.Servicos_ServicosSolicitados).ThenInclude(sss => sss.ServicoSolicitado)
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)
                 .FirstOrDefaultAsync(m => m.ID.Equals(id));
 
-            if (servicos == null || servicos.Hide)
+            if (servicos == null)
             {
                 return NotFound();
             }
@@ -360,7 +367,6 @@ namespace LabFoto.Controllers
                 if (ModelState.IsValid)
                 {
                     servico.DataDeCriacao = DateTime.Now;
-                    servico.Hide = false;
 
                     #region Tratamento-Muitos-Para-Muitos
 
@@ -481,7 +487,7 @@ namespace LabFoto.Controllers
             }
 
             var servico = await _context.Servicos.Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync();
-            if (servico == null || servico.Hide)
+            if (servico == null)
             {
                 return NotFound();
             }
@@ -529,7 +535,7 @@ namespace LabFoto.Controllers
         {
             string datasExecucao = form["DataExecucao"];
 
-            if (String.IsNullOrEmpty(id) || servico.Hide)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -688,17 +694,41 @@ namespace LabFoto.Controllers
         // POST: Servicos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
-            // Esconde o serviço
-            Servico servico = await _context.Servicos.FindAsync(id);
-            servico.Hide = true;
-            _context.Servicos.Update(servico);
-            await _context.SaveChangesAsync();
+            Servico servico = null;
+            try
+            {
+                servico = await _context.Servicos.Include(s => s.Galerias).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao encontrar serviço. Message: {e.Message}");
+                return Json(new { success = false });
+            }
 
+            try
+            {
+                // Apenas deixa apagar o serviço caso este não tenha galerias associadas
+                if (servico != null && servico.Galerias.Count() == 0)
+                {
+                    _context.Servicos.Remove(servico);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return Json(new { success = false, hasGalerias = true });
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao eliminar o serviço. Message: {e.Message}");
+                return Json(new { success = false });
+            }
+            
             // Feeback ao utilizador - Vai ser redirecionado para o Index
             TempData["Feedback"] = "Serviço removido com sucesso.";
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
         }
 
         #endregion Delete
@@ -707,7 +737,7 @@ namespace LabFoto.Controllers
 
         private bool ServicosExists(string id)
         {
-            return _context.Servicos.Where(s => s.Hide == false).Any(e => e.ID.Equals(id));
+            return _context.Servicos.Any(e => e.ID.Equals(id));
         }
 
         private bool ExistsInStringArray(string[] array, string str)
