@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LabFoto.Data;
 using LabFoto.Models.Tables;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace LabFoto.Controllers
 {
@@ -15,16 +16,18 @@ namespace LabFoto.Controllers
     public class ServicosSolicitadosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<TiposController> _logger;
 
-        public ServicosSolicitadosController(ApplicationDbContext context)
+        public ServicosSolicitadosController(ApplicationDbContext context, ILogger<TiposController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         #region Index
         // GET: ServicosSolicitados
         public async Task<IActionResult> Index()
-        {           
+        {
             // Fornecer feedback ao cliente caso este exista.
             // Este feedback é fornecido na view a partir de uma notificação 'Noty'
             if (TempData["Feedback"] != null)
@@ -162,6 +165,7 @@ namespace LabFoto.Controllers
 
         #region Delete
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id)
         {
 
@@ -181,8 +185,9 @@ namespace LabFoto.Controllers
                 _context.Remove(servicosSolicitado);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _logger.LogError($"Erro ao eliminar Tipo. Erro: {e.Message}");
                 return Json(new { success = false });
             }
             // Feeback ao utilizador - Vai ser redirecionado para o Index

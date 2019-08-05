@@ -335,7 +335,7 @@ namespace LabFoto.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogInformation("Erro ao eliminar conta Onedrive. Erro:" + e.Message);
+                    _logger.LogError($"Erro ao eliminar conta Onedrive. Erro: {e.Message}");
                     return Json(new { success = false });
                 }
 

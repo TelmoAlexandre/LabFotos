@@ -24,7 +24,7 @@ namespace LabFoto.Controllers
 
         // GET: Metadados
         public async Task<IActionResult> Index()
-        {            
+        {
             // Fornecer feedback ao cliente caso este exista.
             // Este feedback é fornecido na view a partir de uma notificação 'Noty'
             if (TempData["Feedback"] != null)
@@ -83,7 +83,7 @@ namespace LabFoto.Controllers
         {
             if (String.IsNullOrEmpty(metadado.Nome))
             {
-                ModelState.AddModelError("Nome","É necessário preencher o nome.");
+                ModelState.AddModelError("Nome", "É necessário preencher o nome.");
             }
 
             if (ModelState.IsValid)
@@ -148,6 +148,7 @@ namespace LabFoto.Controllers
 
         #region Delete
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id)
         {
 

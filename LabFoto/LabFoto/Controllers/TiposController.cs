@@ -16,10 +16,12 @@ namespace LabFoto.Controllers
     public class TiposController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<TiposController> _logger;
 
-        public TiposController(ApplicationDbContext context)
+        public TiposController(ApplicationDbContext context, ILogger<TiposController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         #region Index
@@ -167,6 +169,7 @@ namespace LabFoto.Controllers
 
         #region Delete
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id) {
 
             if (id == null)
@@ -185,8 +188,9 @@ namespace LabFoto.Controllers
                 _context.Remove(tipo);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _logger.LogError($"Erro ao eliminar Tipo. Erro: {e.Message}");
                 return Json(new { success = false });
             }
             // Feeback ao utilizador - Vai ser redirecionado para o Index
