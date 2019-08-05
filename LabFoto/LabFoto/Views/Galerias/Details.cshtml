@@ -436,7 +436,13 @@
                     }
                     else
                     {
-                        notifyUser('error', resp.error);
+                        notifyUser('error', resp.details);
+                        
+                        // Reactivar os botões novamente
+                        $("#btnFinishUpload").click();
+                        $("#btnUploadSubmit")
+                            .attr("disabled", false)
+                            .removeClass("disabled loading");
                     }
                 },
                 error: function ()

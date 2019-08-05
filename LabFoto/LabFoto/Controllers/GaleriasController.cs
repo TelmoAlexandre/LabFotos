@@ -356,8 +356,15 @@ namespace LabFoto.Controllers
         #endregion
 
         #region UploadFiles
+        /// <summary>
+        /// Upload da fotografia via servidor. Este metodo já não é utilizado pois 
+        /// o upload é feito no javascript.
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="galeriaId"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> UploadFiles(List<IFormFile> files, string galeriaId)
+        private async Task<IActionResult> UploadFiles(List<IFormFile> files, string galeriaId)
         {
             // Irá conter todos os caminhos para os ficheiros temporários
             List<string> filePaths = new List<string>();
@@ -427,10 +434,10 @@ namespace LabFoto.Controllers
         public async Task<IActionResult> UploadSession(long size, string name)
         {
             #region Encontrar conta e refrescar token
-            ContaOnedrive conta = _onedrive.GetAccountToUpload(size);
+            ContaOnedrive conta = await _onedrive.GetAccountToUploadAsync(size);
             if (conta == null)
             {
-                return Json(new { success = false, details = "Não foi possível encontrar uma conta para alojar o ficheiro." });
+                return Json(new { success = false, details = "Já não existe contas com espaço sufeciente." });
             }
             #endregion
 
@@ -438,7 +445,7 @@ namespace LabFoto.Controllers
             string uploadUrl = await _onedrive.GetUploadSessionAsync(conta, name);
             if (uploadUrl == "Error")
             {
-                return Json(new { success = false, error = "Não foi possível criar sessão de upload." });
+                return Json(new { success = false, details = "Não foi possível criar sessão de upload." });
             }
             #endregion
 
@@ -451,6 +458,14 @@ namespace LabFoto.Controllers
             #region Adicionar foto à Bd
             try
             {
+                // Certificar que a conta existe
+                ContaOnedrive conta = await _context.ContasOnedrive.FindAsync(contaId);
+                if(conta == null)
+                {
+                    return Json(new { success = false });
+                }
+
+                // Criar e guardar a fotografia
                 Fotografia foto = new Fotografia
                 {
                     Nome = fileOnedriveName,
@@ -462,6 +477,9 @@ namespace LabFoto.Controllers
 
                 await _context.AddAsync(foto);
                 await _context.SaveChangesAsync();
+
+                // Atualizar a informação do espaço da conta
+                await _onedrive.UpdateDriveQuotaAsync(conta);
 
                 List<Fotografia> fotos = new List<Fotografia>();
                 fotos.Add(await _context.Fotografias.Include(f => f.ContaOnedrive).FirstOrDefaultAsync(f => f.ID == foto.ID));
@@ -477,6 +495,7 @@ namespace LabFoto.Controllers
                     Fotos = fotos,
                     Index = index
                 };
+
                 return PartialView("PartialViews/_ListPhotosPartialView", response);
             }
             catch (Exception)

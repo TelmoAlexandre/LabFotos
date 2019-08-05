@@ -44,7 +44,7 @@ function notifyUser(type, text)
         layout: 'bottomRight',
         theme: 'bootstrap-v4',
         text: text,
-        timeout: 8000,
+        timeout: 12000,
         progressBar: true
     }).show();
 }

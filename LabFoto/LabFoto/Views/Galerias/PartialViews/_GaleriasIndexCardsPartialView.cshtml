@@ -27,7 +27,15 @@ else
                                     cover = galeria.Fotografias.Where(f => f.ID == galeria.FotoCapa).FirstOrDefault() ?? cover;
                                 }
 
-                                <img src="@cover.Thumbnail_Medium" class="medium-thumbnails" />
+                                if (cover.Thumbnail_Medium != null)
+                                {
+                                    <img src="@cover.Thumbnail_Medium" class="medium-thumbnails" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/default.png" class="medium-thumbnails">
+                                }
+
                             }
                             else
                             {

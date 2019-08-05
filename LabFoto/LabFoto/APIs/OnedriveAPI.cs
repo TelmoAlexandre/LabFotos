@@ -1,6 +1,7 @@
 ﻿using LabFoto.Data;
 using LabFoto.Models;
 using LabFoto.Models.Tables;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
@@ -21,11 +22,12 @@ namespace LabFoto.APIs
         Task<JObject> GetInitialTokenAsync(string code);
         Task<JObject> GetDriveInfoAsync(string token);
         Task<UploadedPhotoModel> UploadFileAsync(string filePath, string fileName);
-        ContaOnedrive GetAccountToUpload(long fileSize);
+        Task<ContaOnedrive> GetAccountToUploadAsync(long fileSize);
         Task<string> GetUploadSessionAsync(ContaOnedrive conta, string fileName);
         string GetPermissionsUrl(int state = 0);
         Task<bool> DeleteFiles(List<Fotografia> photos);
         void DeleteFilesFromServerDisk(List<string> paths);
+        Task<bool> UpdateDriveQuotaAsync(ContaOnedrive conta);
     } 
     #endregion
 
@@ -36,14 +38,20 @@ namespace LabFoto.APIs
         private readonly HttpClient _client;
         private readonly string _redirectUrl = "";
         private readonly AppSettings _appSettings;
+        private readonly ILogger<OnedriveAPI> _logger;
         private readonly IEmailAPI _emailAPI;
 
-        public OnedriveAPI(ApplicationDbContext context, IHttpClientFactory clientFactory, IOptions<AppSettings> settings, IEmailAPI emailAPI)
+        public OnedriveAPI(ApplicationDbContext context, 
+            IHttpClientFactory clientFactory, 
+            IOptions<AppSettings> settings, 
+            ILogger<OnedriveAPI> logger,
+            IEmailAPI emailAPI)
         {
             _context = context;
             _clientFactory = clientFactory;
             _appSettings = settings.Value;
             _emailAPI = emailAPI;
+            _logger = logger;
 
             // Este cliente vai ser utilizado para envio e recepção pedidos Http
             _client = _clientFactory.CreateClient();
@@ -321,6 +329,55 @@ namespace LabFoto.APIs
 
             return null;
         }
+
+        /// <summary>
+        /// Atualiza as informações sobre o espaço ocupado na conta Onedrive.
+        /// </summary>
+        /// <param name="conta">Conta Onedrive.</param>
+        /// <returns></returns>
+        public async Task<bool> UpdateDriveQuotaAsync(ContaOnedrive conta)
+        {
+            if (IsTokenValid(conta, 3400))
+            {
+                try
+                {
+                    // Faz o pedido HTTP.GET para pedir as informações da Onedrive
+                    // Para que estas possam ser associadas ao objeto 'conta'
+                    JObject driveInfo = await GetDriveInfoAsync(conta.AccessToken);
+
+                    // Transformar o array num array de objetos
+                    JObject[] values = driveInfo["value"].Select(s => (JObject)s).ToArray();
+
+                    JObject quota = (JObject)values[0]["quota"];
+                    string quota_Total = (string)quota["total"];
+                    string quota_Used = (string)quota["used"];
+                    string quota_Remaining = (string)quota["remaining"];
+
+                    // Atualizar a conta com as informações recolhidas da API da Onedrive
+                    conta.Quota_Remaining = quota_Remaining;
+                    conta.Quota_Total = quota_Total;
+                    conta.Quota_Used = quota_Used;
+                }
+                catch (Exception e)
+                {
+                    _emailAPI.NotifyError("Erro ao interpretar o JSON da resposta.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
+                    return false;
+                }
+
+                try
+                {
+                    _context.Update(conta);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    _emailAPI.NotifyError("Erro ao dar update à conta Onedrive localmente.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
+                }
+            }
+
+            return false;
+        }
         #endregion
 
         #region Permissions
@@ -366,7 +423,7 @@ namespace LabFoto.APIs
 
                 #region Encontrar conta e refrescar token
                 // Encontrar a conta onedrive a ser utilizada para o upload
-                conta = GetAccountToUpload(totalLength);
+                conta = await GetAccountToUploadAsync(totalLength);
                 // Se a conta retornar null, poderá ser porque já não existem contas com espaço
                 if (conta == null)
                 {
@@ -434,7 +491,7 @@ namespace LabFoto.APIs
                         if (!String.IsNullOrEmpty(itemId) && !String.IsNullOrEmpty(itemName))
                         {
                             #region Atualizar o espaço da conta
-                            await UpdateDriveInfoAsync(conta);
+                            await UpdateDriveQuotaAsync(conta);
                             #endregion
 
                             return new UploadedPhotoModel
@@ -463,19 +520,39 @@ namespace LabFoto.APIs
         /// </summary>
         /// <param name="fileSize">Tamanho do ficheiro utilizado para upload</param>
         /// <returns>Conta Onedrive</returns>
-        public ContaOnedrive GetAccountToUpload(long fileSize)
+        public async Task<ContaOnedrive> GetAccountToUploadAsync(long fileSize)
         {
-            try
-            {
-                // Seleciona um conta com espaço sufeciente para o triplo do tamanho do ficheiro, como salvaguarda
-                return _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).FirstOrDefault();
-            }
-            catch (Exception e)
-            {
-                _emailAPI.NotifyError("Erro ao tentar encontrar um conta com espaço livre.", "OnedriveAPI", "GetAccountToUpload", e.Message);
-            }
+            ContaOnedrive conta = null;
 
-            return null;
+            while (true)
+            {
+                // Caso não existam contas com espaço
+                if (_context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).Count() == 0)
+                {
+                    _logger.LogInformation("Não existem contas Onedrive com espaço.");
+                    return null;
+                }
+
+                // Tenta encontrar conta com espaço
+                try
+                {
+                    conta = _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).FirstOrDefault();
+
+                    // Confirmar que a conta tem mesmo o espaço suficiente
+                    if (await UpdateDriveQuotaAsync(conta))
+                    {
+                        if (Int64.Parse(conta.Quota_Remaining) > fileSize)
+                        {
+                            return conta;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogInformation($"Erro ao encontrar conta com espaço para upload. Info: {e.Message}");
+                    return null;
+                }
+            }
         }
 
         /// <summary>
@@ -667,57 +744,6 @@ namespace LabFoto.APIs
                     _emailAPI.NotifyError("Erro ao tentar apagar um ficheiro temporario do disco.", "OnedriveAPI", "DeleteFiles", e.Message);
                 }
             }
-        }
-        #endregion
-
-        #region AuxMethods
-        /// <summary>
-        /// Atualiza as informações sobre o espaço ocupado na conta Onedrive.
-        /// </summary>
-        /// <param name="conta">Conta Onedrive.</param>
-        /// <returns></returns>
-        private async Task<bool> UpdateDriveInfoAsync(ContaOnedrive conta)
-        {
-            if (IsTokenValid(conta, 3400))
-            {
-                try
-                {
-                    // Faz o pedido HTTP.GET para pedir as informações da Onedrive
-                    // Para que estas possam ser associadas ao objeto 'conta'
-                    JObject driveInfo = await GetDriveInfoAsync(conta.AccessToken);
-
-                    // Transformar o array num array de objetos
-                    JObject[] values = driveInfo["value"].Select(s => (JObject)s).ToArray();
-
-                    JObject quota = (JObject)values[0]["quota"];
-                    string quota_Total = (string)quota["total"];
-                    string quota_Used = (string)quota["used"];
-                    string quota_Remaining = (string)quota["remaining"];
-
-                    // Atualizar a conta com as informações recolhidas da API da Onedrive
-                    conta.Quota_Remaining = quota_Remaining;
-                    conta.Quota_Total = quota_Total;
-                    conta.Quota_Used = quota_Used;
-                }
-                catch (Exception e)
-                {
-                    _emailAPI.NotifyError("Erro ao interpretar o JSON da resposta.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
-                    return false;
-                }
-
-                try
-                {
-                    _context.Update(conta);
-                    await _context.SaveChangesAsync();
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    _emailAPI.NotifyError("Erro ao dar update à conta Onedrive localmente.", "OnedriveAPI", "UpdateDriveInfoAsync", e.Message);
-                }
-            }
-
-            return false;
         }
         #endregion
     }
