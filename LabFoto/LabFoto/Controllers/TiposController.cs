@@ -185,7 +185,7 @@ namespace LabFoto.Controllers
                 _context.Remove(tipo);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Json(new { success = false });
             }

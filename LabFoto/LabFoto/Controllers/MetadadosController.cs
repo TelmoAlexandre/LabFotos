@@ -167,7 +167,7 @@ namespace LabFoto.Controllers
                 _context.Remove(metadado);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Json(new { success = false });
             }
