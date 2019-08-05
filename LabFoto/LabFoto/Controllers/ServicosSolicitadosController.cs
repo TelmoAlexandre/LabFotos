@@ -187,7 +187,7 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao eliminar Tipo. Erro: {e.Message}");
+                _logger.LogError($"Erro ao eliminar Serviço Solicitado. Erro: {e.Message}");
                 return Json(new { success = false });
             }
             // Feeback ao utilizador - Vai ser redirecionado para o Index

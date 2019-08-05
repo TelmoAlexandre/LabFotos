@@ -9,6 +9,7 @@ using LabFoto.Data;
 using LabFoto.Models.Tables;
 using LabFoto.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace LabFoto.Controllers
 {
@@ -16,11 +17,15 @@ namespace LabFoto.Controllers
     public class MetadadosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<TiposController> _logger;
 
-        public MetadadosController(ApplicationDbContext context)
+        public MetadadosController(ApplicationDbContext context, ILogger<TiposController> logger)
         {
             _context = context;
+            _logger = logger;
         }
+
+        #region Index
 
         // GET: Metadados
         public async Task<IActionResult> Index()
@@ -50,6 +55,9 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_IndexCards", await metadados.ToListAsync());
         }
 
+        #endregion Index
+
+        #region Details
         // GET: Metadados/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -67,6 +75,10 @@ namespace LabFoto.Controllers
 
             return PartialView("PartialViews/_Details", metadado);
         }
+
+        #endregion Details
+
+        #region Create
 
         // GET: Metadados/Create
         public IActionResult Create(string id)
@@ -95,6 +107,10 @@ namespace LabFoto.Controllers
 
             return PartialView("PartialViews/_CreateForm", metadado);
         }
+
+        #endregion Create
+
+        #region Edit
 
         // GET: Metadados/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -146,6 +162,8 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_Edit", metadado);
         }
 
+        #endregion Edit
+
         #region Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -168,8 +186,9 @@ namespace LabFoto.Controllers
                 _context.Remove(metadado);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _logger.LogError($"Erro ao eliminar Metadado. Erro: {e.Message}");
                 return Json(new { success = false });
             }
             // Feeback ao utilizador - Vai ser redirecionado para o Index
@@ -181,10 +200,13 @@ namespace LabFoto.Controllers
 
         #endregion Delete
 
+        #region AuxMethods
 
         private bool MetadadoExists(int id)
         {
             return _context.Metadados.Any(e => e.ID == id);
         }
+
+        #endregion AuxMethods
     }
 }
