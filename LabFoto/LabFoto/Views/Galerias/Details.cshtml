@@ -16,6 +16,9 @@
                 <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="Details/@Model.ID" class="ml-2 ui basic mini button">
                     <i class="edit icon"></i> Editar
                 </a>
+                <span class="ml-2 ui basic mini button" onclick="confirmationModal('deleteGaleria', deleteGaleria, '@Model.ID')">
+                    <i class="trash alternate outline icon"></i> Eliminar
+                </span>
                 <dl class="row mb-0">
                     <dt class="col-sm-4">
                         @Html.DisplayNameFor(model => model.Nome)
@@ -85,6 +88,7 @@
 </div>
 
 <div class="ui basic mini modal" id="confirmationModal">
+    @Html.AntiForgeryToken()
     <div class="content">
         <p></p>
     </div>
@@ -196,6 +200,7 @@
                     data: {
                         "id": '@Model.ID',
                         'fotoId': id,
+                        "__RequestVerificationToken": $(`#confirmationModal input[name='__RequestVerificationToken']`).val(),
                         "X-Requested-With": "XMLHttpRequest"
                     },
                     success: function (resp)
@@ -250,6 +255,7 @@
             {
                 case 'delete': txt = "Tem a certeza que pretende eliminar esta(s) fotografia(s)?"; break;
                 case 'cover': txt = "Tem a certeza que pretende definir esta fotografia como capa?"; break;
+                case 'deleteGaleria': txt = "Tem a certeza que pretende eliminar esta galeria?"; break;
                 default: txt = "Tem a certeza que pretende eliminar esta(s) fotografia(s)?"; break;
             }
 
@@ -265,6 +271,41 @@
                 },
                 transition: 'scale'
             }).modal('show');
+        }
+
+        function deleteGaleria(id)
+        {
+            $.ajax({
+                url: "@Url.Action("Delete","Galerias")",
+                type: "POST",
+                data: {
+                    "id": id,
+                    "__RequestVerificationToken": $(`#confirmationModal input[name='__RequestVerificationToken']`).val(),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                success: function (resp)
+                {
+                    if (resp.success)
+                    {
+                        window.location.href = "@Url.Action("Index", "Galerias")";
+                    }
+                    else
+                    {
+                        if (resp.hasFotos)
+                        {
+                            notifyUser("error", "A galeria não pode ser eliminada porque tem fotografias.");
+                        }
+                        else
+                        {
+                            notifyUser("error", "Erro ao eliminar a galeria.");
+                        }
+                    }
+                },
+                error: function ()
+                {
+                    notifyUser("error", "Erro ao eliminar a galeria.");
+                }
+            });
         }
 
         function deletePhotos(id)
@@ -286,6 +327,7 @@
                     url: siteUrl + "/Galerias/DeleteFiles",
                     data: {
                         "photosIds": toSend,
+                        "__RequestVerificationToken": $(`#confirmationModal input[name='__RequestVerificationToken']`).val(),
                         "X-Requested-With": "XMLHttpRequest"
                     },
                     success: function (resp)
@@ -517,7 +559,9 @@
                     "galeriaId": "@Model.ID",
                     "contaId": contaId,
                     "fileOnedriveId": resp.id,
-                    "fileOnedriveName": resp.name
+                    "fileOnedriveName": resp.name,
+                    "__RequestVerificationToken": $(`#confirmationModal input[name='__RequestVerificationToken']`).val(),
+                    "X-Requested-With": "XMLHttpRequest"
                 },
                 success: function (resp) {
 

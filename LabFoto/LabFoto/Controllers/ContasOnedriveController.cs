@@ -310,6 +310,7 @@ namespace LabFoto.Controllers
 
         #region Delete
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             ContaOnedrive contaOnedrive = null;

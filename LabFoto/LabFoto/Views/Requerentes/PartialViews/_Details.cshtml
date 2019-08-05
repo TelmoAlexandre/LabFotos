@@ -37,7 +37,7 @@
     <div class="ui icon buttons float-right mb-2">
         @if (!inServicos)
         {
-            <a class="ui button basic" id="btnEdit_@Model.ID" onclick="loadRequerenteEditForm(`divEdit_@Model.ID`, '@Model.ID', '@detailsLink','@inServicos')" data-toggle="tooltip" title="Editar"><i class="edit outline icon"></i></a>
+            <a class="ui button basic" id="btnEdit_@Model.ID" onclick="loadRequerenteEditForm(`divEdit_@Model.ID`, '@Model.ID', '@detailsLink')" data-toggle="tooltip" title="Editar"><i class="edit outline icon"></i></a>
         }
         @if (detailsLink)
         {

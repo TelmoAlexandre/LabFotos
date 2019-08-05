@@ -98,7 +98,9 @@
                 type: "POST",
                 url: "@Url.Action("Delete", "ContasOnedrive")",
                 data: {
-                    "id": id
+                    "id": id,
+                    "__RequestVerificationToken": $(`#searchForm input[name='__RequestVerificationToken']`).val(),
+                    "X-Requested-With": "XMLHttpRequest"
                 },
                 success: function (resp)
                 {
