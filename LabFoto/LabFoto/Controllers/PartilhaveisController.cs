@@ -45,6 +45,12 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
+
+            if (User.Identity.IsAuthenticated)
+            {
+                return View("Details", partilhavel);
+            }
+
             if (partilhavel.Validade != null)
             {
                 if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
