@@ -19,12 +19,6 @@ namespace LabFoto.Models.Tables
         public string Thumbnail_Large { get; set; }
         public string ItemId { get; set; }
 
-        //Chave Forasteira para Fotografia de origem
-        [ForeignKey("Fotografia")]
-        [Display(Name = "Fotografia de Origem")]
-        public int FotografiaOrigemFK { get; set; }
-        public Fotografia FotografiaOrigem { get; set; }
-
         //Chave Forasteira para ContaOnedrive
         [ForeignKey("ContaOnedrive")]
         [Display(Name = "Conta da Onedrive")]
@@ -35,5 +29,8 @@ namespace LabFoto.Models.Tables
         [ForeignKey("Galeria")]
         public string GaleriaFK { get; set; }
         public Galeria Galeria { get; set; }
+
+        [Display(Name = "Partilháveis")]
+        public virtual ICollection<Partilhavel_Fotografia> Partilhaveis_Fotografias { get; set; }
     }
 }

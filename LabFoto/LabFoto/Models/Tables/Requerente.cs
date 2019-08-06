@@ -9,7 +9,6 @@ namespace LabFoto.Models.Tables
 {
     public class Requerente
     {
-
         [Key]
         public string ID { get; set; }
 
@@ -27,5 +26,7 @@ namespace LabFoto.Models.Tables
         public string Responsavel { get; set; }
 
         public virtual ICollection<Servico> Servicos { get; set; }
+
+        public virtual ICollection<Partilhavel> Partilhaveis { get; set; }
     }
 }

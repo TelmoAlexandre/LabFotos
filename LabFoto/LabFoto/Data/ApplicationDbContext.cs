@@ -57,15 +57,27 @@ namespace LabFoto.Data
 
             // n-m ---> Galeria_Metadado
             modelBuilder.Entity<Galeria_Metadado>()
-                .HasKey(sc => new { sc.MetadadoFK, sc.GaleriaFK });
+                .HasKey(gm => new { gm.MetadadoFK, gm.GaleriaFK });
             modelBuilder.Entity<Galeria_Metadado>()
-                .HasOne(st => st.Galeria)
-                .WithMany(s => s.Galerias_Metadados)
-                .HasForeignKey(st => st.GaleriaFK);
+                .HasOne(gm => gm.Galeria)
+                .WithMany(g => g.Galerias_Metadados)
+                .HasForeignKey(gm => gm.GaleriaFK);
             modelBuilder.Entity<Galeria_Metadado>()
-                .HasOne(st => st.Metadado)
-                .WithMany(s => s.Galerias_Metadados)
-                .HasForeignKey(st => st.MetadadoFK);
+                .HasOne(gm => gm.Metadado)
+                .WithMany(m => m.Galerias_Metadados)
+                .HasForeignKey(gm => gm.MetadadoFK);
+
+            // n-m ---> Partilhavel_Fotografia
+            modelBuilder.Entity<Partilhavel_Fotografia>()
+                .HasKey(pf => new { pf.FotografiaFK, pf.PartilhavelFK });
+            modelBuilder.Entity<Partilhavel_Fotografia>()
+                .HasOne(pf => pf.Partilhavel)
+                .WithMany(p => p.Partilha_Fotografias)
+                .HasForeignKey(pf => pf.PartilhavelFK);
+            modelBuilder.Entity<Partilhavel_Fotografia>()
+                .HasOne(pf => pf.Fotografia)
+                .WithMany(f => f.Partilhaveis_Fotografias)
+                .HasForeignKey(pf => pf.FotografiaFK);
 
             modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole
@@ -810,5 +822,9 @@ namespace LabFoto.Data
         public DbSet<ContaOnedrive> ContasOnedrive { get; set; }
 
         public DbSet<Galeria_Metadado> Galerias_Metadados { get; set; }
+
+        public DbSet<Partilhavel> Partilhaveis { get; set; }
+
+        public DbSet<Partilhavel_Fotografia> Partilhaveis_Fotografias { get; set; }
     }
 }
