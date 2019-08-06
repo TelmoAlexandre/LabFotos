@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LabFoto.Data;
 using LabFoto.Models.Tables;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LabFoto.Controllers
 {
+    [Authorize]
     public class PartilhaveisController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,31 +21,32 @@ namespace LabFoto.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         // GET: Partilhaveis
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string id)
         {
-            var applicationDbContext = _context.Partilhaveis.Include(p => p.Galeria).Include(p => p.Requerente);
-            return View(await applicationDbContext.ToListAsync());
+            if (!String.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var partilhavel = await _context.Partilhaveis.FindAsync(id);
+            if(partilhavel == null)
+            {
+                return NotFound();
+            }
+            
+            return View("PasswordForm", id);
         }
 
-        // GET: Partilhaveis/Details/5
-        public async Task<IActionResult> Details(string id)
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        // GET: Partilhaveis
+        public async Task<IActionResult> Index(string id, string passw)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var partilhavel = await _context.Partilhaveis
-                .Include(p => p.Galeria)
-                .Include(p => p.Requerente)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (partilhavel == null)
-            {
-                return NotFound();
-            }
-
-            return View(partilhavel);
+            var applicationDbContext = _context.Partilhaveis.Include(p => p.Galeria).Include(p => p.Requerente);
+            return View("ListPhotos");
         }
 
         // GET: Partilhaveis/Create
