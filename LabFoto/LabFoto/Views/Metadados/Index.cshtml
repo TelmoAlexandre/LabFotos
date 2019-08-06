@@ -87,6 +87,7 @@
                 },
                 success: function (resp) {
                     $("#indexMetadados").html(resp);
+                    $('[data-toggle="tooltip"]').tooltip();
                 },
                 error: function () {
                     notifyUser('error', 'Erro ao pesquisar.');
