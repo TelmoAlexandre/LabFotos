@@ -25,17 +25,20 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
         private readonly IEmailAPI _email;
+        private readonly AppSettings _appSettings;
         private readonly ILogger<GaleriasController> _logger;
         private readonly int _galPP = 8;
 
         public GaleriasController(ApplicationDbContext context, 
             IOnedriveAPI onedrive, 
             IEmailAPI email,
+            IOptions<AppSettings> settings,
             ILogger<GaleriasController> logger)
         {
             _context = context;
             _onedrive = onedrive;
             _email = email;
+            _appSettings = settings.Value;
             _logger = logger;
         }
 
@@ -334,31 +337,34 @@ namespace LabFoto.Controllers
 
         public async Task<IActionResult> Thumbnails(string id, int page = 0)
         {
-            var photosPerRequest = 6;
             if (String.IsNullOrEmpty(id))
             {
-                return NotFound();
+                return Json(new { success = false, error = "O ID da galeria não é válido." });
             }
 
-            int skipNum = ((int)page - 1) * photosPerRequest;
+            var photosPerRequest = _appSettings.PhotosPerRequest;
+            int skipNum = (page - 1) * photosPerRequest;
 
-            List<Fotografia> fotos = null;
-                fotos = await _context.Fotografias.Where(f => f.GaleriaFK.Equals(id))
-                .Include(f => f.ContaOnedrive).Skip(skipNum).Take(photosPerRequest).ToListAsync();
+            List<Fotografia> fotos = await _context.Fotografias
+                .Include(f => f.ContaOnedrive)
+                .Where(f => f.GaleriaFK.Equals(id))
+                .Skip(skipNum).Take(photosPerRequest)
+                .ToListAsync();
 
             // Caso já não exista mais fotos
-            if (fotos == null || fotos.Count() == 0)
+            if (fotos.Count() == 0)
             {
                 return Json(new { noMorePhotos = true});
             }
 
+            // Refrescar thumbnails
             await _onedrive.RefreshPhotoUrlsAsync(fotos);
+
             var response = new ThumbnailsViewModel
             {
                 Fotos = fotos,
                 Index = 0
             };
-            
             return PartialView("PartialViews/_ListPhotos", response);
         }
         #endregion

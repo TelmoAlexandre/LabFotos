@@ -1,11 +1,9 @@
-﻿@model LabFoto.Models.Tables.Partilhavel
+﻿@model IEnumerable<LabFoto.Models.Tables.Fotografia>
 
 @{
     int i = 0; // Usando para definir index nas fotos. Para saber qualquer a foto clicada (no PhotoSwipe)
-    foreach (var pf in Model.Partilhaveis_Fotografias)
+    foreach (var foto in Model)
     {
-        var foto = pf.Fotografia;
-
         <div class="card remove-card-border" id="photoCard_@foto.ID">
             <div class="content p-1">
                 <div class="header" style="font-size:0.8rem;">

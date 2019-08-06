@@ -14,5 +14,6 @@ namespace LabFoto.Models
         public string EmailSmtp { get; set; }
         public string[] AdminEmails { get; set; }
         public int UploadFragmentSizeInMB { get; set; }
+        public int PhotosPerRequest { get; set; }
     }
 }

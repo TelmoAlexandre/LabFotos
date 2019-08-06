@@ -379,11 +379,18 @@
                 success: function (resp) {
                     if (resp.noMorePhotos == null) // Enquanto houver mais fotografias a serem carregadas
                     {
-                        $("#photosContainer").append(resp);
-                        activatePopups();
-                        // Pedir mais fotografias ao servidor
-                        page++;
-                        getPhotos(page);
+                        if (resp.success == false)
+                        {
+                            notifyUser("error", resp.error);
+                        }
+                        else
+                        {
+                            $("#photosContainer").append(resp);
+                            activatePopups();
+                            // Pedir mais fotografias ao servidor
+                            page++;
+                            getPhotos(page);
+                        }
                     }
                     else
                     {

@@ -81,32 +81,54 @@
 @section scripts
 {
     <script>
-        $(document).ready(function () {
-            // Mostrar fotografias
-            getPhotos();
-        });
-        function getPhotos()
+        var placeHolder = `<div class="ui six doubling stackable mt-2" id="photosContainer"><div class="ui placeholder tiny segment"><div class="ui icon header"><i class="images outline icon" style="height: auto;"></i>Não existem fotografias.</div></div></div>`;
+
+        $(document).ready(function ()
         {
-            $("#photosContainer").html(loader);
+            // Começar a pedir fotografias
+            getPhotos(1);
+
+            // Iniciar a galeria do PhotoSwipe
+            initPhotoSwipeFromDOM('.my-gallery');
+        });
+
+        function getPhotos(page)
+        {
+            $("#thumbnails").append(loader);
             $.ajax({
                 type: "POST",
                 url: siteUrl + "/Partilhaveis/Thumbnails",
                 data: {
                     "ID": "@Model.ID",
                     "Password": "@Model.Password",
+                    "Page": page,
                     "__RequestVerificationToken": $("input[name='__RequestVerificationToken']").val(),
                     "X-Requested-With": "XMLHttpRequest"
                 },
-                success: function (resp) {
-                    if (resp.success == false) {
-                        notifyUser("error", resp.error);
+                success: function (resp)
+                {
+                    if (resp.noMorePhotos == null) // Enquanto houver mais fotografias a serem carregadas
+                    {
+                        if (resp.success == false)
+                        {
+                            notifyUser("error", resp.error);
+                        }
+                        else
+                        {
+                            $("#photosContainer").append(resp);
+                            // Pedir mais fotografias ao servidor
+                            page++;
+                            getPhotos(page);
+                        }
                     }
                     else
                     {
-                        $("#photosContainer").html(resp);
-                        // Iniciar a galeria do PhotoSwipe
-                        initPhotoSwipeFromDOM('.my-gallery');
+                        if (isEmpty("#photosContainer")) // Caso não exitam fotografias
+                        {
+                            $("#my-gallery").html(placeHolder); // Mostra um placeholder
+                        }
                     }
+                    $("#loader").remove(); // Remove a barra de loading
                 },
                 error: function () {
                    $("#photosContainer").html(`
@@ -120,6 +142,12 @@
                 }
             });
         }
+
+        function isEmpty(node)
+        {
+            return ($(`${node}`).children().length === 0);
+        }
+
         function download(url)
         {
             var link = document.createElement("a");

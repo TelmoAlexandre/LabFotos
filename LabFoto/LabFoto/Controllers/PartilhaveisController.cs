@@ -10,6 +10,8 @@ using LabFoto.Models.Tables;
 using Microsoft.AspNetCore.Authorization;
 using LabFoto.Models.ViewModels;
 using LabFoto.APIs;
+using Microsoft.Extensions.Options;
+using LabFoto.Models;
 
 namespace LabFoto.Controllers
 {
@@ -18,11 +20,15 @@ namespace LabFoto.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
+        private readonly AppSettings _appSettings;
 
-        public PartilhaveisController(ApplicationDbContext context, IOnedriveAPI onedrive)
+        public PartilhaveisController(ApplicationDbContext context, 
+            IOnedriveAPI onedrive,
+            IOptions<AppSettings> appSettings)
         {
             _context = context;
             _onedrive = onedrive;
+            _appSettings = appSettings.Value;
         }
 
         [AllowAnonymous]
@@ -112,15 +118,18 @@ namespace LabFoto.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Thumbnails(string ID, string Password)
+        public async Task<IActionResult> Thumbnails(string ID, string Password, int Page = 0)
         {
             if (String.IsNullOrEmpty(ID) || String.IsNullOrEmpty(Password))
             {
                 return Json(new { success = false, error = "Não foi possível encontrar as fotografias." });
             }
 
+            var photosPerRequest = _appSettings.PhotosPerRequest;
+            int skipNum = (Page - 1) * photosPerRequest;
+
             var partilhavel = await _context.Partilhaveis
-                .Include(p => p.Partilhaveis_Fotografias).ThenInclude(pf => pf.Fotografia)
+                .Include(p => p.Partilhaveis_Fotografias).ThenInclude(pf => pf.Fotografia).ThenInclude(f => f.ContaOnedrive)
                 .Where(p => p.ID.Equals(ID))
                 .FirstOrDefaultAsync();
 
@@ -129,26 +138,28 @@ namespace LabFoto.Controllers
                 return Json(new { success = false, error = "Não foi possível encontrar as fotografias." });
             }
 
-            List<Fotografia> fotos = new List<Fotografia>();
-
-            foreach (var pf in partilhavel.Partilhaveis_Fotografias)
+            // Caso não existam fotos
+            if (partilhavel.Partilhaveis_Fotografias.Count() == 0)
             {
-                fotos.Add(pf.Fotografia);
+                return Json(new { noMorePhotos = true });
             }
 
-            // Caso não existam fotos
+            // Lista de fotografias do partilhavel
+            List<Fotografia> fotos = partilhavel.Partilhaveis_Fotografias
+                .Select(pf => pf.Fotografia)
+                .Skip(skipNum).Take(photosPerRequest)
+                .ToList();
+
+            // Caso já não exista mais fotos
             if (fotos.Count() == 0)
             {
-                return Json(new { success = false, error = "Não existem fotografias." });
+                return Json(new { noMorePhotos = true });
             }
 
-            fotos = _context.Fotografias.Include(f => f.ContaOnedrive).Where(f => fotos.Contains(f)).ToList();
-            
+            // Refrescar os thumbnails
             await _onedrive.RefreshPhotoUrlsAsync(fotos);
-
-
-
-           return PartialView("PartialViews/_ListPhotos", partilhavel);
+            
+           return PartialView("PartialViews/_ListPhotos", fotos);
         }
 
         // GET: Partilhaveis/Create
