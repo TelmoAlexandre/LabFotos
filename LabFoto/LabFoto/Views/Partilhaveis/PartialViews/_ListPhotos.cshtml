@@ -1,0 +1,40 @@
+﻿@model LabFoto.Models.Tables.Partilhavel
+
+@{
+    int i = 0; // Usando para definir index nas fotos. Para saber qualquer a foto clicada (no PhotoSwipe)
+    foreach (var pf in Model.Partilhaveis_Fotografias)
+    {
+        var foto = pf.Fotografia;
+
+        <div class="card remove-card-border" id="photoCard_@foto.ID">
+            <div class="content p-1">
+                <div class="header" style="font-size:0.8rem;">
+                    @foto.Nome
+                </div>
+            </div>
+            <div class="image">
+                <figure itemprop="associatedMedia" class="fluid m-0" itemscope>
+                    @{
+                        // Por defeito mostra como se tive-se vazio
+                        var large = "~/images/default.png";
+                        var medium = "~/images/default.png";
+
+                        // Caso as thumbnails existam, seram essas utilizadas
+                        if (foto.Thumbnail_Large != null) { large = foto.Thumbnail_Large; }
+                        if (foto.Thumbnail_Medium != null) { medium = foto.Thumbnail_Medium; }
+                    }
+                    <a href="@large" itemprop="contentUrl">
+                        <img src="@medium" class="small-thumbnails" itemprop="thumbnail" alt="Image description" style="height:150px !important;" data-index="@i" />
+                        <img class="hide" src="@large" />
+                    </a>
+                    <figcaption itemprop="caption description" hidden>@foto.Nome</figcaption>
+                </figure>
+            </div>
+            <div class="ui small buttons border-top">
+                <button class="ui basic button border border-top-0" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i>Guardar</button>
+            </div>
+        </div>
+
+        i++;
+    }
+}

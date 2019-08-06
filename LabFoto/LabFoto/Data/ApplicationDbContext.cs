@@ -72,7 +72,7 @@ namespace LabFoto.Data
                 .HasKey(pf => new { pf.FotografiaFK, pf.PartilhavelFK });
             modelBuilder.Entity<Partilhavel_Fotografia>()
                 .HasOne(pf => pf.Partilhavel)
-                .WithMany(p => p.Partilha_Fotografias)
+                .WithMany(p => p.Partilhaveis_Fotografias)
                 .HasForeignKey(pf => pf.PartilhavelFK);
             modelBuilder.Entity<Partilhavel_Fotografia>()
                 .HasOne(pf => pf.Fotografia)
@@ -521,7 +521,8 @@ namespace LabFoto.Data
             );
 
             modelBuilder.Entity<Servico_DataExecucao>().HasData(
-                new Servico_DataExecucao {
+                new Servico_DataExecucao
+                {
                     ServicoFK = servicosIDs[0],
                     DataExecucaoFK = 1
                 },
@@ -603,7 +604,8 @@ namespace LabFoto.Data
             );
 
             modelBuilder.Entity<Metadado>().HasData(
-                new Metadado {
+                new Metadado
+                {
                     ID = 1,
                     Nome = "Metadado1"
                 },
@@ -630,7 +632,7 @@ namespace LabFoto.Data
                     ID = servicosIDs[0],
                     Nome = "Galeria1",
                     ServicoFK = servicosIDs[5],
-                    DataDeCriacao = new DateTime(2019,06,21)
+                    DataDeCriacao = new DateTime(2019, 06, 21)
                 },
                 new Galeria
                 {
@@ -656,7 +658,8 @@ namespace LabFoto.Data
             );
 
             modelBuilder.Entity<Galeria_Metadado>().HasData(
-                new Galeria_Metadado {
+                new Galeria_Metadado
+                {
                     GaleriaFK = servicosIDs[0],
                     MetadadoFK = 1
                 },
@@ -688,7 +691,8 @@ namespace LabFoto.Data
             );
 
             modelBuilder.Entity<ContaOnedrive>().HasData(
-                new ContaOnedrive {
+                new ContaOnedrive
+                {
                     ID = 1,
                     Username = "aluno19089@ipt.pt",
                     Password = "test",
@@ -699,7 +703,7 @@ namespace LabFoto.Data
                     Quota_Total = "5497558138880",
                     Quota_Used = "97597600",
                     TokenDate = new DateTime(2019, 5, 29, 12, 0, 0)
-                }    
+                }
             );
 
             modelBuilder.Entity<Fotografia>().HasData(
@@ -793,6 +797,54 @@ namespace LabFoto.Data
                     Thumbnail_Medium = "https://westeurope1-mediap.svc.ms/transform/thumbnail?provider=spo&inputFormat=CR2&cs=MmRhNzQ4NGMtOWVlYS00OWEzLWIzMzctZjU5YTk3Zjc5ZTQ3fFNQTw&correlationId=d2214e00-d015-487b-bd7c-7a622e18b441&docid=https%3A%2F%2Fpolitecnicotomar%2Dmy%2Esharepoint%2Ecom%2F%5Fapi%2Fv2%2E0%2Fdrives%2Fb%210812%5FG3q10uofJYDjbiF50gxK5lECPtEqi3cKXzbQsT29%2DASFmlYSqg3p9xBheG7%2Fitems%2F0127OBJ5K52HLG54V7NRCYRQRMVFEUQF7J%3Ftempauth%3DeyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0%2EeyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTU5MTUxNTczIiwiZXhwIjoiMTU1OTE3MzE3MyIsImVuZHBvaW50dXJsIjoiQ1hTb25TMS9oQzVZNzBVK2pQODlwMHdGaTJnMW44MmlXTjI3VSswakZXaz0iLCJlbmRwb2ludHVybExlbmd0aCI6IjE2NyIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiWkRJeU1UUmxNREF0WkRBeE5TMDBPRGRpTFdKa04yTXROMkUyTWpKbE1UaGlORFF4IiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJzaWduaW5fc3RhdGUiOiJbXCJrbXNpXCJdIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1cG4iOiJhbHVubzE5MDg5QGlwdC5wdCIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0IiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzdmZmU5MDg5NDYzNEBsaXZlLmNvbSIsInNjcCI6Im15ZmlsZXMucmVhZCBhbGxmaWxlcy5yZWFkIG15ZmlsZXMud3JpdGUgYWxsZmlsZXMud3JpdGUiLCJ0dCI6IjIiLCJ1c2VQZXJzaXN0ZW50Q29va2llIjpudWxsfQ%2EK3l2bllKTFRmS0paWlEwUXpuT3dHMEZmQXFvU0xka01XdTRyVzZXbEswWT0%26version%3DPublished&width=176&height=176",
                     Thumbnail_Small = "https://westeurope1-mediap.svc.ms/transform/thumbnail?provider=spo&inputFormat=CR2&cs=MmRhNzQ4NGMtOWVlYS00OWEzLWIzMzctZjU5YTk3Zjc5ZTQ3fFNQTw&correlationId=d2214e00-d015-487b-bd7c-7a622e18b441&docid=https%3A%2F%2Fpolitecnicotomar%2Dmy%2Esharepoint%2Ecom%2F%5Fapi%2Fv2%2E0%2Fdrives%2Fb%210812%5FG3q10uofJYDjbiF50gxK5lECPtEqi3cKXzbQsT29%2DASFmlYSqg3p9xBheG7%2Fitems%2F0127OBJ5K52HLG54V7NRCYRQRMVFEUQF7J%3Ftempauth%3DeyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0%2EeyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTU5MTUxNTczIiwiZXhwIjoiMTU1OTE3MzE3MyIsImVuZHBvaW50dXJsIjoiQ1hTb25TMS9oQzVZNzBVK2pQODlwMHdGaTJnMW44MmlXTjI3VSswakZXaz0iLCJlbmRwb2ludHVybExlbmd0aCI6IjE2NyIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiWkRJeU1UUmxNREF0WkRBeE5TMDBPRGRpTFdKa04yTXROMkUyTWpKbE1UaGlORFF4IiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJzaWduaW5fc3RhdGUiOiJbXCJrbXNpXCJdIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1cG4iOiJhbHVubzE5MDg5QGlwdC5wdCIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0IiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzdmZmU5MDg5NDYzNEBsaXZlLmNvbSIsInNjcCI6Im15ZmlsZXMucmVhZCBhbGxmaWxlcy5yZWFkIG15ZmlsZXMud3JpdGUgYWxsZmlsZXMud3JpdGUiLCJ0dCI6IjIiLCJ1c2VQZXJzaXN0ZW50Q29va2llIjpudWxsfQ%2EK3l2bllKTFRmS0paWlEwUXpuT3dHMEZmQXFvU0xka01XdTRyVzZXbEswWT0%26version%3DPublished&width=96&height=96",
                     GaleriaFK = servicosIDs[0]
+                }
+            );
+            modelBuilder.Entity<Partilhavel>().HasData(
+                new Partilhavel()
+                {
+                    ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                    Nome = "Teste",
+                    Password = "123Qwe!",
+                    Validade = null,
+                    RequerenteFK = requerentesIDs[0],
+                    ServicoFK = servicosIDs[2]
+                }
+            );
+            modelBuilder.Entity<Partilhavel_Fotografia>().HasData(
+                new Partilhavel_Fotografia()
+                {
+                    PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                    FotografiaFK = 1
+                },
+                new Partilhavel_Fotografia()
+                {
+                    PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                    FotografiaFK = 2
+                },
+                new Partilhavel_Fotografia()
+                {
+                    PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                    FotografiaFK = 3
+                },
+                new Partilhavel_Fotografia()
+                {
+                    PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                    FotografiaFK = 4
+                },
+                new Partilhavel_Fotografia()
+                {
+                    PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                    FotografiaFK = 5
+                },
+                new Partilhavel_Fotografia()
+                {
+                    PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                    FotografiaFK = 6
+                },
+                new Partilhavel_Fotografia()
+                {
+                    PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                    FotografiaFK = 7
                 }
             );
         }

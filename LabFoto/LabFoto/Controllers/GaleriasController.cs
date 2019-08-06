@@ -343,7 +343,8 @@ namespace LabFoto.Controllers
             int skipNum = ((int)page - 1) * photosPerRequest;
 
             List<Fotografia> fotos = null;
-                fotos = await _context.Fotografias.Where(f => f.GaleriaFK.Equals(id)).Include(f => f.ContaOnedrive).Skip(skipNum).Take(photosPerRequest).ToListAsync();
+                fotos = await _context.Fotografias.Where(f => f.GaleriaFK.Equals(id))
+                .Include(f => f.ContaOnedrive).Skip(skipNum).Take(photosPerRequest).ToListAsync();
 
             // Caso já não exista mais fotos
             if (fotos == null || fotos.Count() == 0)

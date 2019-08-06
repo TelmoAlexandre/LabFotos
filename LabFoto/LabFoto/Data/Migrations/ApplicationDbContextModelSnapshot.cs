@@ -15,7 +15,7 @@ namespace LabFoto.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -399,23 +399,33 @@ namespace LabFoto.Migrations
                     b.Property<string>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("GaleriaFK");
-
                     b.Property<string>("Nome");
 
                     b.Property<string>("Password");
 
                     b.Property<string>("RequerenteFK");
 
-                    b.Property<DateTime>("Validade");
+                    b.Property<string>("ServicoFK");
+
+                    b.Property<DateTime?>("Validade");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("GaleriaFK");
-
                     b.HasIndex("RequerenteFK");
 
+                    b.HasIndex("ServicoFK");
+
                     b.ToTable("Partilhaveis");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                            Nome = "Teste",
+                            Password = "123Qwe!",
+                            RequerenteFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                            ServicoFK = "86dafe89-cc9c-4308-ace8-b3ed1f54a346"
+                        });
                 });
 
             modelBuilder.Entity("LabFoto.Models.Tables.Partilhavel_Fotografia", b =>
@@ -429,6 +439,43 @@ namespace LabFoto.Migrations
                     b.HasIndex("PartilhavelFK");
 
                     b.ToTable("Partilhaveis_Fotografias");
+
+                    b.HasData(
+                        new
+                        {
+                            FotografiaFK = 1,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 2,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 3,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 4,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 5,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 6,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 7,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        });
                 });
 
             modelBuilder.Entity("LabFoto.Models.Tables.Requerente", b =>
@@ -1007,15 +1054,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2ed7a475-44fd-44ff-8c86-e5e2b37b6e76",
-                            ConcurrencyStamp = "f4423d9b-1a2e-44a1-b666-d2144c720af3",
+                            Id = "7e49f22a-3376-4fe6-a39f-a1ddb826f03d",
+                            ConcurrencyStamp = "d2887046-bf22-4be1-a014-5bbacb227a05",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5599c454-4187-4ee8-af94-85a624e6d25e",
-                            ConcurrencyStamp = "63ee458c-5e7f-4c89-afad-9aead3e119e7",
+                            Id = "98f8aefc-ee21-48f2-9eed-e66b642a517f",
+                            ConcurrencyStamp = "3765e1e0-62aa-4be6-a3ec-c31d5b1265b1",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });
@@ -1196,13 +1243,13 @@ namespace LabFoto.Migrations
 
             modelBuilder.Entity("LabFoto.Models.Tables.Partilhavel", b =>
                 {
-                    b.HasOne("LabFoto.Models.Tables.Galeria", "Galeria")
-                        .WithMany("Partilhaveis")
-                        .HasForeignKey("GaleriaFK");
-
                     b.HasOne("LabFoto.Models.Tables.Requerente", "Requerente")
                         .WithMany("Partilhaveis")
                         .HasForeignKey("RequerenteFK");
+
+                    b.HasOne("LabFoto.Models.Tables.Servico", "Servico")
+                        .WithMany("Partilhaveis")
+                        .HasForeignKey("ServicoFK");
                 });
 
             modelBuilder.Entity("LabFoto.Models.Tables.Partilhavel_Fotografia", b =>
@@ -1213,7 +1260,7 @@ namespace LabFoto.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("LabFoto.Models.Tables.Partilhavel", "Partilhavel")
-                        .WithMany("Partilha_Fotografias")
+                        .WithMany("Partilhaveis_Fotografias")
                         .HasForeignKey("PartilhavelFK")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

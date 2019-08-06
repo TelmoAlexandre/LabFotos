@@ -54,6 +54,7 @@ namespace LabFoto.Models.Tables
         public virtual ICollection<Servico_DataExecucao> Servicos_DataExecucao { get; set; }
 
         public virtual ICollection<Galeria> Galerias { get; set; }
+        public virtual ICollection<Partilhavel> Partilhaveis { get; set; }
 
         //Chave Forasteira para Requerentes
         [ForeignKey("Requerente")]

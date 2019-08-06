@@ -11,22 +11,22 @@ namespace LabFoto.Models.Tables
     {
         public string ID { get; set; }
         public string Nome { get; set; }
-        public DateTime Validade { get; set; }
+        public DateTime? Validade { get; set; }
         public string Password { get; set; }
 
         // Relações
-        [ForeignKey("Galeria")]
-        [Display(Name = "Galeria")]
-        public string GaleriaFK { get; set; }
-        public Galeria Galeria { get; set; }
 
-        
         [ForeignKey("Requerente")]
         [Display(Name = "Requerente")]
         public string RequerenteFK { get; set; }
         public Requerente Requerente { get; set; }
 
+        [ForeignKey("Servico")]
+        [Display(Name = "Serviço")]
+        public string ServicoFK { get; set; }
+        public Servico Servico { get; set; }
+
         [Display(Name = "Fotografias")]
-        public virtual ICollection<Partilhavel_Fotografia> Partilha_Fotografias { get; set; }
+        public virtual ICollection<Partilhavel_Fotografia> Partilhaveis_Fotografias { get; set; }
     }
 }

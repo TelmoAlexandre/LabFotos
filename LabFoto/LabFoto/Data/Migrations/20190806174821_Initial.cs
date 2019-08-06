@@ -291,6 +291,34 @@ namespace LabFoto.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Partilhaveis",
+                columns: table => new
+                {
+                    ID = table.Column<string>(nullable: false),
+                    Nome = table.Column<string>(nullable: true),
+                    Validade = table.Column<DateTime>(nullable: true),
+                    Password = table.Column<string>(nullable: true),
+                    RequerenteFK = table.Column<string>(nullable: true),
+                    ServicoFK = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Partilhaveis", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Partilhaveis_Requerentes_RequerenteFK",
+                        column: x => x.RequerenteFK,
+                        principalTable: "Requerentes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Partilhaveis_Servicos_ServicoFK",
+                        column: x => x.ServicoFK,
+                        principalTable: "Servicos",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Servicos_DatasExecucao",
                 columns: table => new
                 {
@@ -420,34 +448,6 @@ namespace LabFoto.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Partilhaveis",
-                columns: table => new
-                {
-                    ID = table.Column<string>(nullable: false),
-                    Nome = table.Column<string>(nullable: true),
-                    Validade = table.Column<DateTime>(nullable: false),
-                    Password = table.Column<string>(nullable: true),
-                    GaleriaFK = table.Column<string>(nullable: true),
-                    RequerenteFK = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Partilhaveis", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Partilhaveis_Galerias_GaleriaFK",
-                        column: x => x.GaleriaFK,
-                        principalTable: "Galerias",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Partilhaveis_Requerentes_RequerenteFK",
-                        column: x => x.RequerenteFK,
-                        principalTable: "Requerentes",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Partilhaveis_Fotografias",
                 columns: table => new
                 {
@@ -476,8 +476,8 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5599c454-4187-4ee8-af94-85a624e6d25e", "63ee458c-5e7f-4c89-afad-9aead3e119e7", "Lab", "LAB" },
-                    { "2ed7a475-44fd-44ff-8c86-e5e2b37b6e76", "f4423d9b-1a2e-44a1-b666-d2144c720af3", "Admin", "ADMIN" }
+                    { "98f8aefc-ee21-48f2-9eed-e66b642a517f", "3765e1e0-62aa-4be6-a3ec-c31d5b1265b1", "Lab", "LAB" },
+                    { "7e49f22a-3376-4fe6-a39f-a1ddb826f03d", "d2887046-bf22-4be1-a014-5bbacb227a05", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -571,31 +571,36 @@ namespace LabFoto.Migrations
                 {
                     { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", new DateTime(2019, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria2", "a0f118c8-8e40-4433-a695-e5ca01788331" },
                     { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", new DateTime(2018, 2, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria3", "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2018, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria4", "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
-                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria1", "aca4875a-721e-4cfc-827d-d48c7050b543" }
+                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria1", "aca4875a-721e-4cfc-827d-d48c7050b543" },
+                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2018, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria4", "86dafe89-cc9c-4308-ace8-b3ed1f54a346" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Partilhaveis",
+                columns: new[] { "ID", "Nome", "Password", "RequerenteFK", "ServicoFK", "Validade" },
+                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", "Teste", "123Qwe!", "a0f118c8-8e40-4433-a695-e5ca01788331", "86dafe89-cc9c-4308-ace8-b3ed1f54a346", null });
 
             migrationBuilder.InsertData(
                 table: "Servicos_DatasExecucao",
                 columns: new[] { "DataExecucaoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 10, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
-                    { 11, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
-                    { 8, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
-                    { 6, "aca4875a-721e-4cfc-827d-d48c7050b543" },
                     { 8, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
                     { 5, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 8, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
                     { 2, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
                     { 5, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 2, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
                     { 7, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 3, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
-                    { 9, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
-                    { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { 10, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 2, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
+                    { 6, "aca4875a-721e-4cfc-827d-d48c7050b543" },
                     { 4, "d6e3fca1-c766-4333-8211-f63431b30181" },
-                    { 11, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" }
+                    { 11, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 11, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 10, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 9, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 3, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 10, "b399e9c7-957e-4e85-9474-bad2cf8032c4" }
                 });
 
             migrationBuilder.InsertData(
@@ -604,22 +609,22 @@ namespace LabFoto.Migrations
                 values: new object[,]
                 {
                     { 1, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 4, "aca4875a-721e-4cfc-827d-d48c7050b543" },
                     { 5, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
                     { 2, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
-                    { 2, "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 2, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 5, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 5, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
-                    { 3, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
                     { 3, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 2, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 1, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 5, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 3, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
                     { 1, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
                     { 4, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
-                    { 1, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 5, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
                     { 4, "d6e3fca1-c766-4333-8211-f63431b30181" },
                     { 3, "d6e3fca1-c766-4333-8211-f63431b30181" },
                     { 2, "d6e3fca1-c766-4333-8211-f63431b30181" },
-                    { 4, "aca4875a-721e-4cfc-827d-d48c7050b543" },
+                    { 2, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
                     { 2, "aca4875a-721e-4cfc-827d-d48c7050b543" }
                 });
 
@@ -629,13 +634,13 @@ namespace LabFoto.Migrations
                 values: new object[,]
                 {
                     { 1, "aca4875a-721e-4cfc-827d-d48c7050b543" },
-                    { 4, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 2, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
-                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
                     { 2, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
-                    { 1, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 4, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
                     { 3, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 1, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
                     { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 2, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
                     { 4, "b399e9c7-957e-4e85-9474-bad2cf8032c4" }
                 });
 
@@ -664,6 +669,20 @@ namespace LabFoto.Migrations
                     { 2, "d6e3fca1-c766-4333-8211-f63431b30181" },
                     { 1, "d6e3fca1-c766-4333-8211-f63431b30181" },
                     { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Partilhaveis_Fotografias",
+                columns: new[] { "FotografiaFK", "PartilhavelFK" },
+                values: new object[,]
+                {
+                    { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 2, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 3, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 4, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 5, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 6, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 7, "a0f118c8-8e40-4433-a695-e5ca01788331" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -726,14 +745,14 @@ namespace LabFoto.Migrations
                 column: "GaleriaFK");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Partilhaveis_GaleriaFK",
-                table: "Partilhaveis",
-                column: "GaleriaFK");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Partilhaveis_RequerenteFK",
                 table: "Partilhaveis",
                 column: "RequerenteFK");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Partilhaveis_ServicoFK",
+                table: "Partilhaveis",
+                column: "ServicoFK");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Partilhaveis_Fotografias_PartilhavelFK",

@@ -26,8 +26,6 @@ namespace LabFoto.Models.Tables
 
         public virtual ICollection<Fotografia> Fotografias { get; set; }
 
-        public virtual ICollection<Partilhavel> Partilhaveis { get; set; }
-
         [Display(Name = "Metadados")]
         public virtual ICollection<Galeria_Metadado> Galerias_Metadados { get; set; }
     }
