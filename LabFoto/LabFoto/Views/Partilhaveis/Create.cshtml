@@ -32,7 +32,7 @@
                 </div>
                 <div class="ten wide field">
                     <label>
-                        Definir passoword?
+                        Definir password?
                         <span data-toggle="tooltip" title="Se selecionar não, uma password será gerada automáticamente">
                             <i class="blue info icon"></i>
                         </span>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" asp-for="ServicoFK" />
+            <input type="hidden" name="ServicoFK" value="@ViewData["ServicoFK"]" />
             <input type="hidden" name="Photos" id="inputPhotos" />
             <input type="hidden" name="usePassword" id="usePasswordInput" value="false">
         </div>
@@ -166,60 +166,65 @@
             getGaleriasAccordion();
         });
 
-        function getPhotos(galeriaId, page)
+        function startGetPhoto(galeriaId, page)
         {
             let isLoaded = $(`#body_${galeriaId}`).data("loaded");
 
             if (!isLoaded) // Caso o div não tenha fotografias carregadas
             {
-                $(`#body_${galeriaId}`).append(loader);
-                $.ajax({
-                    type: "GET",
-                    url: siteUrl + `/Galerias/Thumbnails/${galeriaId}?page=${page}&justCheckbox=true`,
-                    success: function (resp)
-                    {
-                        $(`#body_${galeriaId} #loader`).remove(); // Remove a barra de loading
-                        if (resp.noMorePhotos == null) // Enquanto houver mais fotografias a serem carregadas
-                        {
-                            if (resp.success == false)
-                            {
-                                notifyUser("error", resp.error);
-                            }
-                            else
-                            {
-                                $(`#body_${galeriaId}`).append(resp);
-                                // Pedir mais fotografias ao servidor
-                                page++;
-                                getPhotos(galeriaId, page);
-                            }
-                        }
-                        else // Quando terminar de carregar fotografias
-                        {
-                             // Marca como completo o load de fotografias, para evitar recarregar fotografias já carregadas
-                            $(`#body_${galeriaId}`).data("loaded", true);
+                getPhotos(galeriaId, page);
 
-                            if (isEmpty(`#body_${galeriaId}`)) // Caso não exitam fotografias
-                            {
-                                $(`#my-gallery_${galeriaId}`).html(placeHolder); // Mostra um placeholder
-                            } else
-                            {
-                                // Iniciar a galeria do PhotoSwipe
-                                initPhotoSwipeFromDOM(`#my-gallery_${galeriaId}`);
-                            }
-                        }
-                    },
-                    error: function () {
-                       $("#photosContainer").html(`
-                            <div class="ui negative message mt-3">
-                              <div class="header">
-                                Ocorreu um erro
-                              </div>
-                              <p>Infelizmente não foi possível carregar as fotografias.</p>
-                            </div>
-                        `);
-                    }
-                });
+                // Marca que o load de fotografias já iniciou, para evitar recarregar fotografias que estão a ser recarregadas
+                $(`#body_${galeriaId}`).data("loaded", true);
             }
+        }
+
+        function getPhotos(galeriaId, page)
+        {
+            $(`#body_${galeriaId}`).append(loader);
+            $.ajax({
+                type: "GET",
+                url: siteUrl + `/Galerias/Thumbnails/${galeriaId}?page=${page}&justCheckbox=true`,
+                success: function (resp)
+                {
+                    $(`#body_${galeriaId} #loader`).remove(); // Remove a barra de loading
+                    if (resp.noMorePhotos == null) // Enquanto houver mais fotografias a serem carregadas
+                    {
+                        if (resp.success == false)
+                        {
+                            notifyUser("error", resp.error);
+                        }
+                        else
+                        {
+                            $(`#body_${galeriaId}`).append(resp);
+                            // Pedir mais fotografias ao servidor
+                            page++;
+                            getPhotos(galeriaId, page);
+                        }
+                    }
+                    else // Quando terminar de carregar fotografias
+                    {
+                        if (isEmpty(`#body_${galeriaId}`)) // Caso não exitam fotografias
+                        {
+                            $(`#my-gallery_${galeriaId}`).html(placeHolder); // Mostra um placeholder
+                        } else
+                        {
+                            // Iniciar a galeria do PhotoSwipe
+                            initPhotoSwipeFromDOM(`#my-gallery_${galeriaId}`);
+                        }
+                    }
+                },
+                error: function () {
+                    $("#photosContainer").html(`
+                        <div class="ui negative message mt-3">
+                            <div class="header">
+                            Ocorreu um erro
+                            </div>
+                            <p>Infelizmente não foi possível carregar as fotografias.</p>
+                        </div>
+                    `);
+                }
+            });
         }
 
         function getGaleriasAccordion()

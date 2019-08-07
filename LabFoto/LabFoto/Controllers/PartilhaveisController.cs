@@ -132,9 +132,10 @@ namespace LabFoto.Controllers
             }
 
             return View("Details", partilhavel);
-        } 
+        }
         #endregion
 
+        #region Thumbnails
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -154,7 +155,7 @@ namespace LabFoto.Controllers
             if (partilhavel == null)
                 return Json(new { success = false, error = "Não foi possível encontrar as fotografias." });
 
-            if(String.IsNullOrEmpty(Password) || !partilhavel.Password.Equals(Password))
+            if (String.IsNullOrEmpty(Password) || !partilhavel.Password.Equals(Password))
                 return Json(new { success = false, error = "Não foi possível encontrar as fotografias." });
 
             // Caso não existam fotos
@@ -181,41 +182,7 @@ namespace LabFoto.Controllers
             };
             return PartialView("PartialViews/_ListPhotos", response);
         }
-
-        public async Task<IActionResult> GaleriaThumbnails(string galeriaId, int Page = 0)
-        {
-            if (String.IsNullOrEmpty(galeriaId))
-            {
-                return Json(new { success = false, error = "O ID da galeria não é válido." });
-            }
-
-            var photosPerRequest = _appSettings.PhotosPerRequest;
-            int skipNum = (Page - 1) * photosPerRequest;
-
-            List<Fotografia> fotos = await _context.Fotografias
-                .Include(f => f.ContaOnedrive)
-                .Where(f => f.GaleriaFK.Equals(galeriaId))
-                .Skip(skipNum).Take(photosPerRequest)
-                .ToListAsync();
-
-            // Caso já não exista mais fotos
-            if (fotos.Count() == 0)
-            {
-                return Json(new { noMorePhotos = true });
-            }
-
-            // Refrescar thumbnails
-            await _onedrive.RefreshPhotoUrlsAsync(fotos);
-
-            var response = new ThumbnailsViewModel
-            {
-                Fotos = fotos,
-                Index = skipNum
-            };
-
-            ViewData["Checkbox"] = true;
-            return PartialView("PartialViews/_ListPhotos", response);
-        }
+        #endregion
 
         #region Create
 
@@ -247,7 +214,7 @@ namespace LabFoto.Controllers
         {
             if (String.IsNullOrEmpty(Photos))
             {
-                ModelState.AddModelError("Servico", "Servico não encontrado.");
+                ModelState.AddModelError("Fotografia", "Não foram selecionadas fotografias.");
             }
 
             partilhavel.RequerenteFK = (await _context.Servicos.FindAsync(partilhavel.ServicoFK))?.RequerenteFK;
@@ -287,7 +254,8 @@ namespace LabFoto.Controllers
                 await _context.SaveChangesAsync();
                 return View("Details", partilhavel);
             }
-            ViewData["RequerenteFK"] = new SelectList(_context.Requerentes, "ID", "ID", partilhavel.RequerenteFK);
+
+            ViewData["ServicoFK"] = partilhavel.ServicoFK;
             return View(partilhavel);
         }
 
