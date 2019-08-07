@@ -16,19 +16,16 @@
                 <div class="ten wide field mb-2">
                     <label asp-for="Nome"></label>
                     <input asp-for="Nome" />
-                    <span asp-validation-for="Nome" class="text-danger"></span>
                 </div>
                 <div class="six wide field">
                     <label asp-for="Validade"></label>
                     <input asp-for="Validade" value="" />
-                    <span asp-validation-for="Validade" class="text-danger"></span>
                 </div>
             </div>
             <div class="fields mt-3">
                 <div class="six wide field hide mb-2" id="passwordContainer">
                     <label asp-for="Password"></label>
                     <input asp-for="Password" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="ten wide field">
                     <label>
@@ -60,7 +57,7 @@
 
         <div class="field mt-4">
             <button type="submit" class="ui button primary">Criar</button>
-            <button class="ui button grey">Cancelar</button>
+            <a href="/Servicos" class="ui button grey">Cancelar</a>
         </div>
     </form>
 </div>
