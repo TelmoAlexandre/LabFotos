@@ -217,10 +217,24 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_ListPhotos", response);
         }
 
+        #region Create
+
         // GET: Partilhaveis/Create
-        public IActionResult Create(string id)
+        public async Task<IActionResult> Create(string servicoID)
         {
-            ViewData["ServicoFK"] = id;
+            if (String.IsNullOrEmpty(servicoID))
+            {
+                return NotFound();
+            }
+
+            var servico = await _context.Servicos.FindAsync(servicoID);
+
+            if (servico == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["ServicoFK"] = servicoID;
             return View();
         }
 
@@ -229,32 +243,73 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Nome,Validade,Password,GaleriaFK,RequerenteFK")] Partilhavel partilhavel)
+        public async Task<IActionResult> Create([Bind("ID,Nome,Validade,Password,ServicoFK")] Partilhavel partilhavel, string Photos, bool usePassword = false)
         {
+            if (String.IsNullOrEmpty(Photos))
+            {
+                ModelState.AddModelError("Servico", "Servico não encontrado.");
+            }
+
+            partilhavel.RequerenteFK = (await _context.Servicos.FindAsync(partilhavel.ServicoFK))?.RequerenteFK;
+
+            if (String.IsNullOrEmpty(partilhavel.RequerenteFK))
+            {
+                ModelState.AddModelError("Servico", "Servico não encontrado.");
+            }
+
             if (ModelState.IsValid)
             {
+                if (!usePassword)
+                {
+                    Guid guid = Guid.NewGuid();
+                    string[] str = guid.ToString().Split('-');
+                    partilhavel.Password = str[0];
+                }
+
+                string[] photosArray = Photos.Split(',');
+                List<Partilhavel_Fotografia> pfList = new List<Partilhavel_Fotografia>();
+                foreach (var fotoID in photosArray)
+                {
+                    if ((await _context.Fotografias.FindAsync(Int32.Parse(fotoID))) != null)
+                    {
+                        Partilhavel_Fotografia pf = new Partilhavel_Fotografia()
+                        {
+                            FotografiaFK = Int32.Parse(fotoID),
+                            PartilhavelFK = partilhavel.ID
+                        };
+                        pfList.Add(pf);
+                    }
+                }
+
+                partilhavel.Partilhaveis_Fotografias = pfList;
+
                 _context.Add(partilhavel);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Entrega");
+                return View("Details", partilhavel);
             }
             ViewData["RequerenteFK"] = new SelectList(_context.Requerentes, "ID", "ID", partilhavel.RequerenteFK);
             return View(partilhavel);
         }
 
+        #endregion Create
+
+        #region Edit
+
         // GET: Partilhaveis/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string servicoID)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(servicoID))
             {
                 return NotFound();
             }
 
-            var partilhavel = await _context.Partilhaveis.FindAsync(id);
+            var partilhavel = await _context.Partilhaveis.FindAsync(servicoID);
             if (partilhavel == null)
             {
                 return NotFound();
             }
-            ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "Nome");
+
+            
             return View(partilhavel);
         }
 
@@ -263,7 +318,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,Password,GaleriaFK,RequerenteFK")] Partilhavel partilhavel)
+        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,Password,ServicoFK")] Partilhavel partilhavel)
         {
             if (id != partilhavel.ID)
             {
@@ -288,11 +343,15 @@ namespace LabFoto.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Entrega");
+                return View("Details", partilhavel);
             }
-            ViewData["RequerenteFK"] = new SelectList(_context.Requerentes, "ID", "ID", partilhavel.RequerenteFK);
+            
             return View(partilhavel);
         }
+
+#endregion Edit
+
+        #region Delete
 
         // GET: Partilhaveis/Delete/5
         public async Task<IActionResult> Delete(string id)
@@ -323,6 +382,8 @@ namespace LabFoto.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Entrega");
         }
+
+        #endregion Delete
 
         private bool PartilhavelExists(string id)
         {
