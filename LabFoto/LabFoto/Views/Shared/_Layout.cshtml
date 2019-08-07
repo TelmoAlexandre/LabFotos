@@ -66,9 +66,6 @@
                                     <a class="nav-link text-dark" asp-controller="Users" asp-action="Create">Criar utilizador</a>
                                 </div>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a class="dropbtn nav-link text-dark" asp-controller="Partilhaveis" asp-action="Create">Criar partilhavel</a>
-                            </li>
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item dropdown">
