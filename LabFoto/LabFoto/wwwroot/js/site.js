@@ -108,6 +108,11 @@ function initModalEvents() {
         handleControllerResponse(resp, 'requerentesDropbox', 'modalNovoRequerente', siteUrl + '/Servicos/RequerentesAjax');
 }
 
+function isEmpty(node)
+{
+    return ($(`${node}`).children().length === 0);
+}
+
 toggleDivs = (div1, div2) => 
 {
     $(`${div1}`).toggle();

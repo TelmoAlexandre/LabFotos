@@ -1,8 +1,10 @@
-﻿@model IEnumerable<LabFoto.Models.Tables.Fotografia>
+﻿@model  LabFoto.Models.ViewModels.ThumbnailsViewModel
 
 @{
-    int i = 0; // Usando para definir index nas fotos. Para saber qualquer a foto clicada (no PhotoSwipe)
-    foreach (var foto in Model)
+    int i = Model.Index; // Usando para definir index nas fotos. Para saber qualquer a foto clicada (no PhotoSwipe)
+    bool checkbox = (bool?)ViewData["Checkbox"] ?? false; // Define se mostra o botão de download ou o de checkbox 
+
+    foreach (var foto in Model.Fotos)
     {
         <div class="card remove-card-border" id="photoCard_@foto.ID">
             <div class="content p-1">
@@ -28,8 +30,17 @@
                     <figcaption itemprop="caption description" hidden>@foto.Nome</figcaption>
                 </figure>
             </div>
-            <div class="ui small buttons border-top">
-                <button class="ui basic button border border-top-0" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i>Guardar</button>
+            <div class="ui small icon buttons border-top">
+                @if (checkbox)
+                {
+                    <span class="ui button basic btnCB border-bottom border-left" onclick="pushToPhotos('@foto.ID')" id="cb_@foto.ID">
+                        <i class="check circle outline icon"></i>
+                    </span>
+                }
+                else
+                {
+                    <button class="ui basic button border border-top-0" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i></button>
+                }
             </div>
         </div>
 

@@ -2,6 +2,8 @@
 
 @{
     int i = Model.Index; // Usando para definir index nas fotos. Para saber qualquer a foto clicada (no PhotoSwipe)
+    bool justCheckbox = (bool?)ViewData["JustCheckbox"] ?? false; // Define se mostra o botão de download ou o de checkbox 
+
     foreach (var foto in Model.Fotos)
     {
         <div class="card remove-card-border" id="photoCard_@foto.ID">
@@ -32,27 +34,31 @@
                 <button class="ui button basic btnCB border-bottom border-left" onclick="pushToPhotos('@foto.ID')" id="cb_@foto.ID">
                     <i class="check circle outline icon"></i>
                 </button>
-                <button class="ui basic button border border-top-0" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i></button>
 
-                <div class="ui basic button border-bottom border-right btnOptions">
-                    <i class="cog icon"></i>
-                </div>
-                <div class="ui fluid popup bottom left transition hidden">
-                    <div class="ui relaxed divided list link">
-                        <a class="item small mb-1" onclick="confirmationModal('cover', defineCoverPhoto, '@foto.ID')">
-                            <i class="image outline icon"></i>
-                            <div class="content">
-                                <div class="header">Definir como capa</div>
-                            </div>
-                        </a>
-                        <a class="item small pt-2" onclick="confirmationModal('delete', deletePhotos, '@foto.ID')"style="padding-left:2px;">
-                            <i class="trash alternate outline icon"></i>
-                            <div class="content" style="padding-left:11px;">
-                                <div class="header">Remover</div>
-                            </div>
-                        </a>
+                @if (!justCheckbox) // Caso não seja só para mostrar a checkbox
+                {
+                    <button class="ui basic button border border-top-0" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i></button>
+
+                    <div class="ui basic button border-bottom border-right btnOptions">
+                        <i class="cog icon"></i>
                     </div>
-                </div>
+                    <div class="ui fluid popup bottom left transition hidden">
+                        <div class="ui relaxed divided list link">
+                            <a class="item small mb-1" onclick="confirmationModal('cover', defineCoverPhoto, '@foto.ID')">
+                                <i class="image outline icon"></i>
+                                <div class="content">
+                                    <div class="header">Definir como capa</div>
+                                </div>
+                            </a>
+                            <a class="item small pt-2" onclick="confirmationModal('delete', deletePhotos, '@foto.ID')" style="padding-left:2px;">
+                                <i class="trash alternate outline icon"></i>
+                                <div class="content" style="padding-left:11px;">
+                                    <div class="header">Remover</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 

@@ -31,6 +31,25 @@ namespace LabFoto.Controllers
             _appSettings = appSettings.Value;
         }
 
+        #region Ajax
+        public async Task<IActionResult> GaleriasAccordion(string id)
+        {
+            if (String.IsNullOrEmpty(id))
+                return Json(new { success = false, error = "O ID do serviço não é válido." });
+
+            List<Galeria> galerias = (await _context.Servicos.Include(s => s.Galerias).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync())?.Galerias.ToList();
+
+            if (galerias == null)
+                return Json(new { success = false, error = "Não foi possível encontrar as galerias deste serviço." });
+
+            if (galerias.Count() == 0)
+                return Json(new { success = false, error = "Não existem galerias neste serviço." });
+
+            return PartialView("PartialViews/_GaleriasAccordion", galerias);
+        }
+        #endregion
+
+        #region Entrega
         [AllowAnonymous]
         // GET: Partilhaveis
         public async Task<IActionResult> Entrega(string id)
@@ -113,17 +132,16 @@ namespace LabFoto.Controllers
             }
 
             return View("Details", partilhavel);
-        }
+        } 
+        #endregion
 
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Thumbnails(string ID, string Password, int Page = 0)
         {
-            if (String.IsNullOrEmpty(ID) || String.IsNullOrEmpty(Password))
-            {
+            if (String.IsNullOrEmpty(ID))
                 return Json(new { success = false, error = "Não foi possível encontrar as fotografias." });
-            }
 
             var photosPerRequest = _appSettings.PhotosPerRequest;
             int skipNum = (Page - 1) * photosPerRequest;
@@ -134,15 +152,14 @@ namespace LabFoto.Controllers
                 .FirstOrDefaultAsync();
 
             if (partilhavel == null)
-            {
                 return Json(new { success = false, error = "Não foi possível encontrar as fotografias." });
-            }
+
+            if(String.IsNullOrEmpty(Password) || !partilhavel.Password.Equals(Password))
+                return Json(new { success = false, error = "Não foi possível encontrar as fotografias." });
 
             // Caso não existam fotos
             if (partilhavel.Partilhaveis_Fotografias.Count() == 0)
-            {
                 return Json(new { noMorePhotos = true });
-            }
 
             // Lista de fotografias do partilhavel
             List<Fotografia> fotos = partilhavel.Partilhaveis_Fotografias
@@ -152,20 +169,58 @@ namespace LabFoto.Controllers
 
             // Caso já não exista mais fotos
             if (fotos.Count() == 0)
+                return Json(new { noMorePhotos = true });
+
+            // Refrescar os thumbnails
+            await _onedrive.RefreshPhotoUrlsAsync(fotos);
+
+            var response = new ThumbnailsViewModel
+            {
+                Fotos = fotos,
+                Index = skipNum
+            };
+            return PartialView("PartialViews/_ListPhotos", response);
+        }
+
+        public async Task<IActionResult> GaleriaThumbnails(string galeriaId, int Page = 0)
+        {
+            if (String.IsNullOrEmpty(galeriaId))
+            {
+                return Json(new { success = false, error = "O ID da galeria não é válido." });
+            }
+
+            var photosPerRequest = _appSettings.PhotosPerRequest;
+            int skipNum = (Page - 1) * photosPerRequest;
+
+            List<Fotografia> fotos = await _context.Fotografias
+                .Include(f => f.ContaOnedrive)
+                .Where(f => f.GaleriaFK.Equals(galeriaId))
+                .Skip(skipNum).Take(photosPerRequest)
+                .ToListAsync();
+
+            // Caso já não exista mais fotos
+            if (fotos.Count() == 0)
             {
                 return Json(new { noMorePhotos = true });
             }
 
-            // Refrescar os thumbnails
+            // Refrescar thumbnails
             await _onedrive.RefreshPhotoUrlsAsync(fotos);
-            
-           return PartialView("PartialViews/_ListPhotos", fotos);
+
+            var response = new ThumbnailsViewModel
+            {
+                Fotos = fotos,
+                Index = skipNum
+            };
+
+            ViewData["Checkbox"] = true;
+            return PartialView("PartialViews/_ListPhotos", response);
         }
 
         // GET: Partilhaveis/Create
-        public IActionResult Create()
+        public IActionResult Create(string id)
         {
-            ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "Nome");
+            ViewData["ServicoFK"] = id;
             return View();
         }
 

@@ -1,0 +1,27 @@
+﻿@model  IEnumerable<LabFoto.Models.Tables.Galeria>
+
+    <div id="accordion">
+        @foreach (var galeria in Model)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <span class="pointer" 
+                              data-toggle="collapse" data-target="#collapse_@galeria.ID" aria-controls="collapse_@galeria.ID"
+                              onclick="getPhotos('@galeria.ID', 1)"
+                              >
+                            @galeria.Nome <i class="caret down icon"></i>
+                        </span>
+                    </h5>
+                </div>
+
+                <div id="collapse_@galeria.ID" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="my-gallery" id="my-gallery_@galeria.ID" itemscope>
+                            <div class="ui six doubling stackable cards mt-2" id="body_@galeria.ID" data-loaded="false"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>

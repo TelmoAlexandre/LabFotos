@@ -335,7 +335,7 @@ namespace LabFoto.Controllers
             return View(galeria);
         }
 
-        public async Task<IActionResult> Thumbnails(string id, int page = 0)
+        public async Task<IActionResult> Thumbnails(string id, int page = 0, bool justCheckbox = false)
         {
             if (String.IsNullOrEmpty(id))
             {
@@ -363,8 +363,11 @@ namespace LabFoto.Controllers
             var response = new ThumbnailsViewModel
             {
                 Fotos = fotos,
-                Index = 0
+                Index = skipNum
             };
+
+            ViewData["JustCheckbox"] = justCheckbox;
+
             return PartialView("PartialViews/_ListPhotos", response);
         }
         #endregion
