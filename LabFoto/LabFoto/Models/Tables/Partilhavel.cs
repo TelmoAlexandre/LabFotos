@@ -11,6 +11,8 @@ namespace LabFoto.Models.Tables
     {
         public string ID { get; set; }
         public string Nome { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime? Validade { get; set; }
         public string Password { get; set; }
 

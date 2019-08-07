@@ -165,8 +165,7 @@ namespace LabFoto.Controllers
         // GET: Partilhaveis/Create
         public IActionResult Create()
         {
-            ViewData["GaleriaFK"] = new SelectList(_context.Galerias, "ID", "ID");
-            ViewData["RequerenteFK"] = new SelectList(_context.Requerentes, "ID", "ID");
+            ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "Nome");
             return View();
         }
 
@@ -200,7 +199,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            ViewData["RequerenteFK"] = new SelectList(_context.Requerentes, "ID", "ID", partilhavel.RequerenteFK);
+            ViewData["ServicoFK"] = new SelectList(_context.Servicos, "ID", "Nome");
             return View(partilhavel);
         }
 
