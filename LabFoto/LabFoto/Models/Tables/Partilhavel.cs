@@ -10,6 +10,7 @@ namespace LabFoto.Models.Tables
     public class Partilhavel
     {
         public string ID { get; set; }
+        [Required(ErrorMessage = "É necessário preencher o nome.")]
         public string Nome { get; set; }
 
         [DataType(DataType.Date)]

@@ -3,6 +3,21 @@
     ViewData["Title"] = "Details";
 }
 
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="ui form mt-5">
+        <div class="fields">
+            <div class="field mb-2" style="font-weight: bold">
+                <a id="linkPartilha"></a>
+            </div>
+            <label asp-for="Password"></label>
+            <div class="field">
+                <span style="font-weight:bold">@Model.Password</span>
+            </div>
+        </div>
+    </div>
+}
+
 <div id="thumbnails" class="mt-4">
     <div class="my-gallery" id="my-gallery" itemscope>
         <div class="ui six doubling stackable cards mt-2" id="photosContainer"></div>
@@ -78,13 +93,24 @@
 </div>
 
 <!-- #endregion -->
+
 @section scripts
 {
     <script>
         var placeHolder = `<div class="ui six doubling stackable mt-2" id="photosContainer"><div class="ui placeholder tiny segment"><div class="ui icon header"><i class="images outline icon" style="height: auto;"></i>Não existem fotografias.</div></div></div>`;
 
+        function mostrarLink()
+        {
+            console.log($('#linkPartilha'));
+            $('#linkPartilha').html(`${siteUrl}/Partilhaveis/Entrega/@Model.ID`);
+            $('#linkPartilha').attr('href', `${siteUrl}/Partilhaveis/Entrega/@Model.ID`);
+
+
+        }
+
         $(document).ready(function ()
         {
+            mostrarLink();
             // Começar a pedir fotografias
             getPhotos(1);
 
