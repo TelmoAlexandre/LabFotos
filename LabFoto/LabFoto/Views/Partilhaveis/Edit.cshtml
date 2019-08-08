@@ -218,7 +218,7 @@
         {
             $("#galerias")
                 .html(smallLoader)
-                .load(siteUrl + "/Partilhaveis/GaleriasAccordion/@Model.Partilhavel.ServicoFK?pId=@Model.Partilhavel.ID", function ()
+                .load(siteUrl + "/Partilhaveis/GaleriasAccordion/@Model.Partilhavel.ServicoFK?photosIDs=@photosIDs", function ()
                 {
                     $('[data-toggle="tooltip"]').tooltip();
                 });

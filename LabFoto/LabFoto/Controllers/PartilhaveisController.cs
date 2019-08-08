@@ -42,15 +42,10 @@ namespace LabFoto.Controllers
         /// <param name="id">Id do serviço</param>
         /// <param name="pId">Id do partilhavel</param>
         /// <returns></returns>
-        public async Task<IActionResult> GaleriasAccordion(string id, string pId)
+        public async Task<IActionResult> GaleriasAccordion(string id, string photosIDs)
         {
             if (String.IsNullOrEmpty(id))
                 return Json(new { success = false, error = "O ID do serviço não é válido." });
-
-            Partilhavel partilhavel = null;
-
-            if (!String.IsNullOrEmpty(pId))
-                partilhavel = await _context.Partilhaveis.Include(p => p.Partilhaveis_Fotografias).Where(p => p.ID.Equals(pId)).FirstOrDefaultAsync();
             
             var galeriasList = await _context.Galerias.Include(g=>g.Fotografias).Where(g => g.ServicoFK.Equals(id)).ToListAsync();
 
@@ -66,22 +61,23 @@ namespace LabFoto.Controllers
                         Galeria = galeria
                     };
 
-                    if (String.IsNullOrEmpty(pId))
+                    if (String.IsNullOrEmpty(photosIDs))
                     {
-                        // Caso não exista partilhavel a ser utilizado, não existem fotografias selecionadas na galeria
+                        // Caso não existam fotos selecionadas, não existem fotografias selecionadas na galeria
                         item.HasPhotosSelected = false;
                     }
                     else
                     {
-                        // Caso exista partilhavel a ser utilizado, preencher se cada galeria tem fotografias selecionadas neste partilhavel
+                        // Caso existam fotos selecionadas, preencher se cada galeria tem fotografias selecionadas
 
                         var fotosId = galeria.Fotografias.Select(f => f.ID).ToList();
                         item.HasPhotosSelected = false; // Por deifeito
+                        var selectedPhotos = photosIDs.Split(",").ToList();
 
                         foreach (int fotoId in fotosId) // Correr cada id das fotos da galeria
                         {
-                            // Caso o partilhavel contenha esta fotografia
-                            if (partilhavel.Partilhaveis_Fotografias.Where(pf => pf.FotografiaFK.Equals(fotoId)).Count() != 0)
+                            // Caso as fotos selecionadas contenham esta fotografia
+                            if (selectedPhotos.Contains(fotoId.ToString()))
                             {
                                 item.HasPhotosSelected = true;
                                 break; // Se encontrou pelo menos uma, não há necessidade de correr o resto
