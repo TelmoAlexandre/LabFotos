@@ -35,20 +35,69 @@ namespace LabFoto.Controllers
         }
 
         #region Ajax
-        public async Task<IActionResult> GaleriasAccordion(string id)
+
+        /// <summary>
+        /// Retornas um acordião com as galerias de um serviço.
+        /// </summary>
+        /// <param name="id">Id do serviço</param>
+        /// <param name="pId">Id do partilhavel</param>
+        /// <returns></returns>
+        public async Task<IActionResult> GaleriasAccordion(string id, string pId)
         {
             if (String.IsNullOrEmpty(id))
                 return Json(new { success = false, error = "O ID do serviço não é válido." });
 
-            List<Galeria> galerias = (await _context.Servicos.Include(s => s.Galerias).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync())?.Galerias.ToList();
+            Partilhavel partilhavel = null;
 
-            if (galerias == null)
-                return Json(new { success = false, error = "Não foi possível encontrar as galerias deste serviço." });
+            if (!String.IsNullOrEmpty(pId))
+                partilhavel = await _context.Partilhaveis.Include(p => p.Partilhaveis_Fotografias).Where(p => p.ID.Equals(pId)).FirstOrDefaultAsync();
+            
+            var galeriasList = await _context.Galerias.Include(g=>g.Fotografias).Where(g => g.ServicoFK.Equals(id)).ToListAsync();
 
-            if (galerias.Count() == 0)
-                return Json(new { success = false, error = "Não existem galerias neste serviço." });
+            #region Preparar resposta
 
-            return PartialView("PartialViews/_GaleriasAccordion", galerias);
+            List<PartilhavelGAViewModel> response = new List<PartilhavelGAViewModel>();
+            try
+            {
+                foreach (var galeria in galeriasList) // Correr as galerias
+                {
+                    var item = new PartilhavelGAViewModel()
+                    {
+                        Galeria = galeria
+                    };
+
+                    if (String.IsNullOrEmpty(pId))
+                    {
+                        // Caso não exista partilhavel a ser utilizado, não existem fotografias selecionadas na galeria
+                        item.HasPhotosSelected = false;
+                    }
+                    else
+                    {
+                        // Caso exista partilhavel a ser utilizado, preencher se cada galeria tem fotografias selecionadas neste partilhavel
+
+                        var fotosId = galeria.Fotografias.Select(f => f.ID).ToList();
+                        item.HasPhotosSelected = false; // Por deifeito
+
+                        foreach (int fotoId in fotosId) // Correr cada id das fotos da galeria
+                        {
+                            // Caso o partilhavel contenha esta fotografia
+                            if (partilhavel.Partilhaveis_Fotografias.Where(pf => pf.FotografiaFK.Equals(fotoId)).Count() != 0)
+                            {
+                                item.HasPhotosSelected = true;
+                                break; // Se encontrou pelo menos uma, não há necessidade de correr o resto
+                            }
+                        }
+                    }
+                    response.Add(item);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao preparar o acordião de galerias. Erro: {e.Message}");
+            } 
+            #endregion
+
+            return PartialView("PartialViews/_GaleriasAccordion", response);
         }
         #endregion
 

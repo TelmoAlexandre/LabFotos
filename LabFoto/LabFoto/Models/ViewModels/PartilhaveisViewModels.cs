@@ -20,5 +20,9 @@ namespace LabFoto.Models.ViewModels
 
         public string PhotosIDs { get; set; }
     }
-
+    public class PartilhavelGAViewModel // Para o acordião de galerias
+    {
+        public Galeria Galeria { get; set; }
+        public bool HasPhotosSelected { get; set; }
+    }
 }

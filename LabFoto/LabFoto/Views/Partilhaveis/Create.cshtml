@@ -234,7 +234,10 @@
         {
             $("#galerias")
                 .html(smallLoader)
-                .load(siteUrl + "/Partilhaveis/GaleriasAccordion/@Model.ServicoFK");
+                .load(siteUrl + "/Partilhaveis/GaleriasAccordion/@Model.ServicoFK", function ()
+                {
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
         }
 
         function clearCB(divId)
@@ -268,6 +271,18 @@
             // Alterar o botão check para refletir que a foto [está/não está] selecionada
             $(`#cb_${newPhotoId}`).toggleClass("blue")
                 .children("i").toggleClass("outline blue");
+
+            // Mostrar feedback se alguma foto da galeria estiver selecionada
+            var galeriaId = $(`#cb_${newPhotoId}`).data("galeria-id");
+            var familyChecked = $(`#my-gallery_${galeriaId} .btnCB`).hasClass("blue");
+            
+            if (familyChecked)
+            {
+                $(`#checkFeedback_${galeriaId}`).removeClass("hide");
+            } else
+            {
+                $(`#checkFeedback_${galeriaId}`).addClass("hide");
+            }
         }
 
     </script>
