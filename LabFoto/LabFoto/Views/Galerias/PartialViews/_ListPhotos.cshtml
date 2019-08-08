@@ -31,13 +31,13 @@
                 </figure>
             </div>
             <div class="ui small icon buttons border-top">
-                <button class="ui button basic btnCB border-bottom border-left" onclick="pushToPhotos('@foto.ID')" id="cb_@foto.ID">
+                <span class="ui button basic btnCB border-bottom border-left" onclick="pushToPhotos('@foto.ID')" id="cb_@foto.ID" data-foto-id="@foto.ID">
                     <i class="check circle outline icon"></i>
-                </button>
+                </span>
 
                 @if (!justCheckbox) // Caso não seja só para mostrar a checkbox
                 {
-                    <button class="ui basic button border border-top-0" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i></button>
+                    <span class="ui basic button border border-top-0" onclick="download('@foto.DownloadUrl')"><i class="save icon"></i></span>
 
                     <div class="ui basic button border-bottom border-right btnOptions">
                         <i class="cog icon"></i>

@@ -17,13 +17,6 @@ namespace LabFoto.Models.Tables
         public DateTime? Validade { get; set; }
         public string Password { get; set; }
 
-        // Relações
-
-        [ForeignKey("Requerente")]
-        [Display(Name = "Requerente")]
-        public string RequerenteFK { get; set; }
-        public Requerente Requerente { get; set; }
-
         [ForeignKey("Servico")]
         [Display(Name = "Serviço")]
         public string ServicoFK { get; set; }

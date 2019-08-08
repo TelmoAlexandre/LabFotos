@@ -14,17 +14,11 @@ namespace LabFoto.Models.ViewModels
         [Required(ErrorMessage = "Obrigatório.")]
         public string Password { get; set; }
     }
-    public class PartilhavelCreateViewModel
-    {
-        public Partilhavel Partilhavel { get; set; }
-
-        public string ServicoFK { get; set; }
-    }
     public class PartilhavelEditViewModel
     {
         public Partilhavel Partilhavel { get; set; }
 
-        public string PhotoIDs { get; set; }
+        public string PhotosIDs { get; set; }
     }
 
 }

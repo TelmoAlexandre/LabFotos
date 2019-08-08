@@ -22,6 +22,7 @@ namespace LabFoto.Controllers
     [Authorize]
     public class GaleriasController : Controller
     {
+        #region Constructor
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
         private readonly IEmailAPI _email;
@@ -29,8 +30,8 @@ namespace LabFoto.Controllers
         private readonly ILogger<GaleriasController> _logger;
         private readonly int _galPP = 8;
 
-        public GaleriasController(ApplicationDbContext context, 
-            IOnedriveAPI onedrive, 
+        public GaleriasController(ApplicationDbContext context,
+            IOnedriveAPI onedrive,
             IEmailAPI email,
             IOptions<AppSettings> settings,
             ILogger<GaleriasController> logger)
@@ -40,7 +41,8 @@ namespace LabFoto.Controllers
             _email = email;
             _appSettings = settings.Value;
             _logger = logger;
-        }
+        } 
+        #endregion
 
         #region Ajax
 
@@ -557,23 +559,30 @@ namespace LabFoto.Controllers
                 galeria.ServicoFK = servicoID;
 
                 #region Associar os metadados à galeria
-                if (!String.IsNullOrEmpty(metadados)) // Caso existam metadados a serem adicionados
+                try
                 {
-                    string[] array = metadados.Split(","); // Partir os tipos num array
-                    List<Galeria_Metadado> metadadosList = new List<Galeria_Metadado>();
-
-                    foreach (string metadadoId in array) // Correr esse array
+                    if (!String.IsNullOrEmpty(metadados)) // Caso existam metadados a serem adicionados
                     {
-                        // Associar o tipo
-                        Galeria_Metadado gm = new Galeria_Metadado
+                        string[] array = metadados.Split(","); // Partir os tipos num array
+                        List<Galeria_Metadado> metadadosList = new List<Galeria_Metadado>();
+
+                        foreach (string metadadoId in array) // Correr esse array
                         {
-                            GaleriaFK = galeria.ID,
-                            MetadadoFK = Int32.Parse(metadadoId)
-                        };
-                        metadadosList.Add(gm);
+                            // Associar o tipo
+                            Galeria_Metadado gm = new Galeria_Metadado
+                            {
+                                GaleriaFK = galeria.ID,
+                                MetadadoFK = Int32.Parse(metadadoId)
+                            };
+                            metadadosList.Add(gm);
+                        }
+                        galeria.Galerias_Metadados = metadadosList;
                     }
-                    galeria.Galerias_Metadados = metadadosList;
-                } 
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Erro ao associar metadados à galeria. Create. Erro: {e.Message}");
+                }
                 #endregion
 
                 _context.Add(galeria);
@@ -675,12 +684,10 @@ namespace LabFoto.Controllers
                         }).ToArray();
                         await _context.AddRangeAsync(addList);
                     }
-
-                    await _context.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
-                    _email.NotifyError("Erro ao associar metadados à galeria.", "GaleriasController", "Edit - POST", e.Message);
+                    _logger.LogError($"Erro ao associar metadados à galeria. Edit. Erro: {e.Message}");
                     feedback = "Ocorreu um erro ao associar os metadados à galeria.";
                 }
                 #endregion
@@ -701,7 +708,7 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        _email.NotifyError("Erro ao guardar informação na base de dados.", "GaleriasController", "Edit - POST", e.Message);
+                        _logger.LogError($"Erro ao guardar informação na base de dados. Edit. Erro: {e.Message}");
                         feedback = "Ocorreu um erro ao editar a galeria.";
                     }
                 } 

@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190806174821_Initial")]
+    [Migration("20190808164609_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -401,19 +401,16 @@ namespace LabFoto.Migrations
                     b.Property<string>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Nome");
+                    b.Property<string>("Nome")
+                        .IsRequired();
 
                     b.Property<string>("Password");
-
-                    b.Property<string>("RequerenteFK");
 
                     b.Property<string>("ServicoFK");
 
                     b.Property<DateTime?>("Validade");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("RequerenteFK");
 
                     b.HasIndex("ServicoFK");
 
@@ -425,8 +422,7 @@ namespace LabFoto.Migrations
                             ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             Nome = "Teste",
                             Password = "123Qwe!",
-                            RequerenteFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
-                            ServicoFK = "86dafe89-cc9c-4308-ace8-b3ed1f54a346"
+                            ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
                         });
                 });
 
@@ -1056,15 +1052,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7e49f22a-3376-4fe6-a39f-a1ddb826f03d",
-                            ConcurrencyStamp = "d2887046-bf22-4be1-a014-5bbacb227a05",
+                            Id = "bcfe08aa-8537-4260-938e-9d58bf663951",
+                            ConcurrencyStamp = "55c32fd2-197e-450e-a281-bdb2b985a596",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "98f8aefc-ee21-48f2-9eed-e66b642a517f",
-                            ConcurrencyStamp = "3765e1e0-62aa-4be6-a3ec-c31d5b1265b1",
+                            Id = "c0120a4a-f7d7-47c9-b818-7a49e6c468f5",
+                            ConcurrencyStamp = "77fc8944-a2d3-48e3-9173-1febb945d6cd",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });
@@ -1245,10 +1241,6 @@ namespace LabFoto.Migrations
 
             modelBuilder.Entity("LabFoto.Models.Tables.Partilhavel", b =>
                 {
-                    b.HasOne("LabFoto.Models.Tables.Requerente", "Requerente")
-                        .WithMany("Partilhaveis")
-                        .HasForeignKey("RequerenteFK");
-
                     b.HasOne("LabFoto.Models.Tables.Servico", "Servico")
                         .WithMany("Partilhaveis")
                         .HasForeignKey("ServicoFK");

@@ -1,45 +1,275 @@
-﻿@model LabFoto.Models.Tables.Partilhavel
+﻿@model LabFoto.Models.ViewModels.PartilhavelEditViewModel
 
 @{
     ViewData["Title"] = "Edit";
+}
+
+@{
+    string photosIDs = Model.PhotosIDs;
 }
 
 <h1>Edit</h1>
 
 <h4>Partilhavel</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div class="ui form">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="field">
-                    <label asp-for="Nome"></label>
-                    <input asp-for="Nome" />
-                    <span asp-validation-for="Nome" class="text-danger"></span>
+<div class="ui raised segment mt-4">
+    <p class="ui blue ribbon label mb-3">Criar Partilhavel</p>
+    <form asp-action="Edit">
+        <div class="ui form">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Partilhavel.ID" />
+            <div class="fields">
+                <div class="ten wide field mb-2">
+                    <label asp-for="Partilhavel.Nome"></label>
+                    <input asp-for="Partilhavel.Nome" />
                 </div>
-                <div class="field">
-                    <label asp-for="Validade"></label>
-                    <input asp-for="Validade" value="" />
-                    <span asp-validation-for="Validade" class="text-danger"></span>
-                </div>
-                <div class="field">
-                    <label asp-for="Password"></label>
-                    <input asp-for="Password" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-                <div class="field">
-                    <label asp-for="ServicoFK"></label>
-                    <select asp-for="ServicoFK" asp-items="ViewBag.ServicoFK"></select>
-                </div>
-                <div class="field">
-                    <input type="submit" value="Create" class="ui button primary" />
+                <div class="six wide field">
+                    <label asp-for="Partilhavel.Validade"></label>
+                    <input asp-for="Partilhavel.Validade"/>
                 </div>
             </div>
-        </form>
-    </div>
+            <div class="five wide field mb-2">
+                <label asp-for="Partilhavel.Password"></label>
+                <input asp-for="Partilhavel.Password" />
+            </div>
+            <input type="hidden" asp-for="Partilhavel.ServicoFK" />
+            <input type="hidden" name="PhotosIDs" id="inputPhotos" />
+        </div>
+
+        @* ------------------------ Galerias ------------------------ *@
+        <div class="ui segment ml-3">
+            <p class="ui blue ribbon label mb-3">Galerias</p>
+            <div id="galerias">
+
+            </div>
+        </div>
+
+        <div class="field mt-4">
+            <button type="submit" class="ui button primary">Guardar</button>
+            <a href="/Servicos" class="ui button grey">Cancelar</a>
+        </div>
+    </form>
 </div>
+
+<!-- #region Photoswipe -->
+@{
+    /*
+        Modal utilizado na biblioteca PhotoSwipe
+     */
+}
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element, as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
+        <!-- don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- #endregion -->
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        var placeHolder = `<div class="ui six doubling stackable mt-2" id="photosContainer"><div class="ui placeholder tiny segment"><div class="ui icon header"><i class="images outline icon" style="height: auto;"></i>Não existem fotografias.</div></div></div>`;
+        var photos = [];
+
+        $(document).ready(function ()
+        {
+            getGaleriasAccordion(); // Fetch do acordião com todas as galerias do serviço
+        });
+
+        // Esta função certifica-se que as imagens de uma galeria apenas são carregadas uma vez
+        function startGetPhoto(galeriaId)
+        {
+            // Verifica se o processo de carregamento de imagens já começou
+            let isLoaded = $(`#body_${galeriaId}`).data("loaded");
+
+            if (!isLoaded) // Caso não tenha fotografias carregadas
+            {
+                getPhotos(galeriaId, 1); // Começa a carregar fotos
+
+                // Marca que o load de fotografias já iniciou, para evitar recarregar fotografias que estão a ser recarregadas
+                $(`#body_${galeriaId}`).data("loaded", true);
+            }
+        }
+
+        function getPhotos(galeriaId, page)
+        {
+            // Feedback loading bar
+            $(`#body_${galeriaId}`).append(loader);
+
+            $.ajax({
+                type: "GET",
+                url: siteUrl + `/Galerias/Thumbnails/${galeriaId}?page=${page}&justCheckbox=true`,
+                success: function (resp)
+                {
+                    $(`#body_${galeriaId} #loader`).remove(); // Remove a barra de loading
+
+                    if (resp.noMorePhotos == null) // Enquanto houver mais fotografias a serem carregadas
+                    {
+                        if (resp.success == false) // Caso tenha ocorrido um erro
+                        {
+                            notifyUser("error", resp.error);
+                        }
+                        else // Caso exista mais fotografias e não tenha ocorrido um erro
+                        {
+                            // Juntar as novas fotos carregadas ao div das fotos da galeria
+                            $(`#body_${galeriaId}`).append(resp);
+
+                            // Pedir mais fotografias ao servidor
+                            page++;
+                            getPhotos(galeriaId, page);
+
+                            fillSelected(galeriaId);
+                        }
+                    }
+                    else // Quando terminar de carregar fotografias
+                    {
+                        if (isEmpty(`#body_${galeriaId}`)) // Caso não existam fotografias
+                        {
+                            $(`#my-gallery_${galeriaId}`).html(placeHolder); // Mostra um placeholder
+                        }
+                        else // Caso exista fotografias
+                        {
+                            // Iniciar a galeria do PhotoSwipe
+                            initPhotoSwipeFromDOM(`#my-gallery_${galeriaId}`);
+                            $(`#checkbuttons_${galeriaId}`).show();
+                        }
+                    }
+                },
+                error: function ()
+                {
+                    $(`#body_${galeriaId} #loader`).remove(); // Remove a barra de loading
+
+                    notifyUser("error", "Não foi possível carregar as fotografias.");
+                }
+            });
+        }
+
+        function fillSelected(galeriaId)
+        {
+            var checkboxes = $(`#body_${galeriaId} .btnCB`);
+            checkboxes.each(function()
+            {
+                let id = $(this).data("foto-id") + "";
+                if (photos.includes(id))
+                {
+                    $(this).addClass("blue")
+                        .children("i").addClass("outline blue");
+                }
+            });
+        }
+
+        function getGaleriasAccordion()
+        {
+            $("#galerias")
+                .html(smallLoader)
+                .load(siteUrl + "/Partilhaveis/GaleriasAccordion/@Model.Partilhavel.ServicoFK");
+        }
+
+        function clearCB(divId)
+        {
+            $(`${divId} .btnCB.blue`).click();
+        }
+
+        function selectAllCB(divId)
+        {
+            clearCB(divId);
+             $(`${divId} .btnCB`).click();
+        }
+
+        function pushToPhotos(newPhotoId)
+        {
+            // Caso o url exista no array, retira-lo
+            if (photos.includes(newPhotoId)) {
+                let newArray = [];
+                photos.forEach((photo) => {
+                    if (photo !== newPhotoId) {
+                        newArray.push(photo);
+                    }
+                });
+                photos = newArray;
+            } else {
+                photos.push(newPhotoId);
+            }
+
+            $("#inputPhotos").val(photos);
+
+            // Alterar o botão check para refletir que a foto [está/não está] selecionada
+            $(`#cb_${newPhotoId}`).toggleClass("blue")
+                .children("i").toggleClass("outline blue");
+        }
+
+    </script>
+
+    @* Caso existam fotos selecionadas  *@
+    @if (!String.IsNullOrEmpty(photosIDs))
+    {
+        <script>
+            $(document).ready(function ()
+            {
+                @foreach(var photoId in photosIDs.Split(","))
+                {
+                    @: photos.push("@photoId");
+                }
+
+                $("#inputPhotos").val(photos);
+            });
+        </script>
+    }
 }
+

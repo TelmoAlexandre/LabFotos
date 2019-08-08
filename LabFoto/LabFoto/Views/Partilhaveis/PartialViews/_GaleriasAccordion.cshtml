@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="mb-0">
-                        <div class="ui stackable grid">
+                        <div class="ui grid">
                             <div class="twelve wide column">
                                 <h5 class="pointer" style="margin: 10px 0;"
                                     data-toggle="collapse" data-target="#collapse_@galeria.ID" aria-controls="collapse_@galeria.ID"
@@ -14,8 +14,8 @@
                                     @galeria.Nome <i class="caret down icon"></i>
                                 </h5>
                             </div>
-                            <div class="four wide column">
-                                <div class="ui small basic icon buttons right floated" id="checkbuttons_@galeria.ID" style="display:none;">
+                            <div class="four wide column" id="checkbuttons_@galeria.ID" style="display:none;">
+                                <div class="ui small basic icon buttons right floated">
                                     <span class="ui button" onclick="selectAllCB('#body_@galeria.ID')">
                                         <i class="check circle icon"></i>
                                     </span>
@@ -28,7 +28,7 @@
                     </div>
                 </div>
 
-                <div id="collapse_@galeria.ID" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div id="collapse_@galeria.ID" class="collapse" data-parent="#accordion">
                     <div class="card-body">
                         <div class="my-gallery" id="my-gallery_@galeria.ID" itemscope>
                             <div class="ui six doubling stackable cards mt-2" id="body_@galeria.ID" data-loaded="false"></div>

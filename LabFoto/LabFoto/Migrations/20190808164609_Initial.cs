@@ -295,21 +295,14 @@ namespace LabFoto.Migrations
                 columns: table => new
                 {
                     ID = table.Column<string>(nullable: false),
-                    Nome = table.Column<string>(nullable: true),
+                    Nome = table.Column<string>(nullable: false),
                     Validade = table.Column<DateTime>(nullable: true),
                     Password = table.Column<string>(nullable: true),
-                    RequerenteFK = table.Column<string>(nullable: true),
                     ServicoFK = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Partilhaveis", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Partilhaveis_Requerentes_RequerenteFK",
-                        column: x => x.RequerenteFK,
-                        principalTable: "Requerentes",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Partilhaveis_Servicos_ServicoFK",
                         column: x => x.ServicoFK,
@@ -476,8 +469,8 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "98f8aefc-ee21-48f2-9eed-e66b642a517f", "3765e1e0-62aa-4be6-a3ec-c31d5b1265b1", "Lab", "LAB" },
-                    { "7e49f22a-3376-4fe6-a39f-a1ddb826f03d", "d2887046-bf22-4be1-a014-5bbacb227a05", "Admin", "ADMIN" }
+                    { "c0120a4a-f7d7-47c9-b818-7a49e6c468f5", "77fc8944-a2d3-48e3-9173-1febb945d6cd", "Lab", "LAB" },
+                    { "bcfe08aa-8537-4260-938e-9d58bf663951", "55c32fd2-197e-450e-a281-bdb2b985a596", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -571,36 +564,36 @@ namespace LabFoto.Migrations
                 {
                     { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", new DateTime(2019, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria2", "a0f118c8-8e40-4433-a695-e5ca01788331" },
                     { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", new DateTime(2018, 2, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria3", "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria1", "aca4875a-721e-4cfc-827d-d48c7050b543" },
-                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2018, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria4", "86dafe89-cc9c-4308-ace8-b3ed1f54a346" }
+                    { "d6e3fca1-c766-4333-8211-f63431b30181", new DateTime(2018, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria4", "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeria1", "aca4875a-721e-4cfc-827d-d48c7050b543" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Partilhaveis",
-                columns: new[] { "ID", "Nome", "Password", "RequerenteFK", "ServicoFK", "Validade" },
-                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", "Teste", "123Qwe!", "a0f118c8-8e40-4433-a695-e5ca01788331", "86dafe89-cc9c-4308-ace8-b3ed1f54a346", null });
+                columns: new[] { "ID", "Nome", "Password", "ServicoFK", "Validade" },
+                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
 
             migrationBuilder.InsertData(
                 table: "Servicos_DatasExecucao",
                 columns: new[] { "DataExecucaoFK", "ServicoFK" },
                 values: new object[,]
                 {
+                    { 10, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 11, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 8, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 6, "aca4875a-721e-4cfc-827d-d48c7050b543" },
                     { 8, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
                     { 5, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
-                    { 8, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
                     { 2, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
                     { 5, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 7, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
                     { 2, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
-                    { 6, "aca4875a-721e-4cfc-827d-d48c7050b543" },
-                    { 4, "d6e3fca1-c766-4333-8211-f63431b30181" },
-                    { 11, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
-                    { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 7, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
                     { 11, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
-                    { 10, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
-                    { 9, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 4, "d6e3fca1-c766-4333-8211-f63431b30181" },
                     { 3, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
-                    { 10, "b399e9c7-957e-4e85-9474-bad2cf8032c4" }
+                    { 9, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 10, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" }
                 });
 
             migrationBuilder.InsertData(
@@ -608,24 +601,24 @@ namespace LabFoto.Migrations
                 columns: new[] { "ServicoSolicitadoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 1, "d6e3fca1-c766-4333-8211-f63431b30181" },
-                    { 4, "aca4875a-721e-4cfc-827d-d48c7050b543" },
-                    { 5, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
-                    { 2, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 1, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
                     { 3, "a0f118c8-8e40-4433-a695-e5ca01788331" },
                     { 2, "a0f118c8-8e40-4433-a695-e5ca01788331" },
-                    { 1, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
-                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 5, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 3, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
-                    { 1, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
-                    { 4, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
-                    { 5, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
-                    { 4, "d6e3fca1-c766-4333-8211-f63431b30181" },
-                    { 3, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 4, "aca4875a-721e-4cfc-827d-d48c7050b543" },
+                    { 2, "aca4875a-721e-4cfc-827d-d48c7050b543" },
+                    { 5, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 2, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 1, "d6e3fca1-c766-4333-8211-f63431b30181" },
                     { 2, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
                     { 2, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 2, "aca4875a-721e-4cfc-827d-d48c7050b543" }
+                    { 5, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 5, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
+                    { 3, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 4, "d6e3fca1-c766-4333-8211-f63431b30181" },
+                    { 3, "b399e9c7-957e-4e85-9474-bad2cf8032c4" },
+                    { 4, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
+                    { 1, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" }
                 });
 
             migrationBuilder.InsertData(
@@ -633,14 +626,14 @@ namespace LabFoto.Migrations
                 columns: new[] { "TipoFK", "ServicoFK" },
                 values: new object[,]
                 {
-                    { 1, "aca4875a-721e-4cfc-827d-d48c7050b543" },
-                    { 2, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
                     { 4, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
-                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
                     { 3, "d6e3fca1-c766-4333-8211-f63431b30181" },
-                    { 1, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
                     { 1, "a0f118c8-8e40-4433-a695-e5ca01788331" },
+                    { 2, "56d513fa-cedd-40d9-bd58-12a7ee3f129c" },
+                    { 3, "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298" },
+                    { 1, "86dafe89-cc9c-4308-ace8-b3ed1f54a346" },
                     { 2, "916d75a4-c12e-40c4-bf29-7ec1e31696ac" },
+                    { 1, "aca4875a-721e-4cfc-827d-d48c7050b543" },
                     { 4, "b399e9c7-957e-4e85-9474-bad2cf8032c4" }
                 });
 
@@ -743,11 +736,6 @@ namespace LabFoto.Migrations
                 name: "IX_Galerias_Metadados_GaleriaFK",
                 table: "Galerias_Metadados",
                 column: "GaleriaFK");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Partilhaveis_RequerenteFK",
-                table: "Partilhaveis",
-                column: "RequerenteFK");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Partilhaveis_ServicoFK",
