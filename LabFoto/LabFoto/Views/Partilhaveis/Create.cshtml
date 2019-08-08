@@ -140,8 +140,9 @@
 
         $(document).ready(function ()
         {
-            $('.ui.checkbox').checkbox();
+            $('.ui.checkbox').checkbox(); // Iniciar o componente checkbox do semantic
 
+            // Evento que revela o input da password caso o utilizador assim o desejar
             $('.ui.checkbox').on("change", function (e)
             {
                 let usePassword = $("#usePassword").hasClass("checked");
@@ -160,16 +161,18 @@
                 }
             });
 
-            getGaleriasAccordion();
+            getGaleriasAccordion(); // Fetch do acordião com todas as galerias do serviço
         });
 
-        function startGetPhoto(galeriaId, page)
+        // Esta função certifica-se que as imagens de uma galeria apenas são carregadas uma vez
+        function startGetPhoto(galeriaId)
         {
+            // Verifica se o processo de carregamento de imagens já começou
             let isLoaded = $(`#body_${galeriaId}`).data("loaded");
 
-            if (!isLoaded) // Caso o div não tenha fotografias carregadas
+            if (!isLoaded) // Caso não tenha fotografias carregadas
             {
-                getPhotos(galeriaId, page);
+                getPhotos(galeriaId, 1); // Começa a carregar fotos
 
                 // Marca que o load de fotografias já iniciou, para evitar recarregar fotografias que estão a ser recarregadas
                 $(`#body_${galeriaId}`).data("loaded", true);
@@ -178,22 +181,27 @@
 
         function getPhotos(galeriaId, page)
         {
+            // Feedback loading bar
             $(`#body_${galeriaId}`).append(loader);
+
             $.ajax({
                 type: "GET",
                 url: siteUrl + `/Galerias/Thumbnails/${galeriaId}?page=${page}&justCheckbox=true`,
                 success: function (resp)
                 {
                     $(`#body_${galeriaId} #loader`).remove(); // Remove a barra de loading
+
                     if (resp.noMorePhotos == null) // Enquanto houver mais fotografias a serem carregadas
                     {
-                        if (resp.success == false)
+                        if (resp.success == false) // Caso tenha ocorrido um erro
                         {
                             notifyUser("error", resp.error);
                         }
-                        else
+                        else // Caso exista mais fotografias e não tenha ocorrido um erro
                         {
+                            // Juntar as novas fotos carregadas ao div das fotos da galeria
                             $(`#body_${galeriaId}`).append(resp);
+
                             // Pedir mais fotografias ao servidor
                             page++;
                             getPhotos(galeriaId, page);
@@ -201,32 +209,43 @@
                     }
                     else // Quando terminar de carregar fotografias
                     {
-                        if (isEmpty(`#body_${galeriaId}`)) // Caso não exitam fotografias
+                        if (isEmpty(`#body_${galeriaId}`)) // Caso não existam fotografias
                         {
                             $(`#my-gallery_${galeriaId}`).html(placeHolder); // Mostra um placeholder
-                        } else
+                        }
+                        else // Caso exista fotografias
                         {
                             // Iniciar a galeria do PhotoSwipe
                             initPhotoSwipeFromDOM(`#my-gallery_${galeriaId}`);
+                            $(`#checkbuttons_${galeriaId}`).show();
                         }
                     }
                 },
-                error: function () {
-                    $("#photosContainer").html(`
-                        <div class="ui negative message mt-3">
-                            <div class="header">
-                            Ocorreu um erro
-                            </div>
-                            <p>Infelizmente não foi possível carregar as fotografias.</p>
-                        </div>
-                    `);
+                error: function ()
+                {
+                    $(`#body_${galeriaId} #loader`).remove(); // Remove a barra de loading
+
+                    notifyUser("error", "Não foi possível carregar as fotografias.");
                 }
             });
         }
 
         function getGaleriasAccordion()
         {
-            $("#galerias").html(smallLoader).load(siteUrl + "/Partilhaveis/GaleriasAccordion/@ViewData["ServicoFK"]");
+            $("#galerias")
+                .html(smallLoader)
+                .load(siteUrl + "/Partilhaveis/GaleriasAccordion/@ViewData["ServicoFK"]");
+        }
+
+        function clearCB(divId)
+        {
+            $(`${divId} .btnCB.blue`).click();
+        }
+
+        function selectAllCB(divId)
+        {
+            clearCB(divId);
+             $(`${divId} .btnCB`).click();
         }
 
         function pushToPhotos(newPhotoId)

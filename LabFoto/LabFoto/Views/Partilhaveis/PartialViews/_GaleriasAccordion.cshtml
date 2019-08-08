@@ -5,14 +5,27 @@
         {
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">
-                        <span class="pointer" 
-                              data-toggle="collapse" data-target="#collapse_@galeria.ID" aria-controls="collapse_@galeria.ID"
-                              onclick="startGetPhoto('@galeria.ID', 1)"
-                              >
-                            @galeria.Nome <i class="caret down icon"></i>
-                        </span>
-                    </h5>
+                    <div class="mb-0">
+                        <div class="ui stackable grid">
+                            <div class="twelve wide column">
+                                <h5 class="pointer" style="margin: 10px 0;"
+                                    data-toggle="collapse" data-target="#collapse_@galeria.ID" aria-controls="collapse_@galeria.ID"
+                                    onclick="startGetPhoto('@galeria.ID')">
+                                    @galeria.Nome <i class="caret down icon"></i>
+                                </h5>
+                            </div>
+                            <div class="four wide column">
+                                <div class="ui small basic icon buttons right floated" id="checkbuttons_@galeria.ID" style="display:none;">
+                                    <span class="ui button" onclick="selectAllCB('#body_@galeria.ID')">
+                                        <i class="check circle icon"></i>
+                                    </span>
+                                    <span class="ui button" onclick="clearCB('#body_@galeria.ID')">
+                                        <i class="check circle outline icon"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="collapse_@galeria.ID" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
