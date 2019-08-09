@@ -1,22 +1,22 @@
-﻿@model  LabFoto.Models.ViewModels.GaleriasOfServiceViewModel
+﻿@model LabFoto.Models.ViewModels.PartilhavelIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Galerias</h1>
+<h1>Partilháveis</h1>
 
-<form asp-controller="Galerias" asp-action="IndexFilter" class="mb-2 unselectable"
+<form asp-controller="Partilhaveis" asp-action="IndexFilter" class="mb-2 unselectable"
       data-ajax="true" data-ajax-method="POST"
-      data-ajax-mode="replace" data-ajax-update="#cardsGalerias"
-      id="GaleriasSearchForm">
+      data-ajax-mode="replace" data-ajax-update="#partilhaveisList"
+      id="PartilhaveisSearchForm" data-ajax-success="tooltip()">
 
     <div class="ui segment padded">
         <div class="ui form" id="searchParams">
             <div class="fields">
                 <div class=" eight wide field">
                     <div class="ui transparent left icon input large">
-                        <input type="search" id="NomeSearch" placeholder="Nome da galeria..." name="nomeSearch">
+                        <input type="search" id="NomeSearch" placeholder="Nome do partilhável..." name="nomeSearch">
                         <i class="search icon"></i>
                     </div>
                 </div>
@@ -42,33 +42,16 @@
                     </div>
                     <div class="eight wide field">
                         <small class="form-text text-muted">
-                            Metadados
+                            Validade
                         </small>
                     </div>
                 </div>
                 <div class="fields">
-                    <div class="eight wide field" id="servicosDropDown"
+                    <div class="eight wide field" id="servicosDropdown"
                          onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
                     </div>
-                    <div class="eight wide field" id="metadadosCB"
+                    <div class="eight wide field" id="validadeDropdown"
                          onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
-                    </div>
-                </div>
-
-                <div class="fields">
-                    <div class="eight wide field">
-                        <small class="form-text text-muted  ">
-                            Desde
-                        </small>
-                        <input type="date" class="searchServicoDate" name="DateMin"
-                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
-                    </div>
-                    <div class="eight wide field">
-                        <small class="form-text text-muted">
-                            Até
-                        </small>
-                        <input type="date" id="dataSearchMax" name="DateMax"
-                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
                     </div>
                 </div>
             </div>
@@ -90,8 +73,8 @@
 
     <div class="row mt-2 mb-2">
         <div class="col-md-6">
-            <a class="ui blue mini button" href="/Galerias/Create">
-                <i class="fas fa-plus"></i> Nova Galeria
+            <a class="ui blue mini button" href="#">
+                <i class="fas fa-plus"></i> Novo Partilhável
             </a>
         </div>
         <div class="col-md-3">
@@ -111,14 +94,14 @@
         <div class="col-md-2">
             <div class="content" style="padding-top:10px;">
                 <div class="ui inline dropdown">
-                    <input type="hidden" name="GaleriasPerPage" onchange="submitSearchForm()" />
+                    <input type="hidden" name="PartilhaveisPerPage" onchange="submitSearchForm()" />
                     <span>Ver </span>
-                    <span class="text" onchange="servicosPerPageRefresh">@ViewData["galPP"]</span>
+                    <span class="text">@ViewData["partPP"]</span>
                     <i class="dropdown icon"></i>
                     <div class="menu">
-                        <div class="item" data-text="8" data-value="8">8</div>
-                        <div class="item" data-text="16" data-value="16">16</div>
-                        <div class="item" data-text="32" data-value="32">32</div>
+                        <div class="item" data-text="10" data-value="10">10</div>
+                        <div class="item" data-text="25" data-value="25">25</div>
+                        <div class="item" data-text="50" data-value="50">50</div>
                     </div>
                 </div>
                 <span> por página</span>
@@ -126,80 +109,71 @@
         </div>
     </div>
 
-    <div id="cardsGalerias">
+    <div id="partilhaveisList" class="mt-3">
+        <partial name="PartialViews/_IndexCards" model="@Model" />
     </div>
 </form>
 
-<div id="metadadosBackup" hidden></div>
+<div id="validadeBackup" hidden></div>
 <div id="servicosBackup" hidden></div>
 
 @section scripts
 {
     <script>
-        $(document).ready(function () {
-
-            $("#cardsGalerias").html(loader);
-            $("#metadadosCB").html(smallLoader);
-            $("#servicosDropDown").html(smallLoader);
+        $(document).ready(function ()
+        {
+            $("#validadeDropdown").html(smallLoader);
+            $("#servicosDropdown").html(smallLoader);
 
             // A dropdown dos metadados são carregadas para um div de backup
             // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
             // recuperar o html dos divs de backup
-            $("#metadadosBackup").load(siteUrl + "/Galerias/MetadadosDropdown", function () {
-                $("#metadadosCB").html($("#metadadosBackup").html());
+            $("#validadeBackup").load(siteUrl + "/Partilhaveis/ValidadeDropdown", function ()
+            {
+                $("#validadeDropdown").html($("#validadeBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
-            $("#servicosBackup").load(siteUrl + "/Servicos/ServicosDropdown", function () {
-                $("#servicosDropDown").html($("#servicosBackup").html());
+            $("#servicosBackup").load(siteUrl + "/Servicos/ServicosDropdown", function ()
+            {
+                $("#servicosDropdown").html($("#servicosBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
 
-            getInitialGalerias();
+            tooltip();
         });
 
-        function getInitialGalerias() {
-            $.ajax({
-                    type: "GET",
-                    url: siteUrl + "/Galerias/InitialGaleria?servicoId=@Model.ServicoID",
-                    success: function (resp) {
-                        $("#cardsGalerias").html(resp);
-                    },
-                    error: function () {
-                        $("#cardsGalerias").html(`
-                            <div class="ui negative message">
-                              <div class="header">
-                                Ocorreu um erro
-                              </div>
-                              <p>Infelizmente não foi possível carregar as galerias.</p>
-                            </div>
-                        `);
-                    }
-                });
+        function tooltip()
+        {
+            $('[data-toggle="tooltip"]').tooltip();
         }
 
-        $(".input").on('keyup', function (e) {
-            if (e.keyCode == 13) {
+        $(".input").on('keyup', function (e)
+        {
+            if (e.keyCode == 13)
+            {
                 submitSearchForm();
             }
         });
 
-        clearSearch = () => {
+        clearSearch = () =>
+        {
             $(`#searchParams input[type="search"]`).val("");
             $(`#searchParams input[type="date"]`).val("");
             // Recarregar as dropdows dos tipos e dos serviços solicitados
             // Estes encontram-se num div de backup, pois tem o layout do semantic-ui
             // Assim evita-se alterar o codigo do semantic-ui, pois isso pode levantar problemas
-            $("#metadadosCB").html($("#metadadosBackup").html());
-            $("#servicosDropDown").html($("#servicosBackup").html());
+            $("#validadeDropdown").html($("#validadeBackup").html());
+            $("#servicosDropdown").html($("#servicosBackup").html());
             $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             submitSearchForm();
         };
 
         // Submit do form das pesquisas dos servicos
-        submitSearchForm = (page) => {
+        submitSearchForm = (page) =>
+        {
             $("#pageNum").val(page);
-            $("#GaleriasSearchForm").submit();
-            $("#cardsGalerias").html(loader);
+            $("#PartilhaveisSearchForm").submit();
+            $("#partilhaveisList").html(loader);
         };
     </script>
 

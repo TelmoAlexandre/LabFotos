@@ -1,7 +1,5 @@
 ﻿@model LabFoto.Models.ViewModels.GaleriasIndexViewModel
 
-
-
 @if (Model.Galerias.Count() == 0)
 {
     <div class="my-lg-5 d-flex justify-content-center">
@@ -107,9 +105,3 @@ else
         <input type="number" name="Page" id="pageNum" hidden />
     </div>
 }
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    }, false);
-</script>

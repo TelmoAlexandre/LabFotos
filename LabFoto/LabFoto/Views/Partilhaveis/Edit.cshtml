@@ -1,23 +1,23 @@
 ﻿@model LabFoto.Models.ViewModels.PartilhavelEditViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar";
 }
 
 @{
     string photosIDs = Model.PhotosIDs;
 }
 
-<h1>Edit</h1>
+<h1>Editar</h1>
 
-<h4>Partilhavel</h4>
 <hr />
 <div class="ui raised segment mt-4">
-    <p class="ui blue ribbon label mb-3">Criar Partilhavel</p>
+    <p class="ui blue ribbon label mb-3">Editar Partilhavel</p>
     <form asp-action="Edit">
         <div class="ui form">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Partilhavel.ID" />
+            <input type="hidden" asp-for="Partilhavel.DataDeCriacao" />
             <div class="fields">
                 <div class="ten wide field mb-2">
                     <label asp-for="Partilhavel.Nome"></label>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="six wide field">
                     <label asp-for="Partilhavel.Validade"></label>
-                    <input asp-for="Partilhavel.Validade"/>
+                    <input asp-for="Partilhavel.Validade" />
                 </div>
             </div>
             <div class="five wide field mb-2">

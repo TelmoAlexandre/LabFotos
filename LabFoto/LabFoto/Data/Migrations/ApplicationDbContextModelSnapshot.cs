@@ -4,16 +4,14 @@ using LabFoto.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190808164609_Initial")]
-    partial class Initial
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -401,6 +399,8 @@ namespace LabFoto.Migrations
                     b.Property<string>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("DataDeCriacao");
+
                     b.Property<string>("Nome")
                         .IsRequired();
 
@@ -420,6 +420,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                            DataDeCriacao = new DateTime(2019, 8, 9, 16, 17, 23, 987, DateTimeKind.Local).AddTicks(6258),
                             Nome = "Teste",
                             Password = "123Qwe!",
                             ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
@@ -1052,15 +1053,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bcfe08aa-8537-4260-938e-9d58bf663951",
-                            ConcurrencyStamp = "55c32fd2-197e-450e-a281-bdb2b985a596",
+                            Id = "0d5b68e8-1757-4303-9054-2476854587cc",
+                            ConcurrencyStamp = "144cea97-6e98-44c8-bfe7-02866ecab29a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c0120a4a-f7d7-47c9-b818-7a49e6c468f5",
-                            ConcurrencyStamp = "77fc8944-a2d3-48e3-9173-1febb945d6cd",
+                            Id = "945ae3ff-53af-4de1-a3fd-7345abd8d377",
+                            ConcurrencyStamp = "fda6c76f-e543-46d2-9aef-b37e9f641541",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });

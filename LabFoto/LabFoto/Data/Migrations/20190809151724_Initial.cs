@@ -297,6 +297,7 @@ namespace LabFoto.Migrations
                     ID = table.Column<string>(nullable: false),
                     Nome = table.Column<string>(nullable: false),
                     Validade = table.Column<DateTime>(nullable: true),
+                    DataDeCriacao = table.Column<DateTime>(nullable: false),
                     Password = table.Column<string>(nullable: true),
                     ServicoFK = table.Column<string>(nullable: true)
                 },
@@ -469,8 +470,8 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "c0120a4a-f7d7-47c9-b818-7a49e6c468f5", "77fc8944-a2d3-48e3-9173-1febb945d6cd", "Lab", "LAB" },
-                    { "bcfe08aa-8537-4260-938e-9d58bf663951", "55c32fd2-197e-450e-a281-bdb2b985a596", "Admin", "ADMIN" }
+                    { "945ae3ff-53af-4de1-a3fd-7345abd8d377", "fda6c76f-e543-46d2-9aef-b37e9f641541", "Lab", "LAB" },
+                    { "0d5b68e8-1757-4303-9054-2476854587cc", "144cea97-6e98-44c8-bfe7-02866ecab29a", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -570,8 +571,8 @@ namespace LabFoto.Migrations
 
             migrationBuilder.InsertData(
                 table: "Partilhaveis",
-                columns: new[] { "ID", "Nome", "Password", "ServicoFK", "Validade" },
-                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
+                columns: new[] { "ID", "DataDeCriacao", "Nome", "Password", "ServicoFK", "Validade" },
+                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 8, 9, 16, 17, 23, 987, DateTimeKind.Local).AddTicks(6258), "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
 
             migrationBuilder.InsertData(
                 table: "Servicos_DatasExecucao",

@@ -33,6 +33,19 @@ namespace LabFoto.Controllers
         }
 
         #region Ajax
+        
+        // GET: Galerias/ServicosDropdown
+        /// <summary>
+        /// Dropdown com todos os serviços.
+        /// </summary>
+        /// <returns>PartialView com o HTML da dropdown</returns>
+        public IActionResult ServicosDropdown()
+        {
+            // Todos os serviços numa SelectList
+            SelectList servicos = new SelectList(_context.Servicos.OrderBy(s => s.Nome), "ID", "Nome");
+
+            return PartialView("PartialViews/_ServicosDropdown", servicos);
+        }
 
         // GET: Servicos
         public async Task<IActionResult> RequerentesAjax(string id)
