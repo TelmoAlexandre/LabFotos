@@ -805,6 +805,7 @@ namespace LabFoto.Data
                     ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
                     Nome = "Teste",
                     Password = "123Qwe!",
+                    DataDeCriacao = DateTime.Now,
                     Validade = null,
                     ServicoFK = servicosIDs[5]
                 }

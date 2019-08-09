@@ -25,6 +25,7 @@ namespace LabFoto.Controllers
         private readonly IEmailAPI _email;
         private readonly AppSettings _appSettings;
         private readonly ILogger<PartilhaveisController> _logger;
+        private readonly int _partPP = 10;
 
         #region Constructor
         public PartilhaveisController(ApplicationDbContext context,
@@ -103,70 +104,10 @@ namespace LabFoto.Controllers
 
             return PartialView("PartialViews/_GaleriasAccordion", response);
         }
-        #endregion
 
-        #region Entrega
-        [AllowAnonymous]
-        // GET: Partilhaveis
-        public async Task<IActionResult> Entrega(string id)
+        public IActionResult ValidadeDropdown()
         {
-            if (String.IsNullOrEmpty(id))
-                return NotFound();
-
-            var partilhavel = await _context.Partilhaveis
-               .Include(p => p.Servico)
-               .Include(p => p.Partilhaveis_Fotografias).ThenInclude(pf => pf.Fotografia)
-               .Where(p => p.ID.Equals(id))
-               .FirstOrDefaultAsync();
-
-            if (partilhavel == null)
-                return NotFound();
-
-            if (User.Identity.IsAuthenticated)
-                return View("Details", partilhavel);
-
-            if (partilhavel.Validade != null)
-                if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
-                    return NotFound();
-
-            return View("PasswordForm", new PartilhavelIndexViewModel()
-            {
-                Partilhavel = partilhavel
-            });
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        // GET: Partilhaveis
-        public async Task<IActionResult> Entrega(string ID, string Password)
-        {
-            if (String.IsNullOrEmpty(ID) || String.IsNullOrEmpty(Password))
-                return NotFound();
-
-            var partilhavel = await _context.Partilhaveis
-                .Include(p => p.Servico)
-                .Include(p => p.Partilhaveis_Fotografias).ThenInclude(pf => pf.Fotografia)
-                .Where(p => p.ID.Equals(ID))
-                .FirstOrDefaultAsync();
-
-            if (partilhavel == null)
-                return NotFound();
-
-            if (partilhavel.Validade != null)
-                if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
-                    return NotFound();
-
-            if (!partilhavel.Password.Equals(Password))
-            {
-                ModelState.AddModelError("Password", "Password errada.");
-                return View("PasswordForm", new PartilhavelIndexViewModel()
-                {
-                    Partilhavel = partilhavel
-                });
-            }
-
-            return View("Details", partilhavel);
+            return PartialView("PartialViews/_ValidadeDropdown");
         }
         #endregion
 
@@ -216,6 +157,166 @@ namespace LabFoto.Controllers
                 Index = skipNum
             };
             return PartialView("PartialViews/_ListPhotos", response);
+        }
+        #endregion
+
+        public async Task<IActionResult> Index()
+        {
+            // Fornecer feedback ao cliente caso este exista.
+            // Este feedback é fornecido na view a partir de uma notificação 'Noty'
+            if (TempData["Feedback"] != null)
+            {
+                ViewData["Feedback"] = TempData["Feedback"];
+                ViewData["Type"] = TempData["Type"] ?? "success";
+            }
+
+            // Recolher os partilhaveis por página do cookie
+            int partPP = CookieAPI.GetAsInt32(Request, "PartilhaveisPerPage") ?? _partPP;
+
+            var partilhaveis = _context.Partilhaveis.Include(p => p.Servico).OrderByDescending(p => p.DataDeCriacao);
+
+            PartilhavelIndexViewModel response = new PartilhavelIndexViewModel
+            {
+                Partilhaveis = await partilhaveis.Take(partPP).ToListAsync(),
+                FirstPage = true,
+                LastPage = (partilhaveis.Count() <= partPP),
+                PageNum = 1
+            };
+
+            ViewData["partPP"] = partPP;
+
+            return View(response);
+        }
+
+        // POST: Servicos/IndexFilter
+        [HttpPost]
+        public async Task<IActionResult> IndexFilter([Bind("NomeSearch,ServicoId,Validade,Ordem,Page,PartilhaveisPerPage")] PartilhavelSearchViewModel search)
+
+        {
+            int skipNum = (search.Page - 1) * search.PartilhaveisPerPage;
+
+            // Recolher os partilhaveis por página do cookie
+            int partPP = CookieAPI.GetAsInt32(Request, "PartilhaveisPerPage") ?? _partPP;
+
+            // Caso o utilizador tenha alterado os partilhaveis por página, alterar a variável e guardar
+            // o novo  valor no cookie
+            if (search.PartilhaveisPerPage != partPP)
+            {
+                partPP = search.PartilhaveisPerPage;
+                CookieAPI.Set(Response, "PartilhaveisPerPage", partPP.ToString());
+            }
+
+            // Query de todos os serviços
+            IQueryable<Partilhavel> partilhaveis = _context.Partilhaveis;
+
+            // Caso exista pesquisa por nome
+            if (!String.IsNullOrEmpty(search.NomeSearch))
+            {
+                partilhaveis = partilhaveis.Where(p => p.Nome.Contains(search.NomeSearch));
+            }
+            // Caso exista pesquisa por servicço
+            if (!String.IsNullOrEmpty(search.ServicoId))
+            {
+                partilhaveis = partilhaveis.Where(p => p.ServicoFK.Equals(search.ServicoId));
+            }
+
+            switch (search.Validade)
+            {
+                case "valido":
+                    partilhaveis = partilhaveis.Where(p => p.Validade == null || DateTime.Compare((DateTime)p.Validade, DateTime.Now) > 0);
+                    break;
+                case "expirado":
+                    partilhaveis = partilhaveis.Where(p => p.Validade != null && DateTime.Compare((DateTime)p.Validade, DateTime.Now) < 0);
+                    break;
+                default:
+                    break;
+            }
+            
+            switch (search.Ordem)
+            {
+                case "nome":
+                    partilhaveis = partilhaveis.OrderBy(p => p.Nome);
+                    break;
+                default:
+                    partilhaveis = partilhaveis.OrderByDescending(p => p.DataDeCriacao);
+                    break;
+            }
+
+            partilhaveis = partilhaveis.Include(p => p.Servico).Skip(skipNum);
+
+            PartilhavelIndexViewModel response = new PartilhavelIndexViewModel
+            {
+                Partilhaveis = await partilhaveis.Take(partPP).ToListAsync(),
+                FirstPage = (search.Page == 1),
+                LastPage = (partilhaveis.Count() <= partPP),
+                PageNum = search.Page
+            };
+
+            return PartialView("PartialViews/_IndexCards", response);
+        }
+
+        #region Details
+        [AllowAnonymous]
+        // GET: Partilhaveis
+        public async Task<IActionResult> Details(string id)
+        {
+            if (String.IsNullOrEmpty(id))
+                return NotFound();
+
+            var partilhavel = await _context.Partilhaveis
+               .Include(p => p.Servico)
+               .Include(p => p.Partilhaveis_Fotografias).ThenInclude(pf => pf.Fotografia)
+               .Where(p => p.ID.Equals(id))
+               .FirstOrDefaultAsync();
+
+            if (partilhavel == null)
+                return NotFound();
+
+            if (User.Identity.IsAuthenticated)
+                return View("Details", partilhavel);
+
+            if (partilhavel.Validade != null)
+                if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
+                    return NotFound();
+
+            return View("PasswordForm", new PartilhavelDetailsViewModel()
+            {
+                Partilhavel = partilhavel
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        // GET: Partilhaveis
+        public async Task<IActionResult> Details(string ID, string Password)
+        {
+            if (String.IsNullOrEmpty(ID) || String.IsNullOrEmpty(Password))
+                return NotFound();
+
+            var partilhavel = await _context.Partilhaveis
+                .Include(p => p.Servico)
+                .Include(p => p.Partilhaveis_Fotografias).ThenInclude(pf => pf.Fotografia)
+                .Where(p => p.ID.Equals(ID))
+                .FirstOrDefaultAsync();
+
+            if (partilhavel == null)
+                return NotFound();
+
+            if (partilhavel.Validade != null)
+                if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
+                    return NotFound();
+
+            if (!partilhavel.Password.Equals(Password))
+            {
+                ModelState.AddModelError("Password", "Password errada.");
+                return View("PasswordForm", new PartilhavelDetailsViewModel()
+                {
+                    Partilhavel = partilhavel
+                });
+            }
+
+            return View("Details", partilhavel);
         }
         #endregion
 
@@ -280,6 +381,7 @@ namespace LabFoto.Controllers
 
                 try
                 {
+                    partilhavel.DataDeCriacao = DateTime.Now;
                     _context.Add(partilhavel);
                     await _context.SaveChangesAsync();
                 }

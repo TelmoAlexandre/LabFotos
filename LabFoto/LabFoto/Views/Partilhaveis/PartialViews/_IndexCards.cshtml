@@ -1,0 +1,81 @@
+﻿@model LabFoto.Models.ViewModels.PartilhavelIndexViewModel
+
+@if (Model.Partilhaveis.Count() == 0)
+{
+    <div class="my-lg-5 d-flex justify-content-center">
+        <p class="font-weight-bolder">Não foram encontrados Partilhaveis.</p>
+    </div>
+}
+else
+{
+    @foreach (var partilhavel in Model.Partilhaveis)
+    {
+        var color = "green";
+
+        // Caso o partilhavel tenha expirado, mostra o segmento a vermelhor para avisar que já expirou
+        if (partilhavel.Validade != null)
+        {
+            if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
+            {
+                color = "red";
+            }
+        }
+
+        <div class="ui @color raised segment">
+            <div class="ui doubling stackable grid">
+                <div class="four wide column mt-2">
+                    <a asp-action="Details" asp-controller="Partilhaveis" asp-route-id="@partilhavel.ID" 
+                       class="plainTextLink font-weight-bold" data-toggle="tooltip" title="Nome">
+                        @partilhavel.Nome
+                    </a>
+                </div>
+                <div class="three wide column mt-2">
+                    @if (partilhavel.Validade != null)
+                    {
+                        <span class="font-weight-bold" data-toggle="tooltip" title="Expira em">@Html.DisplayFor(modelItem => partilhavel.Validade)</span>
+                    }
+                </div>
+                <div class="five wide column mt-2">
+                    <a asp-action="Details" asp-controller="Servicos" asp-route-id="@partilhavel.ServicoFK" 
+                       target="_blank" class="plainTextLink font-weight-bold" data-toggle="tooltip" title="Serviço">
+                        @partilhavel.Servico.Nome
+                    </a>
+                </div>
+                <div class="four wide column">
+                    <div class="ui mini icon basic buttons right floated">
+                        <div class="ui button" data-toggle="tooltip" title="Enviar Email" style="padding-top:11px;">
+                            <i class="envelope outline icon"></i>
+                        </div>
+                        <a asp-action="Delete" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></a>
+                        <a asp-action="Edit" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                        <a asp-action="Details" asp-route-id="@partilhavel.ServicoFK" class="ui button" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    // Paginação -----------------------------------------------------------------------------------------
+
+    string previousPage = (Model.FirstPage) ? "-" : Model.PageNum - 1 + "";
+    string nextPage = (Model.LastPage) ? "-" : Model.PageNum + 1 + "";
+    // Esconder as opções caso seja a primeira ou ultima página. Feito com CSS.
+    string disablePreviousPage = Model.FirstPage ? "disabled" : "";
+    string disableNextPage = Model.LastPage ? "disabled" : "";
+
+    <div class=" mt-4 unselectable">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @disablePreviousPage">
+                    <span class="page-link pointer" onclick="submitSearchForm(@previousPage)">Anterior</span>
+                </li>
+                <li class="page-item @disablePreviousPage"><span class="page-link pointer" onclick="submitSearchForm(@previousPage)">@previousPage</span></li>
+                <li class="page-item active" unselectable="on"><span class="page-link pointer">@Model.PageNum</span></li>
+                <li class="page-item @disableNextPage"><span class="page-link pointer" onclick="submitSearchForm(@nextPage)">@nextPage</span></li>
+                <li class="page-item @disableNextPage">
+                    <span class="page-link pointer" onclick="submitSearchForm(@nextPage)">Próxima</span>
+                </li>
+            </ul>
+        </nav>
+        <input type="number" name="Page" id="pageNum" hidden />
+    </div>
+}

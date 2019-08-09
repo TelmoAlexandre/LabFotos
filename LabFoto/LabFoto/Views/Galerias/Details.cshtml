@@ -13,12 +13,19 @@
         <div class="ui grid">
             <div class="eight wide column">
                 <p class="ui blue ribbon label mb-3">Galeria</p>
-                <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="Details/@Model.ID" class="ml-2 ui basic mini button">
-                    <i class="edit icon"></i> Editar
-                </a>
-                <span class="ml-2 ui basic mini button" onclick="confirmationModal('deleteGaleria', deleteGaleria, '@Model.ID')">
-                    <i class="trash alternate outline icon"></i> Eliminar
-                </span>
+                <div class="ui icon mini basic buttons right floated">
+                    <a asp-action="Create" asp-controller="Partilhaveis" asp-route-servicoID="@Model.ServicoFK"
+                       class="ui button pl-3" data-toggle="tooltip" title="Novo Partilhável">
+                        <i class="share alternate icon"></i>
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.ID" class="ml-2 ui button pl-3 pr-2" data-toggle="tooltip" title="Editar Galeria">
+                        <i class="edit icon"></i>
+                    </a>
+                    <span class="ml-2 ui button pl-3 pr-3" onclick="confirmationModal('deleteGaleria', deleteGaleria, '@Model.ID')"
+                           data-toggle="tooltip" title="Eliminar Galeria">
+                        <i class="trash alternate outline icon"></i>
+                    </span>
+                </div>
                 <dl class="row mb-0">
                     <dt class="col-sm-4">
                         @Html.DisplayNameFor(model => model.Nome)
@@ -184,6 +191,8 @@
 
         $(document).ready(function ()
         {
+            $('[data-toggle="tooltip"]').tooltip();
+
             // Começar a pedir fotografias
             getPhotos(1);
 

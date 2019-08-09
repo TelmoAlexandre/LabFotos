@@ -90,19 +90,6 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_MetadadosDropdown", response);
         }
 
-        // GET: Galerias/ServicosDropdown
-        /// <summary>
-        /// Dropdown com todos os serviços.
-        /// </summary>
-        /// <returns>PartialView com o HTML da dropdown</returns>
-        public IActionResult ServicosDropdown()
-        {
-            // Todos os serviços numa SelectList
-            SelectList servicos = new SelectList(_context.Servicos.OrderBy(s => s.Nome), "ID", "Nome");
-
-            return PartialView("PartialViews/_ServicosDropdown", servicos);
-        }
-
         public async Task<IActionResult> InitialGaleria(string servicoId)
         {
             var galerias = _context.Galerias.Include(g => g.Fotografias).Include(g => g.Servico).Select(g => g);

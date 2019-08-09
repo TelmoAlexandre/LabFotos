@@ -15,6 +15,8 @@ namespace LabFoto.Models.Tables
 
         [DataType(DataType.Date)]
         public DateTime? Validade { get; set; }
+        [DataType(DataType.Date), Display(Name = "Data de Criação")]
+        public DateTime DataDeCriacao { get; set; }
         public string Password { get; set; }
 
         [ForeignKey("Servico")]
