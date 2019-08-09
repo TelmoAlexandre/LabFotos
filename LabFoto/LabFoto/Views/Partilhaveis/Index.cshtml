@@ -73,9 +73,9 @@
 
     <div class="row mt-2 mb-2">
         <div class="col-md-6">
-            <a class="ui blue mini button" href="#">
+            <span class="ui blue mini button" onclick="showModal('modalNovoPartilhavel', false)">
                 <i class="fas fa-plus"></i> Novo Partilhável
-            </a>
+            </span>
         </div>
         <div class="col-md-3">
             <div class="content" style="padding-top:10px;">
@@ -117,6 +117,22 @@
 <div id="validadeBackup" hidden></div>
 <div id="servicosBackup" hidden></div>
 
+<div class="ui modal basic small fluidCorners" id="modalNovoPartilhavel">
+    <div class="content">
+        <div class="ui segment">
+            <p class="ui blue ribbon label mb-3">Criar Partilhavel</p>
+            <div class="ui form">
+                <label class="font-weight-bold" style="color:black;">Serviço</label>
+                <div class="field" id="newPartilhavel">
+
+                </div>
+                <span class="ui button primary" onclick="newPartilhavel()">Continuar</span>
+                <span class="ui button ml-1" onclick="hideModal('modalNovoPartilhavel')">Cancelar</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts
 {
     <script>
@@ -136,11 +152,18 @@
             $("#servicosBackup").load(siteUrl + "/Servicos/ServicosDropdown", function ()
             {
                 $("#servicosDropdown").html($("#servicosBackup").html());
+                $("#newPartilhavel").html($("#servicosBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
 
             tooltip();
         });
+
+        function newPartilhavel()
+        {
+            let servicoId = $(".item.active.selected").data("value");
+            window.location.href = siteUrl + `/Partilhaveis/Create?servicoID=${servicoId}`;
+        }
 
         function tooltip()
         {

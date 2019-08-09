@@ -123,8 +123,17 @@ hideModal = () => {
     $(".ui.modal").modal("hide");
 };
 
-showModal = (modalId) => {
-    $(`#${modalId}`).modal("show");
+showModal = (modalId, closable) =>
+{
+    if (closable === null || !closable)
+    {
+        $(`#${modalId}`).modal({ closable: false}).modal("show");
+    }
+    else
+    {
+        $(`#${modalId}`).modal("show");
+    }
+    
 };
 
 deleteElement = (id) => {

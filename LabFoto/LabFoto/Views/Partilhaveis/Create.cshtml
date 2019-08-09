@@ -236,6 +236,14 @@
                 .html(smallLoader)
                 .load(siteUrl + "/Partilhaveis/GaleriasAccordion/@Model.ServicoFK", function ()
                 {
+                    if (isEmpty("#accordion"))
+                    {
+                        $("#galerias").html(`
+                            <div class="my-lg-5 d-flex justify-content-center">
+                                <p class="font-weight-bolder">Este serviço não tem galerias.</p>
+                            </div>`
+                        );
+                    }
                     $('[data-toggle="tooltip"]').tooltip();
                 });
         }
