@@ -54,6 +54,34 @@
             }).modal('show');
         }
 
+        function enviarEmail(id)
+        {
+            $.ajax({
+                url: "@Url.Action("SendMail","Partilhaveis")",
+                type: "POST",
+                data: {
+                    "id": id,
+                    "__RequestVerificationToken": $(`input[name='__RequestVerificationToken']`).val(),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                success: function (resp)
+                {
+                    if (resp.success)
+                    {
+                        notifyUser("success", "Email enviado com sucesso.");
+                    }
+                    else
+                    {
+                         notifyUser("error", "Erro ao enviar email.");
+                    }
+                },
+                error: function ()
+                {
+                    notifyUser("error", "Erro ao enviar email.");
+                }
+            });
+        };
+
         function deleteServico(id)
         {
             $.ajax({

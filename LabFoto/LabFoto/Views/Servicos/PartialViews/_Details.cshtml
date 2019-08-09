@@ -1,27 +1,32 @@
 ﻿@model LabFoto.Models.Tables.Servico
 
-
 <div class="card">
     <div class="card-header " id="heading_@Model.ID">
-        <h5 class="mb-0">
-            <span class="btn font-weight-bold collapsed" style="-webkit-user-select:text;">
-                @Html.DisplayFor(modelItem => Model.Nome)
-            </span>
-            @if (ViewData["details"] != null)
-            {
-                if (ViewData["details"].Equals(true))
-                {
-                    <span value="Delete" onclick="confirmDeleteServico('@Model.ID')" class="btn btn-light float-right pointer" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></span>
-                    @Html.AntiForgeryToken()
-                }
-                else
-                {
-                    <a asp-controller="Servicos" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
-                }
-            }
-            <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="Details/@Model.ID" class="btn btn-light float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-            <a class="btn btn-light float-right" asp-controller="Galerias" asp-action="Index" asp-route-serv="@Model.ID" data-toggle="tooltip" title="Ver Galerias (@Model.Galerias.Count())"><i class="far fa-images"></i></a>
-        </h5>
+        <div class="ui grid">
+            <div class="nine wide column mb-0 mt-2">
+                <span class="pl-0 font-weight-bold collapsed" style="-webkit-user-select:text;">
+                    @Html.DisplayFor(modelItem => Model.Nome)
+                </span>
+            </div>
+            <div class="four wide column right floated">
+                <div class="ui icon buttons right floated">
+                    <a class="ui button basic" asp-controller="Galerias" asp-action="Index" asp-route-serv="@Model.ID" data-toggle="tooltip" title="Ver Galerias (@Model.Galerias.Count())"><i class="far fa-images"></i></a>
+                    <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="Details/@Model.ID" class="ui button basic" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                    @if (ViewData["details"] != null)
+                    {
+                        if (ViewData["details"].Equals(true))
+                        {
+                            <span value="Delete" onclick="confirmDeleteServico('@Model.ID')" class="ui button basic" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></span>
+                            @Html.AntiForgeryToken()
+                        }
+                        else
+                        {
+                            <a asp-controller="Servicos" asp-action="Details" asp-route-id="@Model.ID" class="ui button basic" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="collapse_@Model.ID" class="show" aria-labelledby="headingOne">
@@ -35,13 +40,13 @@
                         <div class="dataEntrega">
                             <span>Entregue</span>
                             @if (Model.DataEntrega != null)
-            {
-                        <span class="float-right font-weight-bold">@String.Format("{0:yyyy/MM/dd}", Model.DataEntrega)</span>
-            }
-            else
-            {
+                            {
+                                <span class="float-right font-weight-bold">@String.Format("{0:yyyy/MM/dd}", Model.DataEntrega)</span>
+                            }
+                            else
+                            {
                                 <span class="float-right font-weight-bold">----/--/--</span>
-            }
+                            }
                         </div>
                         <div class="requerente">
                             <span>Requerente</span> <span class="float-right font-weight-bold pointer btn-link" style="text-decoration:none;" onclick="servicoRequerenteDetails('modalDetailsRequerente', '@Model.Requerente.ID')">@Model.Requerente.Nome</span>
@@ -129,9 +134,54 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function ()
+<h3>Partilháveis</h3>
+<a asp-action="Create" asp-controller="Partilhaveis" asp-route-servicoID="@Model.ID"
+   class="mb-0 ui button mini primary">
+    <i class="share alternate icon"></i> Novo Partilhável
+</a>
+@if (Model.Partilhaveis.Count() != 0)
+{
+    @foreach (var partilhavel in Model.Partilhaveis)
     {
+        var color = "green";
+
+        // Caso o partilhavel tenha expirado, mostra o segmento a vermelhor para avisar que já expirou
+        if (partilhavel.Validade != null)
+        {
+            if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
+            {
+                color = "red";
+            }
+        }
+        <div class="ui raised @color segment">
+            <div class=" ui grid stackable">
+                <div class="row">
+                    <div class="ui eight wide column ml-2 pl-5 pt-2 font-weight-bold">
+                        <p>@partilhavel.Nome</p>
+                    </div>
+                    <div class="ui three wide column pt-2">
+                        <p>@Html.DisplayFor(modelItem => partilhavel.Validade)</p>
+                    </div>
+                    <div class="ui three wide column right floated">
+
+                        <div class="ui icon mini basic buttons right floated" style="margin-left: 6px !important;">
+
+                            <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" onclick="enviarEmail(`@partilhavel.ID`)">
+                                <i class="envelope outline icon"></i>
+                            </div>
+                            <a asp-controller="Partilhaveis" asp-action="Edit" asp-route-id="@partilhavel.ID" class="ui button float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                            <a asp-controller="Partilhaveis" asp-action="Entrega" asp-route-id="@partilhavel.ID" class="ui button float-right" data-toggle="tooltip" title="Detalhes"><i class="far fa-address-card"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
         $('[data-toggle="tooltip"]').tooltip();
     }, false);
 </script>

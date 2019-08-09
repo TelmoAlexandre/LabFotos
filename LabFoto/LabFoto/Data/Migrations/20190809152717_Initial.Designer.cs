@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190808164609_Initial")]
+    [Migration("20190809152717_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -1052,15 +1052,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bcfe08aa-8537-4260-938e-9d58bf663951",
-                            ConcurrencyStamp = "55c32fd2-197e-450e-a281-bdb2b985a596",
+                            Id = "18acf99f-7446-4c79-b6b3-199bda65134c",
+                            ConcurrencyStamp = "28fce0a8-9a1c-4188-a6e3-8550594dbd56",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c0120a4a-f7d7-47c9-b818-7a49e6c468f5",
-                            ConcurrencyStamp = "77fc8944-a2d3-48e3-9173-1febb945d6cd",
+                            Id = "5fa0e55d-70c8-4d28-a47b-a4eeca9eade8",
+                            ConcurrencyStamp = "60296816-d804-4af1-942d-2041cc03f2a9",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });

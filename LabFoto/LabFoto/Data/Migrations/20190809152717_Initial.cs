@@ -469,8 +469,8 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "c0120a4a-f7d7-47c9-b818-7a49e6c468f5", "77fc8944-a2d3-48e3-9173-1febb945d6cd", "Lab", "LAB" },
-                    { "bcfe08aa-8537-4260-938e-9d58bf663951", "55c32fd2-197e-450e-a281-bdb2b985a596", "Admin", "ADMIN" }
+                    { "5fa0e55d-70c8-4d28-a47b-a4eeca9eade8", "60296816-d804-4af1-942d-2041cc03f2a9", "Lab", "LAB" },
+                    { "18acf99f-7446-4c79-b6b3-199bda65134c", "28fce0a8-9a1c-4188-a6e3-8550594dbd56", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(

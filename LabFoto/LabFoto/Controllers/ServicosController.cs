@@ -289,6 +289,7 @@ namespace LabFoto.Controllers
             var servicos = await _context.Servicos
                 .Include(s => s.Requerente)
                 .Include(s => s.Galerias)
+                .Include(s => s.Partilhaveis)
                 .Include(s => s.Servicos_Tipos).ThenInclude(st => st.Tipo)
                 .Include(s => s.Servicos_ServicosSolicitados).ThenInclude(sss => sss.ServicoSolicitado)
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)
@@ -321,6 +322,7 @@ namespace LabFoto.Controllers
             var servicos = await _context.Servicos
                 .Include(s => s.Requerente)
                 .Include(s => s.Galerias)
+                .Include(s => s.Partilhaveis)
                 .Include(s => s.Servicos_Tipos).ThenInclude(st => st.Tipo)
                 .Include(s => s.Servicos_ServicosSolicitados).ThenInclude(sss => sss.ServicoSolicitado)
                 .Include(s => s.Servicos_DataExecucao).ThenInclude(sde => sde.DataExecucao)
