@@ -11,6 +11,7 @@
     <p class="ui blue ribbon label mb-3">Criar Partilhavel</p>
     <form asp-action="Create">
         <div class="ui form">
+            <span class="font-weight-bold">@Model.Servico.Nome</span>
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="fields">
                 <div class="ten wide field mb-2">

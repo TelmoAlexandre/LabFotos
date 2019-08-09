@@ -470,8 +470,8 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "945ae3ff-53af-4de1-a3fd-7345abd8d377", "fda6c76f-e543-46d2-9aef-b37e9f641541", "Lab", "LAB" },
-                    { "0d5b68e8-1757-4303-9054-2476854587cc", "144cea97-6e98-44c8-bfe7-02866ecab29a", "Admin", "ADMIN" }
+                    { "c3037bb1-c8aa-4301-a279-4f91686b6b9f", "4c22c12d-1550-4fd2-ada1-1b46cbc5e27f", "Lab", "LAB" },
+                    { "353fa073-a070-4dc1-a9b8-57560c0920c3", "64c42499-3942-4b0a-8af1-dbe20decc66b", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -572,7 +572,7 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "Partilhaveis",
                 columns: new[] { "ID", "DataDeCriacao", "Nome", "Password", "ServicoFK", "Validade" },
-                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 8, 9, 16, 17, 23, 987, DateTimeKind.Local).AddTicks(6258), "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
+                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 8, 9, 18, 51, 13, 920, DateTimeKind.Local).AddTicks(6964), "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
 
             migrationBuilder.InsertData(
                 table: "Servicos_DatasExecucao",

@@ -335,7 +335,8 @@ namespace LabFoto.Controllers
 
             return View(new Partilhavel()
             {
-                ServicoFK = servicoID
+                ServicoFK = servicoID,
+                Servico = servico
             }
             );
         }
@@ -392,6 +393,8 @@ namespace LabFoto.Controllers
 
                 return View("Details", partilhavel);
             }
+
+            partilhavel.Servico = await _context.Servicos.FindAsync(partilhavel.ServicoFK);
 
             return View(partilhavel);
         }
@@ -529,7 +532,7 @@ namespace LabFoto.Controllers
                 return NotFound();
             }
 
-            var linkPartilha = _appSettings.SiteUrl + "/Partilhaveis/Entrega/" + partilhavel.ID;
+            var linkPartilha = _appSettings.SiteUrl + "/Partilhaveis/Details/" + partilhavel.ID;
             _email.Send(partilhavel.Servico.Requerente.Email, "Link de Partilha ", 
                 $"Link de acesso: <a href='{linkPartilha}'>clique aqui</a> <br> <p style='font-weight-bold'>Password: {partilhavel.Password}</p>");
             return Json(new { success = true });

@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190801113941_Initial")]
+    [Migration("20190809175114_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -149,10 +149,6 @@ namespace LabFoto.Migrations
 
                     b.Property<string>("Formato");
 
-                    b.Property<int>("FotografiaOrigemFK");
-
-                    b.Property<int?>("FotografiaOrigemID");
-
                     b.Property<string>("GaleriaFK");
 
                     b.Property<string>("ItemId");
@@ -169,8 +165,6 @@ namespace LabFoto.Migrations
 
                     b.HasIndex("ContaOnedriveFK");
 
-                    b.HasIndex("FotografiaOrigemID");
-
                     b.HasIndex("GaleriaFK");
 
                     b.ToTable("Fotografias");
@@ -182,7 +176,6 @@ namespace LabFoto.Migrations
                             ContaOnedriveFK = 1,
                             DownloadUrl = "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_layouts/15/download.aspx?UniqueId=bcb52594-9d40-43dc-960a-ab54a2e4d563&Translate=false&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTU5MTUwOTAyIiwiZXhwIjoiMTU1OTE1NDUwMiIsImVuZHBvaW50dXJsIjoiVXQzdlgyZ0JGSmxnRzROWU5GbHdmcGtjZTc3WVNjeGtBQ0VhVGRtTUVzZz0iLCJlbmRwb2ludHVybExlbmd0aCI6IjE1NyIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiTVRnNE5qUTBPRFF0TTJGbE5DMDBOV014TFRrek1qY3RORFV3TkdVNVl6QmhNak5tIiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJzaWduaW5fc3RhdGUiOiJbXCJrbXNpXCJdIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1cG4iOiJhbHVubzE5MDg5QGlwdC5wdCIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0IiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzdmZmU5MDg5NDYzNEBsaXZlLmNvbSIsInNjcCI6Im15ZmlsZXMucmVhZCBhbGxmaWxlcy5yZWFkIG15ZmlsZXMud3JpdGUgYWxsZmlsZXMud3JpdGUiLCJ0dCI6IjIiLCJ1c2VQZXJzaXN0ZW50Q29va2llIjpudWxsfQ.clFWUUJxWHI3Q1pTcFNUUklSaWh6VW5mOStkWUMwUzFtM2pONExibVVUYz0&ApiVersion=2.0",
                             Formato = "CR2",
-                            FotografiaOrigemFK = 0,
                             GaleriaFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             ItemId = "0127OBJ5MUEW23YQE53RBZMCVLKSROJVLD",
                             Nome = "test1.CR2",
@@ -196,7 +189,6 @@ namespace LabFoto.Migrations
                             ContaOnedriveFK = 1,
                             DownloadUrl = "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_layouts/15/download.aspx?UniqueId=307ec159-829e-423a-a366-e70167f59c01&Translate=false&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTU5MTUxNTczIiwiZXhwIjoiMTU1OTE1NTE3MyIsImVuZHBvaW50dXJsIjoiN01BcEUvbS81eGM2VkJtVmY5cFd1ai95WXFmQmZmQS9HTzRhWmNsb0RXWT0iLCJlbmRwb2ludHVybExlbmd0aCI6IjE1NyIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiWkRJeU1UUmxNREF0WkRBeE5TMDBPRGRpTFdKa04yTXROMkUyTWpKbE1UaGlORFF4IiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJzaWduaW5fc3RhdGUiOiJbXCJrbXNpXCJdIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1cG4iOiJhbHVubzE5MDg5QGlwdC5wdCIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0IiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzdmZmU5MDg5NDYzNEBsaXZlLmNvbSIsInNjcCI6Im15ZmlsZXMucmVhZCBhbGxmaWxlcy5yZWFkIG15ZmlsZXMud3JpdGUgYWxsZmlsZXMud3JpdGUiLCJ0dCI6IjIiLCJ1c2VQZXJzaXN0ZW50Q29va2llIjpudWxsfQ.REkwWVUwU1R3RkYxZlNRQXdML3Z3L2Y5WC9YUWlkSGU1Qy9ZakwyNS9FND0&ApiVersion=2.0",
                             Formato = "CR2",
-                            FotografiaOrigemFK = 0,
                             GaleriaFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             ItemId = "0127OBJ5KZYF7DBHUCHJBKGZXHAFT7LHAB",
                             Nome = "test2.CR2",
@@ -210,7 +202,6 @@ namespace LabFoto.Migrations
                             ContaOnedriveFK = 1,
                             DownloadUrl = "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_layouts/15/download.aspx?UniqueId=96c99233-5d31-4577-b8ef-fb9f004ca4ef&Translate=false&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTU5MTUxNTczIiwiZXhwIjoiMTU1OTE1NTE3MyIsImVuZHBvaW50dXJsIjoiNFlQVnAya0tWWjh1N1daQ1B5NEQrNGtvcFllS2dPcy9FOVVmblZpTnJLVT0iLCJlbmRwb2ludHVybExlbmd0aCI6IjE1NyIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiWkRJeU1UUmxNREF0WkRBeE5TMDBPRGRpTFdKa04yTXROMkUyTWpKbE1UaGlORFF4IiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJzaWduaW5fc3RhdGUiOiJbXCJrbXNpXCJdIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1cG4iOiJhbHVubzE5MDg5QGlwdC5wdCIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0IiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzdmZmU5MDg5NDYzNEBsaXZlLmNvbSIsInNjcCI6Im15ZmlsZXMucmVhZCBhbGxmaWxlcy5yZWFkIG15ZmlsZXMud3JpdGUgYWxsZmlsZXMud3JpdGUiLCJ0dCI6IjIiLCJ1c2VQZXJzaXN0ZW50Q29va2llIjpudWxsfQ.dEFTU0k3TlZOa052ZkxjcXlDdnBMYkxGZWV0NEIvZ2FwMjRld3I4ZmNzRT0&ApiVersion=2.0",
                             Formato = "CR2",
-                            FotografiaOrigemFK = 0,
                             GaleriaFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             ItemId = "0127OBJ5JTSLEZMMK5O5C3R373T4AEZJHP",
                             Nome = "test3.CR2",
@@ -224,7 +215,6 @@ namespace LabFoto.Migrations
                             ContaOnedriveFK = 1,
                             DownloadUrl = "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_layouts/15/download.aspx?UniqueId=2eebb9a9-d586-43f4-8c78-bbd150d06e47&Translate=false&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTU5MTUxNTczIiwiZXhwIjoiMTU1OTE1NTE3MyIsImVuZHBvaW50dXJsIjoiRkUzYVJiK2NPN055WitKNlZ0cG15VXI1RnpMUGw3SUYxMDBjRXh5YjFvbz0iLCJlbmRwb2ludHVybExlbmd0aCI6IjE1NyIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiWkRJeU1UUmxNREF0WkRBeE5TMDBPRGRpTFdKa04yTXROMkUyTWpKbE1UaGlORFF4IiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJzaWduaW5fc3RhdGUiOiJbXCJrbXNpXCJdIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1cG4iOiJhbHVubzE5MDg5QGlwdC5wdCIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0IiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzdmZmU5MDg5NDYzNEBsaXZlLmNvbSIsInNjcCI6Im15ZmlsZXMucmVhZCBhbGxmaWxlcy5yZWFkIG15ZmlsZXMud3JpdGUgYWxsZmlsZXMud3JpdGUiLCJ0dCI6IjIiLCJ1c2VQZXJzaXN0ZW50Q29va2llIjpudWxsfQ.N2lQT09ubjZJREJ1NTNkUWhJMTlaRzFsNG13WlFUcXEwU0NEZC80VG8rWT0&ApiVersion=2.0",
                             Formato = "CR2",
-                            FotografiaOrigemFK = 0,
                             GaleriaFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             ItemId = "0127OBJ5NJXHVS5BWV6RBYY6F32FINA3SH",
                             Nome = "test4.CR2",
@@ -238,7 +228,6 @@ namespace LabFoto.Migrations
                             ContaOnedriveFK = 1,
                             DownloadUrl = "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_layouts/15/download.aspx?UniqueId=06711508-d1b6-41d0-baed-428b27f076c5&Translate=false&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTU5MTUxNTczIiwiZXhwIjoiMTU1OTE1NTE3MyIsImVuZHBvaW50dXJsIjoiMzBDRXRtSVYrTWNUWWcrTDVFeDJ3a21tdTZGc05KSmMwVVJKeFhIczZyTT0iLCJlbmRwb2ludHVybExlbmd0aCI6IjE1NyIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiWkRJeU1UUmxNREF0WkRBeE5TMDBPRGRpTFdKa04yTXROMkUyTWpKbE1UaGlORFF4IiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJzaWduaW5fc3RhdGUiOiJbXCJrbXNpXCJdIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1cG4iOiJhbHVubzE5MDg5QGlwdC5wdCIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0IiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzdmZmU5MDg5NDYzNEBsaXZlLmNvbSIsInNjcCI6Im15ZmlsZXMucmVhZCBhbGxmaWxlcy5yZWFkIG15ZmlsZXMud3JpdGUgYWxsZmlsZXMud3JpdGUiLCJ0dCI6IjIiLCJ1c2VQZXJzaXN0ZW50Q29va2llIjpudWxsfQ.a05BY29NYnpZR0RUaHZ3all5N3FQNllQOWplL3lSVko5UmFLb0YwblMwUT0&ApiVersion=2.0",
                             Formato = "CR2",
-                            FotografiaOrigemFK = 0,
                             GaleriaFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             ItemId = "0127OBJ5IICVYQNNWR2BA3V3KCRMT7A5WF",
                             Nome = "test5.CR2",
@@ -252,7 +241,6 @@ namespace LabFoto.Migrations
                             ContaOnedriveFK = 1,
                             DownloadUrl = "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_layouts/15/download.aspx?UniqueId=514096aa-0741-4ad9-ad5d-9f90627dbb04&Translate=false&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTU5MTUxNTczIiwiZXhwIjoiMTU1OTE1NTE3MyIsImVuZHBvaW50dXJsIjoiRTc1RlVINlpDQkZHNERtY0NYOHJ1K2luVnA3MERCbll6eUlqWFFlT3h2TT0iLCJlbmRwb2ludHVybExlbmd0aCI6IjE1NyIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiWkRJeU1UUmxNREF0WkRBeE5TMDBPRGRpTFdKa04yTXROMkUyTWpKbE1UaGlORFF4IiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJzaWduaW5fc3RhdGUiOiJbXCJrbXNpXCJdIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1cG4iOiJhbHVubzE5MDg5QGlwdC5wdCIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0IiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzdmZmU5MDg5NDYzNEBsaXZlLmNvbSIsInNjcCI6Im15ZmlsZXMucmVhZCBhbGxmaWxlcy5yZWFkIG15ZmlsZXMud3JpdGUgYWxsZmlsZXMud3JpdGUiLCJ0dCI6IjIiLCJ1c2VQZXJzaXN0ZW50Q29va2llIjpudWxsfQ.cHkwcXIvU21LUmtRUjZveHFsY1dMVFhPbTJxVzcwTlNOOHAxd2hzYTVTTT0&ApiVersion=2.0",
                             Formato = "CR2",
-                            FotografiaOrigemFK = 0,
                             GaleriaFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             ItemId = "0127OBJ5NKSZAFCQIH3FFK2XM7SBRH3OYE",
                             Nome = "test6.CR2",
@@ -266,7 +254,6 @@ namespace LabFoto.Migrations
                             ContaOnedriveFK = 1,
                             DownloadUrl = "https://politecnicotomar-my.sharepoint.com/personal/aluno19089_ipt_pt/_layouts/15/download.aspx?UniqueId=6ed6d15d-bff2-456c-88c2-2ca9494817e9&Translate=false&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvcG9saXRlY25pY290b21hci1teS5zaGFyZXBvaW50LmNvbUAyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJpc3MiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiLCJuYmYiOiIxNTU5MTUxNTczIiwiZXhwIjoiMTU1OTE1NTE3MyIsImVuZHBvaW50dXJsIjoiaWIvVVBVT0hrcU1PYmREMWZBdzFOaFNBTjBFRjNGNTQ1K3JYb2VrK1ZiTT0iLCJlbmRwb2ludHVybExlbmd0aCI6IjE1NyIsImlzbG9vcGJhY2siOiJUcnVlIiwiY2lkIjoiWkRJeU1UUmxNREF0WkRBeE5TMDBPRGRpTFdKa04yTXROMkUyTWpKbE1UaGlORFF4IiwidmVyIjoiaGFzaGVkcHJvb2Z0b2tlbiIsInNpdGVpZCI6IlptTTNObU5rWkRNdFpXRTJaQzAwWW1RM0xXRTROMk10T1RZd016aGtZamc0TldVMyIsImFwcF9kaXNwbGF5bmFtZSI6IkxhYkZvdG8iLCJzaWduaW5fc3RhdGUiOiJbXCJrbXNpXCJdIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJ0aWQiOiIyMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAiLCJ1cG4iOiJhbHVubzE5MDg5QGlwdC5wdCIsInB1aWQiOiIxMDAzN0ZGRTkwODk0NjM0IiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzdmZmU5MDg5NDYzNEBsaXZlLmNvbSIsInNjcCI6Im15ZmlsZXMucmVhZCBhbGxmaWxlcy5yZWFkIG15ZmlsZXMud3JpdGUgYWxsZmlsZXMud3JpdGUiLCJ0dCI6IjIiLCJ1c2VQZXJzaXN0ZW50Q29va2llIjpudWxsfQ.R1lGa0JDU0s4d1N5cXF2SnNiMzB4UUhUMUVsV0tJR212dmsrWEpjS1F0bz0&ApiVersion=2.0",
                             Formato = "CR2",
-                            FotografiaOrigemFK = 0,
                             GaleriaFK = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             ItemId = "0127OBJ5K52HLG54V7NRCYRQRMVFEUQF7J",
                             Nome = "test7.CR2",
@@ -409,6 +396,89 @@ namespace LabFoto.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LabFoto.Models.Tables.Partilhavel", b =>
+                {
+                    b.Property<string>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DataDeCriacao");
+
+                    b.Property<string>("Nome")
+                        .IsRequired();
+
+                    b.Property<string>("Password");
+
+                    b.Property<string>("ServicoFK");
+
+                    b.Property<DateTime?>("Validade");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ServicoFK");
+
+                    b.ToTable("Partilhaveis");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
+                            DataDeCriacao = new DateTime(2019, 8, 9, 18, 51, 13, 920, DateTimeKind.Local).AddTicks(6964),
+                            Nome = "Teste",
+                            Password = "123Qwe!",
+                            ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
+                        });
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Partilhavel_Fotografia", b =>
+                {
+                    b.Property<int>("FotografiaFK");
+
+                    b.Property<string>("PartilhavelFK");
+
+                    b.HasKey("FotografiaFK", "PartilhavelFK");
+
+                    b.HasIndex("PartilhavelFK");
+
+                    b.ToTable("Partilhaveis_Fotografias");
+
+                    b.HasData(
+                        new
+                        {
+                            FotografiaFK = 1,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 2,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 3,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 4,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 5,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 6,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        },
+                        new
+                        {
+                            FotografiaFK = 7,
+                            PartilhavelFK = "a0f118c8-8e40-4433-a695-e5ca01788331"
+                        });
+                });
+
             modelBuilder.Entity("LabFoto.Models.Tables.Requerente", b =>
                 {
                     b.Property<string>("ID")
@@ -481,8 +551,6 @@ namespace LabFoto.Migrations
 
                     b.Property<DateTime?>("DataEntrega");
 
-                    b.Property<bool>("Hide");
-
                     b.Property<float?>("HorasEstudio");
 
                     b.Property<float?>("HorasPosProducao");
@@ -513,7 +581,6 @@ namespace LabFoto.Migrations
                             ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
                             DataDeCriacao = new DateTime(2018, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2018, 6, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Hide = false,
                             HorasEstudio = 2f,
                             HorasPosProducao = 8f,
                             IdentificacaoObra = "Tira larga, de tecido ou de madeira, que se dispõe transversalmente como ornato na parte superior de uma cortina.",
@@ -527,7 +594,6 @@ namespace LabFoto.Migrations
                             ID = "56d513fa-cedd-40d9-bd58-12a7ee3f129c",
                             DataDeCriacao = new DateTime(2019, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2019, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Hide = false,
                             HorasEstudio = 6f,
                             HorasPosProducao = 17f,
                             IdentificacaoObra = "Plantação de árvores na escola.",
@@ -541,7 +607,6 @@ namespace LabFoto.Migrations
                             ID = "86dafe89-cc9c-4308-ace8-b3ed1f54a346",
                             DataDeCriacao = new DateTime(2019, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2019, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Hide = false,
                             HorasEstudio = 4f,
                             HorasPosProducao = 10f,
                             IdentificacaoObra = "Vasos/Jarrões a parecem integrados em retábulos,tronos, mesas de altar em várias igrejas em Tomar.",
@@ -555,7 +620,6 @@ namespace LabFoto.Migrations
                             ID = "d6e3fca1-c766-4333-8211-f63431b30181",
                             DataDeCriacao = new DateTime(2017, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2017, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Hide = false,
                             HorasEstudio = 20f,
                             HorasPosProducao = 43f,
                             IdentificacaoObra = "Seis cadeiras em madeira de cerejeira com acabamento em verniz",
@@ -568,7 +632,6 @@ namespace LabFoto.Migrations
                         {
                             ID = "916d75a4-c12e-40c4-bf29-7ec1e31696ac",
                             DataDeCriacao = new DateTime(2018, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Hide = false,
                             HorasEstudio = 3f,
                             HorasPosProducao = 4f,
                             IdentificacaoObra = "Festa tradicional da aldeia de Azinhaga",
@@ -581,7 +644,6 @@ namespace LabFoto.Migrations
                         {
                             ID = "aca4875a-721e-4cfc-827d-d48c7050b543",
                             DataDeCriacao = new DateTime(2019, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Hide = false,
                             HorasEstudio = 0f,
                             HorasPosProducao = 0f,
                             IdentificacaoObra = "Fotos da tabanca do Maltez",
@@ -595,7 +657,6 @@ namespace LabFoto.Migrations
                             ID = "0aa61784-ccc0-4dcd-9722-8fdfd3a1e298",
                             DataDeCriacao = new DateTime(2018, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DataEntrega = new DateTime(2018, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Hide = false,
                             HorasEstudio = 6f,
                             HorasPosProducao = 2f,
                             IdentificacaoObra = "Um cavalo queimado no matadouro",
@@ -608,7 +669,6 @@ namespace LabFoto.Migrations
                         {
                             ID = "b399e9c7-957e-4e85-9474-bad2cf8032c4",
                             DataDeCriacao = new DateTime(2019, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Hide = false,
                             HorasEstudio = 4f,
                             HorasPosProducao = 2f,
                             IdentificacaoObra = "Exposição na galeria de Sintra",
@@ -625,6 +685,8 @@ namespace LabFoto.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Deletable");
+
                     b.Property<string>("Nome")
                         .IsRequired();
 
@@ -636,26 +698,31 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = 1,
+                            Deletable = false,
                             Nome = "Luz Visível"
                         },
                         new
                         {
                             ID = 2,
+                            Deletable = false,
                             Nome = "Luz U.V"
                         },
                         new
                         {
                             ID = 3,
+                            Deletable = false,
                             Nome = "Rasante"
                         },
                         new
                         {
                             ID = 4,
+                            Deletable = false,
                             Nome = "Infra-red"
                         },
                         new
                         {
                             ID = 5,
+                            Deletable = false,
                             Nome = "Luz Trasmitida"
                         });
                 });
@@ -926,6 +993,8 @@ namespace LabFoto.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Deletable");
+
                     b.Property<string>("Nome")
                         .IsRequired();
 
@@ -937,21 +1006,25 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = 1,
+                            Deletable = false,
                             Nome = "Académico"
                         },
                         new
                         {
                             ID = 2,
+                            Deletable = false,
                             Nome = "Investigação"
                         },
                         new
                         {
                             ID = 3,
+                            Deletable = false,
                             Nome = "Serviço Exterior"
                         },
                         new
                         {
                             ID = 4,
+                            Deletable = false,
                             Nome = "Pessoal"
                         });
                 });
@@ -982,10 +1055,17 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1",
-                            ConcurrencyStamp = "3682490c-3db2-4e66-978c-cdd8babebd94",
+                            Id = "353fa073-a070-4dc1-a9b8-57560c0920c3",
+                            ConcurrencyStamp = "64c42499-3942-4b0a-8af1-dbe20decc66b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "c3037bb1-c8aa-4301-a279-4f91686b6b9f",
+                            ConcurrencyStamp = "4c22c12d-1550-4fd2-ada1-1b46cbc5e27f",
+                            Name = "Lab",
+                            NormalizedName = "LAB"
                         });
                 });
 
@@ -1018,9 +1098,6 @@ namespace LabFoto.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
@@ -1061,8 +1138,6 @@ namespace LabFoto.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -1116,18 +1191,6 @@ namespace LabFoto.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
-                            RoleId = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1"
-                        },
-                        new
-                        {
-                            UserId = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
-                            RoleId = "efbd71e2-da58-467d-b5a7-38c0fdaeb8c1"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -1147,61 +1210,12 @@ namespace LabFoto.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("LabFoto.Models.Utilizador", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("Nome");
-
-                    b.HasDiscriminator().HasValue("Utilizador");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "73a9eaf0-43f6-43a6-bf98-f0bb4e8a93b7",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "de58853e-05ca-4b79-ae27-00507c4c5cfe",
-                            Email = "admin1@admin1.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN1@ADMIN1.COM",
-                            NormalizedUserName = "ADMIN1@ADMIN1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEADaJbugnUFdqlWOUG0o1NFlQsF9VWHtdlLuU+pc9/44p2UTxiRM5y/k4n7zwYg2LA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "",
-                            TwoFactorEnabled = false,
-                            UserName = "admin1@admin1.com",
-                            Nome = "Admin1"
-                        },
-                        new
-                        {
-                            Id = "fcbbb3e1-e6ce-43b3-922d-f7342c59e5f1",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "32bd5c7a-3cd5-4441-92a1-f0938a8e2b72",
-                            Email = "user1@user1.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER1@USER1.COM",
-                            NormalizedUserName = "USER1@USER1.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJZAPXWDwF3LWypq5zraoUUsmOqetNMsBKxH3buGgo3LAlLhqji325HSTykdW1GZmg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "",
-                            TwoFactorEnabled = false,
-                            UserName = "user1@user1.com",
-                            Nome = "User1"
-                        });
-                });
-
             modelBuilder.Entity("LabFoto.Models.Tables.Fotografia", b =>
                 {
                     b.HasOne("LabFoto.Models.Tables.ContaOnedrive", "ContaOnedrive")
-                        .WithMany()
+                        .WithMany("Fotografias")
                         .HasForeignKey("ContaOnedriveFK")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("LabFoto.Models.Tables.Fotografia", "FotografiaOrigem")
-                        .WithMany()
-                        .HasForeignKey("FotografiaOrigemID");
 
                     b.HasOne("LabFoto.Models.Tables.Galeria", "Galeria")
                         .WithMany("Fotografias")
@@ -1211,7 +1225,7 @@ namespace LabFoto.Migrations
             modelBuilder.Entity("LabFoto.Models.Tables.Galeria", b =>
                 {
                     b.HasOne("LabFoto.Models.Tables.Servico", "Servico")
-                        .WithMany()
+                        .WithMany("Galerias")
                         .HasForeignKey("ServicoFK");
                 });
 
@@ -1225,6 +1239,26 @@ namespace LabFoto.Migrations
                     b.HasOne("LabFoto.Models.Tables.Metadado", "Metadado")
                         .WithMany("Galerias_Metadados")
                         .HasForeignKey("MetadadoFK")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Partilhavel", b =>
+                {
+                    b.HasOne("LabFoto.Models.Tables.Servico", "Servico")
+                        .WithMany("Partilhaveis")
+                        .HasForeignKey("ServicoFK");
+                });
+
+            modelBuilder.Entity("LabFoto.Models.Tables.Partilhavel_Fotografia", b =>
+                {
+                    b.HasOne("LabFoto.Models.Tables.Fotografia", "Fotografia")
+                        .WithMany("Partilhaveis_Fotografias")
+                        .HasForeignKey("FotografiaFK")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LabFoto.Models.Tables.Partilhavel", "Partilhavel")
+                        .WithMany("Partilhaveis_Fotografias")
+                        .HasForeignKey("PartilhavelFK")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

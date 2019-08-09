@@ -420,7 +420,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
-                            DataDeCriacao = new DateTime(2019, 8, 9, 16, 17, 23, 987, DateTimeKind.Local).AddTicks(6258),
+                            DataDeCriacao = new DateTime(2019, 8, 9, 18, 51, 13, 920, DateTimeKind.Local).AddTicks(6964),
                             Nome = "Teste",
                             Password = "123Qwe!",
                             ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
@@ -1053,15 +1053,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0d5b68e8-1757-4303-9054-2476854587cc",
-                            ConcurrencyStamp = "144cea97-6e98-44c8-bfe7-02866ecab29a",
+                            Id = "353fa073-a070-4dc1-a9b8-57560c0920c3",
+                            ConcurrencyStamp = "64c42499-3942-4b0a-8af1-dbe20decc66b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "945ae3ff-53af-4de1-a3fd-7345abd8d377",
-                            ConcurrencyStamp = "fda6c76f-e543-46d2-9aef-b37e9f641541",
+                            Id = "c3037bb1-c8aa-4301-a279-4f91686b6b9f",
+                            ConcurrencyStamp = "4c22c12d-1550-4fd2-ada1-1b46cbc5e27f",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });

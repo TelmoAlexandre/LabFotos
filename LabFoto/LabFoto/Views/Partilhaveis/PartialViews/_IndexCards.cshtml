@@ -43,12 +43,13 @@ else
                 </div>
                 <div class="four wide column">
                     <div class="ui mini icon basic buttons right floated">
-                        <div class="ui button" data-toggle="tooltip" title="Enviar Email" style="padding-top:11px;">
-                            <i class="envelope outline icon"></i>
-                        </div>
+
                         <a asp-action="Delete" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></a>
                         <a asp-action="Edit" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                        <a asp-action="Details" asp-route-id="@partilhavel.ServicoFK" class="ui button" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+                        <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" onclick="enviarEmail(`@partilhavel.ID`)">
+                            <i class="envelope outline icon"></i>
+                        </div>
+                        <a asp-action="Details" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
                     </div>
                 </div>
             </div>
