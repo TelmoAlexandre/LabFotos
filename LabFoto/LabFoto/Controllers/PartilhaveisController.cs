@@ -416,7 +416,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,Password,ServicoFK")] Partilhavel partilhavel, string PhotosIDs)
+        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,DataDeCriacao,Password,ServicoFK")] Partilhavel partilhavel, string PhotosIDs)
         {
             if (id != partilhavel.ID)
                 return NotFound();
