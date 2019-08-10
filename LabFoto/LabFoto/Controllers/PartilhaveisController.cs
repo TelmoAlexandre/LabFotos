@@ -13,6 +13,7 @@ using LabFoto.APIs;
 using Microsoft.Extensions.Options;
 using LabFoto.Models;
 using Microsoft.Extensions.Logging;
+using System.Text.Encodings.Web;
 
 namespace LabFoto.Controllers
 {
@@ -21,19 +22,26 @@ namespace LabFoto.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
+        private readonly IEmailAPI _email;
         private readonly AppSettings _appSettings;
         private readonly ILogger<PartilhaveisController> _logger;
         private readonly int _partPP = 10;
 
+        #region Constructor
         public PartilhaveisController(ApplicationDbContext context,
             IOnedriveAPI onedrive,
-            IOptions<AppSettings> appSettings, ILogger<PartilhaveisController> logger)
+            IOptions<AppSettings> appSettings,
+            ILogger<PartilhaveisController> logger,
+            IEmailAPI email)
         {
             _context = context;
             _onedrive = onedrive;
             _appSettings = appSettings.Value;
             _logger = logger;
+            _email = email;
         }
+
+        #endregion
 
         #region Ajax
 
@@ -47,8 +55,8 @@ namespace LabFoto.Controllers
         {
             if (String.IsNullOrEmpty(id))
                 return Json(new { success = false, error = "O ID do serviço não é válido." });
-            
-            var galeriasList = await _context.Galerias.Include(g=>g.Fotografias).Where(g => g.ServicoFK.Equals(id)).ToListAsync();
+
+            var galeriasList = await _context.Galerias.Include(g => g.Fotografias).Where(g => g.ServicoFK.Equals(id)).ToListAsync();
 
             #region Preparar resposta
 
@@ -91,7 +99,7 @@ namespace LabFoto.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Erro ao preparar o acordião de galerias. Erro: {e.Message}");
-            } 
+            }
             #endregion
 
             return PartialView("PartialViews/_GaleriasAccordion", response);
@@ -327,7 +335,8 @@ namespace LabFoto.Controllers
 
             return View(new Partilhavel()
             {
-                ServicoFK = servicoID
+                ServicoFK = servicoID,
+                Servico = servico
             }
             );
         }
@@ -384,6 +393,8 @@ namespace LabFoto.Controllers
 
                 return View("Details", partilhavel);
             }
+
+            partilhavel.Servico = await _context.Servicos.FindAsync(partilhavel.ServicoFK);
 
             return View(partilhavel);
         }
@@ -506,6 +517,26 @@ namespace LabFoto.Controllers
         }
 
         #endregion Delete
+
+        [HttpPost]
+        public async Task<IActionResult> SendMail(string id) {
+
+            if (String.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var partilhavel = await _context.Partilhaveis.Include(p => p.Servico).ThenInclude(s => s.Requerente).Where(p => p.ID.Equals(id)).FirstOrDefaultAsync();
+            if (partilhavel == null)
+            {
+                return NotFound();
+            }
+
+            var linkPartilha = _appSettings.SiteUrl + "/Partilhaveis/Details/" + partilhavel.ID;
+            _email.Send(partilhavel.Servico.Requerente.Email, "Link de Partilha ", 
+                $"Link de acesso: <a href='{linkPartilha}'>clique aqui</a> <br> <p style='font-weight-bold'>Password: {partilhavel.Password}</p>");
+            return Json(new { success = true });
+        }
 
         private bool PartilhavelExists(string id)
         {
