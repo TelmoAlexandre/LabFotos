@@ -159,3 +159,8 @@ body {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+.loginPreEnds {
+    width: 44px !important;
+    height: 38px !important;
+    display:block !important;
+}

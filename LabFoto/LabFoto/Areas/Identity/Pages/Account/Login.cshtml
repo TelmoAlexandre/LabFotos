@@ -5,41 +5,75 @@
     ViewData["Title"] = "Log in";
 }
 
-    <form id="account" class="form-signin" method="post">
-        <h1>Bem vindo</h1>
-        <hr />
-        <div class="form-group">
-            <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">@@</div>
+<form id="account" class="form-signin" method="post">
+    <h1>Bem vindo</h1>
+    <hr />
+    <div class="form-group">
+        <div class="input-group mb-2">
+            <div class="input-group-prepend loginPreEnds">
+                <div class="input-group-text">
+                 <span style="padding-left: 3px">@@</span>
                 </div>
-                <input asp-for="Input.Email" class="form-control" />
             </div>
-            <span asp-validation-for="Input.Email" class="text-danger"></span>
+            <input asp-for="Input.Email" class="form-control" />
         </div>
-        <div class="form-group">
-            <input asp-for="Input.Password" class="form-control" />
-            <span asp-validation-for="Input.Password" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <div class="checkbox">
-                <label asp-for="Input.RememberMe">
-                    <input asp-for="Input.RememberMe" />
-                    @Html.DisplayNameFor(m => m.Input.RememberMe)
-                </label>
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="input-group mb-2">
+            <div class="input-group-prepend loginPreEnds">
+                <div class="input-group-text">
+                    <a id="btnMostrar" class="pointer" data-toggle="tooltip" title="Ver Password" onclick="mostrarPW()">
+                        <i class="eye icon"></i>
+                    </a>
+                </div>
             </div>
+            <input id="pwInput" name="Input.Password" type="password" class="form-control" />
         </div>
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Entrar</button>
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="checkbox">
+            <label asp-for="Input.RememberMe">
+                <input asp-for="Input.RememberMe" />
+                @Html.DisplayNameFor(m => m.Input.RememberMe)
+            </label>
         </div>
-        <div class="form-group">
-            <p>
-                <a id="forgot-password" asp-page="./ForgotPassword">Esqueceu-se da password?</a>
-            </p>
-        </div>
-    </form>
+    </div>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Entrar</button>
+    </div>
+    <div class="form-group">
+        <p>
+            <a id="forgot-password" asp-page="./ForgotPassword">Esqueceu-se da password?</a>
+        </p>
+    </div>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+
+        mostrarPW = () => {
+
+            var password = $('#pwInput')[0];
+            var passwordBtn = $('#btnMostrar')[0];
+            if (password.type === "password") {
+
+                password.type = "text";
+                passwordBtn.children[0].className = `eye slash icon`;
+                passwordBtn.dataset.originalTitle = "Esconder Password";
+
+            }
+            else {
+
+                password.type = "password";
+                passwordBtn.children[0].className = `eye icon`;
+                passwordBtn.dataset.originalTitle = "Ver Password";
+
+            }
+        };
+
+    </script>
 }
