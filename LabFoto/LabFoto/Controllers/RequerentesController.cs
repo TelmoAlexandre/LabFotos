@@ -110,7 +110,6 @@ namespace LabFoto.Controllers
         // GET: Requerentes/Details/5
         public async Task<IActionResult> DetailsAjax(string id, bool detailsLink = true, bool inServicos = false)
         {
-
             if (String.IsNullOrEmpty(id))
             {
                 return NotFound();

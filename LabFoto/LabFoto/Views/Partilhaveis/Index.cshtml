@@ -133,6 +133,22 @@
     </div>
 </div>
 
+<div class="ui basic mini modal" id="confirmDelete">
+    <div class="content">
+        <p>Tem a certeza que pretende eliminar o Partilhável?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button" onclick="">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
 @section scripts
 {
     <script>
@@ -159,8 +175,52 @@
             tooltip();
         });
 
+        function confirmDelete(partilhavelId)
+        {
+            $("#confirmDelete").modal({
+                closable: false,
+                onDeny: function () {
+                    $("#confirmDelete").modal('hide');
+                },
+                onApprove: function () {
+                    deletePartilhavel(partilhavelId);
+                },
+                transition: 'scale'
+            }).modal('show');
+        }
+
+        function deletePartilhavel(partilhavelId)
+        {
+            $.ajax({
+                url: "@Url.Action("Delete","Partilhaveis")",
+                type: "POST",
+                data: {
+                    "id": partilhavelId,
+                    "__RequestVerificationToken": $(`input[name='__RequestVerificationToken']`).val(),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                success: function (resp)
+                {
+                    if (resp.success)
+                    {
+                        $(`#segment_${partilhavelId}`).remove();
+                        notifyUser("success", "Partilhável eliminado com sucesso.");
+                    }
+                    else
+                    {
+                         notifyUser("error", "Erro ao eliminar o Partilhável.");
+                    }
+                },
+                error: function ()
+                {
+                    notifyUser("error", "Erro ao eliminar o Partilhável.");
+                }
+            });
+        }
+
         function enviarEmail(id)
         {
+            $(`#btnMail_${id}`).addClass("loading");
             $.ajax({
                 url: "@Url.Action("SendMail","Partilhaveis")",
                 type: "POST",
@@ -171,6 +231,7 @@
                 },
                 success: function (resp)
                 {
+                    $(`#btnMail_${id}`).removeClass("loading");
                     if (resp.success)
                     {
                         notifyUser("success", "Email enviado com sucesso.");
@@ -182,6 +243,7 @@
                 },
                 error: function ()
                 {
+                    $(`#btnMail_${id}`).removeClass("loading");
                     notifyUser("error", "Erro ao enviar email.");
                 }
             });

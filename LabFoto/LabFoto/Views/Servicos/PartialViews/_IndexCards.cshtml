@@ -124,7 +124,7 @@
                                     @if (!String.IsNullOrEmpty(servico.Observacoes))
                                     {
                                         <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => servico.Observacoes): </span>
-                                        <p>@Html.DisplayFor(modelItem => servico.Observacoes)</p>
+                                        <p>@Html.Raw(servico.Observacoes)</p>
                                     }
                                 </div>
                             </div>

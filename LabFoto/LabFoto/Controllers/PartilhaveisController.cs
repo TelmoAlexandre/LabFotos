@@ -487,33 +487,23 @@ namespace LabFoto.Controllers
 
         #region Delete
 
-        // GET: Partilhaveis/Delete/5
+        // POST: Partilhaveis/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                var partilhavel = await _context.Partilhaveis.FindAsync(id);
+                _context.Partilhaveis.Remove(partilhavel);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
             }
-
-            var partilhavel = await _context.Partilhaveis
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (partilhavel == null)
+            catch (Exception e)
             {
-                return NotFound();
+                _logger.LogError($"Erro ao eliminar um Partilhável. Erro: {e.Message}");
+                return Json(new { success = false });
             }
-
-            return View(partilhavel);
-        }
-
-        // POST: Partilhaveis/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var partilhavel = await _context.Partilhaveis.FindAsync(id);
-            _context.Partilhaveis.Remove(partilhavel);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Entrega");
         }
 
         #endregion Delete

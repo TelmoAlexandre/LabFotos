@@ -251,7 +251,7 @@ namespace LabFoto.Migrations
                     Nome = table.Column<string>(maxLength: 255, nullable: false),
                     DataDeCriacao = table.Column<DateTime>(nullable: false),
                     IdentificacaoObra = table.Column<string>(nullable: false),
-                    Observacoes = table.Column<string>(maxLength: 512, nullable: true),
+                    Observacoes = table.Column<string>(maxLength: 2048, nullable: true),
                     HorasEstudio = table.Column<float>(nullable: true),
                     HorasPosProducao = table.Column<float>(nullable: true),
                     DataEntrega = table.Column<DateTime>(nullable: true),
@@ -470,8 +470,8 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "c3037bb1-c8aa-4301-a279-4f91686b6b9f", "4c22c12d-1550-4fd2-ada1-1b46cbc5e27f", "Lab", "LAB" },
-                    { "353fa073-a070-4dc1-a9b8-57560c0920c3", "64c42499-3942-4b0a-8af1-dbe20decc66b", "Admin", "ADMIN" }
+                    { "e3c81c00-efa8-4415-9d5b-9cf4ea30e63b", "ccb3d0b2-5229-4de9-b848-76fa1f1282d3", "Lab", "LAB" },
+                    { "5887fea4-1724-426c-9bb7-e15215d5b645", "ba632c1f-ae09-4aba-a61e-2ab7d259c9d1", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -572,7 +572,7 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "Partilhaveis",
                 columns: new[] { "ID", "DataDeCriacao", "Nome", "Password", "ServicoFK", "Validade" },
-                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 8, 9, 18, 51, 13, 920, DateTimeKind.Local).AddTicks(6964), "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
+                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 8, 12, 16, 56, 49, 693, DateTimeKind.Local).AddTicks(2747), "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
 
             migrationBuilder.InsertData(
                 table: "Servicos_DatasExecucao",

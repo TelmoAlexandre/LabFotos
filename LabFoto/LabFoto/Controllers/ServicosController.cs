@@ -429,6 +429,7 @@ namespace LabFoto.Controllers
                     servico.HorasEstudio = servico.HorasEstudio ?? 0;
                     servico.HorasPosProducao = servico.HorasPosProducao ?? 0;
                     servico.Total = servico.Total ?? 0;
+                    servico.Observacoes = servico.Observacoes.Replace("\r\n", "<br/>");
 
                     _context.Add(servico);
                     await _context.SaveChangesAsync();
@@ -513,6 +514,7 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
+            servico.Observacoes = servico.Observacoes.Replace("<br/>", "\r\n");
 
             // Lista da tabela intermediaria dos servico com os seus tipos
             var sevicos_tipos = await _context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(id)).ToListAsync();
@@ -527,6 +529,7 @@ namespace LabFoto.Controllers
             };
 
             ViewData["ReturnUrl"] = returnUrl;
+
 
             return View(response);
         }
@@ -643,6 +646,7 @@ namespace LabFoto.Controllers
                         servico.HorasEstudio = servico.HorasEstudio ?? 0;
                         servico.HorasPosProducao = servico.HorasPosProducao ?? 0;
                         servico.Total = servico.Total ?? 0;
+                        servico.Observacoes = servico.Observacoes.Replace("\r\n", "<br/>");
 
                         _context.Update(servico);
                         await _context.SaveChangesAsync();

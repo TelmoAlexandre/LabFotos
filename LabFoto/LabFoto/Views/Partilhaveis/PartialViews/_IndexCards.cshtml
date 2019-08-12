@@ -21,11 +21,11 @@ else
             }
         }
 
-        <div class="ui @color raised segment">
+        <div class="ui segment @color" id="segment_@partilhavel.ID">
             <div class="ui doubling stackable grid">
                 <div class="four wide column mt-2">
                     <a asp-action="Details" asp-controller="Partilhaveis" asp-route-id="@partilhavel.ID" 
-                       class="plainTextLink font-weight-bold" data-toggle="tooltip" title="Nome">
+                        class="plainTextLink font-weight-bold" data-toggle="tooltip" title="Nome">
                         @partilhavel.Nome
                     </a>
                 </div>
@@ -37,16 +37,16 @@ else
                 </div>
                 <div class="five wide column mt-2">
                     <a asp-action="Details" asp-controller="Servicos" asp-route-id="@partilhavel.ServicoFK" 
-                       target="_blank" class="plainTextLink font-weight-bold" data-toggle="tooltip" title="Serviço">
+                        target="_blank" class="plainTextLink font-weight-bold" data-toggle="tooltip" title="Serviço">
                         @partilhavel.Servico.Nome
                     </a>
                 </div>
                 <div class="four wide column">
                     <div class="ui mini icon basic buttons right floated">
 
-                        <a asp-action="Delete" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></a>
+                        <span asp-action="Delete" onclick="confirmDelete('@partilhavel.ID')" class="ui button" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></span>
                         <a asp-action="Edit" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                        <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" onclick="enviarEmail(`@partilhavel.ID`)">
+                        <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" onclick="enviarEmail(`@partilhavel.ID`)" id="btnMail_@partilhavel.ID">
                             <i class="envelope outline icon"></i>
                         </div>
                         <a asp-action="Details" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>

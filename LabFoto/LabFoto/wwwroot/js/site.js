@@ -166,10 +166,9 @@ modalCancel = (id) => {
 };
 
 servicoRequerenteDetails = (divModalDetails, requerenteId) => {
-    $(`#${divModalDetails}`).modal('show');
-    $(`#${divModalDetails}`).html(getLoadingBarHtml);
     $(`#${divModalDetails}`).load(siteUrl + `/Requerentes/DetailsAjax/${requerenteId}?inServicos=true`, function () {
         $('[data-toggle="tooltip"]').tooltip();
+        $(`#${divModalDetails}`).modal('show');
     });
 };
 

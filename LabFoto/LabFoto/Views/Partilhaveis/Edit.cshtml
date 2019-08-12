@@ -2,9 +2,7 @@
 
 @{
     ViewData["Title"] = "Editar";
-}
 
-@{
     string photosIDs = Model.PhotosIDs;
 }
 
@@ -13,7 +11,7 @@
 <hr />
 <div class="ui raised segment mt-4">
     <p class="ui blue ribbon label mb-3">Editar Partilhavel</p>
-    <form asp-action="Edit">
+    <form asp-action="Edit" id="editPartilhavelForm">
         <div class="ui form">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Partilhavel.ID" />
@@ -45,10 +43,42 @@
         </div>
 
         <div class="field mt-4">
-            <button type="submit" class="ui button primary">Guardar</button>
-            <a href="/Servicos" class="ui button grey">Cancelar</a>
+            <span class="ui button primary" onclick="confirmForm('editPartilhavelForm')">Guardar</span>
+            <span class="ui button grey" onclick="modalCancel('modalCancel')">Cancelar</span>
         </div>
     </form>
+</div>
+
+<div class="ui basic mini modal" id="confirmarSubmit">
+    <div class="content">
+        <p>Tem a certeza que pretende editar o Partilhável?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
+<div class="ui basic mini modal" id="modalCancel">
+    <div class="content">
+        <p>Tem a certeza que pretende cancelar?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <a class="ui green ok inverted button" href="/Partilhaveis">
+            <i class="checkmark icon"></i>
+            Sim
+        </a>
+    </div>
 </div>
 
 <!-- #region Photoswipe -->
@@ -267,7 +297,7 @@
             // Mostrar feedback se alguma foto da galeria estiver selecionada
             var galeriaId = $(`#cb_${newPhotoId}`).data("galeria-id");
             var familyChecked = $(`#my-gallery_${galeriaId} .btnCB`).hasClass("blue");
-            
+
             if (familyChecked)
             {
                 $(`#checkFeedback_${galeriaId}`).removeClass("hide");

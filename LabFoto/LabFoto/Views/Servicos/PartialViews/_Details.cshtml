@@ -125,7 +125,7 @@
                         @if (!String.IsNullOrEmpty(Model.Observacoes))
                         {
                             <span class="font-weight-bold">@Html.DisplayNameFor(modelItem => Model.Observacoes): </span>
-                            <p>@Html.DisplayFor(modelItem => Model.Observacoes)</p>
+                            <p>@Html.Raw(Model.Observacoes)</p>
                         }
                     </div>
                 </div>
@@ -135,12 +135,13 @@
 </div>
 
 <h3>Partilháveis</h3>
-<a asp-action="Create" asp-controller="Partilhaveis" asp-route-servicoID="@Model.ID"
-   class="mb-0 ui button mini primary">
-    <i class="share alternate icon"></i> Novo Partilhável
-</a>
+
 @if (Model.Partilhaveis.Count() != 0)
 {
+    <a asp-action="Create" asp-controller="Partilhaveis" asp-route-servicoID="@Model.ID"
+       class="mb-0 ui button mini primary">
+        <i class="share alternate icon"></i> Novo Partilhável
+    </a>
     @foreach (var partilhavel in Model.Partilhaveis)
     {
         var color = "green";
@@ -166,11 +167,11 @@
 
                         <div class="ui icon mini basic buttons right floated" style="margin-left: 6px !important;">
 
-                            <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" onclick="enviarEmail(`@partilhavel.ID`)">
+                            <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" onclick="enviarEmail(`@partilhavel.ID`)" id="btnMail_@partilhavel.ID">
                                 <i class="envelope outline icon"></i>
                             </div>
                             <a asp-controller="Partilhaveis" asp-action="Edit" asp-route-id="@partilhavel.ID" class="ui button float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                            <a asp-controller="Partilhaveis" asp-action="Entrega" asp-route-id="@partilhavel.ID" class="ui button float-right" data-toggle="tooltip" title="Detalhes"><i class="far fa-address-card"></i></a>
+                            <a asp-controller="Partilhaveis" asp-action="Details" asp-route-id="@partilhavel.ID" class="ui button float-right" data-toggle="tooltip" title="Detalhes"><i class="far fa-address-card"></i></a>
                         </div>
                     </div>
                 </div>
@@ -178,10 +179,24 @@
         </div>
     }
 }
+else
+{
+    <div class="ui placeholder segment">
+        <div class="ui icon header">
+            <i class="share alternate icon"></i>
+            Não existem Partilháveis para este Serviço.
+        </div>
+        <a asp-action="Create" asp-controller="Partilhaveis" asp-route-servicoID="@Model.ID"
+           class="mb-0 ui button mini primary">
+            <i class="share alternate icon"></i> Novo Partilhável
+        </a>
+    </div>
+}
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function ()
+    {
         $('[data-toggle="tooltip"]').tooltip();
     }, false);
 </script>

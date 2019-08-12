@@ -33,17 +33,18 @@ namespace LabFoto.APIs
 
     public class OnedriveAPI : IOnedriveAPI
     {
+        #region Construtor
         private readonly ApplicationDbContext _context;
         private readonly IHttpClientFactory _clientFactory;
         private readonly HttpClient _client;
-        private readonly string _redirectUrl = "";
+        private readonly string _redirectUrl;
         private readonly AppSettings _appSettings;
         private readonly ILogger<OnedriveAPI> _logger;
         private readonly IEmailAPI _emailAPI;
 
-        public OnedriveAPI(ApplicationDbContext context, 
-            IHttpClientFactory clientFactory, 
-            IOptions<AppSettings> settings, 
+        public OnedriveAPI(ApplicationDbContext context,
+            IHttpClientFactory clientFactory,
+            IOptions<AppSettings> settings,
             ILogger<OnedriveAPI> logger,
             IEmailAPI emailAPI)
         {
@@ -57,7 +58,8 @@ namespace LabFoto.APIs
             _client = _clientFactory.CreateClient();
 
             _redirectUrl = _appSettings.SiteUrl + "/ContasOnedrive/Create";
-        }
+        } 
+        #endregion
 
         #region Thumbnails
         /// <summary>
@@ -107,6 +109,23 @@ namespace LabFoto.APIs
 
                             _context.Update(photo);
                         }
+                        else
+                        {
+                            // Caso não encontre a fotografia, é porque esta não existe na onedrive. Apaga a mesma da BD
+                            if ((int)response.StatusCode == 404)
+                            {
+                                _context.Remove(photo);
+                            }
+                            else // Noutra situação, apenas apagar as thumbnails antigas para ser mostrado um thumbnails default
+                            {
+                                photo.DownloadUrl =
+                                photo.Thumbnail_Large =
+                                photo.Thumbnail_Medium =
+                                photo.Thumbnail_Small = null;
+
+                                _context.Update(photo);
+                            }                            
+                        }
                         #endregion
                     }
                 }
@@ -116,7 +135,7 @@ namespace LabFoto.APIs
             }
             catch (Exception e)
             {
-                _emailAPI.NotifyError("Erro ao refrescar thumbnails.", "OnedriveAPI", "RefreshPhotoUrlsAsync", e.Message);
+                _logger.LogError($"Erro ao refrescar thumbnails. Erro {e.Message}");
                 return false;
             }
         }
