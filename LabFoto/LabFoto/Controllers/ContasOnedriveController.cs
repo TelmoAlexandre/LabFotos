@@ -46,9 +46,13 @@ namespace LabFoto.Controllers
 
             return View(await _context.ContasOnedrive.ToListAsync());
         }
-
+        /// <summary>
+        /// Método utilizado para atualizar a lista 
+        /// de contas Onedrive a mostrar consoante o que vem por parametro
+        /// </summary>
+        /// <param name="Username"></param>
+        /// <returns>retorna uma PartialView com a lista de contas certa</returns>
         [HttpPost]
-        // POST: ContaOnedrives/IndexFilter
         public async Task<IActionResult> IndexFilter(string Username)
         {
             var contas = _context.ContasOnedrive.Select(c => c);
@@ -63,28 +67,11 @@ namespace LabFoto.Controllers
 
         #endregion
 
-        #region Details
-        // GET: ContaOnedrives/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var contaOnedrive = await _context.ContasOnedrive
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (contaOnedrive == null)
-            {
-                return NotFound();
-            }
-
-            return View(contaOnedrive);
-        }
-        #endregion
-
         #region Create
-
+        /// <summary>
+        /// Método que redireciona para uma página da Microsoft que pede as credênciais e permissões necessárias.
+        /// </summary>
+        /// <returns>Retorna para a página Create das contas Onedrive com o code necessário.</returns>
         public ActionResult PermissionUrl()
         {
             return Redirect(_onedrive.GetPermissionsUrl());
@@ -122,7 +109,15 @@ namespace LabFoto.Controllers
         #endregion
 
         #region InitAccount
-        // GET: ContaOnedrives/InitAccount
+        /// <summary>
+        /// Método que recebe o code e o id da conta acabada de adicionar 
+        /// à base de dados e atualiza o token, recolhe informações do espaço na drive e
+        /// atualiza a conta na base de dados.
+        /// </summary>
+        /// <param name="Code">Código proveniente da microsoft que permite ter permissões sobre a conta Onedrive</param>
+        /// <param name="id">Id da conta Onedrive na base de dados</param>
+        /// <returns>Retorna ao Index com a mensagem que a conta foi adicionada com sucesso, 
+        /// ou que ocorreu um erro ao criar a conta.</returns>
         public async Task<IActionResult> InitAccount(string Code, int id)
         {
             // Define se a operação foi executada com sucesso
@@ -252,9 +247,13 @@ namespace LabFoto.Controllers
             return View(contaOnedrive);
         }
 
-        // POST: ContaOnedrives/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Metodo que apenas permite que sejam alterados os atributos Username e Password das contas Onedrive.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="contaOnedrive"></param>
+        /// <returns>Retorna para a página de index com a mensagem que
+        /// a conta foi editada com sucesso ou que não foi possível editar a conta.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Username,Password")] ContaOnedrive contaOnedrive)
@@ -309,6 +308,12 @@ namespace LabFoto.Controllers
         #endregion
 
         #region Delete
+        /// <summary>
+        /// Método que apenas deixa eliminar a conta caso não existam fotografias associadas à conta em questão.
+        /// </summary>
+        /// <param name="id">Id da conta Onedrive a ser eliminada</param>
+        /// <returns>Retorna ao Index com a mensagem Conta Onedrive eliminada com sucesso,
+        /// ou conta tem fotografias associadas ou erro ao eliminar a conta</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)

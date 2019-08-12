@@ -19,7 +19,8 @@
         <div class="fields">
             <div class="ten wide field">
                 <label asp-for="Galeria.ServicoFK"></label>
-                <partial name="PartialViews/_ServicosDropdown" model="@Model.Servicos" />
+                <partial name="~/Views/Servicos/PartialViews/_ServicosDropdown.cshtml" model="@Model.Servicos" />
+
                 <span asp-validation-for="Galeria.ServicoFK" class="text-danger"></span>
             </div>
             <div class="six wide field">

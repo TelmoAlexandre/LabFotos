@@ -57,6 +57,8 @@ namespace LabFoto.APIs
             // Este cliente vai ser utilizado para envio e recepção pedidos Http
             _client = _clientFactory.CreateClient();
 
+            //Após voltar da página de permissões vai redirecionar o utilizador para a página de criação de contas
+            //Onedrive onde terá apenas de colocar o Username e Password
             _redirectUrl = _appSettings.SiteUrl + "/ContasOnedrive/Create";
         } 
         #endregion
@@ -404,13 +406,13 @@ namespace LabFoto.APIs
             return false;
         }
         #endregion
-
+        
         #region Permissions
         /// <summary>
         /// Retorna o url onde será necessário dar permissões à aplicação.
         /// </summary>
         /// <param name="state">Um valor que será retornado da API da Microsoft. Este será utilizado para identificar
-        /// o ID da conta quando o cliente retorna à aplicaçã0</param>
+        /// o ID da conta quando o cliente retorna à aplicação</param>
         /// <returns></returns>
         public string GetPermissionsUrl(int state = 0)
         {

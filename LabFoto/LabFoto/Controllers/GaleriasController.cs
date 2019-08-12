@@ -324,6 +324,13 @@ namespace LabFoto.Controllers
             return View(galeria);
         }
 
+        /// <summary>
+        /// Método que vai buscar à base de dados as fotografias, atualiza o url das thumbnails e retorna numa lista as mesmas.
+        /// </summary>
+        /// <param name="id">Id da galeria em questão</param>
+        /// <param name="page">Número da página</param>
+        /// <param name="justCheckbox"></param>
+        /// <returns>Retorna uma lista de fotografias com o url das thumbnails atualizadas</returns>
         public async Task<IActionResult> Thumbnails(string id, int page = 0, bool justCheckbox = false)
         {
             if (String.IsNullOrEmpty(id))
@@ -346,7 +353,7 @@ namespace LabFoto.Controllers
                 return Json(new { noMorePhotos = true});
             }
 
-            // Refrescar thumbnails
+            // Refrescar o url das thumbnails
             await _onedrive.RefreshPhotoUrlsAsync(fotos);
 
             var response = new ThumbnailsViewModel
@@ -361,82 +368,13 @@ namespace LabFoto.Controllers
         }
         #endregion
 
-        #region UploadFiles
+        #region Upload
         /// <summary>
-        /// Upload da fotografia via servidor. Este metodo já não é utilizado pois 
-        /// o upload é feito no javascript.
+        /// Método que encontra uma conta, refrescando o token, e cria uma sessão de upload.
         /// </summary>
-        /// <param name="files"></param>
-        /// <param name="galeriaId"></param>
-        /// <returns></returns>
-        [HttpPost]
-        private async Task<IActionResult> UploadFiles(List<IFormFile> files, string galeriaId)
-        {
-            // Irá conter todos os caminhos para os ficheiros temporários
-            List<string> filePaths = new List<string>();
-
-            foreach (var formFile in files)
-            {
-                if (formFile.Length > 0)
-                {
-                    #region Recolher informações do ficheiro e guardar-lo no servidor
-                    string fileName = formFile.FileName;
-
-                    // Criar um caminho temporário para o ficheiro
-                    var filePath = Path.GetTempFileName();
-                    filePaths.Append(filePath);
-
-                    // Guardar o ficheiro temporário no servidor.
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await formFile.CopyToAsync(stream);
-                    }
-                    #endregion
-
-                    #region Upload do ficheiro
-                    // Dar upload do ficheiro para a onedrive
-                    // Será selecionada uma conta com espaço de forma automática
-                    UploadedPhotoModel response = await _onedrive.UploadFileAsync(filePath, fileName);
-                    #endregion
-
-                    // Caso o upload tenha tido sucesso
-                    if (response.Success)
-                    {
-                        #region Adicionar foto à Bd
-                        try
-                        {
-                            Fotografia foto = new Fotografia
-                            {
-                                Nome = response.ItemName,
-                                ItemId = response.ItemId,
-                                ContaOnedriveFK = response.Conta.ID,
-                                GaleriaFK = galeriaId,
-                                Formato = GetFileFormat(response.ItemName)
-                            };
-
-                            await _context.AddAsync(foto);
-                            await _context.SaveChangesAsync();
-                        }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
-                        #endregion
-                    }
-                    else
-                    {
-                        // Tratar da do insucesso
-                    }
-                }
-            }
-
-            #region Apagar os ficheiros temporários
-            _onedrive.DeleteFilesFromServerDisk(filePaths); // Apagar todos os ficheiros temporário do servidor 
-            #endregion
-
-            return RedirectToAction("Details", new { id = galeriaId });
-        } 
-
+        /// <param name="size">tamanho do ficheiro.</param>
+        /// <param name="name">nome do ficheiro.</param>
+        /// <returns>Retorna Json consoante o sucesso ou insucesso da criação da sessão de upload.</returns>
         public async Task<IActionResult> UploadSession(long size, string name)
         {
             #region Encontrar conta e refrescar token
@@ -458,6 +396,15 @@ namespace LabFoto.Controllers
             return Json(new { success = true, url = uploadUrl, contaId = conta.ID });
         }
 
+        /// <summary>
+        /// Método que se certifica que a conta existe, cria e guarda a fotografia, 
+        /// atualiza as informações de espaço da conta Onedrive e atualiza a lista para mostrar a fotografia adicionada.
+        /// </summary>
+        /// <param name="galeriaId">Id da galeria</param>
+        /// <param name="fileOnedriveId">Id do ficheiro na Onedrive</param>
+        /// <param name="fileOnedriveName">Nome do ficheiro na Onedrive</param>
+        /// <param name="contaId">Id da conta na base de dados</param>
+        /// <returns>Retorna a lista de fotografias com a fotografia adicionada</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterFile(string galeriaId, string fileOnedriveId, string fileOnedriveName, int contaId)
@@ -467,7 +414,7 @@ namespace LabFoto.Controllers
             {
                 // Certificar que a conta existe
                 ContaOnedrive conta = await _context.ContasOnedrive.FindAsync(contaId);
-                if(conta == null)
+                if (conta == null)
                 {
                     return Json(new { success = false });
                 }
@@ -495,7 +442,7 @@ namespace LabFoto.Controllers
 
                 // Encontrar index da fotografia para fornecer ao photoSwipe
                 Galeria galeria = await _context.Galerias.Include(g => g.Fotografias).FirstOrDefaultAsync(g => g.ID.Equals(galeriaId));
-                int index = galeria.Fotografias.Count() -1;
+                int index = galeria.Fotografias.Count() - 1;
 
                 var response = new ThumbnailsViewModel
                 {
@@ -511,6 +458,7 @@ namespace LabFoto.Controllers
             }
             #endregion
         }
+
         #endregion
 
         #region Create
@@ -528,9 +476,14 @@ namespace LabFoto.Controllers
             return View(response);
         }
 
-        // POST: Galerias/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que se certifica que foi selecionado um serviço, associa os metadados à galeria e 
+        /// adiciona à base de dados a galeria.
+        /// </summary>
+        /// <param name="galeria">Objeto galeria que tem associado a ele o ID,Nome e DataDeCriacao</param>
+        /// <param name="servicoID">Id do serviço</param>
+        /// <param name="metadados">metadados associados à galeria</param>
+        /// <returns> Retorna para a página de detalhes da galeria com a mensagem galeria criada com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nome,DataDeCriacao")] Galeria galeria, string servicoID, string metadados)
@@ -625,9 +578,15 @@ namespace LabFoto.Controllers
             return View(response);
         }
 
-        // POST: Galerias/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que avalia a integridade do id do serviço fornecido, associa os metadados à galeria e
+        /// atualiza os dados da base de dados.
+        /// </summary>
+        /// <param name="id"> id da galeria</param>
+        /// <param name="galeria">Objeto galeria que tem associado a ele o ID,Nome e DataDeCriacao</param>
+        /// <param name="servicoID">Id do serviço associado à galeria</param>
+        /// <param name="metadados">metadados associados à galeria</param>
+        /// <returns> Retorna para a página de detalhes da galeria com a mensagem galeria editada com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,DataDeCriacao")] Galeria galeria, string servicoID, string metadados)
@@ -734,13 +693,17 @@ namespace LabFoto.Controllers
 
             return Json(new { success = false });
         }
-
-        // POST: Galerias/Delete/5
+        /// <summary>
+        /// Método que tenta encontrar a galeria na base de dados com o id fornecido 
+        /// por parametro e só o elimina se não tiver fotografias associadas à mesma.
+        /// </summary>
+        /// <param name="id">Id da galeria</param>
+        /// <returns>Retorna ao Index das galerias com a mensagem galeria removida com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
-            Galeria galeria = null;
+            Galeria galeria = new Galeria();
             try
             {
                 galeria = await _context.Galerias.Include(s => s.Fotografias).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync();
@@ -801,5 +764,84 @@ namespace LabFoto.Controllers
         }
 
         #endregion
+
+        #region UploadBackend(não utilizado)
+        /// <summary>
+        /// Upload da fotografia via servidor. Este metodo já não é utilizado pois 
+        /// o upload é feito no javascript.
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="galeriaId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        private async Task<IActionResult> UploadFiles(List<IFormFile> files, string galeriaId)
+        {
+            // Irá conter todos os caminhos para os ficheiros temporários
+            List<string> filePaths = new List<string>();
+
+            foreach (var formFile in files)
+            {
+                if (formFile.Length > 0)
+                {
+                    #region Recolher informações do ficheiro e guardar-lo no servidor
+                    string fileName = formFile.FileName;
+
+                    // Criar um caminho temporário para o ficheiro
+                    var filePath = Path.GetTempFileName();
+                    filePaths.Append(filePath);
+
+                    // Guardar o ficheiro temporário no servidor.
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
+                    #endregion
+
+                    #region Upload do ficheiro
+                    // Dar upload do ficheiro para a onedrive
+                    // Será selecionada uma conta com espaço de forma automática
+                    UploadedPhotoModel response = await _onedrive.UploadFileAsync(filePath, fileName);
+                    #endregion
+
+                    // Caso o upload tenha tido sucesso
+                    if (response.Success)
+                    {
+                        #region Adicionar foto à Bd
+                        try
+                        {
+                            Fotografia foto = new Fotografia
+                            {
+                                Nome = response.ItemName,
+                                ItemId = response.ItemId,
+                                ContaOnedriveFK = response.Conta.ID,
+                                GaleriaFK = galeriaId,
+                                Formato = GetFileFormat(response.ItemName)
+                            };
+
+                            await _context.AddAsync(foto);
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (Exception)
+                        {
+                            throw;
+                        }
+                        #endregion
+                    }
+                    else
+                    {
+                        // Tratar da do insucesso
+                    }
+                }
+            }
+
+            #region Apagar os ficheiros temporários
+            _onedrive.DeleteFilesFromServerDisk(filePaths); // Apagar todos os ficheiros temporário do servidor 
+            #endregion
+
+            return RedirectToAction("Details", new { id = galeriaId });
+        }
+
+        #endregion
+
     }
 }
