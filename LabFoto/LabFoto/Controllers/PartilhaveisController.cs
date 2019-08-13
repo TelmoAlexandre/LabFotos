@@ -296,8 +296,18 @@ namespace LabFoto.Controllers
                 return NotFound();
 
             if (User.Identity.IsAuthenticated)
-                return View("Details", partilhavel);
+            {
+                // Fornecer feedback ao cliente caso este exista.
+                // Este feedback é fornecido na view a partir de uma notificação 'Noty'
+                if (TempData["Feedback"] != null)
+                {
+                    ViewData["Feedback"] = TempData["Feedback"];
+                    ViewData["Type"] = TempData["Type"] ?? "success";
+                }
 
+                return View("Details", partilhavel);
+            }
+                
             if (partilhavel.Validade != null)
                 if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
                     return NotFound();
@@ -425,6 +435,8 @@ namespace LabFoto.Controllers
                     _logger.LogError($"Erro ao criar Partilhavel. Erro: {e.Message}");
                 }
 
+                TempData["Feedback"] = "Partilhável criado com sucesso.";
+                TempData["Type"] = "success";
                 return RedirectToAction("Details", new { id = partilhavel.ID });
             }
 
@@ -511,6 +523,9 @@ namespace LabFoto.Controllers
                         _logger.LogError($"Erro ao editar Partilhavel. Erro: {e.Message}");
                     }
                 }
+
+                TempData["Feedback"] = "Partilhável editado com sucesso.";
+                TempData["Type"] = "success";
                 return RedirectToAction("Details", new { id = partilhavel.ID });
             }
 
@@ -532,13 +547,19 @@ namespace LabFoto.Controllers
         /// <returns>Retorna ao index dos partilháveis com a mensagem Partilhável eliminado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id, bool ajax)
         {
             try
             {
                 var partilhavel = await _context.Partilhaveis.FindAsync(id);
                 _context.Partilhaveis.Remove(partilhavel);
                 await _context.SaveChangesAsync();
+
+                if (!ajax) // Caso nao seja pedido ajax, fornecer feedback ao utilizador
+                {
+                    TempData["Feedback"] = "Partilhável eliminado com sucesso.";
+                    TempData["Type"] = "success";
+                }
                 return Json(new { success = true });
             }
             catch (Exception e)

@@ -120,7 +120,7 @@
 <div class="ui modal basic small fluidCorners" id="modalNovoPartilhavel">
     <div class="content">
         <div class="ui segment">
-            <p class="ui blue ribbon label mb-3">Criar Partilhavel</p>
+            <p class="ui blue ribbon label mb-3">Criar Partilhável</p>
             <div class="ui form">
                 <label class="font-weight-bold" style="color:black;">Serviço</label>
                 <div class="field" id="newPartilhavel">
@@ -196,6 +196,7 @@
                 type: "POST",
                 data: {
                     "id": partilhavelId,
+                    "ajax": true,
                     "__RequestVerificationToken": $(`input[name='__RequestVerificationToken']`).val(),
                     "X-Requested-With": "XMLHttpRequest"
                 },

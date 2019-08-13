@@ -3,7 +3,7 @@
 @if (Model.Partilhaveis.Count() == 0)
 {
     <div class="my-lg-5 d-flex justify-content-center">
-        <p class="font-weight-bolder">Não foram encontrados Partilhaveis.</p>
+        <p class="font-weight-bolder">Não foram encontrados Partilháveis.</p>
     </div>
 }
 else
@@ -44,7 +44,7 @@ else
                 <div class="four wide column">
                     <div class="ui mini icon basic buttons right floated">
 
-                        <span asp-action="Delete" onclick="confirmDelete('@partilhavel.ID')" class="ui button" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></span>
+                        <span asp-action="Delete" onclick="confirmDelete('@partilhavel.ID')" class="ui button" data-toggle="tooltip" title="Eliminar"><i class="far fa-trash-alt"></i></span>
                         <a asp-action="Edit" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
                         <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" style="padding-top:11px;"
                              onclick="sendEmail(`@partilhavel.ID`)" id="btnMail_@partilhavel.ID">

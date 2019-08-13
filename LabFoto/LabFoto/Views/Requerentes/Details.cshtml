@@ -7,21 +7,24 @@
 
 <div class="ui stackable centered doubling grid">
     <div class="six wide column">
-        <div class="ui card pl-2">
+        <div class="ui card">
             <div id="divDetails_@Model.ID">
                 <partial name="PartialViews/_details" model="Model" />
             </div>
-            <div id="divEdit_@Model.ID" style="display:none; padding-bottom:8px;">
+            <div id="divEdit_@Model.ID" style="display:none; padding-bottom:8px; padding-left:5px;">
 
             </div>
         </div>
     </div>
+</div>
 
-    @if (hasServicos)
-    {
-        <div class="ten wide column">
+@if (hasServicos)
+{
+    <div class="ui raised segment mt-5">
+        <p class="ui blue ribbon label mb-2 large">Serviços do Requerente</p>
+        <div class="ui raised segment">
             <span class="h5 font-weight-bold">Serviços</span>
-            <div class="mt-3" style="overflow-y: scroll; height:280px;">
+            <div class="mt-3" style="overflow-y: scroll; height:200px;">
                 <div class="ui list">
                     @foreach (var ser in Model.Servicos)
                     {
@@ -35,10 +38,19 @@
                 </div>
             </div>
         </div>
-    }
-</div>
 
-<div class="mt-5" id="div_segment"></div>
+        <div class="ui raised segment">
+            <span class="h5 font-weight-bold">Detalhes do Serviço</span>
+            <div class="mt-4" id="div_segment">
+
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p class="font-weight-bolder mt-5 h5">O Requerente não tem Serviços.</p>
+}
 
 <!-- #region Placeholder -->
 
