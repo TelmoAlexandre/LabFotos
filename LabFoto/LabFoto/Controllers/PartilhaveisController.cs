@@ -478,7 +478,7 @@ namespace LabFoto.Controllers
         /// <returns>Retorna à página de detalhes do partilhável acabado de editar.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,DataDeCriacao,Password,ServicoFK,Enviado")] Partilhavel partilhavel, string PhotosIDs)
+        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,DataDeCriacao,Password,ServicoFK")] Partilhavel partilhavel, string PhotosIDs)
         {
             if (id != partilhavel.ID)
                 return NotFound();
@@ -510,6 +510,7 @@ namespace LabFoto.Controllers
 
                 try
                 {
+                    partilhavel.Enviado = false;
                     _context.Update(partilhavel);
                     await _context.SaveChangesAsync();
                 }
