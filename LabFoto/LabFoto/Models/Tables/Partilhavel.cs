@@ -18,6 +18,7 @@ namespace LabFoto.Models.Tables
         [DataType(DataType.Date), Display(Name = "Data de Criação")]
         public DateTime DataDeCriacao { get; set; }
         public string Password { get; set; }
+        public bool Enviado { get; set; }
 
         [ForeignKey("Servico")]
         [Display(Name = "Serviço")]

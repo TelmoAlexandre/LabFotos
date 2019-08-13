@@ -807,7 +807,8 @@ namespace LabFoto.Data
                     Password = "123Qwe!",
                     DataDeCriacao = DateTime.Now,
                     Validade = null,
-                    ServicoFK = servicosIDs[5]
+                    ServicoFK = servicosIDs[5],
+                    Enviado = false
                 }
             );
             modelBuilder.Entity<Partilhavel_Fotografia>().HasData(

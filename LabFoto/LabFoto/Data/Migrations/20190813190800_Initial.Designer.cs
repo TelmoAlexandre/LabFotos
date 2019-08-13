@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LabFoto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190812155650_Initial")]
+    [Migration("20190813190800_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -403,6 +403,8 @@ namespace LabFoto.Migrations
 
                     b.Property<DateTime>("DataDeCriacao");
 
+                    b.Property<bool>("Enviado");
+
                     b.Property<string>("Nome")
                         .IsRequired();
 
@@ -422,7 +424,8 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
-                            DataDeCriacao = new DateTime(2019, 8, 12, 16, 56, 49, 693, DateTimeKind.Local).AddTicks(2747),
+                            DataDeCriacao = new DateTime(2019, 8, 13, 20, 7, 59, 641, DateTimeKind.Local).AddTicks(569),
+                            Enviado = false,
                             Nome = "Teste",
                             Password = "123Qwe!",
                             ServicoFK = "aca4875a-721e-4cfc-827d-d48c7050b543"
@@ -1055,15 +1058,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5887fea4-1724-426c-9bb7-e15215d5b645",
-                            ConcurrencyStamp = "ba632c1f-ae09-4aba-a61e-2ab7d259c9d1",
+                            Id = "3eea3bdb-3d69-44e0-9d46-1654ab971688",
+                            ConcurrencyStamp = "59c16378-de18-4b7b-b899-72c3c37beabe",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e3c81c00-efa8-4415-9d5b-9cf4ea30e63b",
-                            ConcurrencyStamp = "ccb3d0b2-5229-4de9-b848-76fa1f1282d3",
+                            Id = "49172777-7f7b-46d9-8515-3e86fbb54a3e",
+                            ConcurrencyStamp = "990ec456-8c44-4563-aa3b-e2bac0b7fa3e",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });

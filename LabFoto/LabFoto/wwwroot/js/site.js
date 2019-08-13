@@ -422,7 +422,7 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
 
 function sendEmail(id)
 {
-    $(`#btnMail_${id}`).addClass("loading");
+    $(`#btnMail_${id} i.envelope`).addClass("loading");
     $.ajax({
         url: siteUrl + "/Partilhaveis/SendMail",
         type: "POST",
@@ -433,10 +433,16 @@ function sendEmail(id)
         },
         success: function (resp)
         {
-            $(`#btnMail_${id}`).removeClass("loading");
+            $(`#btnMail_${id} i.envelope`).removeClass("loading");
             if (resp.success)
             {
                 notifyUser("success", "Email enviado com sucesso.");
+
+                // Caso não tenha icone a identificar que o partilhavel ja foi enviado, coloca o icone
+                if ($(`#btnMail_${id} i.green.check.icon`).length === 0)
+                {
+                    $(`#btnMail_${id}`).html($(`#btnMail_${id}`).html() + "<i class='green check icon ml-1 mr-0'></i>");
+                }
             }
             else
             {
@@ -445,7 +451,7 @@ function sendEmail(id)
         },
         error: function ()
         {
-            $(`#btnMail_${id}`).removeClass("loading");
+            $(`#btnMail_${id} i.envelope`).removeClass("loading");
             notifyUser("error", "Erro ao enviar email.");
         }
     });

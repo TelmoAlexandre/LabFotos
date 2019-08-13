@@ -299,6 +299,7 @@ namespace LabFoto.Migrations
                     Validade = table.Column<DateTime>(nullable: true),
                     DataDeCriacao = table.Column<DateTime>(nullable: false),
                     Password = table.Column<string>(nullable: true),
+                    Enviado = table.Column<bool>(nullable: false),
                     ServicoFK = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -470,8 +471,8 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "e3c81c00-efa8-4415-9d5b-9cf4ea30e63b", "ccb3d0b2-5229-4de9-b848-76fa1f1282d3", "Lab", "LAB" },
-                    { "5887fea4-1724-426c-9bb7-e15215d5b645", "ba632c1f-ae09-4aba-a61e-2ab7d259c9d1", "Admin", "ADMIN" }
+                    { "49172777-7f7b-46d9-8515-3e86fbb54a3e", "990ec456-8c44-4563-aa3b-e2bac0b7fa3e", "Lab", "LAB" },
+                    { "3eea3bdb-3d69-44e0-9d46-1654ab971688", "59c16378-de18-4b7b-b899-72c3c37beabe", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -571,8 +572,8 @@ namespace LabFoto.Migrations
 
             migrationBuilder.InsertData(
                 table: "Partilhaveis",
-                columns: new[] { "ID", "DataDeCriacao", "Nome", "Password", "ServicoFK", "Validade" },
-                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 8, 12, 16, 56, 49, 693, DateTimeKind.Local).AddTicks(2747), "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
+                columns: new[] { "ID", "DataDeCriacao", "Enviado", "Nome", "Password", "ServicoFK", "Validade" },
+                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 8, 13, 20, 7, 59, 641, DateTimeKind.Local).AddTicks(569), false, "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
 
             migrationBuilder.InsertData(
                 table: "Servicos_DatasExecucao",

@@ -427,6 +427,7 @@ namespace LabFoto.Controllers
                 try
                 {
                     partilhavel.DataDeCriacao = DateTime.Now;
+                    partilhavel.Enviado = false;
                     _context.Add(partilhavel);
                     await _context.SaveChangesAsync();
                 }
@@ -477,7 +478,7 @@ namespace LabFoto.Controllers
         /// <returns>Retorna à página de detalhes do partilhável acabado de editar.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,DataDeCriacao,Password,ServicoFK")] Partilhavel partilhavel, string PhotosIDs)
+        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,DataDeCriacao,Password,ServicoFK,Enviado")] Partilhavel partilhavel, string PhotosIDs)
         {
             if (id != partilhavel.ID)
                 return NotFound();
@@ -599,7 +600,21 @@ namespace LabFoto.Controllers
                 $"Para aceder ao link <a href='{linkPartilha}'>clique aqui</a>. <br />" +
                 $"<span style='font-weight: bold;'>Password: </span>{partilhavel.Password}";
 
-            _email.Send(partilhavel.Servico.Requerente.Email, "Link de Partilha: " + partilhavel.Nome, body);
+            try
+            {
+                _email.Send(partilhavel.Servico.Requerente.Email, "Link de Partilha: " + partilhavel.Nome, body);
+
+                // Dar o partilhável como enviado
+                partilhavel.Enviado = true;
+                _context.Update(partilhavel);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao enviar e-mail ao requerente com o partilhável. SendMail. Erro: {e.Message}");
+            }
+
+
             return Json(new { success = true });
         } 
         #endregion
