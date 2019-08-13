@@ -2,44 +2,45 @@
 
 @{
     ViewData["Title"] = "Detalhes";
+    bool hasServicos = Model.Servicos.Count() != 0;
 }
-<div class="row">
-    <div class="col-md-5"></div>
-    <div class="ui card pl-2" >
-        <div id="divDetails_@Model.ID">
-            <partial name="PartialViews/_details" model="Model" />
-        </div>
-        <div id="divEdit_@Model.ID" style="display:none; padding-bottom:8px;">
 
+<div class="ui stackable centered doubling grid">
+    <div class="six wide column">
+        <div class="ui card pl-2">
+            <div id="divDetails_@Model.ID">
+                <partial name="PartialViews/_details" model="Model" />
+            </div>
+            <div id="divEdit_@Model.ID" style="display:none; padding-bottom:8px;">
+
+            </div>
         </div>
     </div>
+
+    @if (hasServicos)
+    {
+        <div class="ten wide column">
+            <span class="h5 font-weight-bold">Serviços</span>
+            <div class="mt-3" style="overflow-y: scroll; height:280px;">
+                <div class="ui list">
+                    @foreach (var ser in Model.Servicos)
+                    {
+                        <div class="item my-2 pointer" onclick="requerenteServicoDetails(`div_segment`, `@ser.ID`)" id="servico_@ser.ID">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                @ser.Nome
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
-@if (Model.Servicos.Count() != 0)
-{
-    <div class="h5 ml-2 mb-2 mt-4 font-weight-bold">Serviços</div>
-    <div class="ui grid">
-        <div class="four wide column">
-            <div class="ui vertical fluid tabular menu">
-                @foreach (var ser in Model.Servicos)
-                {
-                    <a class="item" id="list_nome" onclick="requerenteServicoDetails(`div_segment`, `@ser.ID`)" data-toggle="list" role="tab" aria-controls="home" href="#list-segment">@ser.Nome</a>
-                }
-            </div>
-        </div>
-        <div class="twelve wide stretched column">
-            <div id="list-segment" role="tabpanel" aria-labelledby="list_nome">
-                <div id="div_segment"></div>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="h5 ml-2 font-weight-bold">Não tem serviços.</div>
-}
+<div class="mt-5" id="div_segment"></div>
 
-
+<!-- #region Placeholder -->
 
 <div class="ui card" id="loadingServico" hidden>
     <div class="card-header pt-5 pb-3">
@@ -94,6 +95,9 @@ else
     </div>
 </div>
 
+
+<!-- #endregion -->
+
 @section scripts
 {
     @{ /* Caso o requerente tenha serviços, mostrar o primeiro por defeito */ }
@@ -115,16 +119,16 @@ else
         {
             // garantir que o serviço que já está carregado não seja carregado novamente
             if ($(`#heading_${servicoId}`).length == 0) {
-                $(`#${divId}`).html($(`#loadingServico`));
-                $(`#loadingServico`).removeAttr('hidden');
+                $(`#servico_${servicoId} i`).addClass("loading");
                 $(`#${divId}`).load(siteUrl + `/Servicos/DetailsAjax/${servicoId}`, function ()
                 {
                     $('[data-toggle="tooltip"]').tooltip();
+                    $(`#servico_${servicoId} i`).removeClass("loading");
                 });
             }
 
         };
-    
+
         function enviarEmail(id)
         {
             $.ajax({

@@ -391,7 +391,7 @@ namespace LabFoto.Controllers
                     _logger.LogError($"Erro ao criar Partilhavel. Erro: {e.Message}");
                 }
 
-                return View("Details", partilhavel);
+                return RedirectToAction("Details", new { id = partilhavel.ID });
             }
 
             partilhavel.Servico = await _context.Servicos.FindAsync(partilhavel.ServicoFK);
@@ -473,7 +473,7 @@ namespace LabFoto.Controllers
                         _logger.LogError($"Erro ao editar Partilhavel. Erro: {e.Message}");
                     }
                 }
-                return View("Details", partilhavel);
+                return RedirectToAction("Details", new { id = partilhavel.ID });
             }
 
             return View(new PartilhavelEditViewModel()

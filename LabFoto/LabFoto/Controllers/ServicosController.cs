@@ -44,7 +44,7 @@ namespace LabFoto.Controllers
             // Todos os serviços numa SelectList
             SelectList servicos = new SelectList(_context.Servicos.OrderBy(s => s.Nome), "ID", "Nome");
 
-            return PartialView("PartialViews/_ServicosDropdown", servicos);
+            return PartialView("_ServicosDropdown", servicos);
         }
 
         // GET: Servicos
