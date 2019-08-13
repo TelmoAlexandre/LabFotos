@@ -572,8 +572,13 @@ namespace LabFoto.Controllers
             }
 
             var linkPartilha = _appSettings.SiteUrl + "/Partilhaveis/Details/" + partilhavel.ID;
-            _email.Send(partilhavel.Servico.Requerente.Email, "Link de Partilha ", 
-                $"Link de acesso: <a href='{linkPartilha}'>clique aqui</a> <br> <p style='font-weight-bold'>Password: {partilhavel.Password}</p>");
+
+            string body = 
+                $"O seguinte link foi partilhado consigo. <br /><br />" +
+                $"Para aceder ao link <a href='{linkPartilha}'>clique aqui</a>. <br />" +
+                $"<span style='font-weight: bold;'>Password: </span>{partilhavel.Password}";
+
+            _email.Send(partilhavel.Servico.Requerente.Email, "Link de Partilha: " + partilhavel.Nome, body);
             return Json(new { success = true });
         } 
         #endregion

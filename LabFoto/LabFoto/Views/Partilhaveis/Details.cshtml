@@ -3,26 +3,67 @@
     ViewData["Title"] = "Details";
 }
 
-@if (User.Identity.IsAuthenticated)
-{
-    <div class="ui form mt-5">
-        <div class="fields">
-            <div class="field mb-2" style="font-weight: bold">
-                <a id="linkPartilha"></a>
-            </div>
-            <label asp-for="Password"></label>
-            <div class="field">
-                <span style="font-weight:bold">@Model.Password</span>
+<div class="ui raised segment">
+    <span class="ui blue ribbon label">Partilhável</span>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="ui small basic button" data-toggle="tooltip" title="Enviar Email" onclick="sendEmail(`@Model.ID`)" id="btnMail_@Model.ID">
+            <i class="envelope outline icon"></i> Enviar ao Requerente
+        </div>
+    }
+    <dl class="row mt-4 mb-0">
+        <dt class="col-sm-2 font-weight-bold">
+            Nome
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(modelItem => Model.Nome)
+        </dd>
+        <dt class="col-sm-2 font-weight-bold">
+            Data de Criação
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(modelItem => Model.DataDeCriacao)
+        </dd>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <dt class="col-sm-2 font-weight-bold">
+                Serviço
+            </dt>
+            <dd class="col-sm-10">
+                <a href="@Url.Action("Details","Servicos",new { id = Model.ServicoFK })" target="_blank">
+                    @Model.Servico.Nome
+                </a>
+            </dd>
+        }
+        <dt class="col-sm-2 font-weight-bold">
+            Endereço
+        </dt>
+        <dd class="col-sm-10">
+            <span id="linkPartilha"></span>
+        </dd>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <dt class="col-sm-2 font-weight-bold">
+                Password
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(modelItem => Model.Password)
+            </dd>
+        }
+    </dl>
+</div>
+
+<div class="ui raised segment">
+    <span class="ui blue ribbon label">Fotografias</span>
+    <div class="ui raised segment pt-0 px-4">
+        <div id="thumbnails" class="mt-4">
+            <div class="my-gallery" id="my-gallery" itemscope>
+                <div class="ui six doubling stackable cards mt-2" id="photosContainer"></div>
             </div>
         </div>
     </div>
-}
-
-<div id="thumbnails" class="mt-4">
-    <div class="my-gallery" id="my-gallery" itemscope>
-        <div class="ui six doubling stackable cards mt-2" id="photosContainer"></div>
-    </div>
 </div>
+
 @Html.AntiForgeryToken()
 
 <!-- #region Photoswipe -->
@@ -99,23 +140,16 @@
     <script>
         var placeHolder = `<div class="ui six doubling stackable mt-2" id="photosContainer"><div class="ui placeholder tiny segment"><div class="ui icon header"><i class="images outline icon" style="height: auto;"></i>Não existem fotografias.</div></div></div>`;
 
-        function mostrarLink()
-        {
-            console.log($('#linkPartilha'));
-            $('#linkPartilha').html(`${siteUrl}/Partilhaveis/Entrega/@Model.ID`);
-            $('#linkPartilha').attr('href', `${siteUrl}/Partilhaveis/Entrega/@Model.ID`);
-
-
-        }
-
         $(document).ready(function ()
         {
-            mostrarLink();
             // Começar a pedir fotografias
             getPhotos(1);
 
             // Iniciar a galeria do PhotoSwipe
             initPhotoSwipeFromDOM('.my-gallery');
+
+            $('#linkPartilha').html(`${siteUrl}/Partilhaveis/Entrega/@Model.ID`);
+            $("#topDiv").css("height", "50px");
         });
 
         function getPhotos(page)
@@ -180,7 +214,5 @@
             document.body.removeChild(link);
             delete link;
         }
-
     </script>
-
 }
