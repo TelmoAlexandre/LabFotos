@@ -47,6 +47,12 @@ namespace LabFoto.Controllers
             return View(response);
         }
 
+        /// <summary>
+        /// Método utilizado para atualizar a lista 
+        /// de requerentes a mostrar consoante o que vem por parametro
+        /// </summary>
+        /// <param name="search">Objeto search que tem associado a ele todos os campos de pesquisa e ordenação da lista</param>
+        /// <returns>retorna uma PartialView com a lista de requerentes certa</returns>
         [HttpPost]
         public async Task<IActionResult> IndexFilter([Bind("NomeSearch,Page,RequerentesPerPage")] RequerentesSearchViewModel search)
         {
@@ -96,7 +102,7 @@ namespace LabFoto.Controllers
             }
 
             var requerentes = await _context.Requerentes.Include(r => r.Servicos)
-                .FirstOrDefaultAsync(m => m.ID.Equals(id));
+                .FirstOrDefaultAsync(r => r.ID.Equals(id));
             if (requerentes == null)
             {
                 return NotFound();
@@ -107,7 +113,13 @@ namespace LabFoto.Controllers
             return View(requerentes);
         }
 
-        // GET: Requerentes/Details/5
+        /// <summary>
+        /// Método que verifica se o id do requerente está correto e se o requerente existe.
+        /// </summary>
+        /// <param name="id">Id do requerente</param>
+        /// <param name="detailsLink">Argumento que dita que botões são mostrados.</param>
+        /// <param name="inServicos">Argumento que dita que botões são mostrados.</param>
+        /// <returns>Retorna uma PartialView com os detalhes do requerente.</returns>
         public async Task<IActionResult> DetailsAjax(string id, bool detailsLink = true, bool inServicos = false)
         {
             if (String.IsNullOrEmpty(id))
@@ -116,7 +128,7 @@ namespace LabFoto.Controllers
             }
 
             var requerente = await _context.Requerentes.Include(r => r.Servicos)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(r => r.ID == id);
             if (requerente == null)
             {
                 return NotFound();
@@ -143,9 +155,11 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_CreateForm", new Requerente());
         }
 
-        // POST: Requerentes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que adiciona requerentes se os modelo estiver válido.
+        /// </summary>
+        /// <param name="requerente">Objeto requerente que tem associado a ele o ID,Nome,Telemovel,Email e Responsavel.</param>
+        /// <returns>Retorna à página anterior com a mensagem Requerente adicionado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
@@ -182,9 +196,12 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_EditForm", requerente);
         }
 
-        // POST: Requerentes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que verifica se o id do requerente está correto e atualiza dos dados do requerente na base de dados.
+        /// </summary>
+        /// <param name="id">Id do requerente.</param>
+        /// <param name="requerente">Objeto requerente que tem associado a ele o ID,Nome,Telemovel,Email e Responsavel.</param>
+        /// <returns>Retorna à página anterior com a mensagem Guardado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Telemovel,Email,Responsavel")] Requerente requerente)
@@ -219,38 +236,6 @@ namespace LabFoto.Controllers
         }
 
         #endregion Edit
-
-        #region Delete
-        // GET: Requerentes/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var requerentes = await _context.Requerentes
-                .FirstOrDefaultAsync(m => m.ID.Equals(id));
-            if (requerentes == null)
-            {
-                return NotFound();
-            }
-
-            return View(requerentes);
-        }
-
-        // POST: Requerentes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var requerentes = await _context.Requerentes.FindAsync(id);
-            _context.Requerentes.Remove(requerentes);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        #endregion Delete
 
         #region AuxMethods
         private bool RequerentesExists(string id)
