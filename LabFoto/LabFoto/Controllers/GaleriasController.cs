@@ -774,69 +774,69 @@ namespace LabFoto.Controllers
         /// <param name="galeriaId"></param>
         /// <returns></returns>
         [HttpPost]
-        private async Task<IActionResult> UploadFiles(List<IFormFile> files, string galeriaId)
+        private IActionResult UploadFiles(List<IFormFile> files, string galeriaId)
         {
-            // Irá conter todos os caminhos para os ficheiros temporários
-            List<string> filePaths = new List<string>();
+            //// Irá conter todos os caminhos para os ficheiros temporários
+            //List<string> filePaths = new List<string>();
 
-            foreach (var formFile in files)
-            {
-                if (formFile.Length > 0)
-                {
-                    #region Recolher informações do ficheiro e guardar-lo no servidor
-                    string fileName = formFile.FileName;
+            //foreach (var formFile in files)
+            //{
+            //    if (formFile.Length > 0)
+            //    {
+            //        #region Recolher informações do ficheiro e guardar-lo no servidor
+            //        string fileName = formFile.FileName;
 
-                    // Criar um caminho temporário para o ficheiro
-                    var filePath = Path.GetTempFileName();
-                    filePaths.Append(filePath);
+            //        // Criar um caminho temporário para o ficheiro
+            //        var filePath = Path.GetTempFileName();
+            //        filePaths.Append(filePath);
 
-                    // Guardar o ficheiro temporário no servidor.
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await formFile.CopyToAsync(stream);
-                    }
-                    #endregion
+            //        // Guardar o ficheiro temporário no servidor.
+            //        using (var stream = new FileStream(filePath, FileMode.Create))
+            //        {
+            //            await formFile.CopyToAsync(stream);
+            //        }
+            //        #endregion
 
-                    #region Upload do ficheiro
-                    // Dar upload do ficheiro para a onedrive
-                    // Será selecionada uma conta com espaço de forma automática
-                    UploadedPhotoModel response = await _onedrive.UploadFileAsync(filePath, fileName);
-                    #endregion
+            //        #region Upload do ficheiro
+            //        // Dar upload do ficheiro para a onedrive
+            //        // Será selecionada uma conta com espaço de forma automática
+            //        //UploadedPhotoModel response = await _onedrive.UploadFileAsync(filePath, fileName);
+            //        #endregion
 
-                    // Caso o upload tenha tido sucesso
-                    if (response.Success)
-                    {
-                        #region Adicionar foto à Bd
-                        try
-                        {
-                            Fotografia foto = new Fotografia
-                            {
-                                Nome = response.ItemName,
-                                ItemId = response.ItemId,
-                                ContaOnedriveFK = response.Conta.ID,
-                                GaleriaFK = galeriaId,
-                                Formato = GetFileFormat(response.ItemName)
-                            };
+            //        // Caso o upload tenha tido sucesso
+            //        if (response.Success)
+            //        {
+            //            #region Adicionar foto à Bd
+            //            try
+            //            {
+            //                Fotografia foto = new Fotografia
+            //                {
+            //                    Nome = response.ItemName,
+            //                    ItemId = response.ItemId,
+            //                    ContaOnedriveFK = response.Conta.ID,
+            //                    GaleriaFK = galeriaId,
+            //                    Formato = GetFileFormat(response.ItemName)
+            //                };
 
-                            await _context.AddAsync(foto);
-                            await _context.SaveChangesAsync();
-                        }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
-                        #endregion
-                    }
-                    else
-                    {
-                        // Tratar da do insucesso
-                    }
-                }
-            }
+            //                await _context.AddAsync(foto);
+            //                await _context.SaveChangesAsync();
+            //            }
+            //            catch (Exception)
+            //            {
+            //                throw;
+            //            }
+            //            #endregion
+            //        }
+            //        else
+            //        {
+            //            // Tratar da do insucesso
+            //        }
+            //    }
+            //}
 
-            #region Apagar os ficheiros temporários
-            _onedrive.DeleteFilesFromServerDisk(filePaths); // Apagar todos os ficheiros temporário do servidor 
-            #endregion
+            //#region Apagar os ficheiros temporários
+            //_onedrive.DeleteFilesFromServerDisk(filePaths); // Apagar todos os ficheiros temporário do servidor 
+            //#endregion
 
             return RedirectToAction("Details", new { id = galeriaId });
         }
