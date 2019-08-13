@@ -46,11 +46,12 @@ namespace LabFoto.Controllers
 
             return View(await _context.ContasOnedrive.ToListAsync());
         }
+
         /// <summary>
         /// Método utilizado para atualizar a lista 
         /// de contas Onedrive a mostrar consoante o que vem por parametro
         /// </summary>
-        /// <param name="Username"></param>
+        /// <param name="Username">Username da conta</param>
         /// <returns>retorna uma PartialView com a lista de contas certa</returns>
         [HttpPost]
         public async Task<IActionResult> IndexFilter(string Username)

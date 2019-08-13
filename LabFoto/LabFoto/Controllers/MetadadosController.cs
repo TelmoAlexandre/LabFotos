@@ -27,7 +27,10 @@ namespace LabFoto.Controllers
 
         #region Index
 
-        // GET: Metadados
+        /// <summary>
+        /// Método usado para mostrar todos os metadados.
+        /// </summary>
+        /// <returns>Retorna uma lista de metadados.</returns>
         public async Task<IActionResult> Index()
         {
             // Fornecer feedback ao cliente caso este exista.
@@ -41,8 +44,13 @@ namespace LabFoto.Controllers
             return View(await _context.Metadados.ToListAsync());
         }
 
+        /// <summary>
+        /// Método utilizado para atualizar a lista 
+        /// de Metadados a mostrar consoante o que vem por parametro
+        /// </summary>
+        /// <param name="Nome">Nome do Metadado</param>
+        /// <returns>retorna uma PartialView com a lista de metadados certa</returns>
         [HttpPost]
-        // POST: Tipos/IndexFilter
         public async Task<IActionResult> IndexFilter(string Nome)
         {
             var metadados = _context.Metadados.Select(m => m);
@@ -58,7 +66,11 @@ namespace LabFoto.Controllers
         #endregion Index
 
         #region Details
-        // GET: Metadados/Details/5
+        /// <summary>
+        /// Método que atualiza os dados após terem sido alterados na página de edição
+        /// </summary>
+        /// <param name="id">Id do metadado</param>
+        /// <returns>Retorna uma PartialView com os dados do metadado atualizados</returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -86,9 +98,11 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_CreateForm", new Metadado());
         }
 
-        // POST: Metadados/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que se certifica que foi preenchido o campo do nome e adiciona o metadado à base de dados
+        /// </summary>
+        /// <param name="metadado">Objeto metadado que tem associado a ele o ID e o Nome</param>
+        /// <returns>Retorna para a página onde estava com a mensagem adicionado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nome")] Metadado metadado)
@@ -128,9 +142,12 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_Edit", metadado);
         }
 
-        // POST: Metadados/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que verifica se o id está correto e tenta atualizar os dados na base de dados.
+        /// </summary>
+        /// <param name="id">Id do metadado</param>
+        /// <param name="metadado">Objeto metadado que tem associado a ele o ID e o Nome</param>
+        /// <returns>Retorna à página de Index com a mensagem editado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Nome")] Metadado metadado)
@@ -165,6 +182,12 @@ namespace LabFoto.Controllers
         #endregion Edit
 
         #region Delete
+        /// <summary>
+        /// Método que verifica se o parametro não ve vazio e se o metadado existe na
+        /// base de dados e remove-o da base de dados.
+        /// </summary>
+        /// <param name="id">Id do metadado</param>
+        /// <returns>Retorna à página index com a mensagem metadado eliminado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id)

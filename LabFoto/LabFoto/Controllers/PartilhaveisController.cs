@@ -46,10 +46,10 @@ namespace LabFoto.Controllers
         #region Ajax
 
         /// <summary>
-        /// Retornas um acordião com as galerias de um serviço.
+        /// Retorna um acordião com as galerias de um serviço.
         /// </summary>
         /// <param name="id">Id do serviço</param>
-        /// <param name="pId">Id do partilhavel</param>
+        /// <param name="photosIDs">lista de Id's das fotografias selecionadas</param>
         /// <returns></returns>
         public async Task<IActionResult> GaleriasAccordion(string id, string photosIDs)
         {
@@ -112,6 +112,15 @@ namespace LabFoto.Controllers
         #endregion
 
         #region Thumbnails
+        /// <summary>
+        /// Método que verifica se o id do partilhável e a password estão corretos,
+        /// se encontrar o partilhável vai recolher o número de fotos por pedido à base de dados 
+        /// até não existirem mais fotos para recolher.
+        /// </summary>
+        /// <param name="ID">Id do partilhável</param>
+        /// <param name="Password">Password do partilhável</param>
+        /// <param name="Page">Número da página</param>
+        /// <returns>Retorna uma lista de fotografias.</returns>
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -160,6 +169,8 @@ namespace LabFoto.Controllers
         }
         #endregion
 
+        #region Index
+
         public async Task<IActionResult> Index()
         {
             // Fornecer feedback ao cliente caso este exista.
@@ -188,7 +199,12 @@ namespace LabFoto.Controllers
             return View(response);
         }
 
-        // POST: Servicos/IndexFilter
+        /// <summary>
+        /// Método utilizado para atualizar a lista 
+        /// de partilháveis a mostrar consoante o que vem por parametro
+        /// </summary>
+        /// <param name="search">Objeto search que tem associado a ele todos os campos de pesquisa e ordenação da lista</param>
+        /// <returns>retorna uma PartialView com a lista de partilháveis certa</returns>
         [HttpPost]
         public async Task<IActionResult> IndexFilter([Bind("NomeSearch,ServicoId,Validade,Ordem,Page,PartilhaveisPerPage")] PartilhavelSearchViewModel search)
 
@@ -231,7 +247,7 @@ namespace LabFoto.Controllers
                 default:
                     break;
             }
-            
+
             switch (search.Ordem)
             {
                 case "nome":
@@ -255,9 +271,16 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_IndexCards", response);
         }
 
+        #endregion
+
         #region Details
+        /// <summary>
+        /// Método que verifica se o id do partilhável está correto e se o partilhável existe.
+        /// </summary>
+        /// <param name="id">Id do partilhável</param>
+        /// <returns>Retorna um formulário para o anónimo preencher a password ou 
+        /// se o utilizador estiver autenticado vai diretamente para os detalhes do partilhável.</returns>
         [AllowAnonymous]
-        // GET: Partilhaveis
         public async Task<IActionResult> Details(string id)
         {
             if (String.IsNullOrEmpty(id))
@@ -284,7 +307,13 @@ namespace LabFoto.Controllers
                 Partilhavel = partilhavel
             });
         }
-
+        /// <summary>
+        /// Método que verifica se o id do partilhável e a password estão corretos, vai à base de dados 
+        /// buscar os detalhes do partilhável para retorna-los caso a password esteja correta.
+        /// </summary>
+        /// <param name="ID">Id do partilhável</param>
+        /// <param name="Password">Password do partilhável</param>
+        /// <returns>Retorna os detalhes do partilhável.</returns>
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -341,9 +370,14 @@ namespace LabFoto.Controllers
             );
         }
 
-        // POST: Partilhaveis/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que associa fotografias ao partilhável, faz o tratamento da password coloca a
+        /// data de criação com a data atual e adiciona o partilhável à base de dados.
+        /// </summary>
+        /// <param name="partilhavel">Objeto partilhavel que tem associado a ele o ID,Nome,Validade,Password e ServicoFK.</param>
+        /// <param name="PhotosIDs">lista de Id's das fotografias selecionadas.</param>
+        /// <param name="usePassword">Caso o utilizador queria ser ele a introduzir a password ou não.</param>
+        /// <returns>Retorna uma vista com o partilhável acabado de partilhar.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nome,Validade,Password,ServicoFK")] Partilhavel partilhavel, string PhotosIDs, bool usePassword = false)
@@ -422,9 +456,13 @@ namespace LabFoto.Controllers
             });
         }
 
-        // POST: Partilhaveis/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que verifica se o id está correto e que a lista de fotografias não está vazia, 
+        /// associa fotografias ao partilhável e atualiza o partilhável com os novos dados.
+        /// </summary>
+        /// <param name="partilhavel">Objeto partilhavel que tem associado a ele o ID,Nome,Validade,DataDeCriacao,Password e ServicoFK.</param>
+        /// <param name="PhotosIDs">lista de Id's das fotografias selecionadas.</param>
+        /// <returns>Retorna à página de detalhes do partilhável acabado de editar.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,DataDeCriacao,Password,ServicoFK")] Partilhavel partilhavel, string PhotosIDs)
@@ -487,7 +525,11 @@ namespace LabFoto.Controllers
 
         #region Delete
 
-        // POST: Partilhaveis/Delete/5
+        /// <summary>
+        /// Método que tenta encontrar o partilhável e elimina-o da base de dados.
+        /// </summary>
+        /// <param name="id">Id do partilhável</param>
+        /// <returns>Retorna ao index dos partilháveis com a mensagem Partilhável eliminado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
@@ -508,8 +550,15 @@ namespace LabFoto.Controllers
 
         #endregion Delete
 
+        #region SendMail
+        /// <summary>
+        /// Método que verifica se o id está correto e se o partilhável existe, envia um email ao requerente com o link de partilha e a password.
+        /// </summary>
+        /// <param name="id">Id do requerente</param>
+        /// <returns>Retorna a mensagem Email enviado com sucesso.</returns>
         [HttpPost]
-        public async Task<IActionResult> SendMail(string id) {
+        public async Task<IActionResult> SendMail(string id)
+        {
 
             if (String.IsNullOrEmpty(id))
             {
@@ -531,7 +580,8 @@ namespace LabFoto.Controllers
 
             _email.Send(partilhavel.Servico.Requerente.Email, "Link de Partilha: " + partilhavel.Nome, body);
             return Json(new { success = true });
-        }
+        } 
+        #endregion
 
         private bool PartilhavelExists(string id)
         {
