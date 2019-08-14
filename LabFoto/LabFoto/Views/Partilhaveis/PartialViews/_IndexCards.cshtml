@@ -10,18 +10,17 @@ else
 {
     @foreach (var partilhavel in Model.Partilhaveis)
     {
-        var color = "green";
+        var segmentColor = "green";
+        string sendClass = "";
+        if (partilhavel.Enviado) { sendClass = "green"; }
 
         // Caso o partilhavel tenha expirado, mostra o segmento a vermelhor para avisar que já expirou
-        if (partilhavel.Validade != null)
+        if (partilhavel.Validade != null && DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
         {
-            if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
-            {
-                color = "red";
-            }
+            segmentColor = "red";
         }
 
-        <div class="ui segment @color" id="segment_@partilhavel.ID">
+        <div class="ui segment @segmentColor" id="segment_@partilhavel.ID">
             <div class="ui doubling stackable grid">
                 <div class="four wide column mt-2">
                     <a asp-action="Details" asp-controller="Partilhaveis" asp-route-id="@partilhavel.ID" 
@@ -48,11 +47,7 @@ else
                         <a asp-action="Edit" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
                         <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" style="padding-top:11px;"
                              onclick="sendEmail(`@partilhavel.ID`)" id="btnMail_@partilhavel.ID">
-                            <i class="envelope outline icon"></i>
-                            @if (partilhavel.Enviado)
-                            {
-                                <i class="green check icon pl-2 pr-2"></i>
-                            }
+                            <i class="@sendClass envelope outline icon"></i>
                         </div>
                         <a asp-action="Details" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
                     </div>

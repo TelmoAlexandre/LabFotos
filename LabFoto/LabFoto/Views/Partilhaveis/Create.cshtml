@@ -196,7 +196,7 @@
                 }
             });
 
-            getGaleriasAccordion(); // Fetch do acordião com todas as galerias do serviço
+            getGaleriasAccordion('@Model.ServicoFK'); // Fetch do acordião com todas as galerias do serviço
         });
 
         // Esta função certifica-se que as imagens de uma galeria apenas são carregadas uma vez
@@ -263,24 +263,6 @@
                     notifyUser("error", "Não foi possível carregar as fotografias.");
                 }
             });
-        }
-
-        function getGaleriasAccordion()
-        {
-            $("#galerias")
-                .html(smallLoader)
-                .load(siteUrl + "/Partilhaveis/GaleriasAccordion/@Model.ServicoFK", function ()
-                {
-                    if (isEmpty("#accordion"))
-                    {
-                        $("#galerias").html(`
-                            <div class="my-lg-5 d-flex justify-content-center">
-                                <p class="font-weight-bolder">Este serviço não tem galerias.</p>
-                            </div>`
-                        );
-                    }
-                    $('[data-toggle="tooltip"]').tooltip();
-                });
         }
 
         function clearCB(divId)

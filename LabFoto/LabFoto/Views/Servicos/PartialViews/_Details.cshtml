@@ -144,17 +144,17 @@
     </a>
     @foreach (var partilhavel in Model.Partilhaveis)
     {
-        var color = "green";
+        var segmentColor = "green";
+        string sendClass = "";
+        if (partilhavel.Enviado) { sendClass = "green"; }
 
         // Caso o partilhavel tenha expirado, mostra o segmento a vermelhor para avisar que já expirou
-        if (partilhavel.Validade != null)
+        if (partilhavel.Validade != null && DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
         {
-            if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
-            {
-                color = "red";
-            }
+            segmentColor = "red";
         }
-        <div class="ui raised @color segment">
+
+        <div class="ui raised @segmentColor segment">
             <div class=" ui grid stackable">
                 <div class="row">
                     <div class="ui eight wide column ml-2 pl-5 pt-2 font-weight-bold">
@@ -169,11 +169,7 @@
 
                             <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" style="padding-top:12px;"
                                  onclick="sendEmail(`@partilhavel.ID`)" id="btnMail_@partilhavel.ID">
-                                <i class="envelope outline icon"></i>
-                                @if (partilhavel.Enviado)
-                                {
-                                    <i class="green check icon pl-2 pr-2"></i>
-                                }
+                                <i class="@sendClass envelope outline icon"></i>
                             </div>
                             <a asp-controller="Partilhaveis" asp-action="Edit" asp-route-id="@partilhavel.ID" class="ui button float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
                             <a asp-controller="Partilhaveis" asp-action="Details" asp-route-id="@partilhavel.ID"

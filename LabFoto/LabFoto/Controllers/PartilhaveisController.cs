@@ -99,6 +99,7 @@ namespace LabFoto.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Erro ao preparar o acordião de galerias. Erro: {e.Message}");
+                return Json(new { success = false, error = "Erro ao carregas as galerias." });
             }
             #endregion
 

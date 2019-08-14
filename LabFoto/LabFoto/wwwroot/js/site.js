@@ -110,7 +110,7 @@ function initModalEvents() {
 
 function isEmpty(node)
 {
-    return ($(`${node}`).children().length === 0);
+    return $(`${node}`).children().length === 0;
 }
 
 toggleDivs = (div1, div2) => 
@@ -420,9 +420,54 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
     });
 };
 
+function getGaleriasAccordion(servicoId)
+{
+    $("#galerias").html(smallLoader);
+    $.ajax({
+        type: "GET",
+        url: siteUrl + `/Partilhaveis/GaleriasAccordion/${servicoId}`,
+        success: function (resp)
+        {
+            if (resp.success === false) // Em caso de erro
+            {
+                if (!resp.success)
+                {
+                    $("#galerias").html(`
+                                <div class="my-lg-5 d-flex justify-content-center">
+                                    <p class="font-weight-bolder" style="color:red;">Erro ao carregar as galerias.</p>
+                                </div>`
+                    );
+                    notifyUser("error", resp.error);
+                }
+            }
+            else // Em caso de sucesso
+            {
+                $("#galerias").html(resp);
+                $('[data-toggle="tooltip"]').tooltip(); 
+
+                // Feedback caso não existam galerias carregadas
+                if (isEmpty("#accordion"))
+                {
+                    $("#galerias").html(`
+                                <div class="my-lg-5 d-flex justify-content-center">
+                                    <p class="font-weight-bolder">Este serviço não tem galerias.</p>
+                                </div>`
+                    );
+                }
+            }
+        },
+        error: function ()
+        {
+            notifyUser("error", "Erro ao preparar galerias.");
+        }
+    });
+}
+
 function sendEmail(id)
 {
-    $(`#btnMail_${id} i.envelope`).addClass("loading");
+    var green = $(`#btnMail_${id} i`).hasClass("green");
+    $(`#btnMail_${id}`).addClass("loading").children("i").removeClass("green");
+
     $.ajax({
         url: siteUrl + "/Partilhaveis/SendMail",
         type: "POST",
@@ -433,29 +478,26 @@ function sendEmail(id)
         },
         success: function (resp)
         {
-            $(`#btnMail_${id} i.envelope`).removeClass("loading");
+            $(`#btnMail_${id}`).removeClass("loading");
             if (resp.success)
             {
                 notifyUser("success", "Email enviado com sucesso.");
-
-                // Caso não tenha icone a identificar que o partilhavel ja foi enviado, coloca o icone
-                if ($(`#btnMail_${id} i.green.check.icon`).length === 0)
-                {
-                    $(`#btnMail_${id}`).html($(`#btnMail_${id}`).html() + "<i class='green check icon ml-1 mr-0'></i>");
-                }
+                $(`#btnMail_${id} i`).addClass("green");
             }
             else
             {
+                if (green) { $(`#btnMail_${id} i`).addClass("green"); }
                 notifyUser("error", "Erro ao enviar email.");
             }
         },
         error: function ()
         {
-            $(`#btnMail_${id} i.envelope`).removeClass("loading");
+            $(`#btnMail_${id}`).removeClass("loading");
+            if (green) { $(`#btnMail_${id} i`).addClass("green"); }
             notifyUser("error", "Erro ao enviar email.");
         }
     });
-};
+}
 
 /*
  * PhotoSwipe 
@@ -523,7 +565,7 @@ var initPhotoSwipeFromDOM = function (gallerySelector) {
 
         // find root element of slide
         var clickedListItem = closest(eTarget, function (el) {
-            return (el.tagName && el.tagName.toUpperCase() === 'FIGURE');
+            return el.tagName && el.tagName.toUpperCase() === 'FIGURE';
         });
 
         if (!clickedListItem) {
