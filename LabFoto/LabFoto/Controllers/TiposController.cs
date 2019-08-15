@@ -26,7 +26,10 @@ namespace LabFoto.Controllers
 
         #region Index
 
-        // GET: Tipos
+        /// <summary>
+        /// Método usado para mostrar todos os Tipos.
+        /// </summary>
+        /// <returns>Retorna uma lista de Tipos.</returns>
         public async Task<IActionResult> Index()
         {
             // Fornecer feedback ao cliente caso este exista.
@@ -39,9 +42,13 @@ namespace LabFoto.Controllers
 
             return View(await _context.Tipos.ToListAsync());
         }
-
+        /// <summary>
+        /// Método utilizado para atualizar a lista 
+        /// de Tipos a mostrar consoante o que vem por parametro
+        /// </summary>
+        /// <param name="Nome">Nome do Tipo</param>
+        /// <returns>Retorna uma PartialView com a lista de Tipos certa</returns>
         [HttpPost]
-        // POST: Tipos/IndexFilter
         public async Task<IActionResult> IndexFilter(string Nome)
         {
             var tipos = _context.Tipos.Select(t => t);
@@ -58,7 +65,11 @@ namespace LabFoto.Controllers
 
         #region Details
 
-        // GET: Tipos/Details/5
+        /// <summary>
+        /// Método que atualiza os dados após terem sido alterados na página de edição
+        /// </summary>
+        /// <param name="id">Id do Tipo</param>
+        /// <returns>Retorna uma PartialView com os dados do Tipo atualizados</returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -86,9 +97,11 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_CreateForm", new Tipo());
         }
 
-        // POST: Tipos/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que se certifica que foi preenchido o campo do nome e adiciona o Tipo à base de dados.
+        /// </summary>
+        /// <param name="tipo">Objeto tipo que tem associado a ele o ID e o Nome</param>
+        /// <returns>Retorna para a página onde estava com a mensagem adicionado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nome")] Tipo tipo)
@@ -129,9 +142,12 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_Edit", tipo);
         }
 
-        // POST: Tipos/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que verifica se o id está correto e tenta atualizar os dados na base de dados.
+        /// </summary>
+        /// <param name="id">Id do metadado</param>
+        /// <param name="tipo">Objeto Tipo que tem associado a ele o ID e o Nome</param>
+        /// <returns>Retorna à página de Index com a mensagem editado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Nome")] Tipo tipo)
@@ -168,6 +184,14 @@ namespace LabFoto.Controllers
         #endregion Edit
 
         #region Delete
+
+        /// <summary>
+        /// Método que verifica se o parametro não vem vazio e se o Tipo existe na
+        /// base de dados e remove-o da base de dados.
+        /// </summary>
+        /// <param name="id">Id do Tipo</param>
+        /// <returns>Retorna à página index com a mensagem Tipo eliminado com sucesso.</returns>
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id) {

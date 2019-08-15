@@ -183,7 +183,12 @@ namespace LabFoto.Controllers
             return View(response);
         }
 
-        // POST: Servicos/IndexFilter
+        /// <summary>
+        /// Método utilizado para atualizar a lista 
+        /// de serviços a mostrar consoante o que vem por parametro
+        /// </summary>
+        /// <param name="search">Objeto search que tem associado a ele todos os campos de pesquisa e ordenação da lista</param>
+        /// <returns>retorna uma PartialView com a lista de serviços certa</returns>
         [HttpPost]
         public async Task<IActionResult> IndexFilter([Bind("NomeSearch,DateMin,DateMax,Requerente,Obra,Tipos,ServSolicitados,Ordem,Page,ServicosPerPage")] ServicosSearchViewModel search)
 
@@ -324,7 +329,12 @@ namespace LabFoto.Controllers
             return View(servicos);
         }
 
-        // GET: Servicos/Details/5
+        /// <summary>
+        /// Método que verifica se o id do serviço está correto e se o serviço existe.
+        /// </summary>
+        /// <param name="id">Id do serviço</param>
+        /// <returns>Retorna uma PartialView com os detalhes do serviço.</returns>
+
         public async Task<IActionResult> DetailsAjax(string id)
         {
             if (String.IsNullOrEmpty(id))
@@ -361,9 +371,11 @@ namespace LabFoto.Controllers
             });
         }
 
-        // POST: Servicos/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que adiciona serviço se os modelo estiver válido.
+        /// </summary>
+        /// <param name="servico">Objeto servico necessário para a criação do mesmo.</param>
+        /// <returns>Retorna ao Index dos Serviços com a mensagem Serviço adicionado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -533,10 +545,16 @@ namespace LabFoto.Controllers
 
             return View(response);
         }
+        /// <summary>
+        /// Método que verifica se o id do serviço está correto e atualiza dos dados do serviço na base de dados.
+        /// </summary>
+        /// <param name="id">Id do serviço.</param>
+        /// <param name="servico">Objeto servico necessário para a criação do mesmo.</param>
+        /// <param name="form">IFormCollection usado para ir buscar os valores da DataExecução.</param>
+        /// <param name="Tipos">lista de Tipos selecionados.</param>
+        /// <param name="ServSolicitados">lista de Serviços Solicitados selecionados.</param>
+        /// <returns>Retorna à página anterior com a mensagem Guardado com sucesso.</returns>
 
-        // POST: Servicos/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,DataDeCriacao,IdentificacaoObra,Observacoes,HorasEstudio,HorasPosProducao,DataEntrega,Total,RequerenteFK")] Servico servico,
@@ -706,7 +724,11 @@ namespace LabFoto.Controllers
 
         #region Delete
 
-        // POST: Servicos/Delete/5
+        /// <summary>
+        /// Método que tenta encontrar o serviço e elimina-o da base de dados caso não tenha galerias associadas.
+        /// </summary>
+        /// <param name="id">Id do serviço</param>
+        /// <returns>Retorna ao index dos Serviços com a mensagem Serviço eliminado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)

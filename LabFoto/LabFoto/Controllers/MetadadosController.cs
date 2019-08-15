@@ -49,7 +49,7 @@ namespace LabFoto.Controllers
         /// de Metadados a mostrar consoante o que vem por parametro
         /// </summary>
         /// <param name="Nome">Nome do Metadado</param>
-        /// <returns>retorna uma PartialView com a lista de metadados certa</returns>
+        /// <returns>Retorna uma PartialView com a lista de metadados certa</returns>
         [HttpPost]
         public async Task<IActionResult> IndexFilter(string Nome)
         {
@@ -99,7 +99,7 @@ namespace LabFoto.Controllers
         }
 
         /// <summary>
-        /// Método que se certifica que foi preenchido o campo do nome e adiciona o metadado à base de dados
+        /// Método que se certifica que foi preenchido o campo do nome e adiciona o metadado à base de dados.
         /// </summary>
         /// <param name="metadado">Objeto metadado que tem associado a ele o ID e o Nome</param>
         /// <returns>Retorna para a página onde estava com a mensagem adicionado com sucesso.</returns>
@@ -183,7 +183,7 @@ namespace LabFoto.Controllers
 
         #region Delete
         /// <summary>
-        /// Método que verifica se o parametro não ve vazio e se o metadado existe na
+        /// Método que verifica se o parametro não vem vazio e se o metadado existe na
         /// base de dados e remove-o da base de dados.
         /// </summary>
         /// <param name="id">Id do metadado</param>

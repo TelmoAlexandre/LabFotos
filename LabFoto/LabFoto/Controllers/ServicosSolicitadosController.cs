@@ -25,7 +25,10 @@ namespace LabFoto.Controllers
         }
 
         #region Index
-        // GET: ServicosSolicitados
+        /// <summary>
+        /// Método usado para mostrar todos os Serviços Solicitados.
+        /// </summary>
+        /// <returns>Retorna uma lista de Serviços Solicitados.</returns>
         public async Task<IActionResult> Index()
         {
             // Fornecer feedback ao cliente caso este exista.
@@ -39,8 +42,13 @@ namespace LabFoto.Controllers
             return View(await _context.ServicosSolicitados.ToListAsync());
         }
 
+        /// <summary>
+        /// Método utilizado para atualizar a lista 
+        /// de Serviços Solicitados a mostrar consoante o que vem por parametro
+        /// </summary>
+        /// <param name="Nome">Nome do Serviço Solicitado</param>
+        /// <returns>Retorna uma PartialView com a lista de Serviços Solicitados certa</returns>
         [HttpPost]
-        // POST ServicosSolicitados/IndexFilter
         public async Task<IActionResult> IndexFilter(string Nome)
         {
             var servSolic = _context.ServicosSolicitados.Select(s => s);
@@ -57,7 +65,11 @@ namespace LabFoto.Controllers
 
         #region Details
 
-        // GET: ServicosSolicitados/Details/5
+        /// <summary>
+        /// Método que atualiza os dados após terem sido alterados na página de edição
+        /// </summary>
+        /// <param name="id">Id do Serviço Solicitado</param>
+        /// <returns>Retorna uma PartialView com os dados do Serviço Solicitado atualizados</returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -85,9 +97,11 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_CreateForm", new ServicoSolicitado());
         }
 
-        // POST: ServicosSolicitados/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que se certifica que foi preenchido o campo do nome e adiciona o Serviço Solicitado à base de dados.
+        /// </summary>
+        /// <param name="servicoSolicitado">Objeto servicoSolicitado que tem associado a ele o ID e o Nome</param>
+        /// <returns>Retorna para a página onde estava com a mensagem adicionado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nome")] ServicoSolicitado servicoSolicitado)
@@ -126,9 +140,12 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_Edit", servicosSolicitado);
         }
 
-        // POST: ServicosSolicitados/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Método que verifica se o id está correto e tenta atualizar os dados na base de dados.
+        /// </summary>
+        /// <param name="id">Id do metadado</param>
+        /// <param name="servicoSolicitado">Objeto Servico Solicitado que tem associado a ele o ID e o Nome</param>
+        /// <returns>Retorna à página de Index com a mensagem editado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Nome")] ServicoSolicitado servicoSolicitado)
@@ -163,7 +180,14 @@ namespace LabFoto.Controllers
 
         #endregion Edit
 
-        #region Delete
+        #region Delete        
+
+        /// <summary>
+        /// Método que verifica se o parametro não vem vazio e se o Serviço Solicitado existe na
+        /// base de dados e remove-o da base de dados.
+        /// </summary>
+        /// <param name="id">Id do Serviço Solicitado</param>
+        /// <returns>Retorna à página index com a mensagem Serviço Solicitado eliminado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id)
