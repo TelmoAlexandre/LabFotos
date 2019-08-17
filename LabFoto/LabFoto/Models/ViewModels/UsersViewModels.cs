@@ -31,7 +31,7 @@ namespace LabFoto.Models.ViewModels
     public class UserCreateViewModel
     {
         [Required(ErrorMessage = "O Email é obrigatório.")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "É necessário preencher com um e-mail válido")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 

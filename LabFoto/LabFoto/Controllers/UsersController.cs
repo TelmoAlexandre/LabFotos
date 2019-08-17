@@ -61,7 +61,12 @@ namespace LabFoto.Controllers
 
             return View(response);
         }
-
+        /// <summary>
+        /// Método utilizado para atualizar a lista 
+        /// de utilizadores a mostrar consoante o que vem por parametro
+        /// </summary>
+        /// <param name="Username">Nome do utilizador</param>
+        /// <returns>retorna uma PartialView com a lista de utilizadores certa</returns>
         public async Task<IActionResult> IndexFilter(string Username)
         {
             var users = _context.Users.Select(u => u);
@@ -77,7 +82,7 @@ namespace LabFoto.Controllers
         }
 
         /// <summary>
-        /// Determina quais o utilizadores que seram mostrados ao user, dependendo do seu Role.
+        /// Determina quais os utilizadores que serão mostrados ao user, dependendo do seu Role.
         /// </summary>
         /// <param name="users">Lista dos utilizadores a serem filtrados</param>
         /// <returns>UsersIndexViewModel</returns>
@@ -140,7 +145,13 @@ namespace LabFoto.Controllers
             return View(response);
         }
 
-        
+        /// <summary>
+        /// Método que verifica a role da conta que está a criar o utilizador, caso este seja Admin permite escolher a role de utilizador.
+        /// Após a verificação de roles, verifica se está tudo bem preenchido e adiciona à base de dados esse mesmo utilizador, caso tenh
+        /// sucesso adiciona-lhe a role. Por fim envia um email ao utilizador criado um email de confirmação de criação de conta.
+        /// </summary>
+        /// <param name="user">Objeto user que tem associado a ele o Email,Password,ConfirmPassword e Role</param>
+        /// <returns> Retorna para a lista de utilizadores com a mensagem Utilizador criado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Email,Password,ConfirmPassword,Role")] UserCreateViewModel user)
@@ -235,6 +246,13 @@ namespace LabFoto.Controllers
 
             return Json(new { success = false });
         }
+        /// <summary>
+        /// Método que verifica se o utilizador e o role existem. Remove a role existente desse utilizador e 
+        /// adiciona a nova role ao utilizador.
+        /// </summary>
+        /// <param name="userId">Id do utilizador</param>
+        /// <param name="role">Role do utilizador</param>
+        /// <returns> Retorna para a lista de utilizadores com a mensagem Papel alterado com sucesso.</returns>
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -284,6 +302,14 @@ namespace LabFoto.Controllers
         #endregion
 
         #region Confirmar Email
+        /// <summary>
+        /// Método que verifica se o userId e o code foram preenchidos, se o utilizador existe, tenta confirmar o email 
+        /// e autenticar o utilizador para que o utilizador ao clicar no link enviado por email 
+        /// confirme o email e fique automaticamente autenticado.
+        /// </summary>
+        /// <param name="userId">Id do utilizador.</param>
+        /// <param name="code">Código usado para a confirmação da conta de utilizador.</param>
+        /// <returns>Retorna para a página de Index com a mensagem Email confirmado com sucesso.</returns>
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
@@ -320,6 +346,14 @@ namespace LabFoto.Controllers
         #endregion
 
         #region Bloquear conta
+        /// <summary>
+        /// Método que tenta encontrar o utilizador e não deixa bloquear a conta principal da aplicação.
+        /// Caso seja para bloquear coloca o lockOutEnd para o ano 2999 e atualiza a base de dados,
+        /// caso seja para desbloquear coloca o lockOut a null e atualiza a base de dados.
+        /// </summary>
+        /// <param name="id">Id do utilizador.</param>
+        /// <param name="locked">Boolean para desbloquear o bloquear o utilizador.</param>
+        /// <returns>Retorna ao Index com a mensagem Utilizador bloqueado/desbloqueado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -366,10 +400,16 @@ namespace LabFoto.Controllers
             {
                 return Json(new { success = false });
             }
-        } 
+        }
         #endregion
 
         #region Delete
+        /// <summary>
+        /// Método que tenta encontrar o utilizador na base de dados e não deixa apagar a conta principal da aplicação.
+        /// Tenta remover o utilizador da base de dados e guardar as alterações.
+        /// </summary>
+        /// <param name="id">Id do utilizador.</param>
+        /// <returns>Retorna à lista de utilizadores com a mensagem Utilizador eliminado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
