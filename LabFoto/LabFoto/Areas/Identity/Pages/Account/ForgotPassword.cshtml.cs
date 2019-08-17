@@ -30,7 +30,7 @@ namespace LabFoto.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required(ErrorMessage = "É necessário preencher o email.")]
-            [EmailAddress]
+            [EmailAddress(ErrorMessage = "É necessário preencher um email válido.")]
             public string Email { get; set; }
         }
 

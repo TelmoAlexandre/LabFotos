@@ -22,8 +22,8 @@
     <div class="form-group">
         <div class="input-group mb-2">
             <div class="input-group-prepend loginPreEnds">
-                <div class="input-group-text" data-toggle="tooltip" title="Ver Password" onclick="mostrarPW()" class="pointer">
-                    <span id="btnMostrar">
+                <div class="input-group-text pointer" id="btnMostrar" data-toggle="tooltip" data-original-title="Ver Password" onclick="mostrarPW()">
+                    <span >
                         <i class="eye icon"></i>
                     </span>
                 </div>
@@ -54,27 +54,29 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
 
         mostrarPW = () =>
         {
 
             var password = $('#pwInput')[0];
-            var passwordBtn = $('#btnMostrar')[0];
+            var passwordBtn = $('#btnMostrar');
             if (password.type === "password")
             {
 
                 password.type = "text";
-                passwordBtn.children[0].className = `eye slash icon`;
-                passwordBtn.dataset.originalTitle = "Esconder Password";
-
+                passwordBtn[0].children[0].children[0].className = `eye slash icon`;
+                passwordBtn.attr("data-toggle", "tooltip");
+                passwordBtn.attr("data-original-title", "Esconder Password");
             }
             else
             {
-
                 password.type = "password";
-                passwordBtn.children[0].className = `eye icon`;
-                passwordBtn.dataset.originalTitle = "Ver Password";
-
+                passwordBtn[0].children[0].children[0].className = `eye icon`;
+                passwordBtn.attr("data-toggle", "tooltip");
+                passwordBtn.attr("data-original-title", "Ver Password");
             }
         };
 
