@@ -6,7 +6,7 @@
       "wwwroot/lib/noty/noty.css",
       "wwwroot/lib/noty/themes/bootstrap-v4.css",
       "wwwroot/lib/photo-swipe/photoswipe.css",
-      "wwwroot/lib/lib/photo-swipe/default-skin/default-skin.css",
+      "wwwroot/lib/photo-swipe/default-skin/default-skin.css",
       "wwwroot/css/site.css"
     ]
   },
@@ -25,8 +25,8 @@
       "wwwroot/lib/noty/noty.min.js",
       "wwwroot/lib/font-awesome/all.js",
       "wwwroot/lib/semantic-ui/semantic.js",
-      "wwwroot/lib/photo-swipe/photoswipe-ui-default.min.js",
       "wwwroot/lib/photo-swipe/photoswipe.min.js",
+      "wwwroot/lib/photo-swipe/photoswipe-ui-default.min.js",
       "wwwroot/js/site.js"
     ],
     "minify": {
