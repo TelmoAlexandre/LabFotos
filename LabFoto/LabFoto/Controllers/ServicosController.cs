@@ -736,7 +736,7 @@ namespace LabFoto.Controllers
             Servico servico = null;
             try
             {
-                servico = await _context.Servicos.Include(s => s.Galerias).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync();
+                servico = await _context.Servicos.Include(s => s.Galerias).Include(s => s.Partilhaveis).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync();
             }
             catch (Exception e)
             {
@@ -749,6 +749,10 @@ namespace LabFoto.Controllers
                 // Apenas deixa apagar o serviço caso este não tenha galerias associadas
                 if (servico != null && servico.Galerias.Count() == 0)
                 {
+                    // Remove os partilhaveis associados ao serviço
+                    var partilhaveis = servico.Partilhaveis.ToArray();
+                    _context.RemoveRange(partilhaveis);
+
                     _context.Remove(servico);
                     await _context.SaveChangesAsync();
                 }
