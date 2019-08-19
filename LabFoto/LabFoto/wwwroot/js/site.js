@@ -420,12 +420,12 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
     });
 };
 
-function getGaleriasAccordion(servicoId)
+function getGaleriasAccordion(servicoId, photosIDs)
 {
     $("#galerias").html(smallLoader);
     $.ajax({
         type: "GET",
-        url: siteUrl + `/Partilhaveis/GaleriasAccordion/${servicoId}`,
+        url: siteUrl + `/Partilhaveis/GaleriasAccordion/${servicoId}?photosIDs=${photosIDs}`,
         success: function (resp)
         {
             if (resp.success === false) // Em caso de erro

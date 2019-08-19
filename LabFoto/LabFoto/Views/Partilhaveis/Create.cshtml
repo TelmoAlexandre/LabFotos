@@ -47,6 +47,7 @@
             </div>
             <input type="hidden" asp-for="ServicoFK" />
             <input type="hidden" name="PhotosIDs" id="inputPhotos" />
+            <input type="hidden" name="returnUrl" value="@ViewData["returnUrl"]" />
             <input type="hidden" name="usePassword" id="usePasswordInput" value="false">
         </div>
 
@@ -90,7 +91,7 @@
             <i class="remove icon"></i>
             Não
         </div>
-        <a class="ui green ok inverted button" href="/Partilhaveis">
+        <a class="ui green ok inverted button" href="@ViewData["returnUrl"]">
             <i class="checkmark icon"></i>
             Sim
         </a>

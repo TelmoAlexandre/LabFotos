@@ -138,7 +138,7 @@
 
 @if (Model.Partilhaveis.Count() != 0)
 {
-    <a asp-action="Create" asp-controller="Partilhaveis" asp-route-servicoID="@Model.ID"
+    <a asp-action="Create" asp-controller="Partilhaveis" asp-route-servicoID="@Model.ID" asp-route-returnUrl="@Url.Action("Details","Servicos", new { id = Model.ID })"
        class="mb-0 ui button mini primary">
         <i class="share alternate icon"></i> Novo Partilhável
     </a>
@@ -190,7 +190,7 @@ else
             <i class="share alternate icon"></i>
             Não existem Partilháveis para este Serviço.
         </div>
-        <a asp-action="Create" asp-controller="Partilhaveis" asp-route-servicoID="@Model.ID"
+        <a asp-action="Create" asp-controller="Partilhaveis" asp-route-servicoID="@Model.ID" asp-route-returnUrl="@Url.Action("Details","Servicos", new { id = Model.ID })"
            class="mb-0 ui button mini primary">
             <i class="share alternate icon"></i> Novo Partilhável
         </a>

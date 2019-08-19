@@ -363,7 +363,7 @@ namespace LabFoto.Controllers
         #region Create
 
         // GET: Partilhaveis/Create
-        public async Task<IActionResult> Create(string servicoID)
+        public async Task<IActionResult> Create(string servicoID, string returnUrl)
         {
             if (String.IsNullOrEmpty(servicoID))
                 return NotFound();
@@ -373,12 +373,14 @@ namespace LabFoto.Controllers
             if (servico == null)
                 return NotFound();
 
+            returnUrl = returnUrl ?? Url.Action("Index", "Partilhaveis");
+            ViewData["returnUrl"] = returnUrl;
+
             return View(new Partilhavel()
             {
                 ServicoFK = servicoID,
                 Servico = servico
-            }
-            );
+            });
         }
 
         /// <summary>
@@ -391,7 +393,8 @@ namespace LabFoto.Controllers
         /// <returns>Retorna uma vista com o partilhável acabado de partilhar.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Nome,Validade,Password,ServicoFK")] Partilhavel partilhavel, string PhotosIDs, bool usePassword = false)
+        public async Task<IActionResult> Create([Bind("ID,Nome,Validade,Password,ServicoFK")] Partilhavel partilhavel, 
+            string PhotosIDs, string returnUrl, bool usePassword = false)
         {
             if (String.IsNullOrEmpty(PhotosIDs))
                 ModelState.AddModelError("Fotografia", "Não foram selecionadas fotografias.");
@@ -443,6 +446,8 @@ namespace LabFoto.Controllers
             }
 
             partilhavel.Servico = await _context.Servicos.FindAsync(partilhavel.ServicoFK);
+            returnUrl = returnUrl ?? Url.Action("Index", "Partilhaveis");
+            ViewData["returnUrl"] = returnUrl;
 
             return View(partilhavel);
         }
@@ -452,7 +457,7 @@ namespace LabFoto.Controllers
         #region Edit
 
         // GET: Partilhaveis/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string id, string returnUrl)
         {
             if (String.IsNullOrEmpty(id))
                 return NotFound();
@@ -462,6 +467,9 @@ namespace LabFoto.Controllers
                 return NotFound();
 
             int[] photosIDs = partilhavel.Partilhaveis_Fotografias.Select(pf => pf.FotografiaFK).ToArray();
+
+            returnUrl = returnUrl ?? Url.Action("Index", "Partilhaveis");
+            ViewData["returnUrl"] = returnUrl;
 
             return View(new PartilhavelEditViewModel()
             {
@@ -479,7 +487,8 @@ namespace LabFoto.Controllers
         /// <returns>Retorna à página de detalhes do partilhável acabado de editar.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,DataDeCriacao,Password,ServicoFK,Enviado")] Partilhavel partilhavel, string PhotosIDs)
+        public async Task<IActionResult> Edit(string id, [Bind("ID,Nome,Validade,DataDeCriacao,Password,ServicoFK,Enviado")] Partilhavel partilhavel, 
+            string PhotosIDs, string returnUrl)
         {
             if (id != partilhavel.ID)
                 return NotFound();
@@ -530,6 +539,9 @@ namespace LabFoto.Controllers
                 TempData["Type"] = "success";
                 return RedirectToAction("Details", new { id = partilhavel.ID });
             }
+
+            returnUrl = returnUrl ?? Url.Action("Index", "Partilhaveis");
+            ViewData["returnUrl"] = returnUrl;
 
             return View(new PartilhavelEditViewModel()
             {

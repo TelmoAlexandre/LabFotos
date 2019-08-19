@@ -11,7 +11,7 @@
     @if (isAuthenticated)
     {
         <div class="ui basic buttons">
-            <a asp-action="Edit" asp-route-id="@Model.ID" class="ui button">
+            <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="@Url.Action("Details","Partilhaveis", new { id = Model.ID })" class="ui button">
                 <i class="far fa-edit"></i> Editar
             </a>
             <div class="ui button" data-toggle="tooltip" title="E-mail ao Requerente" onclick="sendEmail(`@Model.ID`)" id="btnMail_@Model.ID">

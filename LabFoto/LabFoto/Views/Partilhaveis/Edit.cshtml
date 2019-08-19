@@ -17,6 +17,8 @@
             <input type="hidden" asp-for="Partilhavel.ID" />
             <input type="hidden" asp-for="Partilhavel.DataDeCriacao" />
             <input type="hidden" asp-for="Partilhavel.Enviado" />
+            <input type="hidden" name="returnUrl" value="@ViewData["returnUrl"]" />
+
             <div class="fields">
                 <div class="ten wide field mb-2">
                     <label asp-for="Partilhavel.Nome"></label>
@@ -75,7 +77,7 @@
             <i class="remove icon"></i>
             Não
         </div>
-        <a class="ui green ok inverted button" href="/Partilhaveis">
+        <a class="ui green ok inverted button" href="@ViewData["returnUrl"]">
             <i class="checkmark icon"></i>
             Sim
         </a>
@@ -160,7 +162,7 @@
 
         $(document).ready(function ()
         {
-            getGaleriasAccordion('@Model.Partilhavel.ServicoFK'); // Fetch do acordião com todas as galerias do serviço
+            getGaleriasAccordion('@Model.Partilhavel.ServicoFK','@photosIDs'); // Fetch do acordião com todas as galerias do serviço
         });
 
         // Esta função certifica-se que as imagens de uma galeria apenas são carregadas uma vez
