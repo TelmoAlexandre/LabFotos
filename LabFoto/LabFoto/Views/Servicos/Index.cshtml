@@ -18,13 +18,13 @@
     <div class="ui segment padded">
         <div class="ui form" id="searchParams">
             <div class="fields">
-                <div class=" eight wide field">
+                <div class=" eight wide field mb-3">
                     <div class="ui transparent left icon input large">
                         <input type="search" id="NomeSearch" placeholder="Nome do serviço..." name="nomeSearch">
                         <i class="search icon"></i>
                     </div>
                 </div>
-                <div class="eight wide field">
+                <div class="eight wide field mb-1">
                     <div class="ui button blue mini" onclick="submitSearchForm()" tabindex="0">
                         <i class="search icon"></i>
                         Pesquisar
@@ -39,13 +39,13 @@
             <div id="searchOptions" style="display:none" class="mt-4">
 
                 <div class="fields">
-                    <div class="eight wide field">
+                    <div class="eight wide field mb-2">
                         <div class="ui transparent left icon input">
                             <input type="search" id="requerenteSearch" placeholder="Requerente..." name="Requerente">
                             <i class="user outline icon"></i>
                         </div>
                     </div>
-                    <div class="eight wide field">
+                    <div class="eight wide field mb-2">
                         <div class="ui transparent left icon input">
                             <input type="search" id="obraSearch" placeholder="Indentificação/Obra..." name="Obra">
                             <i class="pencil alternate icon"></i>
@@ -54,23 +54,21 @@
                 </div>
 
                 <div class="fields mb-0">
-                    <div class="eight wide field">
+                    <div class="eight wide field mb-2">
                         <small class="form-text text-muted">
                             Tipo
                         </small>
+                        <div id="searchTiposCB"
+                             onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        </div>
                     </div>
-                    <div class="eight wide field">
+                    <div class="eight wide field mb-2">
                         <small class="form-text text-muted">
                             Serviço Solicitado
                         </small>
-                    </div>
-                </div>
-                <div class="fields">
-                    <div class="eight wide field" id="searchTiposCB"
-                         onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
-                    </div>
-                    <div class="eight wide field" id="searchServSolicCB"
-                         onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        <div id="searchServSolicCB"
+                             onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        </div>
                     </div>
                 </div>
 

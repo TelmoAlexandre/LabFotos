@@ -14,7 +14,7 @@
     <div class="ui segment padded">
         <div class="ui form" id="searchParams">
             <div class="fields">
-                <div class=" eight wide field">
+                <div class="eight wide field mb-2">
                     <div class="ui transparent left icon input large">
                         <input type="search" id="NomeSearch" placeholder="Nome do partilhável..." name="nomeSearch">
                         <i class="search icon"></i>
@@ -39,19 +39,17 @@
                         <small class="form-text text-muted">
                             Serviço
                         </small>
+                        <div id="servicosDropdown"
+                             onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        </div>
                     </div>
                     <div class="eight wide field">
                         <small class="form-text text-muted">
                             Validade
                         </small>
-                    </div>
-                </div>
-                <div class="fields">
-                    <div class="eight wide field" id="servicosDropdown"
-                         onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
-                    </div>
-                    <div class="eight wide field" id="validadeDropdown"
-                         onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        <div id="validadeDropdown"
+                             onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                        </div>
                     </div>
                 </div>
             </div>

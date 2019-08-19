@@ -4,20 +4,20 @@
     ViewData["Title"] = "Index";
 }
 
-<h1 class="mt-5">Tipos</h1>
+<h1>Tipos</h1>
 
 <div id="searchForm">
     @Html.AntiForgeryToken()
     <div class="ui segment padded pb-1">
         <div class="ui form" id="searchParams">
             <div class="fields">
-                <div class="six wide field">
+                <div class="six wide field mb-2">
                     <div class="ui transparent left icon input large">
                         <input id="inputNome" placeholder="Nome do tipo..." name="Nome">
                         <i class="search icon"></i>
                     </div>
                 </div>
-                <div class="ten wide field">
+                <div class="ten wide field mb-2">
                     <div class="ui button blue mini" onclick="submitTiposSearchForm()" tabindex="0">
                         <i class="search icon"></i>
                         Pesquisar
