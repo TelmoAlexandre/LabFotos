@@ -383,6 +383,7 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
     };
     data[`${fieldName}.ID`] = $(`#editFormIndex_${id} #ID`).val(); // Caso o fieldName seja Tipo, fica "Tipo.ID": ...
     data[`${fieldName}.Nome`] = $(`#editFormIndex_${id} #Nome`).val();
+    data[`${fieldName}.Deletable`] = $(`#editFormIndex_${id} #Deletable`).val();
 
     $.ajax({
         type: "POST",
@@ -399,6 +400,7 @@ submitEditIndex = (e, id, controllerName, fieldName) => {
                     // Esconder o edit e mostrar o details
                     $(`#indexEdit_${id}`).slideToggle();
                     $(`#indexDetails_${id}`).slideToggle();
+                    $('[data-toggle="tooltip"]').tooltip();
                 });
 
                 notifyUser('success', 'Editado com sucesso.');
