@@ -685,7 +685,7 @@ namespace LabFoto.Controllers
 
             if(photos.Count() > 0)
             {
-                if (await _onedrive.DeleteFiles(photos))
+                if (await _onedrive.DeleteFilesAsync(photos))
                 {
                     return Json(new { success = true });
                 }

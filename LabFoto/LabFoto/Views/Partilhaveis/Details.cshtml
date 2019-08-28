@@ -16,7 +16,7 @@
                     <i class="far fa-edit"></i>
                 </a>
                 <div class="ui button" data-toggle="tooltip" title="E-mail ao Requerente" onclick="sendEmail(`@Model.ID`)" id="btnMail_@Model.ID"
-                     style="padding-top:11px;">
+                     style="padding-top:10px;">
                     <i class="@sendClass envelope outline icon"></i>
                 </div>
                 <span asp-action="Delete" onclick="confirmDelete('@Model.ID')" class="ui button" data-toggle="tooltip" title="Eliminar"

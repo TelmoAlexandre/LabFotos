@@ -24,7 +24,7 @@ namespace LabFoto.APIs
         Task<ContaOnedrive> GetAccountToUploadAsync(long fileSize);
         Task<string> GetUploadSessionAsync(ContaOnedrive conta, string fileName);
         string GetPermissionsUrl(int state = 0);
-        Task<bool> DeleteFiles(List<Fotografia> photos);
+        Task<bool> DeleteFilesAsync(List<Fotografia> photos);
         Task<bool> UpdateDriveQuotaAsync(ContaOnedrive conta);
     }
     #endregion
@@ -539,7 +539,7 @@ namespace LabFoto.APIs
         /// </summary>
         /// <param name="photos">Lista de fotografias a serem apagadas.</param>
         /// <returns>Verdade caso tenha sucesso, falso caso falhe.</returns>
-        public async Task<bool> DeleteFiles(List<Fotografia> photos)
+        public async Task<bool> DeleteFilesAsync(List<Fotografia> photos)
         {
             try
             {

@@ -64,6 +64,7 @@ namespace LabFoto.APIs
                 option.Expires = DateTime.Now.AddMinutes(expireTime.Value);
             else
                 option.Expires = DateTime.Now.AddMilliseconds(10);
+
             Response.Cookies.Append(key, value, option);
         }
 
