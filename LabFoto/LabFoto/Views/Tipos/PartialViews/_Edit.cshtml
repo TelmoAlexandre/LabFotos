@@ -6,6 +6,7 @@
           id="editFormIndex_@Model.ID">
         <div class="ui transparent left icon fluid input">
             @Html.HiddenFor(model => model.ID)
+            @Html.HiddenFor(model => model.Deletable)
             <input asp-for="Nome" class="font-weight-bolder" />
             <i class="edit outline icon"></i>
             <div class="ui basic buttons right floated">

@@ -16,7 +16,7 @@
                     {
                         if (ViewData["details"].Equals(true))
                         {
-                            <span value="Delete" onclick="confirmDeleteServico('@Model.ID')" class="ui button basic" data-toggle="tooltip" title="Apagar"><i class="far fa-trash-alt"></i></span>
+                            <span value="Delete" onclick="confirmDeleteServico('@Model.ID')" class="ui button basic" data-toggle="tooltip" title="Eliminar"><i class="far fa-trash-alt"></i></span>
                             @Html.AntiForgeryToken()
                         }
                         else

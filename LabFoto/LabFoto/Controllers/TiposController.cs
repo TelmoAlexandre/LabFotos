@@ -150,7 +150,7 @@ namespace LabFoto.Controllers
         /// <returns>Retorna à página de Index com a mensagem editado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome")] Tipo tipo)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,Deletable")] Tipo tipo)
         {
             if (id != tipo.ID)
             {
