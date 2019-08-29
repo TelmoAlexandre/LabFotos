@@ -393,8 +393,6 @@ namespace LabFoto.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    servico.DataDeCriacao = DateTime.Now;
-
                     #region Tratamento-Muitos-Para-Muitos
 
                     string[] array;
@@ -441,7 +439,10 @@ namespace LabFoto.Controllers
                     servico.HorasEstudio = servico.HorasEstudio ?? 0;
                     servico.HorasPosProducao = servico.HorasPosProducao ?? 0;
                     servico.Total = servico.Total ?? 0;
-                    servico.Observacoes = servico.Observacoes.Replace("\r\n", "<br/>");
+
+                    // Adicionar paragrafos nas observações, caso existam
+                    if(!String.IsNullOrEmpty(servico.Observacoes))
+                        servico.Observacoes = servico.Observacoes.Replace("\r\n", "<br/>");
 
                     _context.Add(servico);
                     await _context.SaveChangesAsync();
@@ -484,9 +485,9 @@ namespace LabFoto.Controllers
                     return RedirectToAction(nameof(Details), new { id = servico.ID});
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                _logger.LogError($"Erro ao criar um serviço. Erro: {e.Message}");
             }
 
             return View(
@@ -664,17 +665,20 @@ namespace LabFoto.Controllers
                         servico.HorasEstudio = servico.HorasEstudio ?? 0;
                         servico.HorasPosProducao = servico.HorasPosProducao ?? 0;
                         servico.Total = servico.Total ?? 0;
-                        servico.Observacoes = servico.Observacoes.Replace("\r\n", "<br/>");
+
+                        // Adicionar paragrafos nas observações, caso existam
+                        if (!String.IsNullOrEmpty(servico.Observacoes))
+                            servico.Observacoes = servico.Observacoes.Replace("\r\n", "<br/>");
 
                         _context.Update(servico);
                         await _context.SaveChangesAsync();
                     }
                     catch (Exception e)
                     {
-                        _email.NotifyError("Erro ao editar um serviço.", "ServicosController", "Edit - POST", e.Message);
+                        _logger.LogError($"Erro ao editar um serviço. Erro: {e.Message}");
                     }
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!ServicosExists(servico.ID))
                     {
@@ -682,7 +686,7 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        throw;
+                        _logger.LogError($"Erro ao editar um serviço. Erro: {e.Message}");
                     }
                 }
 

@@ -10,13 +10,13 @@
                     <div class="ui basic segment pb-0 pt-0">
                         <i class="paperclip icon pt-2"></i>
                         <span class="font-weight-bolder">@tipo.Nome</span>
-                        <div class="ui basic buttons right floated">
-                            <div class="ui icon button btnEdit" data-toggle="tooltip" title="Editar" onclick="showEditIndex(@tipo.ID, 'Tipos')">
+                        <div class="ui basic icon buttons right floated">
+                            <div class="ui button btnEdit" data-toggle="tooltip" title="Editar" onclick="showEditIndex(@tipo.ID, 'Tipos')">
                                 <i class="far fa-edit"></i>
                             </div>
                             @if (tipo.Deletable)
                             {
-                                <div class="ui icon button btnDelete" data-toggle="tooltip" title="Eliminar" onclick="confirmDelete(@tipo.ID)">
+                                <div class="ui button btnDelete" data-toggle="tooltip" title="Eliminar" onclick="confirmDelete(@tipo.ID)">
                                     <i class="trash alternate outline icon"></i>
                                 </div>
                             }

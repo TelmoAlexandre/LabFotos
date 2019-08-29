@@ -17,7 +17,7 @@ namespace LabFoto.Controllers
     public class RequerentesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly int _rPP = 8;
+        private readonly int _rPP = 9;
 
         public RequerentesController(ApplicationDbContext context)
         {

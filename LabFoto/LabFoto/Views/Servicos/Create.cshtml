@@ -10,26 +10,33 @@
 <form asp-action="Create" id="servicosCreateForm">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="ui form">
-        <div class="fields mb-0">
-            <div class="eight wide field">
+        <div class="fields">
+            <div class="ten wide field">
                 <label asp-for="Servico.Nome"></label>
                 <input asp-for="Servico.Nome" />
                 <span asp-validation-for="Servico.Nome" class="text-danger"></span>
             </div>
+            <div class="six wide field">
+                <label asp-for="Servico.DataDeCriacao"></label>
+                <input asp-for="Servico.DataDeCriacao" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="Servico.DataDeCriacao" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="fields mb-0">
             <div id="requerentesDropbox" class="eight wide field">
                 <partial name="PartialViews/_RequerentesDropdown" model="@Model" />
             </div>
+            <div class="eight wide field">
+                <label asp-for="Servico.IdentificacaoObra"></label>
+                <input asp-for="Servico.IdentificacaoObra" />
+                <span asp-validation-for="Servico.IdentificacaoObra" class="text-danger"></span>
+            </div>
         </div>
         <div class="fields">
-            <div class="eight wide field"></div>
             <div class="eight wide field">
                 <div class="ui mini basic blue button" id="btnModalNovoRequerente"><i class="fas fa-user-plus"></i><span class="ml-2">Novo Requerente</span></div>
             </div>
-        </div>
-        <div class="fluid wide field">
-            <label asp-for="Servico.IdentificacaoObra"></label>
-            <textarea asp-for="Servico.IdentificacaoObra" rows="3"></textarea>
-            <span asp-validation-for="Servico.IdentificacaoObra" class="text-danger"></span>
+            <div class="eight wide field"></div>
         </div>
         <div class="fields">
             <div class="eight wide field">
@@ -63,17 +70,17 @@
             </div>
             <div class="three wide field">
                 <label asp-for="Servico.HorasEstudio"></label>
-                <input asp-for="Servico.HorasEstudio" />
+                <input asp-for="Servico.HorasEstudio" type="number" value="0" min="0"/>
                 <span asp-validation-for="Servico.HorasEstudio" class="text-danger"></span>
             </div>
             <div class="three wide field">
                 <label asp-for="Servico.HorasPosProducao"></label>
-                <input asp-for="Servico.HorasPosProducao" />
+                <input asp-for="Servico.HorasPosProducao" type="number" value="0" min="0"/>
                 <span asp-validation-for="Servico.HorasPosProducao" class="text-danger"></span>
             </div>
             <div class="three wide field">
                 <label asp-for="Servico.Total"></label>
-                <input asp-for="Servico.Total" />
+                <input asp-for="Servico.Total" type="number" value="0" min="0"/>
                 <span asp-validation-for="Servico.Total" class="text-danger"></span>
             </div>
         </div>
@@ -130,15 +137,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        var loading = '<div class="ui active centered inline small loader"></div>';
 
-        jQuery(document).ready(function ($) {
-            $(`#tiposCheckboxes`).html(loading);
-            $(`#servSolicCheckboxes`).html(loading);
+    <script>
+        jQuery(document).ready(function ($)
+        {
+            // Carregar as dropdowns dos tipos e dos serviços solicitados.
+            $(`#tiposCheckboxes`).html(smallLoader);
+            $(`#servSolicCheckboxes`).html(smallLoader);
+
             $(`#tiposCheckboxes`).load(siteUrl + `/Servicos/TiposAjax/`, function () {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
+
             $(`#servSolicCheckboxes`).load(siteUrl + `/Servicos/ServSolicAjax/`, function () {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
