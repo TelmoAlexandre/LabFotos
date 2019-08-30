@@ -133,7 +133,6 @@ showModal = (modalId, closable) =>
     {
         $(`#${modalId}`).modal("show");
     }
-    
 };
 
 deleteElement = (id) => {
@@ -465,13 +464,60 @@ function getGaleriasAccordion(servicoId, photosIDs)
     });
 }
 
-function sendEmail(id)
+function showEmailForm(email, buttonId)
+{
+    $(`#${buttonId}`).addClass("loading");
+
+    $("#sendEmailForm").load(siteUrl + "/Email/Send", function ()
+    {
+        $(`#${buttonId}`).removeClass("loading");
+        $("#emailForm #Email").val(email); // Preencher o input de e-mail com o e-mail do requerente
+        showModal('modalSendEmail', false);
+    });
+}
+
+function sendEmail()
+{
+    $("#btnSend").addClass("loading");
+    $.ajax({
+        url: siteUrl + "/Email/Send",
+        type: "POST",
+        data: {
+            "Email": $("#emailForm #Email").val(),
+            "Title": $("#emailForm #Title").val(),
+            "Body": $("#emailForm #Body").val(),
+            "__RequestVerificationToken": $(`input[name='__RequestVerificationToken']`).val(),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        success: function (resp)
+        {
+            $("#btnSend").removeClass("loading");
+
+            if (resp.success)
+            {
+                hideModal();
+                notifyUser("success", "E-mail enviado com sucesso.");
+            }
+            else
+            {
+                $("#sendEmailForm").html(resp);
+            }
+        },
+        error: function ()
+        {
+            $("#btnSend").removeClass("loading");
+            notifyUser("error", "Ocorreu um erro ao enviar o e-mail.");
+        }
+    });
+}
+
+function shareByEmail(id)
 {
     var green = $(`#btnMail_${id} i`).hasClass("green");
     $(`#btnMail_${id}`).addClass("loading").children("i").removeClass("green");
 
     $.ajax({
-        url: siteUrl + "/Partilhaveis/SendMail",
+        url: siteUrl + "/Email/Share",
         type: "POST",
         data: {
             "id": id,

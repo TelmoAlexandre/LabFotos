@@ -22,7 +22,6 @@ namespace LabFoto.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
-        private readonly IEmailAPI _email;
         private readonly AppSettings _appSettings;
         private readonly ILogger<PartilhaveisController> _logger;
         private readonly int _partPP = 10;
@@ -31,14 +30,12 @@ namespace LabFoto.Controllers
         public PartilhaveisController(ApplicationDbContext context,
             IOnedriveAPI onedrive,
             IOptions<AppSettings> appSettings,
-            ILogger<PartilhaveisController> logger,
-            IEmailAPI email)
+            ILogger<PartilhaveisController> logger)
         {
             _context = context;
             _onedrive = onedrive;
             _appSettings = appSettings.Value;
             _logger = logger;
-            _email = email;
         }
 
         #endregion
@@ -584,53 +581,6 @@ namespace LabFoto.Controllers
         }
 
         #endregion Delete
-
-        #region SendMail
-        /// <summary>
-        /// Método que verifica se o id está correto e se o partilhável existe, envia um email ao requerente com o link de partilha e a password.
-        /// </summary>
-        /// <param name="id">Id do requerente</param>
-        /// <returns>Retorna a mensagem Email enviado com sucesso.</returns>
-        [HttpPost]
-        public async Task<IActionResult> SendMail(string id)
-        {
-
-            if (String.IsNullOrEmpty(id))
-            {
-                return NotFound();
-            }
-
-            var partilhavel = await _context.Partilhaveis.Include(p => p.Servico).ThenInclude(s => s.Requerente).Where(p => p.ID.Equals(id)).FirstOrDefaultAsync();
-            if (partilhavel == null)
-            {
-                return NotFound();
-            }
-
-            var linkPartilha = _appSettings.SiteUrl + "/Partilhaveis/Details/" + partilhavel.ID;
-
-            string body = 
-                $"O seguinte link foi partilhado consigo. <br /><br />" +
-                $"Para aceder ao link <a href='{linkPartilha}'>clique aqui</a>. <br />" +
-                $"<span style='font-weight: bold;'>Password: </span>{partilhavel.Password}";
-
-            try
-            {
-                _email.Send(partilhavel.Servico.Requerente.Email, "Link de Partilha: " + partilhavel.Nome, body);
-
-                // Dar o partilhável como enviado
-                partilhavel.Enviado = true;
-                _context.Update(partilhavel);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Erro ao enviar e-mail ao requerente com o partilhável. SendMail. Erro: {e.Message}");
-            }
-
-
-            return Json(new { success = true });
-        } 
-        #endregion
 
         private bool PartilhavelExists(string id)
         {

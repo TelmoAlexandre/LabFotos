@@ -1,0 +1,30 @@
+﻿@model  LabFoto.Models.ViewModels.EmailSendViewModel
+
+    <div class="ui raised segment fluidCorners" id="emailForm">
+        <a class="ui blue ribbon label mb-3">Enviar E-mail</a>
+        <div class="ui form">
+            @Html.AntiForgeryToken()
+            <div class="eight wide field">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" placeholder="exemplo@exemplo.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" placeholder="Título do e-mail..." autofocus/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="Body"></label>
+                <textarea asp-for="Body" rows="8" placeholder="Corpo do e-mail..." />
+                <span asp-validation-for="Body" class="text-danger"></span>
+            </div>
+
+            <div class="fields">
+                <div class="eight wide field"><span class="ui fluid primary button" onclick="sendEmail()" id="btnSend">Enviar</span></div>
+                <div class="eight wide field"><span class="ui fluid button" onclick="hideModal()">Cancelar</span></div>
+            </div>
+        </div>
+    </div>

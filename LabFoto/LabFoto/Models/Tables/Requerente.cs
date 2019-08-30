@@ -18,7 +18,7 @@ namespace LabFoto.Models.Tables
         [Display(Name ="Contacto"), StringLength(12), RegularExpression("^[0-9]*$", ErrorMessage = "Até 12 digitos.")]
         public string Telemovel { get; set; }
         
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Endereço de e-mail não é válido.")]
         [Required(ErrorMessage = "Obrigatório.")]
         public string Email { get; set; }
 

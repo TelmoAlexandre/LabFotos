@@ -45,8 +45,8 @@ else
 
                         <span asp-action="Delete" onclick="confirmDelete('@partilhavel.ID')" class="ui button" data-toggle="tooltip" title="Eliminar"><i class="far fa-trash-alt"></i></span>
                         <a asp-action="Edit" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                        <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" style="padding-top:11px;"
-                             onclick="sendEmail(`@partilhavel.ID`)" id="btnMail_@partilhavel.ID">
+                        <div class="ui button float-right" data-toggle="tooltip" title="Enviar Email" style="padding-top:10px;"
+                             onclick="shareByEmail(`@partilhavel.ID`)" id="btnMail_@partilhavel.ID">
                             <i class="@sendClass envelope outline icon"></i>
                         </div>
                         <a asp-action="Details" asp-route-id="@partilhavel.ID" class="ui button" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>

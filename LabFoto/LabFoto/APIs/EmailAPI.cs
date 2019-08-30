@@ -1,4 +1,5 @@
 ﻿using LabFoto.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,16 @@ namespace LabFoto.APIs
         private readonly string _emailPassword;
         private readonly string _emailNome;
         private readonly string _emailSmtp;
+        private readonly ILogger<EmailAPI> _logger;
 
-        public EmailAPI(IOptions<AppSettings> settings)
+        public EmailAPI(IOptions<AppSettings> settings, ILogger<EmailAPI> logger)
         {
             _appSettings = settings.Value;
             _email = _appSettings.Email;
             _emailPassword = _appSettings.EmailPassword;
             _emailNome = _appSettings.EmailNomeApresentado;
             _emailSmtp = _appSettings.EmailSmtp;
+            _logger = logger;
         }
 
         /// <summary>
@@ -32,7 +35,7 @@ namespace LabFoto.APIs
         /// <param name="destinations">Destinatários.</param>
         /// <param name="subject">Assunto do email.</param>
         /// <param name="body">Corpo do email. HTML aceite.</param>
-        public void Send(string[] destinations, string subject, string body)
+        public bool Send(string[] destinations, string subject, string body)
         {
             try
             {
@@ -55,14 +58,18 @@ namespace LabFoto.APIs
                             message.IsBodyHtml = true;
 
                             client.Send(message);
+
+                            return true;
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                _logger.LogError($"Erro ao enivar e-mail. Erro: {e.Message}");
             }
+
+            return false;
         }
 
         /// <summary>
@@ -71,7 +78,7 @@ namespace LabFoto.APIs
         /// <param name="destination">Destinatário.</param>
         /// <param name="subject">Assunto do email.</param>
         /// <param name="body">Corpo do email. HTML aceite.</param>
-        public void Send(string destination, string subject, string body)
+        public bool Send(string destination, string subject, string body)
         {
             try
             {
@@ -92,13 +99,17 @@ namespace LabFoto.APIs
                         message.IsBodyHtml = true;
 
                         client.Send(message);
+
+                        return true;
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                _logger.LogError($"Erro ao enivar e-mail. Erro: {e.Message}");
             }
+
+            return false;
         }
 
         /// <summary>
@@ -126,8 +137,8 @@ namespace LabFoto.APIs
 
     public interface IEmailAPI
     {
-        void Send(string[] destinations, string subject, string body);
-        void Send(string destinations, string subject, string body);
+        bool Send(string[] destinations, string subject, string body);
+        bool Send(string destination, string subject, string body);
         void NotifyError(string title, string classFile, string method, string details);
     }
 }

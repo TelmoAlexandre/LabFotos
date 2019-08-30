@@ -27,7 +27,7 @@ namespace LabFoto.Models.Tables
         [Required(ErrorMessage = "É necessário preencher a Identificação/Obra"), Display(Name = "Identificação/Obra", Prompt = "Identificador adicional/Obra")]
         public string IdentificacaoObra { get; set; }
 
-        [StringLength(2048), Display(Name = "Observações", Prompt = "Observações adicionais")]
+        [StringLength(4096), Display(Name = "Observações", Prompt = "Observações adicionais")]
         public string Observacoes { get; set; }
 
         [Display(Name = "Horas de Estúdio")]
