@@ -8,13 +8,23 @@
       "wwwroot/lib/photo-swipe/photoswipe.css",
       "wwwroot/lib/photo-swipe/default-skin/default-skin.css",
       "wwwroot/css/site.css"
-    ]
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
   },
   {
     "outputFileName": "wwwroot/css/semantic.min.css",
     "inputFiles": [
       "wwwroot/lib/semantic-ui/semantic.css"
-    ]
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
   },
   {
     "outputFileName": "wwwroot/js/site.min.js",
@@ -24,10 +34,20 @@
       "wwwroot/lib/jquery-ajax-unobtrusive/ajaxUnobtrusive.min.js",
       "wwwroot/lib/noty/noty.min.js",
       "wwwroot/lib/font-awesome/all.js",
-      "wwwroot/lib/semantic-ui/semantic.js",
       "wwwroot/lib/photo-swipe/photoswipe.min.js",
       "wwwroot/lib/photo-swipe/photoswipe-ui-default.min.js",
       "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/semantic.min.js",
+    "inputFiles": [
+      "wwwroot/lib/semantic-ui/semantic.js"
     ],
     "minify": {
       "enabled": true,

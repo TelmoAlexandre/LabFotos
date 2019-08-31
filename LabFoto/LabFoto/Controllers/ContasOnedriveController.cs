@@ -18,9 +18,10 @@ using Microsoft.Extensions.Logging;
 
 namespace LabFoto.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class ContasOnedriveController : Controller
     {
+        #region Constructor
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
         private readonly ILogger<ContasOnedriveController> _logger;
@@ -30,7 +31,8 @@ namespace LabFoto.Controllers
             _context = context;
             _onedrive = onedrive;
             _logger = logger;
-        }
+        } 
+        #endregion
 
         #region Index
         // GET: ContaOnedrives
@@ -73,12 +75,14 @@ namespace LabFoto.Controllers
         /// Método que redireciona para uma página da Microsoft que pede as credênciais e permissões necessárias.
         /// </summary>
         /// <returns>Retorna para a página Create das contas Onedrive com o code necessário.</returns>
+        [Authorize(Roles = "Admin")]
         public ActionResult PermissionUrl()
         {
             return Redirect(_onedrive.GetPermissionsUrl());
         }
 
         // GET: ContaOnedrives/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(string code)
         {
             return View(new ContaOnedriveCreateViewModel
@@ -93,6 +97,7 @@ namespace LabFoto.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("ID,Username,Password")] ContaOnedrive ContaOnedrive, string Code)
         {
             if (ModelState.IsValid)
@@ -119,6 +124,7 @@ namespace LabFoto.Controllers
         /// <param name="id">Id da conta Onedrive na base de dados</param>
         /// <returns>Retorna ao Index com a mensagem que a conta foi adicionada com sucesso, 
         /// ou que ocorreu um erro ao criar a conta.</returns>
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> InitAccount(string Code, int id)
         {
             // Define se a operação foi executada com sucesso
@@ -231,6 +237,7 @@ namespace LabFoto.Controllers
 
         #region Edit
         // GET: ContaOnedrives/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id, string returnUrl)
         {
             if (id == null)
@@ -257,6 +264,7 @@ namespace LabFoto.Controllers
         /// a conta foi editada com sucesso ou que não foi possível editar a conta.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Username,Password")] ContaOnedrive contaOnedrive)
         {
             if (id != contaOnedrive.ID)
@@ -317,6 +325,7 @@ namespace LabFoto.Controllers
         /// ou conta tem fotografias associadas ou erro ao eliminar a conta</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             ContaOnedrive contaOnedrive = null;

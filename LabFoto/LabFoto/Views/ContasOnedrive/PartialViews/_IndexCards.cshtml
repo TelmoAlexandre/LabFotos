@@ -5,15 +5,19 @@
     {
         foreach (var conta in Model)
         {
+            bool isAdmin = User.IsInRole("Admin");
+
             long total = 0, remaining = 0;
             double usedPercent = 0.0, used = 0.0;
 
-            if (!String.IsNullOrEmpty(conta.Quota_Total)) { total = (int)(Int64.Parse(conta.Quota_Total) / 1024 / 1024); }
-            if (!String.IsNullOrEmpty(conta.Quota_Used)) { used = (int)(Int64.Parse(conta.Quota_Used) / 1024 / 1024); }
-            if (!String.IsNullOrEmpty(conta.Quota_Remaining)) { remaining = (int)(Int64.Parse(conta.Quota_Remaining) / 1024 / 1024); }
+            // Transformar as Quotas (string) em valores (long ou double)
+            if (!String.IsNullOrEmpty(conta.Quota_Total)) { total = (long)(Int64.Parse(conta.Quota_Total) / 1024 / 1024); }
+            if (!String.IsNullOrEmpty(conta.Quota_Used)) { used = (double)(Double.Parse(conta.Quota_Used) / 1024 / 1024); }
+            if (!String.IsNullOrEmpty(conta.Quota_Remaining)) { remaining = (long)(Int64.Parse(conta.Quota_Remaining) / 1024 / 1024); }
 
             usedPercent = (used * 100) / ((double)total);
 
+            // Definir cor de acordo com o espaço livre
             string color = "";
 
             if ((remaining / 1024) <= 50)
@@ -36,14 +40,20 @@
                             <div class="ui grid">
                                 <div class="ui fourteen wide column">
                                     <p class="font-weight-bold ml-2"> @Html.DisplayFor(modelItem => conta.Username)</p>
-                                    <p class="font-weight-bold mr-2" data-visivel=true id="pw_@conta.ID">******</p>
+                                    @if (isAdmin)
+                                    {
+                                        <p class="font-weight-bold mr-2" data-visivel=true id="pw_@conta.ID">******</p>
+                                    }
                                 </div>
                                 <div class="ui two wide column pl-2 pr-0">
-                                    <div class="ui icon buttons right floated">
-                                        <a class="ui compact icon basic button" id="btn_@conta.ID" data-toggle="tooltip" title="Ver Password" onclick="mostrarPW(@conta.ID, `@conta.Password`)">
-                                            <i class="eye icon"></i>
-                                        </a>
-                                    </div>
+                                    @if (isAdmin)
+                                    {
+                                        <div class="ui icon buttons right floated">
+                                            <a class="ui compact icon basic button" id="btn_@conta.ID" data-toggle="tooltip" title="Ver Password" onclick="mostrarPW(@conta.ID, `@conta.Password`)">
+                                                <i class="eye icon"></i>
+                                            </a>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -66,14 +76,17 @@
                             }
 
                         </div>
-                        <div class="ui two wide column right floated pr-0">
-                            <div class="ui icon basic buttons right floated" style="margin-left: 6px !important;">
-                                <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@conta.ID" class="ui button float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
-                                <div class="ui button" data-toggle="tooltip" title="Eliminar" onclick="confirmDelete(@conta.ID)">
-                                    <i class="trash alternate outline icon"></i>
+                        @if (isAdmin)
+                        {
+                            <div class="ui two wide column right floated pr-0">
+                                <div class="ui icon basic buttons right floated" style="margin-left: 6px !important;">
+                                    <a asp-controller="ContasOnedrive" asp-action="Edit" asp-route-id="@conta.ID" class="ui button float-right" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                                    <div class="ui button" data-toggle="tooltip" title="Eliminar" onclick="confirmDelete(@conta.ID)">
+                                        <i class="trash alternate outline icon"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>

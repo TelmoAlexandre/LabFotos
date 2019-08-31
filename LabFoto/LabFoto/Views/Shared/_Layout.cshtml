@@ -46,20 +46,12 @@
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="dropbtn nav-link text-dark" asp-controller="Users" asp-action="Index">Utilizadores <i class="caret down icon"></i></a>
+                                <a class="dropbtn nav-link text-dark" style="pointer-events: none;">Administração <i class="caret down icon"></i></a>
                                 <div class="dropdown-content">
-                                    <a class="nav-link text-dark" asp-controller="Users" asp-action="Create">Criar utilizador</a>
+                                    <a class="nav-link text-dark" asp-controller="ContasOnedrive" asp-action="Index">Contas Onedrive</a>
+                                    <a class="nav-link text-dark" asp-controller="Users" asp-action="Index">Utilizadores</a>
                                 </div>
                             </li>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="dropbtn nav-link text-dark" style="pointer-events: none;">Administração <i class="caret down icon"></i></a>
-                                    <div class="dropdown-content">
-                                        <a class="nav-link text-dark" asp-controller="ContasOnedrive" asp-action="Index">Contas Onedrive</a>
-                                    </div>
-                                </li>
-                            }
                         </ul>
                     </div>
                 </div>
@@ -89,6 +81,7 @@
     </script>
 
     <script src="~/js/site.min.js" asp-append-version="true"></script>
+    <script src="~/js/semantic.min.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

@@ -32,9 +32,16 @@
     </div>
 </div>
 
-<a class="ui blue mini button mt-3 mb-3" asp-action="PermissionUrl">
-    <i class="fas fa-plus"></i> <span class="ml-1">Adicionar conta</span>
-</a>
+@if (User.IsInRole("Admin"))
+{
+    <a class="ui blue mini button mt-3 mb-3" asp-action="PermissionUrl">
+        <i class="fas fa-plus"></i> <span class="ml-1">Adicionar conta</span>
+    </a>
+}
+else
+{
+    <div class="mt-5 mb-3"></div>
+}
 
 <div id="contasCards">
     <partial name="PartialViews/_IndexCards" model="@Model" />
