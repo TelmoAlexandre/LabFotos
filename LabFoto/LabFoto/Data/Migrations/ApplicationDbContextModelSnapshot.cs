@@ -15,7 +15,7 @@ namespace LabFoto.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -59,7 +59,7 @@ namespace LabFoto.Migrations
                             Quota_Remaining = "5497452095469",
                             Quota_Total = "5497558138880",
                             Quota_Used = "97597600",
-                            RefreshToken = "OAQABAAAAAADCoMpjJXrxTq9VG9te-7FXmM_2aSL25b4X-gFBQOTiVTf4ph2zQdl02erPQ3k02lPQlapDOFcjBLEcumEFhUTuy70kmHovua_emPvKZa19egLTTDt8F6IfIJ8g0hfsOk79EQenHJWd5lmcFU5Bpu2H4jXkvcfDSrbwza_HXp40bXuG-ZUE4BHwytKwk9n3X06xo6dxxuaQ_8CsW1MEXSy-nJpK9E1Wn3e1z4twuo15ejemgOFzD4_VYPMKlKHJXqzYhC5WMLk1-oA-dYaZ9g5TdEr3nJKeYYvxWnXP420nnLq8tLLR-Hu7CHoPRYeTzh-5_TWd3Os6SJXO_ucP-BETYvEoVRJVjfA8RvJz9JITqY2Rihkd1S28oe4mWyKg6PcbrbewiW7B8kGdKh2So2tPoTZw-vI_1CRV6X8m72zizO5QL6NZX2Egs6lRMMEWm3ZhvJYbFwuaR6x63ocYPbylFU1ll8x6iF2FBhVjrjVfn9B3Vj967J3WR2TB-ayYG8kGyXgHkXr1P0IRdAlLHoK93K1gRinjqXq3_qqARWta78NcJQ0q9g1fsuju6uGgVfShwMzloSZXlBQXMCPKp1Orkjs__5AJApgD5PsVPWMhTxkN3KSUiXU3liEYBuPUHi27s_jU4ZU9Id2c0-ItUjoa3S5IXcZ9W2IA-RCKgTzmeLk4Fs8_0M0-h07Yy6SnB_xq_jp7Ox-2RwQpwbmRxfmpqpCr9lY-7qF7Xer6E9GOKZrbivoqXmszEbK7H-fjeg43dpivTkH84Zwvb5natg8JhV2RBGK5YKBL2R4k04H30id9YdF34T_s-7FlEikGh7dZgv8XkVnbJbGjrfyPGZx7HfeqOGdK9Y3jjMXtcOb6SCAA",
+                            RefreshToken = "OAQABAAAAAAAP0wLlqdLVToOpA4kwzSnx3_a3I1ymazBefElwfdE1x13AX0G8DkU8_WZi8f-BI-DXcTh6JLmSOxvgGe98yrJGucBsqpdJinVNNVUfB0cfe2rJO0eZURrsnXaE3P2K_jzSdtJepzjyTXacKcmArDg31ZXzjlWF14_kAh-JTOArntRJ3yuZXIIfA-YiSswhTeZCKHArC2O8ouqSJibWpUC4wyuOyFy51hQtc-bI6jGLIKARQhRBAHxF5WEG4UuXlKFnkV_ZFDGBUHy2Sm33ANjqavzTz_yJ7wlK7anAHUExhPDZRh3-3GH8y3aTBO1EztAnZCo3leYEqfRX_e2rXMPqDK2MzcAr3XbJMmovtJOGdo8SqczGaADK4ehd6dLN_zfLyTjun0zd4zTr82_KD_92yxqGF4ozJKmleysMGNdbLK7hEi84_hBt3t3e4gsUvur6c_XSHp-clv_3-QLk4xu213nX6Q23YKMZncm7HVixDs8kcIs7qEnieJfZMzlMNh_mTmsjbk2kw92b9Q4nMNnZw9Cug5qEBllo8mLbJH6tipGPBf4xcq9_RJzMPbJR1XH9ymX46cOqJ0CF2U4CsflvQw8ku4U0uynwnqwLRSkjAk3vjl_o-N6ARIwDiP_VKYvGyx_0lqx7fNGxHE9vZCrvHquH5xlxlsltH8d8g_eBBeGUZiL8JRjmvf4Ren0ml2FY5PjCsyOb_lF8W3X-fXmLkFLEWdZgZc6OYjHL0nYazIgknq2vawasfSaoC-qeqFrWNa1Vwn9N5ydszLDnMShPO3vYOrazZ73uYsTWnqa4YYj3NX_G95EFhimkqcdLK_dSzQChZMGQR-sf4eq3ec0SKHCCpj7yX-p4sVr9VXhLzSAA",
                             TokenDate = new DateTime(2019, 5, 29, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Username = "aluno19089@ipt.pt"
                         });
@@ -422,7 +422,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
-                            DataDeCriacao = new DateTime(2019, 8, 13, 20, 7, 59, 641, DateTimeKind.Local).AddTicks(569),
+                            DataDeCriacao = new DateTime(2019, 9, 12, 11, 42, 51, 687, DateTimeKind.Local).AddTicks(8183),
                             Enviado = false,
                             Nome = "Teste",
                             Password = "123Qwe!",
@@ -564,7 +564,7 @@ namespace LabFoto.Migrations
                         .HasMaxLength(255);
 
                     b.Property<string>("Observacoes")
-                        .HasMaxLength(2048);
+                        .HasMaxLength(4096);
 
                     b.Property<string>("RequerenteFK");
 
@@ -1056,15 +1056,15 @@ namespace LabFoto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3eea3bdb-3d69-44e0-9d46-1654ab971688",
-                            ConcurrencyStamp = "59c16378-de18-4b7b-b899-72c3c37beabe",
+                            Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
+                            ConcurrencyStamp = "8c7f61e3-d98b-4f69-8486-1647c6da8520",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "49172777-7f7b-46d9-8515-3e86fbb54a3e",
-                            ConcurrencyStamp = "990ec456-8c44-4563-aa3b-e2bac0b7fa3e",
+                            Id = "5daf0878-9c68-4471-954d-a58cb4ed2ffb",
+                            ConcurrencyStamp = "e90022f6-93ed-437c-ae51-141ac1556207",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });
@@ -1139,6 +1139,24 @@ namespace LabFoto.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "aaf03d93-734c-4bef-8170-9e8ad3a21108",
+                            Email = "labfotoipt@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "LABFOTOIPT@GMAIL.COM",
+                            NormalizedUserName = "LABFOTOIPT@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMOTuzW/FTh+A62NSRnVEBw+Phej+8igY6k5MRR5wmdykLp06+ENHKED9+v7n1qSlQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "labfotoipt@gmail.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -1192,6 +1210,13 @@ namespace LabFoto.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
+                            RoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e575"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

@@ -251,7 +251,7 @@ namespace LabFoto.Migrations
                     Nome = table.Column<string>(maxLength: 255, nullable: false),
                     DataDeCriacao = table.Column<DateTime>(nullable: false),
                     IdentificacaoObra = table.Column<string>(nullable: false),
-                    Observacoes = table.Column<string>(maxLength: 2048, nullable: true),
+                    Observacoes = table.Column<string>(maxLength: 4096, nullable: true),
                     HorasEstudio = table.Column<float>(nullable: true),
                     HorasPosProducao = table.Column<float>(nullable: true),
                     DataEntrega = table.Column<DateTime>(nullable: true),
@@ -471,21 +471,25 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "49172777-7f7b-46d9-8515-3e86fbb54a3e", "990ec456-8c44-4563-aa3b-e2bac0b7fa3e", "Lab", "LAB" },
-                    { "3eea3bdb-3d69-44e0-9d46-1654ab971688", "59c16378-de18-4b7b-b899-72c3c37beabe", "Admin", "ADMIN" }
+                    { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "8c7f61e3-d98b-4f69-8486-1647c6da8520", "Admin", "ADMIN" },
+                    { "5daf0878-9c68-4471-954d-a58cb4ed2ffb", "e90022f6-93ed-437c-ae51-141ac1556207", "Lab", "LAB" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", 0, "aaf03d93-734c-4bef-8170-9e8ad3a21108", "labfotoipt@gmail.com", true, false, null, "LABFOTOIPT@GMAIL.COM", "LABFOTOIPT@GMAIL.COM", "AQAAAAEAACcQAAAAEMOTuzW/FTh+A62NSRnVEBw+Phej+8igY6k5MRR5wmdykLp06+ENHKED9+v7n1qSlQ==", null, false, "", false, "labfotoipt@gmail.com" });
 
             migrationBuilder.InsertData(
                 table: "ContasOnedrive",
                 columns: new[] { "ID", "AccessToken", "DriveId", "Password", "Quota_Remaining", "Quota_Total", "Quota_Used", "RefreshToken", "TokenDate", "Username" },
-                values: new object[] { 1, "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEQ29NcGpKWHJ4VHE5Vkc5dGUtN0ZYanFlQnJmd0RNOHRIbzdVaExaTGdSN25mcnlhbjZxQ1d3aDYxTWt1dkdWdWo0MzAtQjZzSmRfS1hpNnZqT0lBQU1iel84cGJ5VFpOeVJnMlBMVXM4TkNBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiSEJ4bDltQWU2Z3hhdkNrY29PVTJUSHNETmEwIiwia2lkIjoiSEJ4bDltQWU2Z3hhdkNrY29PVTJUSHNETmEwIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8yMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAvIiwiaWF0IjoxNTU5MjMzNDg0LCJuYmYiOjE1NTkyMzM0ODQsImV4cCI6MTU1OTIzNzM4NCwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkFTUUEyLzhMQUFBQXNjNHl5bjlWM010SWJjUjBUZDUzZDdmcTVQQjBUU1d5QmE5bjVablJjQ289IiwiYW1yIjpbInB3ZCJdLCJhcHBfZGlzcGxheW5hbWUiOiJMYWJGb3RvIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJhcHBpZGFjciI6IjEiLCJmYW1pbHlfbmFtZSI6IkFsZXhhbmRyZSIsImdpdmVuX25hbWUiOiJUZWxtbyIsImlwYWRkciI6IjE4OC4yNTEuMjI2LjEzOCIsIm5hbWUiOiJUZWxtbyBPbGl2ZWlyYSBBbGV4YW5kcmUiLCJvaWQiOiJjNzJkZTU2Yi01ZGZlLTQzMjgtOTMwZC0wNGEzZDcyZjI1MzMiLCJvbnByZW1fc2lkIjoiUy0xLTUtMjEtMzEwMDY3Mzc0Ni00MjcwNTgzNjI2LTI0MjUyNDIwNDktMTc4MjkiLCJwbGF0ZiI6IjMiLCJwdWlkIjoiMTAwMzdGRkU5MDg5NDYzNCIsInNjcCI6IkZpbGVzLlJlYWQgRmlsZXMuUmVhZC5BbGwgRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgcHJvZmlsZSBvcGVuaWQgZW1haWwiLCJzaWduaW5fc3RhdGUiOlsia21zaSJdLCJzdWIiOiJZdVJhQVBLRVlKeU94eXlFY21kUjJNZG5hTE85NDk1QTNkQ2dFWlQ5MzlBIiwidGlkIjoiMjFlOTBkZmMtNTRmMS00YjIxLThmM2ItN2ZiOTc5OGVkMmUwIiwidW5pcXVlX25hbWUiOiJhbHVubzE5MDg5QGlwdC5wdCIsInVwbiI6ImFsdW5vMTkwODlAaXB0LnB0IiwidXRpIjoiVV9GbXNLblI3a20tMWVPcUZOeXZBQSIsInZlciI6IjEuMCIsInhtc19zdCI6eyJzdWIiOiJld2hsazdSYmhWN25YbTc0dTVTQUlQTjcwYktpbnBMWE1OQlB3VEFTUXRZIn0sInhtc190Y2R0IjoxNDI5MjY3MjA4fQ.RxpyPNjTQaRlpAmM9BaKnU4zGoCry1_JZ-k4F-ADhlKoK-SRDdt6UhPfoysq4vxDrwCD5SSJwf93ygV2sM19etyHAKwS_ZWFDjrpyXEq0aftm_6A-LVTrI_KmjX3u64b8joyGGailTcMBc1gkk21jKt6nnoXNJuKXNXrK3mQGSI7xosG9WOmbWB54VoTCDEY0rUgIkO5_e0R9bIXURShNgiNgV5GpPhjAV1Oo3qWPEVrR41-8LkLMKqFbtLFfPouk7C4KlOB6AWb69Qew02h1KqIir_Xe3m1xiNqQ1l_bM2dYGdNgvGhoXQgge4JzGkrINOAkOp9KhuS_bRl7Cvjdw", "b!0812_G3q10uofJYDjbiF50gxK5lECPtEqi3cKXzbQsT29-ASFmlYSqg3p9xBheG7", "test", "5497452095469", "5497558138880", "97597600", "OAQABAAAAAADCoMpjJXrxTq9VG9te-7FXmM_2aSL25b4X-gFBQOTiVTf4ph2zQdl02erPQ3k02lPQlapDOFcjBLEcumEFhUTuy70kmHovua_emPvKZa19egLTTDt8F6IfIJ8g0hfsOk79EQenHJWd5lmcFU5Bpu2H4jXkvcfDSrbwza_HXp40bXuG-ZUE4BHwytKwk9n3X06xo6dxxuaQ_8CsW1MEXSy-nJpK9E1Wn3e1z4twuo15ejemgOFzD4_VYPMKlKHJXqzYhC5WMLk1-oA-dYaZ9g5TdEr3nJKeYYvxWnXP420nnLq8tLLR-Hu7CHoPRYeTzh-5_TWd3Os6SJXO_ucP-BETYvEoVRJVjfA8RvJz9JITqY2Rihkd1S28oe4mWyKg6PcbrbewiW7B8kGdKh2So2tPoTZw-vI_1CRV6X8m72zizO5QL6NZX2Egs6lRMMEWm3ZhvJYbFwuaR6x63ocYPbylFU1ll8x6iF2FBhVjrjVfn9B3Vj967J3WR2TB-ayYG8kGyXgHkXr1P0IRdAlLHoK93K1gRinjqXq3_qqARWta78NcJQ0q9g1fsuju6uGgVfShwMzloSZXlBQXMCPKp1Orkjs__5AJApgD5PsVPWMhTxkN3KSUiXU3liEYBuPUHi27s_jU4ZU9Id2c0-ItUjoa3S5IXcZ9W2IA-RCKgTzmeLk4Fs8_0M0-h07Yy6SnB_xq_jp7Ox-2RwQpwbmRxfmpqpCr9lY-7qF7Xer6E9GOKZrbivoqXmszEbK7H-fjeg43dpivTkH84Zwvb5natg8JhV2RBGK5YKBL2R4k04H30id9YdF34T_s-7FlEikGh7dZgv8XkVnbJbGjrfyPGZx7HfeqOGdK9Y3jjMXtcOb6SCAA", new DateTime(2019, 5, 29, 12, 0, 0, 0, DateTimeKind.Unspecified), "aluno19089@ipt.pt" });
+                values: new object[] { 1, "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEQ29NcGpKWHJ4VHE5Vkc5dGUtN0ZYanFlQnJmd0RNOHRIbzdVaExaTGdSN25mcnlhbjZxQ1d3aDYxTWt1dkdWdWo0MzAtQjZzSmRfS1hpNnZqT0lBQU1iel84cGJ5VFpOeVJnMlBMVXM4TkNBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiSEJ4bDltQWU2Z3hhdkNrY29PVTJUSHNETmEwIiwia2lkIjoiSEJ4bDltQWU2Z3hhdkNrY29PVTJUSHNETmEwIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8yMWU5MGRmYy01NGYxLTRiMjEtOGYzYi03ZmI5Nzk4ZWQyZTAvIiwiaWF0IjoxNTU5MjMzNDg0LCJuYmYiOjE1NTkyMzM0ODQsImV4cCI6MTU1OTIzNzM4NCwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkFTUUEyLzhMQUFBQXNjNHl5bjlWM010SWJjUjBUZDUzZDdmcTVQQjBUU1d5QmE5bjVablJjQ289IiwiYW1yIjpbInB3ZCJdLCJhcHBfZGlzcGxheW5hbWUiOiJMYWJGb3RvIiwiYXBwaWQiOiIyZGE3NDg0Yy05ZWVhLTQ5YTMtYjMzNy1mNTlhOTdmNzllNDciLCJhcHBpZGFjciI6IjEiLCJmYW1pbHlfbmFtZSI6IkFsZXhhbmRyZSIsImdpdmVuX25hbWUiOiJUZWxtbyIsImlwYWRkciI6IjE4OC4yNTEuMjI2LjEzOCIsIm5hbWUiOiJUZWxtbyBPbGl2ZWlyYSBBbGV4YW5kcmUiLCJvaWQiOiJjNzJkZTU2Yi01ZGZlLTQzMjgtOTMwZC0wNGEzZDcyZjI1MzMiLCJvbnByZW1fc2lkIjoiUy0xLTUtMjEtMzEwMDY3Mzc0Ni00MjcwNTgzNjI2LTI0MjUyNDIwNDktMTc4MjkiLCJwbGF0ZiI6IjMiLCJwdWlkIjoiMTAwMzdGRkU5MDg5NDYzNCIsInNjcCI6IkZpbGVzLlJlYWQgRmlsZXMuUmVhZC5BbGwgRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgcHJvZmlsZSBvcGVuaWQgZW1haWwiLCJzaWduaW5fc3RhdGUiOlsia21zaSJdLCJzdWIiOiJZdVJhQVBLRVlKeU94eXlFY21kUjJNZG5hTE85NDk1QTNkQ2dFWlQ5MzlBIiwidGlkIjoiMjFlOTBkZmMtNTRmMS00YjIxLThmM2ItN2ZiOTc5OGVkMmUwIiwidW5pcXVlX25hbWUiOiJhbHVubzE5MDg5QGlwdC5wdCIsInVwbiI6ImFsdW5vMTkwODlAaXB0LnB0IiwidXRpIjoiVV9GbXNLblI3a20tMWVPcUZOeXZBQSIsInZlciI6IjEuMCIsInhtc19zdCI6eyJzdWIiOiJld2hsazdSYmhWN25YbTc0dTVTQUlQTjcwYktpbnBMWE1OQlB3VEFTUXRZIn0sInhtc190Y2R0IjoxNDI5MjY3MjA4fQ.RxpyPNjTQaRlpAmM9BaKnU4zGoCry1_JZ-k4F-ADhlKoK-SRDdt6UhPfoysq4vxDrwCD5SSJwf93ygV2sM19etyHAKwS_ZWFDjrpyXEq0aftm_6A-LVTrI_KmjX3u64b8joyGGailTcMBc1gkk21jKt6nnoXNJuKXNXrK3mQGSI7xosG9WOmbWB54VoTCDEY0rUgIkO5_e0R9bIXURShNgiNgV5GpPhjAV1Oo3qWPEVrR41-8LkLMKqFbtLFfPouk7C4KlOB6AWb69Qew02h1KqIir_Xe3m1xiNqQ1l_bM2dYGdNgvGhoXQgge4JzGkrINOAkOp9KhuS_bRl7Cvjdw", "b!0812_G3q10uofJYDjbiF50gxK5lECPtEqi3cKXzbQsT29-ASFmlYSqg3p9xBheG7", "test", "5497452095469", "5497558138880", "97597600", "OAQABAAAAAAAP0wLlqdLVToOpA4kwzSnx3_a3I1ymazBefElwfdE1x13AX0G8DkU8_WZi8f-BI-DXcTh6JLmSOxvgGe98yrJGucBsqpdJinVNNVUfB0cfe2rJO0eZURrsnXaE3P2K_jzSdtJepzjyTXacKcmArDg31ZXzjlWF14_kAh-JTOArntRJ3yuZXIIfA-YiSswhTeZCKHArC2O8ouqSJibWpUC4wyuOyFy51hQtc-bI6jGLIKARQhRBAHxF5WEG4UuXlKFnkV_ZFDGBUHy2Sm33ANjqavzTz_yJ7wlK7anAHUExhPDZRh3-3GH8y3aTBO1EztAnZCo3leYEqfRX_e2rXMPqDK2MzcAr3XbJMmovtJOGdo8SqczGaADK4ehd6dLN_zfLyTjun0zd4zTr82_KD_92yxqGF4ozJKmleysMGNdbLK7hEi84_hBt3t3e4gsUvur6c_XSHp-clv_3-QLk4xu213nX6Q23YKMZncm7HVixDs8kcIs7qEnieJfZMzlMNh_mTmsjbk2kw92b9Q4nMNnZw9Cug5qEBllo8mLbJH6tipGPBf4xcq9_RJzMPbJR1XH9ymX46cOqJ0CF2U4CsflvQw8ku4U0uynwnqwLRSkjAk3vjl_o-N6ARIwDiP_VKYvGyx_0lqx7fNGxHE9vZCrvHquH5xlxlsltH8d8g_eBBeGUZiL8JRjmvf4Ren0ml2FY5PjCsyOb_lF8W3X-fXmLkFLEWdZgZc6OYjHL0nYazIgknq2vawasfSaoC-qeqFrWNa1Vwn9N5ydszLDnMShPO3vYOrazZ73uYsTWnqa4YYj3NX_G95EFhimkqcdLK_dSzQChZMGQR-sf4eq3ec0SKHCCpj7yX-p4sVr9VXhLzSAA", new DateTime(2019, 5, 29, 12, 0, 0, 0, DateTimeKind.Unspecified), "aluno19089@ipt.pt" });
 
             migrationBuilder.InsertData(
                 table: "DataExecucao",
                 columns: new[] { "ID", "Data" },
                 values: new object[,]
                 {
-                    { 3, new DateTime(2018, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 4, new DateTime(2019, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 5, new DateTime(2019, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 6, new DateTime(2018, 2, 27, 0, 0, 0, 0, DateTimeKind.Unspecified) },
@@ -495,7 +499,8 @@ namespace LabFoto.Migrations
                     { 10, new DateTime(2018, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 11, new DateTime(2019, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, new DateTime(2019, 2, 24, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 1, new DateTime(2019, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, new DateTime(2019, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new DateTime(2018, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -503,10 +508,10 @@ namespace LabFoto.Migrations
                 columns: new[] { "ID", "Nome" },
                 values: new object[,]
                 {
-                    { 4, "Metadado4" },
+                    { 1, "Metadado1" },
                     { 2, "Metadado2" },
                     { 3, "Metadado3" },
-                    { 1, "Metadado1" }
+                    { 4, "Metadado4" }
                 });
 
             migrationBuilder.InsertData(
@@ -515,10 +520,10 @@ namespace LabFoto.Migrations
                 values: new object[,]
                 {
                     { "916d75a4-c12e-40c4-bf29-7ec1e31696ac", "manuel@ipt.pt", "Manuel", "Manuel", "987321546" },
-                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", "maria@ipt.pt", "Maria", "Maria", "987654321" },
                     { "86dafe89-cc9c-4308-ace8-b3ed1f54a346", "joao@ipt.pt", "João", "Maria", "987654321" },
-                    { "a0f118c8-8e40-4433-a695-e5ca01788331", "fernando@ipt.pt", "Fernando", "Fernando", "123456789" },
-                    { "d6e3fca1-c766-4333-8211-f63431b30181", "jose@ipt.pt", "José", "José", "123789456" }
+                    { "56d513fa-cedd-40d9-bd58-12a7ee3f129c", "maria@ipt.pt", "Maria", "Maria", "987654321" },
+                    { "d6e3fca1-c766-4333-8211-f63431b30181", "jose@ipt.pt", "José", "José", "123789456" },
+                    { "a0f118c8-8e40-4433-a695-e5ca01788331", "fernando@ipt.pt", "Fernando", "Fernando", "123456789" }
                 });
 
             migrationBuilder.InsertData(
@@ -528,9 +533,9 @@ namespace LabFoto.Migrations
                 {
                     { 1, false, "Luz Visível" },
                     { 2, false, "Luz U.V" },
+                    { 3, false, "Rasante" },
                     { 4, false, "Infra-red" },
-                    { 5, false, "Luz Trasmitida" },
-                    { 3, false, "Rasante" }
+                    { 5, false, "Luz Trasmitida" }
                 });
 
             migrationBuilder.InsertData(
@@ -543,6 +548,11 @@ namespace LabFoto.Migrations
                     { 3, false, "Serviço Exterior" },
                     { 4, false, "Pessoal" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "a18be9c0-aa65-4af8-bd17-00bd9344e575" });
 
             migrationBuilder.InsertData(
                 table: "Servicos",
@@ -573,7 +583,7 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "Partilhaveis",
                 columns: new[] { "ID", "DataDeCriacao", "Enviado", "Nome", "Password", "ServicoFK", "Validade" },
-                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 8, 13, 20, 7, 59, 641, DateTimeKind.Local).AddTicks(569), false, "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
+                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 9, 12, 11, 42, 51, 687, DateTimeKind.Local).AddTicks(8183), false, "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
 
             migrationBuilder.InsertData(
                 table: "Servicos_DatasExecucao",

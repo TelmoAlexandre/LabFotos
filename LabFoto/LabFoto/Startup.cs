@@ -69,7 +69,6 @@ namespace LabFoto
                 app.UseHsts();
             }
 
-            ApplicationDbInitializer.SeedUsers(userManager);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
