@@ -18,10 +18,12 @@ namespace LabFoto.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly int _rPP = 9;
+        private readonly ILoggerAPI _logger;
 
-        public RequerentesController(ApplicationDbContext context)
+        public RequerentesController(ApplicationDbContext context, ILoggerAPI logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         #region Index
@@ -219,7 +221,7 @@ namespace LabFoto.Controllers
                     await _context.SaveChangesAsync();
                     return Json(new { success = true });
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!RequerentesExists(requerente.ID))
                     {
@@ -227,7 +229,12 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        throw;
+                        await _logger.LogError(
+                            descricao: "Erro ao guardar na BD.",
+                            classe: "RequerentesController",
+                            metodo: "Edit",
+                            erro: e.Message
+                        );
                     }
                 }
             }

@@ -19,12 +19,12 @@ namespace LabFoto.Controllers
     {
         #region Constructor
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<PartilhaveisController> _logger;
+        private readonly ILoggerAPI _logger;
         private readonly IEmailAPI _email;
         private readonly AppSettings _appSettings;
 
         public EmailController(ApplicationDbContext context,
-            ILogger<PartilhaveisController> logger,
+            ILoggerAPI logger,
             IEmailAPI email,
             IOptions<AppSettings> appSettings)
         {
@@ -115,7 +115,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao enviar e-mail ao requerente com o partilhável. SendMail. Erro: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao enviar e-mail ao requerente com o partilhável.",
+                    classe: "EmailController",
+                    metodo: "Share",
+                    erro: e.Message
+                );
             }
 
             return Json(new { success = false });

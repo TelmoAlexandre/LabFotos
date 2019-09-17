@@ -36,13 +36,13 @@ namespace LabFoto.APIs
         private readonly HttpClient _client;
         private readonly string _redirectUrl;
         private readonly AppSettings _appSettings;
-        private readonly ILogger<OnedriveAPI> _logger;
+        private readonly ILoggerAPI _logger;
         private readonly IEmailAPI _emailAPI;
 
         public OnedriveAPI(ApplicationDbContext context,
             IHttpClientFactory clientFactory,
             IOptions<AppSettings> settings,
-            ILogger<OnedriveAPI> logger,
+            ILoggerAPI logger,
             IEmailAPI emailAPI)
         {
             _context = context;
@@ -132,11 +132,15 @@ namespace LabFoto.APIs
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao refrescar thumbnails. RefreshPhotoUrlsAsync. Erro {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao refrescar thumbnails.", 
+                    classe: "OneDriveAPI", 
+                    metodo: "RefreshPhotoUrlsAsync", 
+                    erro: e.Message
+                );
                 return false;
             }
         }
-        #endregion
 
         /// <summary>
         /// Apaga os urls das thumbnails antigos de uma fotografia
@@ -152,6 +156,7 @@ namespace LabFoto.APIs
             _context.Update(photo);
             await _context.SaveChangesAsync();
         }
+        #endregion
 
         #region Token
         /// <summary>
@@ -217,7 +222,12 @@ namespace LabFoto.APIs
                         }
                         catch (Exception e)
                         {
-                            _logger.LogError($"Erro ao interpretar o JSON da resposta. RefreshTokenAsync. Erro: {e.Message}");
+                            await _logger.LogError(
+                                descricao: "Erro ao interpretar o JSON da resposta.",
+                                classe: "OneDriveAPI",
+                                metodo: "RefreshTokenAsync",
+                                erro: e.Message
+                            );
                             return false;
                         }
 
@@ -228,7 +238,12 @@ namespace LabFoto.APIs
                         }
                         catch (Exception e)
                         {
-                            _logger.LogError($"Erro ao dar update à conta Onedrive localmente. RefreshTokenAsync. Erro: {e.Message}");
+                            await _logger.LogError(
+                                descricao: "Erro ao dar update à conta Onedrive localmente.",
+                                classe: "OneDriveAPI",
+                                metodo: "RefreshTokenAsync",
+                                erro: e.Message
+                            );
                             return false;
                         }
 
@@ -281,7 +296,12 @@ namespace LabFoto.APIs
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro no pedido HTTP de um token. GetInitialTokenAsync. Erro: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro no pedido HTTP de um token.",
+                    classe: "OneDriveAPI",
+                    metodo: "GetInitialTokenAsync",
+                    erro: e.Message
+                );
                 return null;
             }
             #endregion
@@ -299,7 +319,12 @@ namespace LabFoto.APIs
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError($"Erro ao tratar o JSON da resposta. GetInitialTokenAsync. Erro: {e.Message}");
+                        await _logger.LogError(
+                            descricao: "Erro ao tratar o JSON da resposta.",
+                            classe: "OneDriveAPI",
+                            metodo: "GetInitialTokenAsync",
+                            erro: e.Message
+                        );
                         return null;
                     }
                 }
@@ -333,7 +358,12 @@ namespace LabFoto.APIs
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro no pedido HTTP das informações da drive. GetDriveInfoAsync. Erro: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro no pedido HTTP das informações da drive.",
+                    classe: "OneDriveAPI",
+                    metodo: "GetDriveInfoAsync",
+                    erro: e.Message
+                );
                 return null;
             }
             #endregion
@@ -351,7 +381,12 @@ namespace LabFoto.APIs
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError($"Erro ao interpretar o JSON da resposta. GetDriveInfoAsync. Erro: {e.Message}");
+                        await _logger.LogError(
+                            descricao: "Erro ao interpretar o JSON da resposta.",
+                            classe: "OneDriveAPI",
+                            metodo: "GetDriveInfoAsync",
+                            erro: e.Message
+                        );
                         return null;
                     }
                 }
@@ -397,7 +432,12 @@ namespace LabFoto.APIs
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao interpretar o JSON da resposta. UpdateDriveQuotaAsync. Erro: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao interpretar o JSON da resposta.",
+                        classe: "OneDriveAPI",
+                        metodo: "UpdateDriveQuotaAsync",
+                        erro: e.Message
+                    );
                     return false;
                 }
 
@@ -409,7 +449,12 @@ namespace LabFoto.APIs
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao dar update à conta Onedrive localmente. UpdateDriveQuotaAsync. Erro: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao dar update à conta Onedrive localmente.",
+                        classe: "OneDriveAPI",
+                        metodo: "UpdateDriveQuotaAsync",
+                        erro: e.Message
+                    );
                 }
             }
 
@@ -454,7 +499,6 @@ namespace LabFoto.APIs
                 // Caso não existam contas com espaço
                 if (_context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).Count() == 0)
                 {
-                    _logger.LogInformation("Não existem contas Onedrive com espaço.");
                     _emailAPI.Send(_appSettings.AdminEmails, "Já não existem contas Onedrive com espaço", $"Todas as contas Onedrive estão cheias.");
                     return null;
                 }
@@ -480,7 +524,12 @@ namespace LabFoto.APIs
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao encontrar conta com espaço para upload. GetAccountToUploadAsync. Error: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao encontrar conta com espaço para upload.",
+                        classe: "OneDriveAPI",
+                        metodo: "GetAccountToUploadAsync",
+                        erro: e.Message
+                    );
                     return null;
                 }
             }
@@ -516,7 +565,12 @@ namespace LabFoto.APIs
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao enviar pedido HTTP. GetUploadSessionAsync. Error: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao enviar pedido HTTP.",
+                    classe: "OneDriveAPI",
+                    metodo: "GetUploadSessionAsync",
+                    erro: e.Message
+                );
             }
             #endregion
 
@@ -535,7 +589,12 @@ namespace LabFoto.APIs
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError($"Erro ao tratar o JSON da resposta. GetUploadSessionAsync. Error: {e.Message}");
+                        await _logger.LogError(
+                            descricao: "Erro ao tratar o JSON da resposta.",
+                            classe: "OneDriveAPI",
+                            metodo: "GetUploadSessionAsync",
+                            erro: e.Message
+                        );
                     }
                 }
             }
@@ -591,7 +650,12 @@ namespace LabFoto.APIs
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao apagar ficheiros na onedrive. DeleteFiles. Erro: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao apagar ficheiros na onedrive.",
+                    classe: "OneDriveAPI",
+                    metodo: "DeleteFiles",
+                    erro: e.Message
+                );
                 return false;
             }
 
@@ -775,7 +839,7 @@ namespace LabFoto.APIs
         /// Corre uma Thread que apaga todos os fiheiros passados no array de caminhos.
         /// </summary>
         /// <param name="paths">string[] - Todos os caminhos dos ficheiros a apagar.</param>
-        private void DeleteFilesFromServerDisk(List<string> paths)
+        private async Task DeleteFilesFromServerDisk(List<string> paths)
         {
             foreach (var path in paths)
             {
@@ -785,7 +849,12 @@ namespace LabFoto.APIs
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao tentar apagar um ficheiro temporario do disco. Erro: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao tentar apagar um ficheiro.",
+                        classe: "OneDriveAPI",
+                        metodo: "DeleteFilesFromServerDisk",
+                        erro: e.Message
+                    );
                 }
             }
         }

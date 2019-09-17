@@ -10,6 +10,7 @@ using LabFoto.Models.Tables;
 using LabFoto.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using LabFoto.APIs;
 
 namespace LabFoto.Controllers
 {
@@ -17,9 +18,9 @@ namespace LabFoto.Controllers
     public class MetadadosController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<TiposController> _logger;
+        private readonly ILoggerAPI _logger;
 
-        public MetadadosController(ApplicationDbContext context, ILogger<TiposController> logger)
+        public MetadadosController(ApplicationDbContext context, ILoggerAPI logger)
         {
             _context = context;
             _logger = logger;
@@ -164,7 +165,7 @@ namespace LabFoto.Controllers
                     await _context.SaveChangesAsync();
                     return Json(new { success = true });
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!MetadadoExists(metadado.ID))
                     {
@@ -172,7 +173,12 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        throw;
+                        await _logger.LogError(
+                            descricao: "Erro ao guardar na BD.",
+                            classe: "MetadadosController",
+                            metodo: "Edit",
+                            erro: e.Message
+                        );
                     }
                 }
             }
@@ -211,7 +217,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao eliminar Metadado. Erro: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao eliminar Metadado.",
+                    classe: "MetadadosController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
             // Feeback ao utilizador - Vai ser redirecionado para o Index

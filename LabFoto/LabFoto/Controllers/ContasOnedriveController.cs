@@ -24,9 +24,9 @@ namespace LabFoto.Controllers
         #region Constructor
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
-        private readonly ILogger<ContasOnedriveController> _logger;
+        private readonly ILoggerAPI _logger;
 
-        public ContasOnedriveController(ApplicationDbContext context, IOnedriveAPI onedrive, ILogger<ContasOnedriveController> logger)
+        public ContasOnedriveController(ApplicationDbContext context, IOnedriveAPI onedrive, ILoggerAPI logger)
         {
             _context = context;
             _onedrive = onedrive;
@@ -152,7 +152,12 @@ namespace LabFoto.Controllers
             catch (Exception e)
             {
                 success = false;
-                _logger.LogError($"Erro ao obter token da conta. Message: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao obter token da conta.",
+                    classe: "ContasOnedriveController",
+                    metodo: "InitAccount",
+                    erro: e.Message
+                );
                 // Feeback ao utilizador - Vai ser redirecionado para o Index
                 TempData["Feedback"] = "Ocorreu obter o token da conta.";
                 TempData["Type"] = "error";
@@ -189,7 +194,12 @@ namespace LabFoto.Controllers
                 catch (Exception e)
                 {
                     success = false;
-                    _logger.LogError($"Erro ao obter informações da conta. Message: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao obter informações da conta.",
+                        classe: "ContasOnedriveController",
+                        metodo: "InitAccount",
+                        erro: e.Message
+                    );
                     // Feeback ao utilizador - Vai ser redirecionado para o Index
                     TempData["Feedback"] = "Ocorreu um erro ao obter informações da conta.";
                     TempData["Type"] = "error";
@@ -210,7 +220,12 @@ namespace LabFoto.Controllers
                 catch (Exception e)
                 {
                     success = false;
-                    _logger.LogError($"Erro ao criar a conta. Message: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao criar a conta.",
+                        classe: "ContasOnedriveController",
+                        metodo: "InitAccount",
+                        erro: e.Message
+                    );
                     // Feeback ao utilizador - Vai ser redirecionado para o Index
                     TempData["Feedback"] = "Ocorreu um erro ao criar a conta.";
                     TempData["Type"] = "error";
@@ -296,7 +311,7 @@ namespace LabFoto.Controllers
                     _context.Update(conta);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!ContaOnedriveExists(conta.ID))
                     {
@@ -304,7 +319,12 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        throw;
+                        await _logger.LogError(
+                            descricao: "Erro ao guardar na BD.",
+                            classe: "ContasOnedriveController",
+                            metodo: "Edit",
+                            erro: e.Message
+                        );
                     }
                 }
                 // Feeback ao utilizador - Vai ser redirecionado para o Index
@@ -335,7 +355,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError("Erro ao encontrar a conta Onedrive. Erro:" + e.Message);
+                await _logger.LogError(
+                    descricao: "Erro ao encontrar a conta Onedrive.",
+                    classe: "ContasOnedriveController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
 
@@ -346,11 +371,15 @@ namespace LabFoto.Controllers
                 {
                     _context.Remove(contaOnedrive);
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation("Conta Onedrive removida.");
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao eliminar conta Onedrive. Erro: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao eliminar conta Onedrive.",
+                        classe: "ContasOnedriveController",
+                        metodo: "Delete",
+                        erro: e.Message
+                    );
                     return Json(new { success = false });
                 }
 

@@ -21,11 +21,11 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly int _serPP = 10;
         private readonly IEmailAPI _email;
-        private readonly ILogger<ServicosController> _logger;
+        private readonly ILoggerAPI _logger;
 
         public ServicosController(ApplicationDbContext context, 
             IEmailAPI email,
-            ILogger<ServicosController> logger)
+            ILoggerAPI logger)
         {
             _context = context;
             _email = email;
@@ -487,7 +487,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao criar um serviço. Erro: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao criar um serviço.",
+                    classe: "ServicosController",
+                    metodo: "Create",
+                    erro: e.Message
+                );
             }
 
             return View(
@@ -675,7 +680,12 @@ namespace LabFoto.Controllers
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError($"Erro ao editar um serviço. Erro: {e.Message}");
+                        await _logger.LogError(
+                            descricao: "Erro ao editar um serviço.",
+                            classe: "ServicosController",
+                            metodo: "Edit",
+                            erro: e.Message
+                        );
                     }
                 }
                 catch (DbUpdateConcurrencyException e)
@@ -686,7 +696,12 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        _logger.LogError($"Erro ao editar um serviço. Erro: {e.Message}");
+                        await _logger.LogError(
+                            descricao: "Erro ao editar um serviço.",
+                            classe: "ServicosController",
+                            metodo: "Edit",
+                            erro: e.Message
+                        );
                     }
                 }
 
@@ -744,7 +759,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao encontrar serviço. Message: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao encontrar serviço.",
+                    classe: "ServicosController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
 
@@ -767,7 +787,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao eliminar o serviço. Message: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao eliminar o serviço.",
+                    classe: "ServicosController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
             
