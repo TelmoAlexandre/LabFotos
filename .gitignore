@@ -328,3 +328,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+LabFoto/LabFoto/wwwroot/js/semantic.min.js
+LabFoto/LabFoto/wwwroot/js/site.min.js
