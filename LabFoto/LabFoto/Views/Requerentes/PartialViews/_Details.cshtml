@@ -7,7 +7,7 @@
 }
 
 <div class="card-body p-4">
-    <h3 class="card-title font-weight-bold mt-2"><a href="/Requerentes/Details/@Model.ID" class="plainTextLink">@Model.Nome</a></h3>
+    <h3 class="card-title font-weight-bold mt-2"><a href="@Url.Action("Details", "Requerentes", new { id = Model.ID })" class="plainTextLink">@Model.Nome</a></h3>
     <hr />
     <div class="ui large list mb-2 pb-2">
         <div class="item mb-1">
@@ -42,7 +42,7 @@
         }
         @if (detailsLink)
         {
-            <a class="ui button basic" href="/Requerentes/Details/@Model.ID" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
+            <a class="ui button basic" href="@Url.Action("Details", "Requerentes", new { id = Model.ID })" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
         }
     </div>
 </div>

@@ -74,58 +74,56 @@ namespace LabFoto.APIs
                 {
                     if (photo != null)
                     {
-                        #region Refrescar token
                         // Verificar se o token está válido
-                        await RefreshTokenAsync(photo.ContaOnedrive, 2600);
-                        #endregion
-
-                        #region Preparar pedido HTTP
-                        string driveId = photo.ContaOnedrive.DriveId;
-                        string url = "https://graph.microsoft.com/v1.0/me" +
-                            "/drives/" + driveId +
-                            "/items/" + photo.ItemId +
-                            "?$expand=thumbnails";
-                        var request = new HttpRequestMessage(HttpMethod.Get, url);
-                        request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
-                        #endregion
-
-                        // Fazer o pedido e obter resposta
-                        var response = await _client.SendAsync(request);
-
-                        #region Tratar resposta
-                        // Caso retorne OK 2xx
-                        if (response.IsSuccessStatusCode)
+                        if(await RefreshTokenAsync(photo.ContaOnedrive, 2600))
                         {
-                            // Converter a resposta para um objeto json
-                            JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
+                            #region Preparar pedido HTTP
+                            string driveId = photo.ContaOnedrive.DriveId;
+                            string url = "https://graph.microsoft.com/v1.0/me" +
+                                "/drives/" + driveId +
+                                "/items/" + photo.ItemId +
+                                "?$expand=thumbnails";
+                            var request = new HttpRequestMessage(HttpMethod.Get, url);
+                            request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
+                            #endregion
 
-                            photo.DownloadUrl = (string)content["@microsoft.graph.downloadUrl"];
+                            // Fazer o pedido e obter resposta
+                            var response = await _client.SendAsync(request);
 
-                            JObject thumbnails = (JObject)content["thumbnails"][0];
-                            photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
-                            photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
-                            photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
-
-                            _context.Update(photo);
-                        }
-                        else
-                        {
-                            // Caso não encontre a fotografia, é porque esta não existe na onedrive. Apaga a mesma da BD
-                            if ((int)response.StatusCode == 404)
+                            #region Tratar resposta
+                            // Caso retorne OK 2xx
+                            if (response.IsSuccessStatusCode)
                             {
-                                _context.Remove(photo);
-                            }
-                            else // Noutra situação, apenas apagar as thumbnails antigas para ser mostrado um thumbnails default
-                            {
-                                photo.DownloadUrl =
-                                photo.Thumbnail_Large =
-                                photo.Thumbnail_Medium =
-                                photo.Thumbnail_Small = null;
+                                // Converter a resposta para um objeto json
+                                JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                                photo.DownloadUrl = (string)content["@microsoft.graph.downloadUrl"];
+
+                                JObject thumbnails = (JObject)content["thumbnails"][0];
+                                photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
+                                photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
+                                photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
 
                                 _context.Update(photo);
-                            }                            
+                            }
+                            else
+                            {
+                                // Caso não encontre a fotografia, é porque esta não existe na onedrive. Apaga a mesma da BD
+                                if ((int)response.StatusCode == 404)
+                                {
+                                    _context.Remove(photo);
+                                }
+                                else // Noutra situação, apenas apagar as thumbnails antigas para ser mostrado um thumbnails default
+                                {
+                                    await DeleteOldThumbnails(photo);
+                                }
+                            }
+                            #endregion
                         }
-                        #endregion
+                        else // Caso não consiga renovar o token, apaga as thumbnails antigas pois estas já 
+                        {
+                            await DeleteOldThumbnails(photo);
+                        }
                     }
                 }
                 await _context.SaveChangesAsync();
@@ -139,6 +137,21 @@ namespace LabFoto.APIs
             }
         }
         #endregion
+
+        /// <summary>
+        /// Apaga os urls das thumbnails antigos de uma fotografia
+        /// </summary>
+        /// <param name="photo">Fotografia que se pretende apagar urls.</param>
+        private async Task DeleteOldThumbnails(Fotografia photo)
+        {
+            photo.DownloadUrl =
+            photo.Thumbnail_Large =
+            photo.Thumbnail_Medium =
+            photo.Thumbnail_Small = null;
+
+            _context.Update(photo);
+            await _context.SaveChangesAsync();
+        }
 
         #region Token
         /// <summary>
