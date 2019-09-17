@@ -15,7 +15,7 @@ namespace LabFoto.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -358,6 +358,26 @@ namespace LabFoto.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LabFoto.Models.Tables.Log", b =>
+                {
+                    b.Property<string>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Classe");
+
+                    b.Property<string>("Descricao");
+
+                    b.Property<string>("Erro");
+
+                    b.Property<string>("Metodo");
+
+                    b.Property<DateTime>("Timestamp");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Logs");
+                });
+
             modelBuilder.Entity("LabFoto.Models.Tables.Metadado", b =>
                 {
                     b.Property<int>("ID")
@@ -422,7 +442,7 @@ namespace LabFoto.Migrations
                         new
                         {
                             ID = "a0f118c8-8e40-4433-a695-e5ca01788331",
-                            DataDeCriacao = new DateTime(2019, 9, 12, 11, 42, 51, 687, DateTimeKind.Local).AddTicks(8183),
+                            DataDeCriacao = new DateTime(2019, 9, 17, 15, 24, 2, 321, DateTimeKind.Local).AddTicks(9337),
                             Enviado = false,
                             Nome = "Teste",
                             Password = "123Qwe!",
@@ -1057,14 +1077,14 @@ namespace LabFoto.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            ConcurrencyStamp = "8c7f61e3-d98b-4f69-8486-1647c6da8520",
+                            ConcurrencyStamp = "d180c20c-1257-4367-a73c-c14baa7aefe8",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5daf0878-9c68-4471-954d-a58cb4ed2ffb",
-                            ConcurrencyStamp = "e90022f6-93ed-437c-ae51-141ac1556207",
+                            Id = "7fd90eb1-68d2-48e1-bb7e-b6f17b9be7d2",
+                            ConcurrencyStamp = "91c1cfc6-f28d-4903-8d14-56cc36ef43ff",
                             Name = "Lab",
                             NormalizedName = "LAB"
                         });
@@ -1145,13 +1165,13 @@ namespace LabFoto.Migrations
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "aaf03d93-734c-4bef-8170-9e8ad3a21108",
+                            ConcurrencyStamp = "0c9bc28b-cbe8-45b5-8eaa-46e008d26b1b",
                             Email = "labfotoipt@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "LABFOTOIPT@GMAIL.COM",
                             NormalizedUserName = "LABFOTOIPT@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMOTuzW/FTh+A62NSRnVEBw+Phej+8igY6k5MRR5wmdykLp06+ENHKED9+v7n1qSlQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIsY+1fcJs2XUP/YWSlToO2QQTpgqgha9SP2SWqH8gIgsMw6upRAm+Rh6gr4uGgffQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

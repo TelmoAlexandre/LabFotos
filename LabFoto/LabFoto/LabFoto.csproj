@@ -17,6 +17,8 @@
     <Compile Remove="Data\Migrations\20190912085832_Initial.Designer.cs" />
     <Compile Remove="Data\Migrations\20190912102839_Initial.cs" />
     <Compile Remove="Data\Migrations\20190912102839_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190912104252_Initial.cs" />
+    <Compile Remove="Data\Migrations\20190912104252_Initial.Designer.cs" />
   </ItemGroup>
 
 
@@ -44,6 +46,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\lib\photo-swipe\" />
   </ItemGroup>
