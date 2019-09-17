@@ -9,6 +9,7 @@ using LabFoto.Data;
 using LabFoto.Models.Tables;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using LabFoto.APIs;
 
 namespace LabFoto.Controllers
 {
@@ -16,9 +17,9 @@ namespace LabFoto.Controllers
     public class ServicosSolicitadosController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<TiposController> _logger;
+        private readonly ILoggerAPI _logger;
 
-        public ServicosSolicitadosController(ApplicationDbContext context, ILogger<TiposController> logger)
+        public ServicosSolicitadosController(ApplicationDbContext context, ILoggerAPI logger)
         {
             _context = context;
             _logger = logger;
@@ -163,7 +164,7 @@ namespace LabFoto.Controllers
                     await _context.SaveChangesAsync();
                     return Json(new { success = true });
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!ServicosSolicitadosExists(servicoSolicitado.ID))
                     {
@@ -171,7 +172,12 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        throw;
+                        await _logger.LogError(
+                            descricao: "Erro ao guardar na BD.",
+                            classe: "ServicosSolicitadosController",
+                            metodo: "Edit",
+                            erro: e.Message
+                        );
                     }
                 }
             }
@@ -211,7 +217,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao eliminar Serviço Solicitado. Erro: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao eliminar Serviço Solicitado.",
+                    classe: "ServicosSolicitadosController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
             // Feeback ao utilizador - Vai ser redirecionado para o Index

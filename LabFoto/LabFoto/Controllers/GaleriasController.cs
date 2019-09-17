@@ -27,14 +27,14 @@ namespace LabFoto.Controllers
         private readonly IOnedriveAPI _onedrive;
         private readonly IEmailAPI _email;
         private readonly AppSettings _appSettings;
-        private readonly ILogger<GaleriasController> _logger;
+        private readonly ILoggerAPI _logger;
         private readonly int _galPP = 8;
 
         public GaleriasController(ApplicationDbContext context,
             IOnedriveAPI onedrive,
             IEmailAPI email,
             IOptions<AppSettings> settings,
-            ILogger<GaleriasController> logger)
+            ILoggerAPI logger)
         {
             _context = context;
             _onedrive = onedrive;
@@ -521,7 +521,12 @@ namespace LabFoto.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao associar metadados à galeria. Create. Erro: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao associar metadados à galeria.",
+                        classe: "GaleriasController",
+                        metodo: "Create",
+                        erro: e.Message
+                    );
                 }
                 #endregion
 
@@ -633,7 +638,12 @@ namespace LabFoto.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao associar metadados à galeria. Edit. Erro: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao associar metadados à galeria.",
+                        classe: "GaleriasController",
+                        metodo: "Edit",
+                        erro: e.Message
+                    );
                     feedback = "Ocorreu um erro ao associar os metadados à galeria.";
                 }
                 #endregion
@@ -654,7 +664,12 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        _logger.LogError($"Erro ao guardar informação na base de dados. Edit. Erro: {e.Message}");
+                        await _logger.LogError(
+                            descricao: "Erro ao guardar informação na base de dados.",
+                            classe: "GaleriasController",
+                            metodo: "Edit",
+                            erro: e.Message
+                        );
                         feedback = "Ocorreu um erro ao editar a galeria.";
                     }
                 } 
@@ -710,7 +725,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao encontrar a galeria. Message: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao encontrar a galeria.",
+                    classe: "GaleriasController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
 
@@ -729,7 +749,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao eliminar a galeria. Message: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao eliminar a galeria.",
+                    classe: "GaleriasController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
 

@@ -23,14 +23,14 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOnedriveAPI _onedrive;
         private readonly AppSettings _appSettings;
-        private readonly ILogger<PartilhaveisController> _logger;
+        private readonly ILoggerAPI _logger;
         private readonly int _partPP = 10;
 
         #region Constructor
         public PartilhaveisController(ApplicationDbContext context,
             IOnedriveAPI onedrive,
             IOptions<AppSettings> appSettings,
-            ILogger<PartilhaveisController> logger)
+            ILoggerAPI logger)
         {
             _context = context;
             _onedrive = onedrive;
@@ -95,7 +95,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao preparar o acordião de galerias. Erro: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao preparar o acordião de galerias.",
+                    classe: "PartilhaveisController",
+                    metodo: "GaleriasAccordion",
+                    erro: e.Message
+                );
                 return Json(new { success = false, error = "Erro ao carregas as galerias." });
             }
             #endregion
@@ -411,7 +416,12 @@ namespace LabFoto.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro associar fotografias a um novo partilhável. Erro: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro associar fotografias a um novo partilhável.",
+                        classe: "PartilhaveisController",
+                        metodo: "Create",
+                        erro: e.Message
+                    );
                 }
                 #endregion
 
@@ -434,7 +444,12 @@ namespace LabFoto.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao criar Partilhavel. Erro: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao criar Partilhavel.",
+                        classe: "PartilhaveisController",
+                        metodo: "Create",
+                        erro: e.Message
+                    );
                 }
 
                 TempData["Feedback"] = "Partilhável criado com sucesso.";
@@ -511,7 +526,12 @@ namespace LabFoto.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao editar Partilhavel, Partilhaveis_Fotografias . Erro: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao editar Partilhavel, Partilhaveis_Fotografias.",
+                        classe: "PartilhaveisController",
+                        metodo: "Edit",
+                        erro: e.Message
+                    );
                 }
                 #endregion
 
@@ -528,7 +548,12 @@ namespace LabFoto.Controllers
                     }
                     else
                     {
-                        _logger.LogError($"Erro ao editar Partilhavel. Erro: {e.Message}");
+                        await _logger.LogError(
+                            descricao: "Erro ao editar Partilhavel.",
+                            classe: "PartilhaveisController",
+                            metodo: "Edit",
+                            erro: e.Message
+                        );
                     }
                 }
 
@@ -575,7 +600,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao eliminar um Partilhável. Erro: {e.Message}");
+                await _logger.LogError(
+                    descricao: "Erro ao eliminar um Partilhável.",
+                    classe: "PartilhaveisController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
         }
