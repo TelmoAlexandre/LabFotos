@@ -905,5 +905,6 @@ namespace LabFoto.Data
         public DbSet<Partilhavel> Partilhaveis { get; set; }
 
         public DbSet<Partilhavel_Fotografia> Partilhaveis_Fotografias { get; set; }
+        public DbSet<Log> Logs { get; set; }
     }
 }
