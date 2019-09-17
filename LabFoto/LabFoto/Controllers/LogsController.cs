@@ -19,22 +19,20 @@ namespace LabFoto.Controllers
         }
 
         // GET: Logs
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var logs = _context.Logs.ToList();
-
-            return View(logs);
+            return View(await _context.Logs.ToListAsync());
         }
 
         // GET: Logs/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
             if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var log = _context.Logs.Find(id);
+            var log = await _context.Logs.FirstOrDefaultAsync(m => m.ID == id);
 
             if (log == null)
             {
