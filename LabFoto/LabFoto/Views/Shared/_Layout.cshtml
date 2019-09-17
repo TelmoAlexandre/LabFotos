@@ -50,6 +50,10 @@
                                 <div class="dropdown-content">
                                     <a class="nav-link text-dark" asp-controller="ContasOnedrive" asp-action="Index">Contas Onedrive</a>
                                     <a class="nav-link text-dark" asp-controller="Users" asp-action="Index">Utilizadores</a>
+                                    @if (User.IsInRole("Admin"))
+                                    { 
+                                        <a class="nav-link text-dark" asp-controller="Logs" asp-action="Index">Erros</a>
+                                    }
                                 </div>
                             </li>
                         </ul>

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LabFoto.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LabFoto.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class LogsController : Controller
     {
         private readonly ApplicationDbContext _context;
