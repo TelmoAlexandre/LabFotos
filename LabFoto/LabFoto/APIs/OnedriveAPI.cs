@@ -186,7 +186,7 @@ namespace LabFoto.APIs
                     "client_id=" + _applicationClientId +
                     "&scope=offline_access+files.read+files.read.all" +
                     "&refresh_token=" + conta.RefreshToken +
-                    "&redirect_uri=" + _redirectUrl +
+                    "&redirect_uri=" + _appSettings.SiteUrl +
                     "&grant_type=refresh_token" +
                     "&client_secret=" + _applicationClientSecret,
                     Encoding.UTF8, "application/x-www-form-urlencoded"
@@ -277,7 +277,6 @@ namespace LabFoto.APIs
         /// <returns></returns>
         public async Task<JObject> GetInitialTokenAsync(string code)
         {
-
             #region Preparar pedido HTTP
             // Inicializar o pedido com o codigo recebido quando foram pedidas as permissões ao utilizador
             string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
@@ -409,7 +408,7 @@ namespace LabFoto.APIs
         /// <returns></returns>
         public async Task<bool> UpdateDriveQuotaAsync(ContaOnedrive conta)
         {
-            if (IsTokenValid(conta, 3400))
+            if (IsTokenValid(conta, 3400)) // Refrescar token
             {
                 try
                 {
@@ -502,29 +501,31 @@ namespace LabFoto.APIs
 
             while (true)
             {
-                // Caso não existam contas com espaço
-                if (_context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).Count() == 0)
-                {
-                    _emailAPI.Send(_appSettings.AdminEmails, "Já não existem contas Onedrive com espaço", $"Todas as contas Onedrive estão cheias.");
-                    return null;
-                }
-
                 // Tenta encontrar conta com espaço
                 try
                 {
-                    conta = _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).FirstOrDefault();
-
-                    // Confirmar que a conta tem mesmo o espaço suficiente
-                    if (await UpdateDriveQuotaAsync(conta))
+                    while (true)
                     {
-                        if (conta.Quota_Remaining != null && Int64.Parse(conta.Quota_Remaining) > fileSize)
+                        conta = _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).FirstOrDefault();
+
+                        // Caso não encontre conta, é porque já não existem contas com espaço
+                        if (conta == null)
                         {
-                            return conta;
-                        }
-                        else
-                        {
-                            _emailAPI.Send(_appSettings.AdminEmails, "Conta Onedrive com pouco espaço", $"A conta onedrive {conta.Username} já só tem menos de 50 Gb.");
+                            _emailAPI.Send(_appSettings.AdminEmails, "Já não existem contas Onedrive com espaço", $"Todas as contas Onedrive estão cheias.");
                             return null;
+                        }
+
+                        // Confirmar que a conta tem mesmo o espaço suficiente
+                        if (await UpdateDriveQuotaAsync(conta))
+                        {
+                            if (conta.Quota_Remaining != null && Int64.Parse(conta.Quota_Remaining) > fileSize)
+                            {
+                                return conta;
+                            }
+                            else
+                            {
+                                _emailAPI.Send(_appSettings.AdminEmails, "Conta Onedrive com pouco espaço", $"A conta onedrive {conta.Username} já só tem menos de 50 Gb.");
+                            }
                         }
                     }
                 }
@@ -549,58 +550,56 @@ namespace LabFoto.APIs
         /// <returns>Url da sessão</returns>
         public async Task<string> GetUploadSessionAsync(ContaOnedrive conta, string fileName)
         {
-            #region Refrescar token
-            // Verificar se o token está válido
-            await RefreshTokenAsync(conta, 1800);
-            #endregion
-
-            #region Preparar pedido HTTP
-            string url = "https://graph.microsoft.com/v1.0/me/drives/" + conta.DriveId + "/root:/" + fileName + ":/createUploadSession";
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-            request.Headers.Add("Authorization", "Bearer " + conta.AccessToken);
-            // Especificar que em caso de nomes iguais, a onedrive altera o nome e carrega a imagem na mesma
-            request.Content = new StringContent("{\"item\":{\"@microsoft.graph.conflictBehavior\": \"rename\"}}", Encoding.UTF8, "application/json");
-            #endregion
-
-            #region Fazer pedido HTTP
-            HttpResponseMessage response = null;
-            try
+            if (await RefreshTokenAsync(conta, 1800)) // Refrescar token
             {
-                // Fazer o pedido e obter resposta
-                response = await _client.SendAsync(request);
-            }
-            catch (Exception e)
-            {
-                await _logger.LogError(
-                    descricao: "Erro ao enviar pedido HTTP.",
-                    classe: "OneDriveAPI",
-                    metodo: "GetUploadSessionAsync",
-                    erro: e.Message
-                );
-            }
-            #endregion
+                #region Preparar pedido HTTP
+                string url = "https://graph.microsoft.com/v1.0/me/drives/" + conta.DriveId + "/root:/" + fileName + ":/createUploadSession";
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
+                request.Headers.Add("Authorization", "Bearer " + conta.AccessToken);
+                // Especificar que em caso de nomes iguais, a onedrive altera o nome e carrega a imagem na mesma
+                request.Content = new StringContent("{\"item\":{\"@microsoft.graph.conflictBehavior\": \"rename\"}}", Encoding.UTF8, "application/json");
+                #endregion
 
-            #region Tratar resposta ao pedido
-            // Caso retorne OK 2xx
-            if (response != null)
-            {
-                if (response.IsSuccessStatusCode)
+                #region Fazer pedido HTTP
+                HttpResponseMessage response = null;
+                try
                 {
-                    try
-                    {
-                        // Converter a resposta para um objeto json
-                        JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
+                    // Fazer o pedido e obter resposta
+                    response = await _client.SendAsync(request);
+                }
+                catch (Exception e)
+                {
+                    await _logger.LogError(
+                        descricao: "Erro ao enviar pedido HTTP.",
+                        classe: "OneDriveAPI",
+                        metodo: "GetUploadSessionAsync",
+                        erro: e.Message
+                    );
+                }
+                #endregion
 
-                        return (string)content["uploadUrl"];
-                    }
-                    catch (Exception e)
+                #region Tratar resposta ao pedido
+                // Caso retorne OK 2xx
+                if (response != null)
+                {
+                    if (response.IsSuccessStatusCode)
                     {
-                        await _logger.LogError(
-                            descricao: "Erro ao tratar o JSON da resposta.",
-                            classe: "OneDriveAPI",
-                            metodo: "GetUploadSessionAsync",
-                            erro: e.Message
-                        );
+                        try
+                        {
+                            // Converter a resposta para um objeto json
+                            JObject content = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                            return (string)content["uploadUrl"];
+                        }
+                        catch (Exception e)
+                        {
+                            await _logger.LogError(
+                                descricao: "Erro ao tratar o JSON da resposta.",
+                                classe: "OneDriveAPI",
+                                metodo: "GetUploadSessionAsync",
+                                erro: e.Message
+                            );
+                        }
                     }
                 }
             }
@@ -623,36 +622,34 @@ namespace LabFoto.APIs
             {
                 foreach (Fotografia photo in photos)
                 {
-                    #region Refrescar token
-                    // Verificar se o token está válido
-                    await RefreshTokenAsync(photo.ContaOnedrive, 3400);
-                    #endregion
-                    
-                    #region Preparar pedido HTTP
-                    string driveId = photo.ContaOnedrive.DriveId;
-                    string url = "https://graph.microsoft.com/v1.0/me/" +
-                    "drives/" + driveId +
-                    "/items/" + photo.ItemId;
+                    if (await RefreshTokenAsync(photo.ContaOnedrive, 3400)) // Refrescar token
+                    { 
+                        #region Preparar pedido HTTP
+                        string driveId = photo.ContaOnedrive.DriveId;
+                        string url = "https://graph.microsoft.com/v1.0/me/" +
+                        "drives/" + driveId +
+                        "/items/" + photo.ItemId;
 
-                    var request = new HttpRequestMessage(HttpMethod.Delete, url);
-                    request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
-                    #endregion
+                        var request = new HttpRequestMessage(HttpMethod.Delete, url);
+                        request.Headers.Add("Authorization", "Bearer " + photo.ContaOnedrive.AccessToken);
+                        #endregion
 
-                    // Fazer o pedido e obter resposta
-                    var response = await _client.SendAsync(request);
+                        // Fazer o pedido e obter resposta
+                        var response = await _client.SendAsync(request);
 
-                    #region Tratar resposta
-                    // Caso retorne OK 2xx
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Este pedido nunca retorna json de resposta
-                        // Remove ficheiro da base de dados
-                        _context.Remove(photo);
+                        #region Tratar resposta
+                        // Caso retorne OK 2xx
+                        if (response.IsSuccessStatusCode)
+                        {
+                            // Este pedido nunca retorna json de resposta
+                            // Remove ficheiro da base de dados
+                            _context.Remove(photo);
+                        }
+                        #endregion
+
+                        await _context.SaveChangesAsync();
                     }
-                    #endregion
                 }
-
-                await _context.SaveChangesAsync();
             }
             catch (Exception e)
             {
