@@ -32,12 +32,13 @@ namespace LabFoto.APIs
     {
         #region Construtor
         private readonly ApplicationDbContext _context;
-        private readonly IHttpClientFactory _clientFactory;
         private readonly HttpClient _client;
         private readonly string _redirectUrl;
         private readonly AppSettings _appSettings;
         private readonly ILoggerAPI _logger;
         private readonly IEmailAPI _emailAPI;
+        private readonly string _applicationClientId;
+        private readonly string _applicationClientSecret;
 
         public OnedriveAPI(ApplicationDbContext context,
             IHttpClientFactory clientFactory,
@@ -46,16 +47,16 @@ namespace LabFoto.APIs
             IEmailAPI emailAPI)
         {
             _context = context;
-            _clientFactory = clientFactory;
             _appSettings = settings.Value;
             _emailAPI = emailAPI;
             _logger = logger;
+            _applicationClientId = _appSettings.ApplicationClientId;
+            _applicationClientSecret = _appSettings.ApplicationClientSecret;
 
-            // Este cliente vai ser utilizado para envio e recepção pedidos Http
-            _client = _clientFactory.CreateClient();
+            // Utilizado para fazer pedidos Http
+            _client = clientFactory.CreateClient();
 
-            //Após voltar da página de permissões vai redirecionar o utilizador para a página de criação de contas
-            //Onedrive onde terá apenas de colocar o Username e Password
+            // Url registado no portal da Azure
             _redirectUrl = _appSettings.SiteUrl + "/ContasOnedrive/Create";
         } 
         #endregion
@@ -108,19 +109,19 @@ namespace LabFoto.APIs
                             }
                             else
                             {
-                                // Caso não encontre a fotografia, é porque esta não existe na onedrive. Apaga a mesma da BD
+                                // Caso não encontre a fotografia na onedrive, é porque esta não existe. Apaga o seu registo da BD
                                 if ((int)response.StatusCode == 404)
                                 {
                                     _context.Remove(photo);
                                 }
-                                else // Noutra situação, apenas apagar as thumbnails antigas para ser mostrado um thumbnails default
+                                else // Noutra situação, apenas apagar as thumbnails antigas para ser mostrado um thumbnail default
                                 {
                                     await DeleteOldThumbnails(photo);
                                 }
                             }
                             #endregion
                         }
-                        else // Caso não consiga renovar o token, apaga as thumbnails antigas pois estas já 
+                        else // Caso não consiga renovar o token, apaga as thumbnails antigas pois estas já não se encontram válidas
                         {
                             await DeleteOldThumbnails(photo);
                         }
@@ -182,12 +183,12 @@ namespace LabFoto.APIs
                 string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Content = new StringContent(
-                    "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
+                    "client_id=" + _applicationClientId +
                     "&scope=offline_access+files.read+files.read.all" +
                     "&refresh_token=" + conta.RefreshToken +
                     "&redirect_uri=" + _redirectUrl +
                     "&grant_type=refresh_token" +
-                    "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
+                    "&client_secret=" + _applicationClientSecret,
                     Encoding.UTF8, "application/x-www-form-urlencoded"
                 );
                 #endregion
@@ -201,7 +202,12 @@ namespace LabFoto.APIs
                 }
                 catch (Exception e)
                 {
-                    _emailAPI.NotifyError("Erro no pedido HTTP de um token.", "OnedriveAPI", "RefreshTokenAsync", e.Message);
+                    await _logger.LogError(
+                        descricao: "Erro no pedido HTTP de um token.",
+                        classe: "OneDriveAPI",
+                        metodo: "RefreshTokenAsync",
+                        erro: e.Message
+                    );
                     return false;
                 }
                 #endregion
@@ -277,12 +283,12 @@ namespace LabFoto.APIs
             string url = "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/token";
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Content = new StringContent(
-                "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
+                "client_id=" + _applicationClientId +
                 "&scope=offline_access+files.read+files.read.all" +
                 "&code=" + code +
                 "&redirect_uri=" + _redirectUrl +
                 "&grant_type=authorization_code" +
-                "&client_secret=3*4Mm%3DHY8M4%40%2FgcZ3GdV*BO7l0%5DvKeu0",
+                "&client_secret=" + _applicationClientSecret,
                 Encoding.UTF8, "application/x-www-form-urlencoded"
             );
             #endregion
@@ -473,7 +479,7 @@ namespace LabFoto.APIs
         {
             string permissionsUrl =
                 "https://login.microsoftonline.com/21e90dfc-54f1-4b21-8f3b-7fb9798ed2e0/oauth2/v2.0/authorize?" +
-                "client_id=2da7484c-9eea-49a3-b337-f59a97f79e47" +
+                "client_id=" + _applicationClientId +
                 "&response_type=code" +
                 "&redirect_uri=" + _redirectUrl + "&response_mode=query" +
                 "&scope=offline_access%20files.read%20files.read.all%20files.readwrite%20files.readwrite.all" +

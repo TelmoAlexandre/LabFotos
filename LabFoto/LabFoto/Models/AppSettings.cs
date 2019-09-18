@@ -8,6 +8,8 @@ namespace LabFoto.Models
     public class AppSettings
     {
         public string SiteUrl { get; set; }
+        public string ApplicationClientId { get; set; }
+        public string ApplicationClientSecret { get; set; }
         public string Email { get; set; }
         public string EmailPassword { get; set; }
         public string EmailNomeApresentado { get; set; }

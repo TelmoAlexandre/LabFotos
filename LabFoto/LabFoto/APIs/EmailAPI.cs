@@ -17,9 +17,9 @@ namespace LabFoto.APIs
         private readonly string _emailPassword;
         private readonly string _emailNome;
         private readonly string _emailSmtp;
-        private readonly ILogger<EmailAPI> _logger;
+        private readonly ILoggerAPI _logger;
 
-        public EmailAPI(IOptions<AppSettings> settings, ILogger<EmailAPI> logger)
+        public EmailAPI(IOptions<AppSettings> settings, ILoggerAPI logger)
         {
             _appSettings = settings.Value;
             _email = _appSettings.Email;
@@ -66,7 +66,12 @@ namespace LabFoto.APIs
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao enivar e-mail. Erro: {e.Message}");
+                _logger.LogError(
+                    descricao: "Erro ao enivar e-mail.",
+                    classe: "EmailAPI",
+                    metodo: "Send - Vários destinatários",
+                    erro: e.Message
+                );
             }
 
             return false;
@@ -106,7 +111,12 @@ namespace LabFoto.APIs
             }
             catch (Exception e)
             {
-                _logger.LogError($"Erro ao enivar e-mail. Erro: {e.Message}");
+                _logger.LogError(
+                    descricao: "Erro ao enivar e-mail.",
+                    classe: "EmailAPI",
+                    metodo: "Send - Apenas 1 destinatário",
+                    erro: e.Message
+                );
             }
 
             return false;
