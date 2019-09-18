@@ -30,6 +30,14 @@ namespace LabFoto.Controllers
         // GET: Requerentes
         public async Task<IActionResult> Index(int? page = 1)
         {
+            // Fornecer feedback ao cliente caso este exista.
+            // Este feedback é fornecido na view a partir de uma notificação 'Noty'
+            if (TempData["Feedback"] != null)
+            {
+                ViewData["Feedback"] = TempData["Feedback"];
+                ViewData["Type"] = TempData["Type"] ?? "success";
+            }
+
             var requerentes = _context.Requerentes.Include(r => r.Servicos)
                 .OrderBy(r => r.Nome);
 
@@ -243,6 +251,64 @@ namespace LabFoto.Controllers
         }
 
         #endregion Edit
+
+        #region Delete
+
+        /// <summary>
+        /// Método que tenta encontrar o serviço e elimina-o da base de dados caso não tenha galerias associadas.
+        /// </summary>
+        /// <param name="id">Id do serviço</param>
+        /// <returns>Retorna ao index dos Serviços com a mensagem Serviço eliminado com sucesso.</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            Requerente requerente = null;
+            try
+            {
+                requerente = await _context.Requerentes.Include(s => s.Servicos).Where(s => s.ID.Equals(id)).FirstOrDefaultAsync();
+            }
+            catch (Exception e)
+            {
+                await _logger.LogError(
+                    descricao: "Erro ao encontrar Requerente.",
+                    classe: "RequerentesController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
+                return Json(new { success = false });
+            }
+
+            try
+            {
+                // Apenas deixa apagar o serviço caso este não tenha galerias associadas
+                if (requerente != null && requerente.Servicos.Count() == 0)
+                {
+                    _context.Remove(requerente);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return Json(new { success = false, hasServicos = true });
+                }
+            }
+            catch (Exception e)
+            {
+                await _logger.LogError(
+                    descricao: "Erro ao eliminar o Requerente.",
+                    classe: "RequerentesController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
+                return Json(new { success = false });
+            }
+            
+            // Feeback ao utilizador - Vai ser redirecionado para o Index
+            TempData["Feedback"] = "Requerente removido com sucesso.";
+            return Json(new { success = true });
+        }
+
+        #endregion Delete
 
         #region AuxMethods
         private bool RequerentesExists(string id)

@@ -56,6 +56,23 @@ else
     <div class="content" id="sendEmailForm"></div>
 </div>
 
+<div class="ui basic mini modal" id="confirmationDeleteModal">
+    @Html.AntiForgeryToken()
+    <div class="content">
+        <p>Tem a certeza que pretende eliminar o Requerente?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
 <!-- #region Placeholder -->
 
 <div class="ui card" id="loadingServico" hidden>
@@ -111,7 +128,6 @@ else
     </div>
 </div>
 
-
 <!-- #endregion -->
 
 @section scripts
@@ -145,10 +161,24 @@ else
 
         };
 
-        function enviarEmail(id)
+        function confirmDeleteRequerente(id){
+            $("#confirmationDeleteModal").modal({
+                closable: false,
+                onDeny: function () {
+                    $("#confirmationDeleteModal").modal('hide');
+                },
+                onApprove: function ()
+                {
+                    deleteRequerente(id);
+                },
+                transition: 'scale'
+            }).modal('show');
+        }
+
+        function deleteRequerente(id)
         {
             $.ajax({
-                url: "@Url.Action("SendMail","Partilhaveis")",
+                url: "@Url.Action("Delete","Requerentes")",
                 type: "POST",
                 data: {
                     "id": id,
@@ -159,19 +189,25 @@ else
                 {
                     if (resp.success)
                     {
-                        notifyUser("success", "Email enviado com sucesso.");
+                        window.location.href = "@Url.Action("Index", "Requerentes")";
                     }
                     else
                     {
-                         notifyUser("error", "Erro ao enviar email.");
+                        if (resp.hasServicos)
+                        {
+                            notifyUser("error", "O Requerente não pode ser eliminado porque tem Serviços associados.");
+                        }
+                        else
+                        {
+                            notifyUser("error", "Erro ao eliminar o Requerente.");
+                        }
                     }
                 },
                 error: function ()
                 {
-                    notifyUser("error", "Erro ao enviar email.");
+                    notifyUser("error", "Erro ao eliminar o Requerente.");
                 }
             });
-        };
-
+        }
     </script>
 }
