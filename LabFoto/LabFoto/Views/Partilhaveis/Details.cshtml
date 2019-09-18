@@ -1,6 +1,6 @@
 ﻿@model LabFoto.Models.Tables.Partilhavel
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = $"Partilhável - {Model.Nome}";
     bool isAuthenticated = User.Identity.IsAuthenticated;
     string sendClass = "";
     if (Model.Enviado) { sendClass = "green"; }

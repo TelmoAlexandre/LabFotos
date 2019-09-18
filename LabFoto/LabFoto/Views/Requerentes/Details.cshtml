@@ -1,7 +1,7 @@
 ﻿@model LabFoto.Models.Tables.Requerente
 
 @{
-    ViewData["Title"] = "Detalhes";
+    ViewData["Title"] = $"Requerente - {Model.Nome}";
     bool hasServicos = Model.Servicos.Count() != 0;
 }
 
