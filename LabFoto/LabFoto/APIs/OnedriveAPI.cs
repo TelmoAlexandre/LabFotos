@@ -408,7 +408,7 @@ namespace LabFoto.APIs
         /// <returns></returns>
         public async Task<bool> UpdateDriveQuotaAsync(ContaOnedrive conta)
         {
-            if (IsTokenValid(conta, 3400)) // Refrescar token
+            if (await RefreshTokenAsync(conta, 3400)) // Refrescar token
             {
                 try
                 {
@@ -499,46 +499,47 @@ namespace LabFoto.APIs
         {
             ContaOnedrive conta = null;
 
-            while (true)
+            // Tenta encontrar conta com espaço
+            try
             {
-                // Tenta encontrar conta com espaço
-                try
+                while (true)
                 {
-                    while (true)
+                    conta = _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).FirstOrDefault();
+
+                    // Caso não encontre conta, é porque já não existem contas com espaço
+                    if (conta == null)
                     {
-                        conta = _context.ContasOnedrive.Where(c => Int64.Parse(c.Quota_Remaining) * 3 > fileSize).FirstOrDefault();
+                        _emailAPI.Send(_appSettings.AdminEmails, "Já não existem contas Onedrive com espaço", $"Todas as contas Onedrive estão cheias.");
+                        return null;
+                    }
 
-                        // Caso não encontre conta, é porque já não existem contas com espaço
-                        if (conta == null)
+                    // Confirmar que a conta tem mesmo o espaço suficiente
+                    if (await UpdateDriveQuotaAsync(conta))
+                    {
+                        if (conta.Quota_Remaining != null && Int64.Parse(conta.Quota_Remaining) > fileSize)
                         {
-                            _emailAPI.Send(_appSettings.AdminEmails, "Já não existem contas Onedrive com espaço", $"Todas as contas Onedrive estão cheias.");
-                            return null;
+                            return conta;
                         }
-
-                        // Confirmar que a conta tem mesmo o espaço suficiente
-                        if (await UpdateDriveQuotaAsync(conta))
+                        else
                         {
-                            if (conta.Quota_Remaining != null && Int64.Parse(conta.Quota_Remaining) > fileSize)
-                            {
-                                return conta;
-                            }
-                            else
-                            {
-                                _emailAPI.Send(_appSettings.AdminEmails, "Conta Onedrive com pouco espaço", $"A conta onedrive {conta.Username} já só tem menos de 50 Gb.");
-                            }
+                            _emailAPI.Send(_appSettings.AdminEmails, "Conta Onedrive com pouco espaço", $"A conta onedrive {conta.Username} já só tem menos de 50 Gb.");
                         }
                     }
+                    else
+                    {
+                        return null;
+                    }
                 }
-                catch (Exception e)
-                {
-                    await _logger.LogError(
-                        descricao: "Erro ao encontrar conta com espaço para upload.",
-                        classe: "OneDriveAPI",
-                        metodo: "GetAccountToUploadAsync",
-                        erro: e.Message
-                    );
-                    return null;
-                }
+            }
+            catch (Exception e)
+            {
+                await _logger.LogError(
+                    descricao: "Erro ao encontrar conta com espaço para upload.",
+                    classe: "OneDriveAPI",
+                    metodo: "GetAccountToUploadAsync",
+                    erro: e.Message
+                );
+                return null;
             }
         }
 
