@@ -65,7 +65,7 @@ else
                 </div>
                 <div class="extra content">
                     <span class="right floated">
-                        <a asp-action="Edit" asp-route-id="@galeria.ID">
+                        <a asp-action="Edit" asp-route-id="@galeria.ID" asp-route-returnUrl="@Url.Action("Index", "Galerias")">
                             <i class="edit icon"></i>
                         </a>
                         <a asp-action="Details" asp-route-id="@galeria.ID">

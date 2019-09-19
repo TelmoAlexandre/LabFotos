@@ -313,12 +313,22 @@ namespace LabFoto.Controllers
                 
             if (partilhavel.Validade != null)
                 if (DateTime.Compare((DateTime)partilhavel.Validade, DateTime.Now) < 0)
-                    return NotFound();
+                    return View("Expired");
 
-            return View("PasswordForm", new PartilhavelDetailsViewModel()
+            // Caso o utilizador já tenha acedido ao partilhavel, é guardada a password em cookie.
+            // Caso utilizador já tenha a cookie da password, permitir que este tenha acesso ao partilhavel
+            // Caso não tenha a pass no cookie, mostra o formulario de password
+            if(CookieAPI.Get(Request, key: "PartilhavelPass")?.Equals(partilhavel.Password) ?? false)
             {
-                Partilhavel = partilhavel
-            });
+                return View("Details", partilhavel);
+            }
+            else
+            {
+                return View("PasswordForm", new PartilhavelDetailsViewModel()
+                {
+                    Partilhavel = partilhavel
+                });
+            }
         }
         /// <summary>
         /// Método que verifica se o id do partilhável e a password estão corretos, vai à base de dados 
@@ -357,6 +367,10 @@ namespace LabFoto.Controllers
                     Partilhavel = partilhavel
                 });
             }
+
+            // Guardar a password no cookie do cliente para que este não necessita de a introduzir novamente
+            // quando aceder ao partilhavel.
+            CookieAPI.Set(Response, key: "PartilhavelPass", value: Password);
 
             return View("Details", partilhavel);
         }
