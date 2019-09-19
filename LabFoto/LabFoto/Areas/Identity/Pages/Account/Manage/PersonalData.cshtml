@@ -10,15 +10,12 @@
 <div class="row">
     <div class="col-md-6">
         <p>
-        A sua conta contém os dados pessoais que nos forneceu. Esta página permite extrair ou eliminar os dados.</p>
+        A sua conta contém os dados pessoais que nos forneceu. Esta página permite eliminar os dados.</p>
         <p>
             <strong>Ao eliminar os dados irá remover de forma permanente a sua conta, não podendo ser recuperada.</strong>
         </p>
         <div class="row">
-            <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group ml-3 mr-2">
-                <button class="btn btn-primary" type="submit">Extrair</button>
-            </form>
-            <p>
+            <p class="ml-3" >
                 <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger">Eliminar</a>
             </p>
         </div>
