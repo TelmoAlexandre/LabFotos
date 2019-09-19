@@ -11,14 +11,17 @@ namespace LabFoto.Models.Tables
         [Key]
         public string ID { get; set; }
 
+        [Display(Prompt = "Descrição")]
         public string Descricao { get; set; }
 
         public string Classe { get; set; }
 
+        [Display(Prompt = "Método")]
         public string Metodo { get; set; }
 
         public string Erro { get; set; }
 
+        [Display(Prompt = "Data do Erro")]
         public DateTime Timestamp { get; set; }
     }
 }
