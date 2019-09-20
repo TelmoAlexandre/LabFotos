@@ -11,7 +11,7 @@
             <div class="four wide column right floated">
                 <div class="ui icon buttons right floated">
                     <a class="ui button basic" asp-controller="Galerias" asp-action="Index" asp-route-serv="@Model.ID" data-toggle="tooltip" title="Ver Galerias (@Model.Galerias.Count())"><i class="far fa-images"></i></a>
-                    <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="Details/@Model.ID" class="ui button basic" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                    <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="@Url.Action("Details", "Servicos", new { id = Model.ID})" class="ui button basic" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
                     @if (ViewData["details"] != null)
                     {
                         if (ViewData["details"].Equals(true))

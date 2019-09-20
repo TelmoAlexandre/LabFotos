@@ -62,34 +62,52 @@
 
 @section scripts
 {
-<script>
+    <script>
 
-    $(document).ready(function () {
-        $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-        refreshTooltips();
-    });
+        $(document).ready(function ()
+        {
+            $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            refreshTooltips();
+        });
 
-    function refreshTooltips()
-    {
-         $('[data-toggle="tooltip"]').tooltip();
-    }
+        function refreshTooltips()
+        {
+            $('[data-toggle="tooltip"]').tooltip();
+        }
 
-    // Submit do form das pesquisas dos requerentes
-    requerentesSubmitSearchForm = (pageReq) => {
-        $("#pageReqNum").val(pageReq);
-        $("#requerentesIndexSearchForm").submit();
-    };
+        // Submit do form das pesquisas dos requerentes
+        requerentesSubmitSearchForm = (pageReq) =>
+        {
+            $("#pageReqNum").val(pageReq);
+            $("#requerentesIndexSearchForm").submit();
+        };
 
-    clearSearch = () => {
-        $(`#searchParams input[type="search"]`).val("");
-        requerentesSubmitSearchForm();
-    };
-
-    //pesquisar quando o utilizador pressionar a tecla 'ENTER'
-    $(".input").on('keyup', function (e) {
-        if (e.keyCode == 13) {
+        clearSearch = () =>
+        {
+            $(`#searchParams input[type="search"]`).val("");
             requerentesSubmitSearchForm();
         };
-    });
-</script>
+
+        //pesquisar quando o utilizador pressionar a tecla 'ENTER'
+        $(".input").on('keyup', function (e)
+        {
+            if (e.keyCode == 13)
+            {
+                requerentesSubmitSearchForm();
+            };
+        });
+    </script>
+
+    @{/* Caso exista Feedback a ser fornecido, apresenta uma notficação Noty */}
+    @if (ViewData["Feedback"] != null)
+    {
+        string type = "success";
+        if (ViewData["Type"] != null) { type = (string)ViewData["Type"]; }
+        <script>
+            document.addEventListener('DOMContentLoaded', function ()
+            {
+                notifyUser('@type', '@ViewData["Feedback"]');
+            }, false);
+        </script>
+    }
 }

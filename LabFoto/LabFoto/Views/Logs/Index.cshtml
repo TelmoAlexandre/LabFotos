@@ -4,7 +4,7 @@
     ViewData["Title"] = "Erros da Aplicação";
 }
 
-<h1>Logs</h1>
+<h1>Erros</h1>
 
 <table class="table">
     <thead>
@@ -18,25 +18,24 @@
             <th>
                 @Html.DisplayNameFor(model => model.Timestamp)
             </th>
-            <th>
-
-            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var log in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
+                @Html.DisplayFor(modelItem => log.Descricao)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Classe)
+                @Html.DisplayFor(modelItem => log.Classe)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Timestamp)
+                @Html.DisplayFor(modelItem => log.Timestamp)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                <a asp-action="Details" asp-route-id="@log.ID">Detalhes</a> |
+                <a asp-action="Delete" asp-route-id="@log.ID">Eliminar</a>
             </td>
         </tr>
 }

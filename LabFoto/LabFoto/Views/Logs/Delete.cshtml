@@ -1,13 +1,14 @@
 ﻿@model LabFoto.Models.Tables.Log
 
 @{
-    ViewData["Title"] = $"Erro - {Model.Descricao}";
+    ViewData["Title"] = $"Apagar - {Model.Descricao}";
 }
 
-<h1>Detalhes</h1>
+<h1>Apagar</h1>
 
+<h3>Tem a certeza que pretende apagar o Erro?</h3>
 <div>
-    <h4>Log</h4>
+    <h4>Erro</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -41,8 +42,10 @@
             @Html.DisplayFor(model => model.Timestamp)
         </dd>
     </dl>
-</div>
-<div>
-    <a class="mr-3" asp-action="Index">Voltar</a> | 
-    <a class="ml-3" asp-action="Delete" asp-route-id="@Model.ID">Eliminar</a>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Voltar</a>
+    </form>
 </div>

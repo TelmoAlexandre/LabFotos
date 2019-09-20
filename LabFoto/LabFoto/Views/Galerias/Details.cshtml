@@ -18,7 +18,7 @@
                        class="ui button pl-3" data-toggle="tooltip" title="Novo Partilhável">
                         <i class="share alternate icon"></i>
                     </a>
-                    <a asp-action="Edit" asp-route-id="@Model.ID" class="ml-2 ui button pl-3 pr-2" data-toggle="tooltip" title="Editar Galeria">
+                    <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="@Url.Action("Details","Galerias", new { id = Model.ID })" class="ml-2 ui button pl-3 pr-2" data-toggle="tooltip" title="Editar Galeria">
                         <i class="edit icon"></i>
                     </a>
                     <span class="ml-2 ui button pl-3 pr-3" onclick="confirmationModal('deleteGaleria', deleteGaleria, '@Model.ID')"
@@ -379,6 +379,7 @@
             }
         }
 
+        // Carregar as fotografias da galeria assincronamente
         function getPhotos(page)
         {
             $("#thumbnails").append(loader);
@@ -423,6 +424,7 @@
             });
         }
 
+        // Iniciar o processo de upload quando o formulario for submetido
         document.getElementById('uploader').onsubmit = function (e)
         {
             e.preventDefault();
@@ -445,6 +447,7 @@
             }
         }
 
+        // Esconder as barras de upload quando o utilizador carregar no botão "Finalizar"
         document.getElementById('btnFinishUpload').onclick = function (e)
         {
             e.preventDefault();
@@ -459,6 +462,7 @@
                 .removeClass("disabled");
         }
 
+        // Ativar o popup das opções de cada fotografia (para eliminar ou definir como capa)
         function activatePopups()
         {
             $('.btnOptions')
@@ -475,6 +479,7 @@
             ;
         }
 
+        // Pede uma sessão de upload da OneDrive ao servidor e em seguida inicia o upload de um ficheiro.
         function upload(files, i)
         {
             $.ajax({
@@ -510,40 +515,44 @@
             // Recolher o tamanho de cada fragmento do appsettings.json
             var fragmentSize = @AppSettings.Value.UploadFragmentSizeInMB;
 
-            var file = files[i];
+            var file = files[i]; // Escolher o ficheiro para enviar do array de ficheiros
             var loaded = 0;
-            var step = fragmentSize * 1024 * 1024;
+            var step = fragmentSize * 1024 * 1024; // Definir o tamanha de cada partição que será enviada
             var total = file.size;
             var reader = new FileReader();
-            var blob = file.slice(loaded, step); //a single chunk in starting of step size
+            var blob = file.slice(loaded, step); // Criar a primeira partição do ficheiro
             var chunksize = blob.size;
-            reader.readAsBinaryString(blob);   // reading that chunk. when it read it, onload will be invoked
+            reader.readAsBinaryString(blob);   // Ler a primeira partição como binário
 
+            // reader.onload define o comportamento a ser executado cada vez que o reader.readAsBinaryString() é chamado
             reader.onload = function (e) {
 
                 $.ajax({
                     url: json.url,
                     type: "PUT",
-                    beforeSend: function (request) {
+                    beforeSend: function (request)
+                    {
+                         // A documentação especifica que é necessário definir qual a partição a ser enviada a cada momento e o tamanho total do ficheiro
                         request.setRequestHeader("Content-Range", `bytes ${loaded}-${loaded + chunksize - 1}/${total}`);
                     },
                     contentType: false,
                     processData: false,
-                    data: blob                    // d is the chunk got by readAsBinaryString(...)
-                }).done(function (resp) {           // if 'd' is uploaded successfully then ->
+                    data: blob                    // Colocar a partição do ficheiro como 'data' a ser enviada em cada pedido (1 pedido para cada partição)
+                }).done(function (resp) {           // Caso a partição tenha sido enviada com sucesso
 
                     loaded += step;
 
-                    if (loaded <= total) {            // if file is not completely uploaded
+                    if (loaded <= total) {            // Caso o ficheiro não tenha sido enviado na sua totatlidade
 
-                        blob = file.slice(loaded, loaded + step);  // getting next chunk
+                        blob = file.slice(loaded, loaded + step);  // Pega a proxima partição a ser enviada
                         chunksize = blob.size;
-                        reader.readAsBinaryString(blob);        //reading it through file reader which will call onload again. So it will happen recursively until file is completely uploaded.
+                        // Ao ler o binário da proxima partição, o reader.onload será corrido novamente (recursividade), até o ficheiro ser enviado na totalidade
+                        reader.readAsBinaryString(blob);        
                         updateFileBar((loaded * 100) / total);
 
-                    } else {                // if file is uploaded completely
+                    } else {                //  Caso o ficheiro tenha sido carregado na sua totalidade
 
-                        loaded = total;            // just changed loaded which could be used to show status.
+                        loaded = total;
                         informServerOfImage(resp, json.contaId); // Enviar resposta da onedrive para o servidor para que este crie o ficheiro na BD
                         updateFileBar(100);
                         updateTotalBar();
@@ -561,12 +570,14 @@
             };
         }
 
+        // Pedir ao servidor para criar uma entrada na BD da fotografia que acabou de ser carregada para a OneDrive
         function informServerOfImage(resp, contaId)
         {
             $.ajax({
                 url: siteUrl + "/Galerias/RegisterFile",
                 type: "POST",
-                data: {
+                data:
+                {
                     "galeriaId": "@Model.ID",
                     "contaId": contaId,
                     "fileOnedriveId": resp.id,
@@ -574,8 +585,8 @@
                     "__RequestVerificationToken": $(`#confirmationModal input[name='__RequestVerificationToken']`).val(),
                     "X-Requested-With": "XMLHttpRequest"
                 },
-                success: function (resp) {
-
+                success: function (resp) 
+                {
                     // Quando não existem fotografias, mostra-se um placeholder, quando forem adicionadas as primeiras fotografias,
                     // adicionar a classe card para as mostrar em pequenos cartões
                     if ($("#photosContainer").hasClass("cards"))
@@ -596,6 +607,7 @@
             });
         }
 
+        // Mostra feedback para quando o upload é concretizado com sucesso
         function uploadCompleted()
         {
             notifyUser('success', 'Fotografia(s) adicionada(s) com sucesso!.');
@@ -613,12 +625,14 @@
                 .removeClass("disabled loading");
         }
 
+        // Atualiza o valor de ficheiros selecionados pelo utilizador
         function updateSelectedFiles()
         {
             var count = document.getElementById('fileInput').files.length;
             $("#fileCount").html((count!=0)? ` - ${count} Selecionada(s)` : "");
         }
 
+        // Inicializa as progress bars do upload
         function initProgressBars(total)
         {
             // Dar reset às progress bars
@@ -673,6 +687,7 @@
 
         function download(url)
         {
+            // Cria um <a>, coloca-o no documento HTML, carrega nele para iniciar o download e em seguida apaga-o
             var link = document.createElement("a");
             link.download = name;
             link.href = url;
@@ -681,30 +696,6 @@
             link.click();
             document.body.removeChild(link);
             delete link;
-        }
-
-        function downloadSelected()
-        {
-            let links = urls;
-            clearCB();
-            if (links.length != 0) {
-                let delay = 0;
-                links.forEach(url => {
-                    if (url !== '') {
-                        setTimeout(() => {
-                            var link = document.createElement("a");
-                            link.download = name;
-                            link.href = url;
-                            link.style.display = "none";
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            delete link;
-                        }, delay);
-                        delay += 8000;
-                    }
-                });
-            }
         }
     </script>
 

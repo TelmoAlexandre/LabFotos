@@ -532,22 +532,16 @@ namespace LabFoto.Controllers
             {
                 return NotFound();
             }
-            servico.Observacoes = servico.Observacoes.Replace("<br/>", "\r\n");
 
-            // Lista da tabela intermediaria dos servico com os seus tipos
-            var sevicos_tipos = await _context.Servicos_Tipos.Where(st => st.ServicoFK.Equals(id)).ToListAsync();
-
-            // Lista da tabela intermediaria dos servico com os seus serviços solicitados
-            var sevicosSolicitados = await _context.Servicos_ServicosSolicitados.Where(st => st.ServicoFK.Equals(id)).ToListAsync();
+            servico.Observacoes = servico.Observacoes?.Replace("<br/>", "\r\n");
 
             ServicosCreateViewModel response = new ServicosCreateViewModel
             {
                 Servico = servico,
-                RequerentesList = new SelectList(_context.Requerentes.OrderBy(r => r.Nome), "ID", "Nome", servico.RequerenteFK)
+                RequerentesList = new SelectList(_context.Requerentes.OrderBy(r => r.Nome).ToList(), "ID", "Nome", servico.RequerenteFK)
             };
 
             ViewData["ReturnUrl"] = returnUrl;
-
 
             return View(response);
         }

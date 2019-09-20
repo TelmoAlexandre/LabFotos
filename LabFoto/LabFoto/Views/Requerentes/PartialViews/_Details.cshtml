@@ -39,6 +39,10 @@
         {
             <span class="ui button basic" id="btnEmail_@Model.ID" onclick="showEmailForm('@Model.Email', 'btnEmail_@Model.ID')" data-toggle="tooltip" title="Enviar E-mail"><i class="envelope outline icon"></i></span>
             <a class="ui button basic" id="btnEdit_@Model.ID" onclick="loadRequerenteEditForm(`divEdit_@Model.ID`, '@Model.ID', '@detailsLink')" data-toggle="tooltip" title="Editar"><i class="edit outline icon"></i></a>
+            @if (!detailsLink)
+            {
+                <span class="ui button basic" id="btnDelete_@Model.ID" onclick="confirmDeleteRequerente('@Model.ID')" data-toggle="tooltip" title="Eliminar Requerente"><i class="far fa-trash-alt"></i></span>
+            }
         }
         @if (detailsLink)
         {
