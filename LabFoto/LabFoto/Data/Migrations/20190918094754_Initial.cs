@@ -86,6 +86,7 @@ namespace LabFoto.Migrations
                 columns: table => new
                 {
                     ID = table.Column<string>(nullable: false),
+                    Utilizador = table.Column<string>(nullable: true),
                     Descricao = table.Column<string>(nullable: true),
                     Classe = table.Column<string>(nullable: true),
                     Metodo = table.Column<string>(nullable: true),
@@ -487,14 +488,14 @@ namespace LabFoto.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "d180c20c-1257-4367-a73c-c14baa7aefe8", "Admin", "ADMIN" },
-                    { "7fd90eb1-68d2-48e1-bb7e-b6f17b9be7d2", "91c1cfc6-f28d-4903-8d14-56cc36ef43ff", "Lab", "LAB" }
+                    { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "8fee4810-0898-4e3c-b14f-98b6e53fb6d5", "Admin", "ADMIN" },
+                    { "8450ac53-a71c-4996-8a97-1ac2e4612a79", "2e2c4753-8e7b-461f-8803-538bac153743", "Lab", "LAB" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", 0, "0c9bc28b-cbe8-45b5-8eaa-46e008d26b1b", "labfotoipt@gmail.com", true, false, null, "LABFOTOIPT@GMAIL.COM", "LABFOTOIPT@GMAIL.COM", "AQAAAAEAACcQAAAAEIsY+1fcJs2XUP/YWSlToO2QQTpgqgha9SP2SWqH8gIgsMw6upRAm+Rh6gr4uGgffQ==", null, false, "", false, "labfotoipt@gmail.com" });
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", 0, "6ae6714a-61e6-4c91-be04-05550d9de4dd", "labfotoipt@gmail.com", true, false, null, "LABFOTOIPT@GMAIL.COM", "LABFOTOIPT@GMAIL.COM", "AQAAAAEAACcQAAAAEI1VP5z2M0z+1+jku0lCBKwHAtC5WS9og9AvyBubkFHs+2+HOyDoRbaYnpY9WoBKvA==", null, false, "", false, "labfotoipt@gmail.com" });
 
             migrationBuilder.InsertData(
                 table: "ContasOnedrive",
@@ -599,7 +600,7 @@ namespace LabFoto.Migrations
             migrationBuilder.InsertData(
                 table: "Partilhaveis",
                 columns: new[] { "ID", "DataDeCriacao", "Enviado", "Nome", "Password", "ServicoFK", "Validade" },
-                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 9, 17, 15, 24, 2, 321, DateTimeKind.Local).AddTicks(9337), false, "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
+                values: new object[] { "a0f118c8-8e40-4433-a695-e5ca01788331", new DateTime(2019, 9, 18, 10, 47, 54, 508, DateTimeKind.Local).AddTicks(3167), false, "Teste", "123Qwe!", "aca4875a-721e-4cfc-827d-d48c7050b543", null });
 
             migrationBuilder.InsertData(
                 table: "Servicos_DatasExecucao",

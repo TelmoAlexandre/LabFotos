@@ -11,6 +11,8 @@ namespace LabFoto.Models.Tables
         [Key]
         public string ID { get; set; }
 
+        public string Utilizador { get; set; }
+
         public string Descricao { get; set; }
 
         public string Classe { get; set; }

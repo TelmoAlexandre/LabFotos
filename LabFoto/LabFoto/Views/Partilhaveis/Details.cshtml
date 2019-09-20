@@ -1,4 +1,8 @@
 ﻿@model LabFoto.Models.Tables.Partilhavel
+
+@using Microsoft.Extensions.Options;
+@inject IOptions<AppSettings> AppSettings
+
 @{
     ViewData["Title"] = $"Partilhável - {Model.Nome}";
     bool isAuthenticated = User.Identity.IsAuthenticated;
@@ -6,75 +10,75 @@
     if (Model.Enviado) { sendClass = "green"; }
 }
 
-    <div class="ui raised segment">
-        <span class="ui blue ribbon label">Partilhável</span>
+<div class="ui raised segment">
+    <span class="ui blue ribbon label">Partilhável</span>
+    @if (isAuthenticated)
+    {
+        <div class="ui icon mini basic buttons ml-3">
+            <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="@Url.Action("Details","Partilhaveis", new { id = Model.ID })" class="ui button"
+               data-toggle="tooltip" title="Editar" style="padding-left:12px;">
+                <i class="far fa-edit"></i>
+            </a>
+            <div class="ui button" data-toggle="tooltip" title="E-mail ao Requerente" onclick="shareByEmail(`@Model.ID`)" id="btnMail_@Model.ID"
+                 style="padding-top:10px;">
+                <i class="@sendClass envelope outline icon"></i>
+            </div>
+            <span asp-action="Delete" onclick="confirmDelete('@Model.ID')" class="ui button" data-toggle="tooltip" title="Eliminar"
+                  style="padding-top:11px;">
+                <i class="trash alternate outline icon"></i>
+            </span>
+        </div>
+    }
+    <dl class="row mt-4 mb-0">
+        <dt class="col-sm-2 font-weight-bold">
+            Nome
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(modelItem => Model.Nome)
+        </dd>
         @if (isAuthenticated)
         {
-            <div class="ui icon mini basic buttons ml-3">
-                <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-returnUrl="@Url.Action("Details","Partilhaveis", new { id = Model.ID })" class="ui button"
-                    data-toggle="tooltip" title="Editar" style="padding-left:12px;">
-                    <i class="far fa-edit"></i>
-                </a>
-                <div class="ui button" data-toggle="tooltip" title="E-mail ao Requerente" onclick="shareByEmail(`@Model.ID`)" id="btnMail_@Model.ID"
-                     style="padding-top:10px;">
-                    <i class="@sendClass envelope outline icon"></i>
-                </div>
-                <span asp-action="Delete" onclick="confirmDelete('@Model.ID')" class="ui button" data-toggle="tooltip" title="Eliminar"
-                      style="padding-top:11px;">
-                    <i class="trash alternate outline icon"></i>
-                </span>
-            </div>
-        }
-        <dl class="row mt-4 mb-0">
             <dt class="col-sm-2 font-weight-bold">
-                Nome
+                Data de Criação
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(modelItem => Model.Nome)
+                @Html.DisplayFor(modelItem => Model.DataDeCriacao)
             </dd>
-            @if (isAuthenticated)
-            {
-                <dt class="col-sm-2 font-weight-bold">
-                    Data de Criação
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(modelItem => Model.DataDeCriacao)
-                </dd>
-            }
-            @if (Model.Validade != null)
-            {
-                <dt class="col-sm-2 font-weight-bold">
-                    Válido até
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(modelItem => Model.Validade)
-                </dd>
-            }
-            @if (isAuthenticated)
-            {
-                <dt class="col-sm-2 font-weight-bold">
-                    Serviço
-                </dt>
-                <dd class="col-sm-10">
-                    <a href="@Url.Action("Details","Servicos",new { id = Model.ServicoFK })" target="_blank">
-                        @Model.Servico.Nome
-                    </a>
-                </dd>
-                <dt class="col-sm-2 font-weight-bold">
-                    Endereço
-                </dt>
-                <dd class="col-sm-10">
-                    <span id="linkPartilha"></span>
-                </dd>
-                <dt class="col-sm-2 font-weight-bold">
-                    Password
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(modelItem => Model.Password)
-                </dd>
-            }
-        </dl>
-    </div>
+        }
+        @if (Model.Validade != null)
+        {
+            <dt class="col-sm-2 font-weight-bold">
+                Válido até
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(modelItem => Model.Validade)
+            </dd>
+        }
+        @if (isAuthenticated)
+        {
+            <dt class="col-sm-2 font-weight-bold">
+                Serviço
+            </dt>
+            <dd class="col-sm-10">
+                <a href="@Url.Action("Details","Servicos",new { id = Model.ServicoFK })" target="_blank">
+                    @Model.Servico.Nome
+                </a>
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                Endereço
+            </dt>
+            <dd class="col-sm-10">
+                <span id="linkPartilha">@AppSettings.Value.SiteUrl/Partilhaveis/Details/@Model.ID</span>
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                Password
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(modelItem => Model.Password)
+            </dd>
+        }
+    </dl>
+</div>
 
 <div class="ui raised segment">
     <span class="ui blue ribbon label">Fotografias</span>
@@ -186,8 +190,6 @@
 
             // Iniciar a galeria do PhotoSwipe
             initPhotoSwipeFromDOM('.my-gallery');
-
-            $('#linkPartilha').html(`${siteUrl}/Partilhaveis/Details/@Model.ID`);
             $("#topDiv").css("height", "50px");
         });
 
