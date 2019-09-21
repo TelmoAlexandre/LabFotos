@@ -15,11 +15,19 @@
                     <input asp-for="ContaOnedrive.Username" name="Username" class="form-control" />
                     <span asp-validation-for="ContaOnedrive.Username" class="text-danger"></span>
                 </div>
-                <div class="field">
-                    <label asp-for="ContaOnedrive.Password" class="control-label"></label>
-                    <input asp-for="ContaOnedrive.Password" name="Password" class="form-control" />
-                    <span asp-validation-for="ContaOnedrive.Password" class="text-danger"></span>
+                <label asp-for="ContaOnedrive.Password" class="control-label"></label>
+                <div class="input-group mb-2">
+                    <input id="pwInput" asp-for="ContaOnedrive.Password" name="Password" type="password" class="form-control" style="width:0px !important; border-radius:0.285714rem 0 0 0.285714rem !important;" />
+                    <div class="input-group-prepend loginPreEnds">
+                        <div class="input-group-text pointer" style="border-radius:0 0.285714rem 0.285714rem 0 !important;" id="btnMostrar" data-toggle="tooltip" data-original-title="Ver Password" onclick="mostrarPW()">
+                            <span>
+                                <i class="eye icon"></i>
+                            </span>
+                        </div>
+                    </div>
                 </div>
+                <span asp-validation-for="ContaOnedrive.Password" class="text-danger"></span>
+
                 <div class="mt-3">
                     <div class="ui primary button" onclick="confirmForm('contaOnedriveCreateForm')"><i class="plus icon"></i><span class="ml-2">Adicionar conta</span></div>
                     <div class="ui button" onclick="modalCancel('modalCancel')"><span>Cancelar</span></div>
@@ -60,3 +68,31 @@
         </a>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        mostrarPW = () => {
+
+            var password = $('#pwInput')[0];
+            var passwordBtn = $('#btnMostrar');
+            if (password.type === "password") {
+
+                password.type = "text";
+                passwordBtn[0].children[0].children[0].className = `eye slash icon`;
+                passwordBtn.attr("data-toggle", "tooltip");
+                passwordBtn.attr("data-original-title", "Esconder Password");
+            }
+            else {
+                password.type = "password";
+                passwordBtn[0].children[0].children[0].className = `eye icon`;
+                passwordBtn.attr("data-toggle", "tooltip");
+                passwordBtn.attr("data-original-title", "Ver Password");
+            }
+        };
+
+    </script>
+}
