@@ -13,6 +13,9 @@
                 @Html.DisplayNameFor(model => model.Descricao)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Utilizador)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Classe)
             </th>
             <th>
@@ -24,8 +27,11 @@
     <tbody>
 @foreach (var log in Model) {
         <tr>
-            <td>
+            <td style="max-width: 150px;">
                 @Html.DisplayFor(modelItem => log.Descricao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => log.Utilizador)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => log.Classe)
