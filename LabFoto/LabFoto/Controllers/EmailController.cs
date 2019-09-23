@@ -95,13 +95,16 @@ namespace LabFoto.Controllers
             var linkPartilha = _appSettings.SiteUrl + "/Partilhaveis/Details/" + partilhavel.ID;
 
             string body =
-                $"O seguinte link foi partilhado consigo. <br /><br />" +
+                $"O Laboratório de Fotografias do IPT partilhou seguinte link consigo. <br /><br />" +
                 $"Para aceder ao link <a href='{linkPartilha}'>clique aqui</a>. <br />" +
-                $"<span style='font-weight: bold;'>Password: </span>{partilhavel.Password}";
+                $"<span style='font-weight: bold;'>Password: </span>{partilhavel.Password}"+
+                $"<br /><br />"+
+                $"Se não conseguir utilizar o endereço, acima indicado, por favor, copie este endereço e cole-o num browser: <br />"+
+                $"{linkPartilha}";
 
             try
             {
-                bool success = _email.Send(partilhavel.Servico.Requerente.Email, "Link de Partilha: " + partilhavel.Nome, body);
+                bool success = _email.Send(partilhavel.Servico.Requerente.Email, "Laboratório de Fotografias do IPT: " + partilhavel.Nome, body);
 
                 if (success)
                 {
