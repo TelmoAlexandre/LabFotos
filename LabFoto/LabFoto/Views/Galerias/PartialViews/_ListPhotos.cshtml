@@ -23,7 +23,7 @@
                         if (foto.Thumbnail_Large != null) { large = foto.Thumbnail_Large; }
                         if (foto.Thumbnail_Medium != null) { medium = foto.Thumbnail_Medium; }
                     }
-                    <a itemprop="contentUrl">
+                    <a href="@large" itemprop="contentUrl">
                         <img src="@medium" class="small-thumbnails" itemprop="thumbnail" alt="Image description" style="height:150px !important;" data-index="@i" />
                         <img class="hide" src="@large" />
                     </a>
