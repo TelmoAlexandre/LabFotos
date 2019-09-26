@@ -43,7 +43,7 @@
                         @Html.DisplayNameFor(model => model.Servico)
                     </dt>
                     <dd class="col-sm-8">
-                        <a href="/Servicos/Details/@Model.Servico.ID" target="_blank" class="plainTextLink font-weight-bold">@Model.Servico.Nome</a>
+                        <a class="plainTextLink font-weight-bold" asp-controller="Servicos" asp-action="Details" asp-route-id="@Model.Servico.ID" target="_blank">@Model.Servico.Nome</a>
                     </dd>
                 </dl>
             </div>
