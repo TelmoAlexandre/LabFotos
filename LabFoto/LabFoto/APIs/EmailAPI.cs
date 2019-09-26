@@ -1,4 +1,5 @@
 ﻿using LabFoto.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LabFoto.APIs
@@ -18,8 +20,9 @@ namespace LabFoto.APIs
         private readonly string _emailNome;
         private readonly string _emailSmtp;
         private readonly ILoggerAPI _logger;
+        private readonly ClaimsPrincipal _user;
 
-        public EmailAPI(IOptions<AppSettings> settings, ILoggerAPI logger)
+        public EmailAPI(IOptions<AppSettings> settings, ILoggerAPI logger, IHttpContextAccessor accessor)
         {
             _appSettings = settings.Value;
             _email = _appSettings.Email;
@@ -27,6 +30,7 @@ namespace LabFoto.APIs
             _emailNome = _appSettings.EmailNomeApresentado;
             _emailSmtp = _appSettings.EmailSmtp;
             _logger = logger;
+            _user = accessor.HttpContext.User;
         }
 
         /// <summary>
@@ -49,9 +53,9 @@ namespace LabFoto.APIs
                     {
                         using (var message = new MailMessage())
                         {
-                            message.From = new MailAddress(_email, _emailNome);
+                            message.From = new MailAddress(_user.Identity.Name);
                             message.To.Add(new MailAddress(destination));
-                            //message.CC.Add(new MailAddress("cc@email.com", "CC Name"));
+                            message.CC.Add(new MailAddress(_user.Identity.Name));
                             //message.Bcc.Add(new MailAddress("bcc@email.com", "BCC Name"));
                             message.Subject = subject;
                             message.Body = body;
@@ -93,11 +97,11 @@ namespace LabFoto.APIs
                     client.Credentials = new NetworkCredential(_email, _emailPassword);
                     client.EnableSsl = true;
 
-                    using (var message = new MailMessage())
+                    using (var message = new MailMessage(_user.Identity.Name, destination))
                     {
-                        message.From = new MailAddress(_email, _emailNome);
+                        message.From = new MailAddress(_user.Identity.Name);
                         message.To.Add(new MailAddress(destination));
-                        //message.CC.Add(new MailAddress("cc@email.com", "CC Name"));
+                        message.CC.Add(new MailAddress(_user.Identity.Name));
                         //message.Bcc.Add(new MailAddress("bcc@email.com", "BCC Name"));
                         message.Subject = subject;
                         message.Body = body;
