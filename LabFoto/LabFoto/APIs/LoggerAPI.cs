@@ -1,8 +1,10 @@
 ﻿using LabFoto.Data;
 using LabFoto.Models.Tables;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LabFoto.APIs
@@ -16,10 +18,12 @@ namespace LabFoto.APIs
     public class LoggerAPI : ILoggerAPI
     {
         private readonly ApplicationDbContext _context;
+        private readonly ClaimsPrincipal _user;
 
-        public LoggerAPI(ApplicationDbContext context)
+        public LoggerAPI(ApplicationDbContext context, IHttpContextAccessor accessor)
         {
             _context = context;
+            _user = accessor.HttpContext.User;
         }
 
         /// <summary>
@@ -33,6 +37,7 @@ namespace LabFoto.APIs
         public async Task<bool> LogError(string descricao, string classe, string metodo, string erro)
         {
             var log = new Log {
+                Utilizador = _user.Identity.Name,
                 Descricao = descricao,
                 Classe = classe,
                 Metodo = metodo,

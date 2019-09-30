@@ -123,7 +123,7 @@ namespace LabFoto.Areas.Identity.Pages.Account.Manage
             _email.Send(
                 email,
                 "Confirmar o e-mail",
-                $"Por facor confirme a sua conta: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clique aqui</a>.");
+                $"Por favor confirme a sua conta: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clique aqui</a>.");
 
             StatusMessage = "E-mail de confirmação enviado. Verfique o seu e-mail.";
             return RedirectToPage();

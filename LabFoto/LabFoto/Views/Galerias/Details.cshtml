@@ -10,7 +10,7 @@
 
 <form id="uploader">
     <div class="mb-2 ui attached segment">
-        <div class="ui grid">
+        <div class="ui stackable grid">
             <div class="eight wide column">
                 <p class="ui blue ribbon label mb-3">Galeria</p>
                 <div class="ui icon mini basic buttons right floated">
@@ -43,7 +43,7 @@
                         @Html.DisplayNameFor(model => model.Servico)
                     </dt>
                     <dd class="col-sm-8">
-                        <a href="/Servicos/Details/@Model.Servico.ID" target="_blank" class="plainTextLink font-weight-bold">@Model.Servico.Nome</a>
+                        <a class="plainTextLink font-weight-bold" asp-controller="Servicos" asp-action="Details" asp-route-id="@Model.Servico.ID" target="_blank">@Model.Servico.Nome</a>
                     </dd>
                 </dl>
             </div>

@@ -101,11 +101,23 @@ namespace LabFoto.APIs
                                 photo.DownloadUrl = (string)content["@microsoft.graph.downloadUrl"];
 
                                 JObject thumbnails = (JObject)content["thumbnails"][0];
-                                photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
-                                photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
-                                photo.Thumbnail_Small = (string)thumbnails["small"]["url"];
+                                string Thumbnail_Small = (string)thumbnails["large"]["url"];
 
-                                _context.Update(photo);
+                                // Verificar se a Microsoft conseguiu gerar thumbnail com sucesso
+                                bool thumbnailValid = await IsThumbnailValid(Thumbnail_Small); 
+
+                                if (thumbnailValid)
+                                {
+                                    photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
+                                    photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
+                                    photo.Thumbnail_Small = Thumbnail_Small;
+
+                                    _context.Update(photo);
+                                }
+                                else // Caso a thumbnail não seja criada, apagar as antigas para ser mostrado uma imagem default
+                                {
+                                    DeleteOldThumbnails(photo);
+                                }
                             }
                             else
                             {
@@ -116,14 +128,14 @@ namespace LabFoto.APIs
                                 }
                                 else // Noutra situação, apenas apagar as thumbnails antigas para ser mostrado um thumbnail default
                                 {
-                                    await DeleteOldThumbnails(photo);
+                                    DeleteOldThumbnails(photo);
                                 }
                             }
                             #endregion
                         }
                         else // Caso não consiga renovar o token, apaga as thumbnails antigas pois estas já não se encontram válidas
                         {
-                            await DeleteOldThumbnails(photo);
+                            DeleteOldThumbnails(photo);
                         }
                     }
                 }
@@ -144,10 +156,27 @@ namespace LabFoto.APIs
         }
 
         /// <summary>
+        /// Verifica se a OneDrive criou a thumbnail com sucesso.
+        /// </summary>
+        /// <param name="Thumbnail_Small"> url de uma thumbnail para verificar.</param>
+        /// <returns>Sucesso da verificação.</returns>
+        private async Task<bool> IsThumbnailValid(string Thumbnail_Small)
+        {
+            #region Preparar pedido HTTP
+            string url = Thumbnail_Small;
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            #endregion
+
+            var response = await _client.SendAsync(request);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        /// <summary>
         /// Apaga os urls das thumbnails antigos de uma fotografia
         /// </summary>
         /// <param name="photo">Fotografia que se pretende apagar urls.</param>
-        private async Task DeleteOldThumbnails(Fotografia photo)
+        private void DeleteOldThumbnails(Fotografia photo)
         {
             photo.DownloadUrl =
             photo.Thumbnail_Large =
@@ -155,7 +184,6 @@ namespace LabFoto.APIs
             photo.Thumbnail_Small = null;
 
             _context.Update(photo);
-            await _context.SaveChangesAsync();
         }
         #endregion
 

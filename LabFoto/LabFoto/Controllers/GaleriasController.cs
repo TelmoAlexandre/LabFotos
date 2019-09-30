@@ -110,17 +110,26 @@ namespace LabFoto.Controllers
                 .Include(g => g.Fotografias)
                 .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado);
 
-            // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
-            List<Fotografia> photos = await galerias.Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
-            photos.RemoveAll(photo => photo == null);
-            // Juntar a conta onedrive associada
-            foreach (var photo in photos)
+            // Escolher todas as fotografias de capa de uma galeria
+            List<Fotografia> photos = new List<Fotografia>();
+            foreach(var galeria in galerias)
             {
-                photo.ContaOnedrive = await _context.ContasOnedrive.FindAsync(photo.ContaOnedriveFK);
+                if(galeria.Fotografias.Count() > 0)
+                {
+                    // Escolhe o ID de uma fotografia definida como capa caso esta tenha sido escolhida (diferente de null)
+                    // Ou caso esta n tenha sido escolhida, utiliza a primeira fotografia da galeria
+                    int id = galeria.FotoCapa ?? galeria.Fotografias.FirstOrDefault().ID;
+                    Fotografia photo = await _context.Fotografias.Include(f => f.ContaOnedrive).Where(f => f.ID == id).FirstOrDefaultAsync();
+
+                    photos.Add(photo);
+                }
             }
 
-            // Refrescar as thumbnails das imagens da capa das galerias
-            await _onedrive.RefreshPhotoUrlsAsync(photos);
+            if(photos != null)
+            {
+                // Refrescar as thumbnails das imagens da capa das galerias
+                await _onedrive.RefreshPhotoUrlsAsync(photos);
+            }
 
             GaleriasIndexViewModel response = new GaleriasIndexViewModel
             {
@@ -150,6 +159,10 @@ namespace LabFoto.Controllers
                     {
                         galeria.FotoCapa = foto.ID;
                     }
+                }
+                else
+                {
+                    return Json(new { success = false });
                 }
 
                 try
