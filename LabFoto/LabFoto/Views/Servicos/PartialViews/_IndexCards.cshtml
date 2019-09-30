@@ -35,7 +35,7 @@
                             <div class="ui icon buttons right floated" style="padding-top:2px;">
                                 <a asp-controller="Galerias" asp-action="Index" asp-route-serv="@servico.ID" class="ui button basic" data-toggle="tooltip" title="Ver Galerias (@servico.Galerias.Count())"><i class="far fa-images"></i></a>
                                 <a asp-controller="Partilhaveis" asp-action="Create" asp-route-servicoID="@servico.ID" asp-route-returnUrl="@Url.Action("Index","Servicos")" class="ui button basic" data-toggle="tooltip" title="Criar Partilhavel"><i class="share alternate icon"></i></a>
-                                <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@servico.ID" asp-route-returnUrl="@Url.Action("Details", "Servicos", new { id = servico.ID})" class="ui button basic" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
+                                <a asp-controller="Servicos" asp-action="Edit" asp-route-id="@servico.ID" asp-route-returnUrl="@Url.Action("Index", "Servicos", new { id = servico.ID})" class="ui button basic" data-toggle="tooltip" title="Editar"><i class="far fa-edit"></i></a>
                                 <a asp-controller="Servicos" asp-action="Details" asp-route-id="@servico.ID" class="ui button basic" data-toggle="tooltip" title="Ver Detalhes"><i class="far fa-address-card"></i></a>
                             </div>
                         </div>
