@@ -100,23 +100,31 @@ namespace LabFoto.APIs
 
                                 photo.DownloadUrl = (string)content["@microsoft.graph.downloadUrl"];
 
-                                JObject thumbnails = (JObject)content["thumbnails"][0];
-                                string Thumbnail_Small = (string)thumbnails["large"]["url"];
+                                // Isola o array de thumbnails
+                                JArray thumbnailsArray = (JArray)content["thumbnails"];
 
-                                // Verificar se a Microsoft conseguiu gerar thumbnail com sucesso
-                                bool thumbnailValid = await IsThumbnailValid(Thumbnail_Small); 
-
-                                if (thumbnailValid)
+                                // Caso existam elementos no array
+                                if (thumbnailsArray.Count > 0)
                                 {
-                                    photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
-                                    photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
-                                    photo.Thumbnail_Small = Thumbnail_Small;
+                                    // Isolar o primeiro elemento do array (é neste que as thumbnails estão contidas)
+                                    JObject thumbnails = (JObject)thumbnailsArray[0];
+                                    string Thumbnail_Small = (string)thumbnails["large"]["url"];
 
-                                    _context.Update(photo);
-                                }
-                                else // Caso a thumbnail não seja criada, apagar as antigas para ser mostrado uma imagem default
-                                {
-                                    DeleteOldThumbnails(photo);
+                                    // Verificar se a Microsoft conseguiu gerar thumbnail com sucesso
+                                    bool thumbnailIsValid = await IsThumbnailValid(Thumbnail_Small);
+
+                                    if (thumbnailIsValid)
+                                    {
+                                        photo.Thumbnail_Large = (string)thumbnails["large"]["url"];
+                                        photo.Thumbnail_Medium = (string)thumbnails["medium"]["url"];
+                                        photo.Thumbnail_Small = Thumbnail_Small;
+
+                                        _context.Update(photo);
+                                    }
+                                    else // Caso a thumbnail não seja criada, apagar as antigas para ser mostrado uma imagem default
+                                    {
+                                        DeleteOldThumbnails(photo);
+                                    }
                                 }
                             }
                             else
