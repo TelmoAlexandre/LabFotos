@@ -180,13 +180,6 @@ namespace LabFoto.Controllers
 
             ViewData["servPP"] = servPP;
 
-            await _logger.LogError(
-                    descricao: "Erro ao criar um serviço.",
-                    classe: "ServicosController",
-                    metodo: "Create",
-                    erro: "test"
-                );
-
             return View(response);
         }
 

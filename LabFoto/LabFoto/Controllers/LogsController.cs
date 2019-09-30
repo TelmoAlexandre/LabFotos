@@ -22,7 +22,7 @@ namespace LabFoto.Controllers
         // GET: Logs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Logs.ToListAsync());
+            return View(await _context.Logs.OrderByDescending(l => l.Timestamp).ToListAsync());
         }
 
         // GET: Logs/Details/5
