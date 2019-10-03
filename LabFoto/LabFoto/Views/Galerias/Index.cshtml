@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Galerias";
+    var serv = ViewData["serv"] ?? "";
 }
 
 <h1>Galerias</h1>
@@ -88,7 +89,7 @@
 
     <div class="row mt-2 mb-2">
         <div class="col-md-6">
-            <a class="ui blue mini button" asp-action="Create" asp-controller="Galerias">
+            <a class="ui blue mini button" asp-action="Create" asp-controller="Galerias" asp-route-serv="@serv">
                 <i class="fas fa-plus"></i> Nova Galeria
             </a>
         </div>

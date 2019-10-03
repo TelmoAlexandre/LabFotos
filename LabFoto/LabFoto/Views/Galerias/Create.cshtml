@@ -2,10 +2,12 @@
 
 @{
     ViewData["Title"] = "Criar Nova Galeria";
+    var serv = ViewData["serv"] ?? "";
 }
 
 <h1>Criar Nova Galeria</h1>
 <hr />
+
 <form asp-action="Create" id="galeriasCreateForm">
     <div class="ui form">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -69,7 +71,7 @@
             <i class="remove icon"></i>
             Não
         </div>
-        <a class="ui green ok inverted button" href="@Url.Action("Index", "Galerias")">
+        <a class="ui green ok inverted button" href="@Url.Action("Index", "Galerias",new { serv = serv })">
             <i class="checkmark icon"></i>
             Sim
         </a>
@@ -84,11 +86,13 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        jQuery(document).ready(function ($) {
+        jQuery(document).ready(function ($)
+        {
             $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             $("#metadadosCB").html(smallLoader);
 
-            $("#metadadosCB").load(siteUrl + "/Galerias/MetadadosDropdown", function () {
+            $("#metadadosCB").load(siteUrl + "/Galerias/MetadadosDropdown", function ()
+            {
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
         });

@@ -197,6 +197,7 @@ namespace LabFoto.Controllers
             int galPP = CookieAPI.GetAsInt32(Request, "GaleriasPerPage") ?? _galPP;
 
             ViewData["galPP"] = galPP;
+            ViewData["serv"] = serv;
 
             return View(new GaleriasOfServiceViewModel {
                 ServicoID = serv
@@ -476,15 +477,24 @@ namespace LabFoto.Controllers
 
         #region Create
         // GET: Galerias/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(string serv)
         {
+            Servico servico = null;
+
+            if (!String.IsNullOrEmpty(serv))
+            {
+                servico = await _context.Servicos.FindAsync(serv);
+            }
+
             // Todos os serviços numa SelectList
-            SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome");
+            SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome", servico.ID);
             var response = new GaleriasCreateViewModel
             {
                 Galeria = new Galeria(),
                 Servicos = servicos
             };
+
+            ViewData["serv"] = serv;
 
             return View(response);
         }
