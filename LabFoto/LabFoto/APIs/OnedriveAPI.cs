@@ -638,6 +638,10 @@ namespace LabFoto.APIs
                             );
                         }
                     }
+                    else
+                    {
+                        return "API";
+                    }
                 }
             }
 

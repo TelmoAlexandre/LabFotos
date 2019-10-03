@@ -275,25 +275,48 @@ namespace LabFoto.Controllers
                 galerias = galerias.OrderByDescending(s => s.DataDeCriacao);
             }
 
+            // Incluir as tabelas associadas e saltar o numero de galeria referentes à página
             galerias = galerias.Include(g => g.Fotografias)
                 .Include(g => g.Servico)
                 .Include(g => g.Galerias_Metadados).ThenInclude(gmt => gmt.Metadado)
                 .Skip(skipNum);
 
             int totalGalerias = galerias.Count();
-            galerias = galerias.Take(galPP);
+            galerias = galerias.Take(galPP); // Pegar apenas o número de galerias por página definido pelo utilizador
 
-            // Selecionar a primeira foto em todas as galerias e remover os nulls da lista
-            List<Fotografia> photos = await galerias.Include(g => g.Fotografias).Select(g => g.Fotografias.FirstOrDefault()).ToListAsync();
-            photos.RemoveAll(photo => photo == null);
-            // Juntar a conta onedrive associada
-            foreach (var photo in photos)
+            #region Refrescar as imagens de capa das galerias
+            List<Fotografia> coverPhotos = new List<Fotografia>();
+
+            foreach (var galeria in galerias)
             {
-                photo.ContaOnedrive = await _context.ContasOnedrive.FindAsync(photo.ContaOnedriveFK);
+                if(galeria.Fotografias.Count > 0) // Caso a galeria tenha fotografias
+                { 
+                    if (galeria.FotoCapa != null) // Caso tenha sido definida uma foto de capa pelo utilizador
+                    {
+                        Fotografia coverPhoto = await _context.Fotografias.Include(f => f.ContaOnedrive).Where(f => f.ID == galeria.FotoCapa).FirstOrDefaultAsync();
+                        if(coverPhoto != null) // Caso a foto exista
+                        {
+                            coverPhotos.Add(coverPhoto);
+                        }
+                        else // Caso não exista, utilizar a primeira foto como default
+                        {
+                            coverPhoto = galeria.Fotografias.FirstOrDefault();
+                            coverPhoto.ContaOnedrive = await _context.ContasOnedrive.FindAsync(coverPhoto.ContaOnedriveFK); // Incluir a conta OneDrive
+                            coverPhotos.Add(coverPhoto);
+                        }
+                    }
+                    else // Senão, utiliza a primeira foto da galeria como default
+                    {
+                        Fotografia coverPhoto = galeria.Fotografias.FirstOrDefault();
+                        coverPhoto.ContaOnedrive = await _context.ContasOnedrive.FindAsync(coverPhoto.ContaOnedriveFK); // Incluir a conta OneDrive
+                        coverPhotos.Add(coverPhoto);
+                    }
+                }
             }
 
             // Refrescar as thumbnails das imagens da capa das galerias
-            await _onedrive.RefreshPhotoUrlsAsync(photos);
+            await _onedrive.RefreshPhotoUrlsAsync(coverPhotos); 
+            #endregion
 
             GaleriasIndexViewModel response = new GaleriasIndexViewModel
             {
@@ -401,13 +424,16 @@ namespace LabFoto.Controllers
 
             #region Criar sessão de upload
             string uploadUrl = await _onedrive.GetUploadSessionAsync(conta, name);
-            if (uploadUrl == "Error")
+            switch (uploadUrl)
             {
-                return Json(new { success = false, details = "Não foi possível criar sessão de upload." });
+                case "Error":
+                    return Json(new { success = false, details = "Não foi possível criar sessão de upload." });
+                case "API":
+                    return Json(new { success = false, details = "A API da OneDrive não conseguiu criar sessão de Upload." });
+                default:
+                    return Json(new { success = true, url = uploadUrl, contaId = conta.ID });
             }
             #endregion
-
-            return Json(new { success = true, url = uploadUrl, contaId = conta.ID });
         }
 
         /// <summary>
@@ -719,9 +745,33 @@ namespace LabFoto.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteFiles(string[] photosIds)
         {
-            List<Fotografia> photos = await _context.Fotografias.Where(f => (photosIds.Where(a => Int32.Parse(a) == f.ID).Count() != 0)).Include(f => f.ContaOnedrive).ToListAsync();
+            List<Fotografia> photos = new List<Fotografia>();
 
-            if(photos.Count() > 0)
+            foreach(string photoId in photosIds)
+            {
+                #region Transformar photoId(string) em int32
+                int id = 0;
+                try
+                {
+                    id = Int32.Parse(photoId);
+                }
+                catch (Exception e)
+                {
+                    await _logger.LogError(
+                        descricao: "Erro ao transformar string em int32.",
+                        classe: "GaleriasController",
+                        metodo: "DeleteFiles",
+                        erro: e.Message
+                    );
+                }
+                #endregion
+
+                Fotografia photo = await _context.Fotografias.Include(f => f.ContaOnedrive).Where(f => f.ID == id).FirstOrDefaultAsync();
+                if (photo != null)
+                    photos.Add(photo);
+            }
+
+            if (photos.Count() > 0)
             {
                 if (await _onedrive.DeleteFilesAsync(photos))
                 {
