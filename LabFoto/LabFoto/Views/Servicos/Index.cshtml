@@ -166,53 +166,21 @@
 {
     <script>
         $(document).ready(function () {
-            // As dropdowns dos tipos e dos serviços solicitados são carregadas para um div de backup
-            // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
-            // recuperar o html dos divs de backup
-            //$("#tiposBackup").load(siteUrl + "/Servicos/TiposAjax", function () {
-            //    $("#searchTiposCB").html($("#tiposBackup").html());
-            //    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-            //});
-            
-            //$("#servSolicBackup").load(siteUrl + "/Servicos/ServSolicAjax", function () {
-            //    $("#searchServSolicCB").html($("#servSolicBackup").html());
-            //    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-            //});
-
-            $.ajax({
-                url: siteUrl + "/Servicos/TiposAjax",
-                type: "GET",
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: function (resp)
-                {
-                    $("#tiposBackup").html(resp);
-                    $("#searchTiposCB").html($("#tiposBackup").html());
-                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-                },
-                error: function ()
-                {
-                    notifyUser("error", "Erro ao contactar o servidor.")
-                }
+            @{
+                /*
+                    * As dropdowns dos tipos e dos serviços solicitados são carregadas para um div de backup
+                    // Em seguida, são colocadas no devido sitio. Quando for necessário limpar pesquisa, basta
+                    // recuperar o html dos divs de backup
+                */
+            } 
+            $("#tiposBackup").load(siteUrl + "/Servicos/TiposAjax", function () {
+                $("#searchTiposCB").html($("#tiposBackup").html());
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
-
-            $.ajax({
-                url: siteUrl + "/Servicos/ServSolicAjax",
-                type: "GET",
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: function (resp)
-                {
-                    $("#servSolicBackup").html(resp);
-                    $("#searchServSolicCB").html($("#servSolicBackup").html());
-                    $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
-                },
-                error: function ()
-                {
-                    notifyUser("error", "Erro ao contactar o servidor.")
-                }
+            
+            $("#servSolicBackup").load(siteUrl + "/Servicos/ServSolicAjax", function () {
+                $("#searchServSolicCB").html($("#servSolicBackup").html());
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
 
             $('[data-toggle="tooltip"]').tooltip();
