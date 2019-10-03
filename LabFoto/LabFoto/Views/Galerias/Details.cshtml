@@ -49,7 +49,7 @@
             </div>
             <div class="eight wide column" style="text-align:center;">
                 <div id="progressBarsContainer" class="mb-2 mt-4"></div>
-                <span onclick="cancelUpload()" id="btnUploadCancel" class="ui icon button red mt-2" style="display:none;"><i class="ban icon"></i> Cancelar Upload</span>
+                <span onclick="cancelUploadModal()" id="btnUploadCancel" class="ui icon button red mt-2" style="display:none;"><i class="ban icon"></i> Cancelar Upload</span>
             </div>
         </div>
         <div>
@@ -106,6 +106,22 @@
             Não
         </div>
         <div class="ui green ok inverted button" onclick="">
+            <i class="checkmark icon"></i>
+            Sim
+        </div>
+    </div>
+</div>
+
+<div class="ui basic mini modal" id="cancelUploadModal">
+    <div class="content">
+        <p>Tem a certeza que prentede cancelar o Upload?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Não
+        </div>
+        <div class="ui green ok inverted button">
             <i class="checkmark icon"></i>
             Sim
         </div>
@@ -285,6 +301,23 @@
                 onApprove: function ()
                 {
                     callback(callbackParam);
+                },
+                transition: 'scale'
+            }).modal('show');
+        }
+
+        function cancelUploadModal()
+        {
+            $('.btnOptions').popup('hide');
+
+            $("#cancelUploadModal").modal({
+                closable: false,
+                onDeny: function () {
+                    $("#cancelUploadModal").modal('hide');
+                },
+                onApprove: function ()
+                {
+                    cancelUpload();
                 },
                 transition: 'scale'
             }).modal('show');
