@@ -47,8 +47,9 @@
                     </dd>
                 </dl>
             </div>
-            <div class="eight wide column">
+            <div class="eight wide column" style="text-align:center;">
                 <div id="progressBarsContainer" class="mb-2 mt-4"></div>
+                <span onclick="cancelUpload()" id="btnUploadCancel" class="ui icon button red mt-2" style="display:none;"><i class="ban icon"></i> Cancelar Upload</span>
             </div>
         </div>
         <div>
@@ -186,6 +187,7 @@
         var fileBar = `<div class="ui green active progress mb-0" id="fileBar" style="display:none;"><div class="bar"><div class="progress"></div></div></div>`;
         var totalBar = `<div class="ui indicating progress" data-value="0" id="totalBar" style="display:none;"><div class="bar"><div class="progress"></div></div><div class="label">A processar...</div></div>`;
         var placeHolder = `<div class="ui six doubling stackable mt-2" id="photosContainer"><div class="ui placeholder tiny segment"><div class="ui icon header"><i class="images outline icon" style="height: auto;"></i>Não existem fotografias.</div></div></div>`;
+        var uploadActive = true; // variável utilizada para interromper o upload
 
         var photos = [];
 
@@ -199,6 +201,12 @@
             // Iniciar a galeria do PhotoSwipe
             initPhotoSwipeFromDOM('.my-gallery');
         });
+
+        function cancelUpload()
+        {
+            uploadActive = false;
+            $("#btnUploadCancel").addClass("loading"); // feedback no botao
+        }
 
         function defineCoverPhoto(id)
         {
@@ -429,6 +437,8 @@
         {
             e.preventDefault();
 
+            uploadActive = true; // variável utilizada para interromper o upload
+
             var files = document.getElementById('fileInput').files;
 
             if (files.length != 0) {
@@ -441,6 +451,7 @@
                 $("#btnFileInput")
                     .attr("disabled", true)
                     .addClass("disabled");
+                $("#btnUploadCancel").show();
 
                 initProgressBars(files.length);
                 upload(files, 0);
@@ -527,46 +538,67 @@
             // reader.onload define o comportamento a ser executado cada vez que o reader.readAsBinaryString() é chamado
             reader.onload = function (e) {
 
-                $.ajax({
-                    url: json.url,
-                    type: "PUT",
-                    beforeSend: function (request)
-                    {
-                         // A documentação especifica que é necessário definir qual a partição a ser enviada a cada momento e o tamanho total do ficheiro
-                        request.setRequestHeader("Content-Range", `bytes ${loaded}-${loaded + chunksize - 1}/${total}`);
-                    },
-                    contentType: false,
-                    processData: false,
-                    data: blob                    // Colocar a partição do ficheiro como 'data' a ser enviada em cada pedido (1 pedido para cada partição)
-                }).done(function (resp) {           // Caso a partição tenha sido enviada com sucesso
+                if (uploadActive)
+                {
+                    $.ajax({
+                        url: json.url,
+                        type: "PUT",
+                        beforeSend: function (request)
+                        {
+                            // A documentação especifica que é necessário definir qual a partição a ser enviada a cada momento e o tamanho total do ficheiro
+                            request.setRequestHeader("Content-Range", `bytes ${loaded}-${loaded + chunksize - 1}/${total}`);
+                        },
+                        contentType: false,
+                        processData: false,
+                        data: blob                    // Colocar a partição do ficheiro como 'data' a ser enviada em cada pedido (1 pedido para cada partição)
+                    }).done(function (resp)
+                    {           // Caso a partição tenha sido enviada com sucesso
 
-                    loaded += step;
+                        loaded += step;
 
-                    if (loaded <= total) {            // Caso o ficheiro não tenha sido enviado na sua totatlidade
+                        if (loaded <= total)
+                        {            // Caso o ficheiro não tenha sido enviado na sua totatlidade
 
-                        blob = file.slice(loaded, loaded + step);  // Pega a proxima partição a ser enviada
-                        chunksize = blob.size;
-                        // Ao ler o binário da proxima partição, o reader.onload será corrido novamente (recursividade), até o ficheiro ser enviado na totalidade
-                        reader.readAsBinaryString(blob);        
-                        updateFileBar((loaded * 100) / total);
+                            blob = file.slice(loaded, loaded + step);  // Pega a proxima partição a ser enviada
+                            chunksize = blob.size;
+                            // Ao ler o binário da proxima partição, o reader.onload será corrido novamente (recursividade), até o ficheiro ser enviado na totalidade
+                            reader.readAsBinaryString(blob);
+                            updateFileBar((loaded * 100) / total);
 
-                    } else {                //  Caso o ficheiro tenha sido carregado na sua totalidade
+                        } else
+                        {                //  Caso o ficheiro tenha sido carregado na sua totalidade
 
-                        loaded = total;
-                        informServerOfImage(resp, json.contaId); // Enviar resposta da onedrive para o servidor para que este crie o ficheiro na BD
-                        updateFileBar(100);
-                        updateTotalBar();
+                            loaded = total;
+                            informServerOfImage(resp, json.contaId); // Enviar resposta da onedrive para o servidor para que este crie o ficheiro na BD
+                            updateFileBar(100);
+                            updateTotalBar();
 
-                        // Enquanto houver ficheiros para dar upload
-                        if (i < files.length - 1) {
-                            // Dar upload ao próximo ficheiro
-                            i++;
-                            upload(files, i);
-                        } else {
-                            uploadCompleted();
+                            // Enquanto houver ficheiros para dar upload
+                            if (i < files.length - 1)
+                            {
+                                // Dar upload ao próximo ficheiro
+                                i++;
+                                upload(files, i);
+                            } else
+                            {
+                                uploadCompleted();
+                                $("#btnUploadCancel").removeClass("loading");
+                                $("#btnUploadCancel").hide();
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                else
+                {
+                    // Reactivar os botões novamente
+                    $("#btnFinishUpload").click();
+                    $("#btnUploadSubmit")
+                        .attr("disabled", false)
+                        .removeClass("disabled loading");
+
+                    $("#btnUploadCancel").removeClass("loading");
+                    $("#btnUploadCancel").hide();
+                }
             };
         }
 
@@ -623,6 +655,7 @@
             $("#btnUploadSubmit")
                 .attr("disabled", false)
                 .removeClass("disabled loading");
+            $("#btnUploadCancel").hide();
         }
 
         // Atualiza o valor de ficheiros selecionados pelo utilizador
@@ -682,7 +715,7 @@
         function selectAllCB()
         {
             clearCB();
-             $(".btnCB").click();
+            $(".btnCB").click();
         }
 
         function download(url)
