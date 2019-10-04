@@ -148,8 +148,13 @@
                 $("#metadadosCB").html($("#metadadosBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
+
+            $("#servicosDropDown").load(siteUrl + "/Servicos/ServicosDropdown/@serv", function () {
+                $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            });
+
+            // Deixar um backup da dropdown dos serviços limpa (sem serviço pre-selecionado)
             $("#servicosBackup").load(siteUrl + "/Servicos/ServicosDropdown", function () {
-                $("#servicosDropDown").html($("#servicosBackup").html());
                 $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
             });
 

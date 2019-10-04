@@ -36,13 +36,20 @@ namespace LabFoto.Controllers
         
         // GET: Galerias/ServicosDropdown
         /// <summary>
-        /// Dropdown com todos os serviços.
+        /// Dropdown com todos os serviços. Caso seja pedido um serviço por parâmetro, a SelectList terá esse como o pré-selecionado.
         /// </summary>
         /// <returns>PartialView com o HTML da dropdown</returns>
-        public IActionResult ServicosDropdown()
+        public async Task<IActionResult> ServicosDropdown(string id)
         {
+            Servico servico = null;
+
+            if (!String.IsNullOrEmpty(id))
+            {
+                servico = await _context.Servicos.FindAsync(id);
+            }
+
             // Todos os serviços numa SelectList
-            SelectList servicos = new SelectList(_context.Servicos.OrderBy(s => s.Nome), "ID", "Nome");
+            SelectList servicos = new SelectList(_context.Servicos.OrderBy(s => s.Nome), "ID", "Nome", servico?.ID);
 
             return PartialView("_ServicosDropdown", servicos);
         }
