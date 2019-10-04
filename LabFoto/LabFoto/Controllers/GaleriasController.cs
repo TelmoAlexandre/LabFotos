@@ -90,6 +90,11 @@ namespace LabFoto.Controllers
             return PartialView("PartialViews/_MetadadosDropdown", response);
         }
 
+        /// <summary>
+        /// Retorna a listagem das galerias. Caso tenha sido passado um Id de serviço, lista apenas as galerias do Serviço.
+        /// </summary>
+        /// <param name="servicoId">Id do Serviço.</param>
+        /// <returns>PartialView com a listagem de galerias.</returns>
         public async Task<IActionResult> InitialGaleria(string servicoId)
         {
             var galerias = _context.Galerias.Include(g => g.Fotografias).Include(g => g.Servico).Select(g => g);
@@ -110,26 +115,8 @@ namespace LabFoto.Controllers
                 .Include(g => g.Fotografias)
                 .Include(g => g.Galerias_Metadados).ThenInclude(mt => mt.Metadado);
 
-            // Escolher todas as fotografias de capa de uma galeria
-            List<Fotografia> photos = new List<Fotografia>();
-            foreach(var galeria in galerias)
-            {
-                if(galeria.Fotografias.Count() > 0)
-                {
-                    // Escolhe o ID de uma fotografia definida como capa caso esta tenha sido escolhida (diferente de null)
-                    // Ou caso esta n tenha sido escolhida, utiliza a primeira fotografia da galeria
-                    int id = galeria.FotoCapa ?? galeria.Fotografias.FirstOrDefault().ID;
-                    Fotografia photo = await _context.Fotografias.Include(f => f.ContaOnedrive).Where(f => f.ID == id).FirstOrDefaultAsync();
-
-                    photos.Add(photo);
-                }
-            }
-
-            if(photos != null)
-            {
-                // Refrescar as thumbnails das imagens da capa das galerias
-                await _onedrive.RefreshPhotoUrlsAsync(photos);
-            }
+            // Refrescar as capas das galerias
+            await RefreshCoverImages(await galerias.ToListAsync());
 
             GaleriasIndexViewModel response = new GaleriasIndexViewModel
             {
@@ -284,39 +271,8 @@ namespace LabFoto.Controllers
             int totalGalerias = galerias.Count();
             galerias = galerias.Take(galPP); // Pegar apenas o número de galerias por página definido pelo utilizador
 
-            #region Refrescar as imagens de capa das galerias
-            List<Fotografia> coverPhotos = new List<Fotografia>();
-
-            foreach (var galeria in galerias)
-            {
-                if(galeria.Fotografias.Count > 0) // Caso a galeria tenha fotografias
-                { 
-                    if (galeria.FotoCapa != null) // Caso tenha sido definida uma foto de capa pelo utilizador
-                    {
-                        Fotografia coverPhoto = await _context.Fotografias.Include(f => f.ContaOnedrive).Where(f => f.ID == galeria.FotoCapa).FirstOrDefaultAsync();
-                        if(coverPhoto != null) // Caso a foto exista
-                        {
-                            coverPhotos.Add(coverPhoto);
-                        }
-                        else // Caso não exista, utilizar a primeira foto como default
-                        {
-                            coverPhoto = galeria.Fotografias.FirstOrDefault();
-                            coverPhoto.ContaOnedrive = await _context.ContasOnedrive.FindAsync(coverPhoto.ContaOnedriveFK); // Incluir a conta OneDrive
-                            coverPhotos.Add(coverPhoto);
-                        }
-                    }
-                    else // Senão, utiliza a primeira foto da galeria como default
-                    {
-                        Fotografia coverPhoto = galeria.Fotografias.FirstOrDefault();
-                        coverPhoto.ContaOnedrive = await _context.ContasOnedrive.FindAsync(coverPhoto.ContaOnedriveFK); // Incluir a conta OneDrive
-                        coverPhotos.Add(coverPhoto);
-                    }
-                }
-            }
-
-            // Refrescar as thumbnails das imagens da capa das galerias
-            await _onedrive.RefreshPhotoUrlsAsync(coverPhotos); 
-            #endregion
+            // Refrescar as capas das galerias
+            await RefreshCoverImages(await galerias.ToListAsync());
 
             GaleriasIndexViewModel response = new GaleriasIndexViewModel
             {
@@ -513,7 +469,8 @@ namespace LabFoto.Controllers
             }
 
             // Todos os serviços numa SelectList
-            SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome", servico.ID);
+            SelectList servicos = new SelectList(_context.Servicos, "ID", "Nome", servico?.ID);
+
             var response = new GaleriasCreateViewModel
             {
                 Galeria = new Galeria(),
@@ -838,6 +795,46 @@ namespace LabFoto.Controllers
         #endregion
 
         #region AuxMethods
+
+        /// <summary>
+        /// Refresca as capas das Galerias.
+        /// </summary>
+        /// <param name="galerias">Lista das galerias em questão.</param>
+        /// <returns>Sucesso da operação.</returns>
+        private async Task<bool> RefreshCoverImages(List<Galeria> galerias)
+        {
+            List<Fotografia> coverPhotos = new List<Fotografia>();
+
+            foreach (var galeria in galerias)
+            {
+                if (galeria.Fotografias.Count > 0) // Caso a galeria tenha fotografias
+                {
+                    if (galeria.FotoCapa != null) // Caso tenha sido definida uma foto de capa pelo utilizador
+                    {
+                        Fotografia coverPhoto = await _context.Fotografias.Include(f => f.ContaOnedrive).Where(f => f.ID == galeria.FotoCapa).FirstOrDefaultAsync();
+                        if (coverPhoto != null) // Caso a foto exista
+                        {
+                            coverPhotos.Add(coverPhoto);
+                        }
+                        else // Caso não exista, utilizar a primeira foto como default
+                        {
+                            coverPhoto = galeria.Fotografias.FirstOrDefault();
+                            coverPhoto.ContaOnedrive = await _context.ContasOnedrive.FindAsync(coverPhoto.ContaOnedriveFK); // Incluir a conta OneDrive
+                            coverPhotos.Add(coverPhoto);
+                        }
+                    }
+                    else // Senão, utiliza a primeira foto da galeria como default
+                    {
+                        Fotografia coverPhoto = galeria.Fotografias.FirstOrDefault();
+                        coverPhoto.ContaOnedrive = await _context.ContasOnedrive.FindAsync(coverPhoto.ContaOnedriveFK); // Incluir a conta OneDrive
+                        coverPhotos.Add(coverPhoto);
+                    }
+                }
+            }
+
+            // Refrescar as thumbnails das imagens da capa das galerias
+            return await _onedrive.RefreshPhotoUrlsAsync(coverPhotos);
+        }
 
         /// <summary>
         /// Retorna o formato a partir de um nome.
