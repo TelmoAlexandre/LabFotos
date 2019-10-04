@@ -23,14 +23,14 @@ namespace LabFoto.Controllers
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly ILogger<UsersController> _logger;
+        private readonly ILoggerAPI _logger;
         private readonly AppSettings _appSettings;
         private readonly IEmailAPI _email;
 
         public UsersController(ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<UsersController> logger,
+            ILoggerAPI logger,
             IOptions<AppSettings> settings,
             IEmailAPI email)
         {
@@ -170,8 +170,6 @@ namespace LabFoto.Controllers
                 var result = await _userManager.CreateAsync(newUser, user.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
                     try
                     {
                         await _userManager.AddToRoleAsync(newUser, role);
@@ -281,7 +279,12 @@ namespace LabFoto.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Erro ao alterar os roles de um Utilizador. Message: {e.Message}");
+                    await _logger.LogError(
+                        descricao: "Erro ao alterar os roles de um Utilizador.",
+                        classe: "UsersController",
+                        metodo: "ConfirmEmail",
+                        erro: e.Message
+                    );
 
                     TempData["Feedback"] = "Erro ao alterar o Papel.";
                     TempData["Type"] = "error";
@@ -324,23 +327,41 @@ namespace LabFoto.Controllers
                 return NotFound("Não foi possível encontrar a sua conta.");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            if (!result.Succeeded)
+            if (!user.EmailConfirmed) // Caso o e-mail ainda não esteja confirmado
             {
-                throw new InvalidOperationException("Erro ao confirmar o seu E-mail.");
+                var result = await _userManager.ConfirmEmailAsync(user, code);
+                if (result.Succeeded)
+                {
+                    TempData["Feedback"] = "Email confirmado com sucesso.";
+                    TempData["Type"] = "success";
+                }
+                else
+                {
+                    TempData["Feedback"] = "Não foi possível confirmar o seu e-mail.";
+                    TempData["Type"] = "warning";
+                }
+            }
+            else
+            {
+                TempData["Feedback"] = "O seu e-mail já se encontra confirmado.";
+                TempData["Type"] = "success";
             }
 
             try
             {
                 await _signInManager.SignInAsync(user, isPersistent: true);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                _logger.LogInformation("Erro ao autenticar o utilizador que acabou de confirmar o e-mail.");
+                await _logger.LogError(
+                    descricao: "Erro ao autenticar o utilizador que acabou de confirmar o e-mail.",
+                    classe: "UsersController",
+                    metodo: "ConfirmEmail",
+                    erro: e.Message
+                );
             }
 
-            TempData["Feedback"] = "Email confirmado com sucesso.";
-            TempData["Type"] = "success";
+
             return RedirectToAction("Index");
         }
         #endregion
@@ -367,7 +388,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogInformation("Erro ao encontrar o utilizador. Erro:" + e.Message);
+                await _logger.LogError(
+                    descricao: "Erro ao encontrar o utilizador.",
+                    classe: "UsersController",
+                    metodo: "Block",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
 
@@ -423,7 +449,12 @@ namespace LabFoto.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogInformation("Erro ao encontrar o utilizador. Erro:" + e.Message);
+                await _logger.LogError(
+                    descricao: "Erro ao encontrar o utilizador.",
+                    classe: "UsersController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
 
@@ -437,11 +468,15 @@ namespace LabFoto.Controllers
             {
                 _context.Remove(user);
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Utilizador removido.");
             }
             catch (Exception e)
             {
-                _logger.LogInformation("Erro ao eliminar utilizador. Erro:" + e.Message);
+                await _logger.LogError(
+                    descricao: "Erro ao eliminar utilizador.",
+                    classe: "UsersController",
+                    metodo: "Delete",
+                    erro: e.Message
+                );
                 return Json(new { success = false });
             }
 
