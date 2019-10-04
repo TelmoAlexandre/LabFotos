@@ -65,10 +65,16 @@ else
                 </div>
                 <div class="extra content">
                     <span class="right floated">
-                        <a asp-action="Edit" asp-route-id="@galeria.ID" asp-route-returnUrl="@Url.Action("Index", "Galerias")">
+                        <a asp-controller="Partilhaveis" asp-action="Create" asp-route-servicoID="@galeria.ServicoFK" asp-route-returnUrl="@Url.Action("Index","Servicos")"
+                           data-toggle="tooltip" title="Criar Partilhavel">
+                            <i class="share alternate icon"></i>
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@galeria.ID" asp-route-returnUrl="@Url.Action("Index", "Galerias")"
+                           data-toggle="tooltip" title="Editar Galeria">
                             <i class="edit icon"></i>
                         </a>
-                        <a asp-action="Details" asp-route-id="@galeria.ID">
+                        <a asp-action="Details" asp-route-id="@galeria.ID"
+                           data-toggle="tooltip" title="Abrir Galeria">
                             <i class="folder open icon"></i>
                         </a>
                     </span>

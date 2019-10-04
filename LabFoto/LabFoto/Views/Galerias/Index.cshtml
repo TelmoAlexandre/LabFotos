@@ -10,6 +10,7 @@
 <form asp-controller="Galerias" asp-action="IndexFilter" class="mb-2 unselectable"
       data-ajax="true" data-ajax-method="POST"
       data-ajax-mode="replace" data-ajax-update="#cardsGalerias"
+      data-ajax-success="activateTooltip()"
       id="GaleriasSearchForm">
 
     <div class="ui segment padded">
@@ -135,8 +136,8 @@
 @section scripts
 {
     <script>
-        $(document).ready(function () {
-
+        $(document).ready(function () 
+        {
             $("#cardsGalerias").html(loader);
             $("#metadadosCB").html(smallLoader);
             $("#servicosDropDown").html(smallLoader);
@@ -167,6 +168,7 @@
                     url: siteUrl + "/Galerias/InitialGaleria?servicoId=@Model.ServicoID",
                     success: function (resp) {
                         $("#cardsGalerias").html(resp);
+                        activateTooltip();
                     },
                     error: function () {
                         $("#cardsGalerias").html(`
@@ -186,6 +188,11 @@
                 submitSearchForm();
             }
         });
+
+        function activateTooltip()
+        {
+           $('[data-toggle="tooltip"]').tooltip();
+        }
 
         clearSearch = () => {
             $(`#searchParams input[type="search"]`).val("");
