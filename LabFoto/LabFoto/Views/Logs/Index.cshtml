@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LabFoto.Models.Tables.Log>
+﻿@model LabFoto.Models.ViewModels.LogsIndexViewModel
 
 @{
     ViewData["Title"] = "Erros da Aplicação";
@@ -6,44 +6,116 @@
 
 <h1>Erros</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Utilizador)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Classe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Timestamp)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var log in Model) {
-        <tr>
-            <td style="max-width: 150px;">
-                @Html.DisplayFor(modelItem => log.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => log.Utilizador)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => log.Classe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => log.Timestamp)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@log.ID">Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@log.ID">Eliminar</a>
-            </td>
-        </tr>
+<form asp-controller="Logs" asp-action="IndexFilter" class="mb-2 unselectable"
+      data-ajax="true" data-ajax-method="POST"
+      data-ajax-mode="replace" data-ajax-update="#cardsLogs"
+      data-ajax-success="resetAccordionCollapse"
+      id="logsIndexSearchForm">
+
+    <div class="ui segment padded">
+        <div class="ui form" id="searchParams">
+            <div class="fields">
+                <div class=" eight wide field mb-3">
+                    <div class="ui transparent left icon input large">
+                        <input type="search" id="NomeSearch" placeholder="Nome da classe..." name="ClasseSearch">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+                <div class="eight wide field mb-1">
+                    <div class="ui button blue mini" onclick="submitSearchForm()" tabindex="0">
+                        <i class="search icon"></i>
+                        Pesquisar
+                    </div>
+                    <div class="ui button inverted red mini" onclick="clearSearch()" tabindex="0">
+                        <i class="eraser icon"></i>
+                        Limpar pesquisa
+                    </div>
+                </div>
+            </div>
+
+            <div id="searchOptions" style="display:none" class="mt-4">
+
+                <div class="fields">
+                    <div class="eight wide field mb-2" id="usersDropdown">
+
+                    </div>
+                </div>
+
+                <div class="fields">
+                    <div class="eight wide field">
+                        <small class="form-text text-muted  ">
+                            Desde
+                        </small>
+                        <input type="date" name="DateMin"
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                    <div class="eight wide field">
+                        <small class="form-text text-muted">
+                            Até
+                        </small>
+                        <input type="date" name="DateMax"
+                               onkeyup="this.onchange()" onchange="submitSearchForm()" onsearch="this.onchange()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="mt-2 pointer col-md-4" id="expandSearchOptions">
+                    <div id="expandSearchSymbol">
+                        <i class="far fa-plus-square"></i>
+                        <span>Expandir opções de pesquisa</span>
+                    </div>
+                    <div id="collapseSearchSymbol" style="display:none">
+                        <i class="far fa-minus-square"></i>
+                        <span>Ocultar opções de pesquisa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cardsLogs">
+        <partial name="PartialViews/_IndexCards" model="@Model" />
+    </div>
+</form>
+
+<div style="display:none;" id="usersDropdownBackup">
+    <select asp-items="@Model.Users" name="User" class="ui search dropdown fluid mb-1">
+        <option value="">Escolha um Utilizador...</option>
+    </select>
+</div>
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#usersDropdown").html($("#usersDropdownBackup").html());
+            $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+        });
+
+        $(".input").on('keyup', function (e) {
+            if (e.keyCode == 13) {
+                submitSearchForm();
+            }
+        });
+
+        // Submit do form das pesquisas dos servicos
+        submitSearchForm = (page) => {
+            $("#pageNum").val(page);
+            $("#logsIndexSearchForm").submit();
+        };
+
+        // Limpar pesquisas dos servicos
+        clearSearch = () => {
+            $(`#searchParams input[type="search"]`).val("");
+            $(`#searchParams input[type="date"]`).val("");
+            // Recarregar a dropdown dos utilizadores
+            // Este encontra-se num div de backup, pois tem o layout do semantic-ui
+            // Assim evita-se alterar o codigo do semantic-ui, pois isso pode levantar problemas
+            $("#usersDropdown").html($("#usersDropdownBackup").html());
+            $('.ui.dropdown').dropdown(); // Activar as dropdows do semantic-ui
+            submitSearchForm();
+        };
+
+      
+    </script>
 }
-    </tbody>
-</table>

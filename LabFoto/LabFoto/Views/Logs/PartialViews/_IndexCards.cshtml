@@ -1,0 +1,78 @@
+﻿@model LabFoto.Models.ViewModels.LogsIndexViewModel
+
+@if (Model.Logs.Count() == 0)
+{
+    <div class="my-lg-5 d-flex justify-content-center">
+        <p class="font-weight-bolder">Não foram encontrados erros.</p>
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(modelItem => Model.Logs.FirstOrDefault().Descricao)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(modelItem => Model.Logs.FirstOrDefault().Utilizador)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(modelItem => Model.Logs.FirstOrDefault().Classe)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(modelItem => Model.Logs.FirstOrDefault().Timestamp)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model.Logs)
+            {
+                <tr>
+                    <td style="max-width: 150px;">
+                        @Html.DisplayFor(modelItem => log.Descricao)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => log.Utilizador)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => log.Classe)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => log.Timestamp)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@log.ID">Detalhes</a> |
+                        <a asp-action="Delete" asp-route-id="@log.ID">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    // Paginação -----------------------------------------------------------------------------------------
+
+    string previousPage = (Model.FirstPage) ? "-" : Model.PageNum - 1 + "";
+    string nextPage = (Model.LastPage) ? "-" : Model.PageNum + 1 + "";
+    // Esconder as opções caso seja a primeira ou ultima página. Feito com CSS.
+    string disablePreviousPage = Model.FirstPage ? "disabled" : "";
+    string disableNextPage = Model.LastPage ? "disabled" : "";
+
+    <div class=" mt-4 unselectable">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @disablePreviousPage">
+                    <span class="page-link pointer" onclick="submitSearchForm(@previousPage)">Anterior</span>
+                </li>
+                <li class="page-item @disablePreviousPage"><span class="page-link pointer" onclick="submitSearchForm(@previousPage)">@previousPage</span></li>
+                <li class="page-item active" unselectable="on"><span class="page-link pointer">@Model.PageNum</span></li>
+                <li class="page-item @disableNextPage"><span class="page-link pointer" onclick="submitSearchForm(@nextPage)">@nextPage</span></li>
+                <li class="page-item @disableNextPage">
+                    <span class="page-link pointer" onclick="submitSearchForm(@nextPage)">Próxima</span>
+                </li>
+            </ul>
+        </nav>
+        <input type="number" name="Page" id="pageNum" hidden />
+    </div>
+}

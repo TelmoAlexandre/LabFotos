@@ -1,7 +1,7 @@
 ﻿@model LabFoto.Models.ViewModels.ThumbnailsViewModel
 
 @{
-    int i = Model.Index; // Usando para definir index nas fotos. Para saber qualquer a foto clicada (no PhotoSwipe)
+    int i = Model.Index; // Usado para definir index nas fotos. Para saber qualquer a foto clicada (no PhotoSwipe)
     bool justCheckbox = (bool?)ViewData["JustCheckbox"] ?? false; // Define se mostra o botão de download ou o de checkbox
 
     foreach (var foto in Model.Fotos)
@@ -15,7 +15,7 @@
             <div class="image">
                 <figure itemprop="associatedMedia" class="fluid m-0" itemscope>
                     @{
-                        // Por defeito mostra como se tive-se vazio
+                        // Por defeito mostra como se tivesse vazio
                         var large = $"{Url.Content("~")}/images/default.png";
                         var medium = $"{Url.Content("~")}/images/default.png";
 

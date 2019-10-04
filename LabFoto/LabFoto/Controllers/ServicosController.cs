@@ -191,7 +191,6 @@ namespace LabFoto.Controllers
         /// <returns>retorna uma PartialView com a lista de serviços certa</returns>
         [HttpPost]
         public async Task<IActionResult> IndexFilter([Bind("NomeSearch,DateMin,DateMax,Requerente,Obra,Tipos,ServSolicitados,Ordem,Page,ServicosPerPage")] ServicosSearchViewModel search)
-
         {
             int skipNum = (search.Page - 1) * search.ServicosPerPage;
 
