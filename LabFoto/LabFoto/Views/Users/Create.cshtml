@@ -14,6 +14,11 @@
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="field">
+                    <label asp-for="User.UserName"></label>
+                    <input asp-for="User.UserName" class="form-control" />
+                    <span asp-validation-for="User.UserName" class="text-danger"></span>
+                </div>
+                <div class="field">
                     <label asp-for="User.Email"></label>
                     <input asp-for="User.Email" class="form-control" />
                     <span asp-validation-for="User.Email" class="text-danger"></span>

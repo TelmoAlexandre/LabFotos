@@ -22,7 +22,7 @@
                         <i class="edit icon"></i>
                     </a>
                     <span class="ml-2 ui button pl-3 pr-3" onclick="confirmationModal('deleteGaleria', deleteGaleria, '@Model.ID')"
-                           data-toggle="tooltip" title="Eliminar Galeria">
+                          data-toggle="tooltip" title="Eliminar Galeria">
                         <i class="trash alternate outline icon"></i>
                     </span>
                 </div>
@@ -82,6 +82,7 @@
 </form>
 
 <div class="mt-4">
+    <div class="ui active small inline loader galleryLoader" style="display:none;"></div>
     <div class="ui small basic icon buttons float-right">
         <button class="ui button" onclick="selectAllCB()"><i class="check circle icon"></i></button>
         <button class="ui button" onclick="clearCB()"><i class="check circle outline icon"></i></button>
@@ -212,7 +213,7 @@
             $('[data-toggle="tooltip"]').tooltip();
 
             // Começar a pedir fotografias
-            getPhotos(1);
+            startGetPhotos(1);
 
             // Iniciar a galeria do PhotoSwipe
             initPhotoSwipeFromDOM('.my-gallery');
@@ -420,10 +421,15 @@
             }
         }
 
+        function startGetPhotos(page)
+        {
+            $(".galleryLoader").show();
+            getPhotos(page);
+        }
+
         // Carregar as fotografias da galeria assincronamente
         function getPhotos(page)
         {
-            $("#thumbnails").append(loader);
             $.ajax({
                 type: "GET",
                 url: siteUrl + "/Galerias/Thumbnails/@Model.ID?page="+page,
@@ -449,8 +455,8 @@
                         {
                             $("#my-gallery").html(placeHolder); // Mostra um placeholder
                         }
+                        $(".galleryLoader").hide(); // Remove a barra de loading
                     }
-                    $("#loader").remove(); // Remove a barra de loading
                 },
                 error: function () {
                     $("#thumbnails").html(`
@@ -539,7 +545,7 @@
                     else
                     {
                         notifyUser('error', resp.details);
-                        
+
                         // Reactivar os botões novamente
                         $("#btnFinishUpload").click();
                         $("#btnUploadSubmit")
@@ -650,7 +656,7 @@
                     "__RequestVerificationToken": $(`#confirmationModal input[name='__RequestVerificationToken']`).val(),
                     "X-Requested-With": "XMLHttpRequest"
                 },
-                success: function (resp) 
+                success: function (resp)
                 {
                     // Quando não existem fotografias, mostra-se um placeholder, quando forem adicionadas as primeiras fotografias,
                     // adicionar a classe card para as mostrar em pequenos cartões
