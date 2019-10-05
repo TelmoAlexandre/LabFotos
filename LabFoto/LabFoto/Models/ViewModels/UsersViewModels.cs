@@ -30,6 +30,10 @@ namespace LabFoto.Models.ViewModels
     }
     public class UserCreateViewModel
     {
+        [Required(ErrorMessage = "O Nome de utilizador é obrigatório.")]
+        [Display(Name = "Nome de Utilizador")]
+        public string UserName { get; set; }
+
         [Required(ErrorMessage = "O Email é obrigatório.")]
         [EmailAddress(ErrorMessage = "É necessário preencher com um e-mail válido")]
         [Display(Name = "Email")]

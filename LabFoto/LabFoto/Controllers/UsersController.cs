@@ -154,7 +154,7 @@ namespace LabFoto.Controllers
         /// <returns> Retorna para a lista de utilizadores com a mensagem Utilizador criado com sucesso.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Email,Password,ConfirmPassword,Role")] UserCreateViewModel user)
+        public async Task<IActionResult> Create([Bind("UserName,Email,Password,ConfirmPassword,Role")] UserCreateViewModel user)
         {
             string role = "Lab";
 
@@ -166,7 +166,7 @@ namespace LabFoto.Controllers
 
             if (ModelState.IsValid)
             {
-                var newUser = new IdentityUser { UserName = user.Email, Email = user.Email };
+                var newUser = new IdentityUser { UserName = user.UserName, Email = user.Email };
                 var result = await _userManager.CreateAsync(newUser, user.Password);
                 if (result.Succeeded)
                 {
