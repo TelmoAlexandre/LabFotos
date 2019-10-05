@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="ten wide field mb-2">
-                    <div class="ui button blue mini" onclick="submitUsersSearchForm()" tabindex="0">
+                    <div class="ui button blue mini" onclick="submitUsersSearchForm(1)" tabindex="0">
                         <i class="search icon"></i>
                         Pesquisar
                     </div>
@@ -103,24 +103,29 @@
         clearSearch = () =>
         {
             $(`#inputUsername`).val("");
-            submitUsersSearchForm();
+            submitUsersSearchForm(1);
         };
 
         $(".input").on('keyup', function (e)
         {
             if (e.keyCode == 13)
             {
-                submitUsersSearchForm();
+                submitUsersSearchForm(1);
             }
         });
 
-        function submitUsersSearchForm()
+        function submitUsersSearchForm(page)
         {
+            if (page == null)
+            {
+                page = $("#pageNum").val();
+            }
             $.ajax({
                 url: "@Url.Action("IndexFilter", "Users")",
                 type: "POST",
                 data: {
                     "Username": $("#searchForm #inputUsername").val(),
+                    "Page": page,
                     "__RequestVerificationToken": $("#searchForm input[name='__RequestVerificationToken']").val(),
                     "X-Requested-With": "XMLHttpRequest"
                 },

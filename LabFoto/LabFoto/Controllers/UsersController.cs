@@ -26,7 +26,8 @@ namespace LabFoto.Controllers
         private readonly ILoggerAPI _logger;
         private readonly AppSettings _appSettings;
         private readonly IEmailAPI _email;
-
+        private readonly int _usersPP = 6;
+       
         public UsersController(ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -55,10 +56,13 @@ namespace LabFoto.Controllers
             }
 
             // Todos os utilizadores
-            List<IdentityUser> users = _context.Users.Select(u => u).ToList(); ;
+            List<IdentityUser> users = _context.Users.Select(u => u).ToList(); 
 
             var response = await PrepareIndexResponse(users);
-
+            response.Users = response.Users.Take(_usersPP).ToList();
+            response.FirstPage = true;
+            response.LastPage = (users.Count() <= _usersPP);
+            response.PageNum = 1;
             return View(response);
         }
         /// <summary>
@@ -67,16 +71,19 @@ namespace LabFoto.Controllers
         /// </summary>
         /// <param name="Username">Nome do utilizador</param>
         /// <returns>retorna uma PartialView com a lista de utilizadores certa</returns>
-        public async Task<IActionResult> IndexFilter(string Username)
+        public async Task<IActionResult> IndexFilter([Bind("Username,Page")] UsersSearchViewModel search)
         {
             var users = _context.Users.Select(u => u);
-
-            if (!String.IsNullOrEmpty(Username))
+            int skipNum = (search.Page - 1) * _usersPP;
+            if (!String.IsNullOrEmpty(search.Username))
             {
-                users = users.Where(u => u.UserName.Contains(Username));
+                users = users.Where(u => u.UserName.Contains(search.Username));
             }
-
             var response = await PrepareIndexResponse(users.ToList());
+            response.LastPage = (response.Users.Skip(skipNum).Count() <= _usersPP);
+            response.Users = response.Users.Skip(skipNum).Take(_usersPP).ToList();
+            response.FirstPage = (search.Page == 1);
+            response.PageNum = search.Page;
 
             return PartialView("PartialViews/_IndexUsers", response);
         }

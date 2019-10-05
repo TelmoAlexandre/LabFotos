@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,6 +10,9 @@ namespace LabFoto.Models.ViewModels
     {
         public List<UserWithRoleViewModel> Users { get; set; }
         public string AdminEmail { get; set; }
+        public bool FirstPage { get; set; }
+        public bool LastPage { get; set; }
+        public int PageNum { get; set; }
     }
     public class UserWithRoleViewModel
     {
@@ -48,5 +52,14 @@ namespace LabFoto.Models.ViewModels
 
         [Display(Name = "Papel")]
         public string Role { get; set; }
+    }
+    public class UsersSearchViewModel
+    {
+        public UsersSearchViewModel()
+        {
+            Page = 1;
+        }
+        public string Username { get; set; }
+        public int Page { get; set; }
     }
 }
