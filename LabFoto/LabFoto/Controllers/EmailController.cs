@@ -104,7 +104,7 @@ namespace LabFoto.Controllers
 
             try
             {
-                bool success = _email.Send(partilhavel.Servico.Requerente.Email, "Laboratório de Fotografias do IPT: " + partilhavel.Nome, body);
+                bool success = _email.Send(partilhavel.Servico.Requerente.Email, partilhavel.Nome, body);
 
                 if (success)
                 {

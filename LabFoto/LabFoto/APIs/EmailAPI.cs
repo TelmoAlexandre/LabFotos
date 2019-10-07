@@ -53,7 +53,7 @@ namespace LabFoto.APIs
                     {
                         using (var message = new MailMessage())
                         {
-                            message.From = new MailAddress(_user.Identity.Name);
+                            message.From = new MailAddress(_user.Identity.Name, "Laboratório de Fotografias do IPT");
                             message.To.Add(new MailAddress(destination));
                             message.CC.Add(new MailAddress(_user.Identity.Name));
                             //message.Bcc.Add(new MailAddress("bcc@email.com", "BCC Name"));
@@ -99,7 +99,7 @@ namespace LabFoto.APIs
 
                     using (var message = new MailMessage(_user.Identity.Name, destination))
                     {
-                        message.From = new MailAddress(_user.Identity.Name);
+                        message.From = new MailAddress(_user.Identity.Name, "Laboratório de Fotografias do IPT");
                         message.To.Add(new MailAddress(destination));
                         message.CC.Add(new MailAddress(_user.Identity.Name));
                         //message.Bcc.Add(new MailAddress("bcc@email.com", "BCC Name"));
