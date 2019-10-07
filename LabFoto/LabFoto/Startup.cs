@@ -37,14 +37,6 @@ namespace LabFoto
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                // User settings.
-                options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
-                options.User.RequireUniqueEmail = true;
-            });
-
             // Adicionar o IHttpClientFactory para poderem ser feito pedidos HTTP
             services.AddHttpClient();
             // Configuração para aceder às variáveis globais
