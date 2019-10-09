@@ -31,8 +31,9 @@
                         <partial name="_LoginPartial" />
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item dropdown">
-                                <a class="dropbtn nav-link text-dark" asp-controller="Servicos" asp-action="Index">Serviços <i class="caret down icon"></i></a>
+                                <a class="dropbtn nav-link text-dark">Serviços <i class="caret down icon"></i></a>
                                 <div class="dropdown-content">
+                                    <a class="nav-link text-dark" asp-controller="Servicos" asp-action="Index">Listar Serviços</a>
                                     <a class="nav-link text-dark" asp-controller="Partilhaveis" asp-action="Index">Partilhaveis</a>
                                     <a class="nav-link text-dark" asp-controller="Requerentes" asp-action="Index">Requerentes</a>
                                     <a class="nav-link text-dark" asp-controller="Tipos" asp-action="Index">Tipos de Serviço</a>
@@ -40,8 +41,9 @@
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="dropbtn nav-link text-dark" asp-controller="Galerias" asp-action="Index">Galerias <i class="caret down icon"></i></a>
+                                <a class="dropbtn nav-link text-dark">Galerias <i class="caret down icon"></i></a>
                                 <div class="dropdown-content">
+                                    <a class="nav-link text-dark" asp-controller="Galerias" asp-action="Index">Listar Galerias</a>
                                     <a class="nav-link text-dark" asp-controller="Metadados" asp-action="Index">Metadados</a>
                                 </div>
                             </li>
